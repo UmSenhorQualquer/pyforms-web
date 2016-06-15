@@ -36,10 +36,7 @@ ControlSlider.prototype.init_control = function(){
 		self.basewidget.fire_event( self.name, 'changed' );
 	});
 
-	if(this.properties.visible) 
-		this.jquery_place().show();
-	else 
-		this.jquery_place().hide();
+	if(!this.properties.visible) this.hide();
 };
 
 ////////////////////////////////////////////////////////////////////////////////

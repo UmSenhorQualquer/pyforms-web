@@ -1,7 +1,8 @@
-
+var COLUMNS_CSS_CLASSES = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
 
 function ControlBase(name, properties){
 	var self = this;
+
 
 	this.name 			= name;
 	this.properties 	= properties;
@@ -47,13 +48,65 @@ ControlBase.prototype.set_value = function(value){
 
 ////////////////////////////////////////////////////////////////////////////////
 
+ControlBase.prototype.hide = function(not_update_columns){
+	if( !this.jquery_place().is(':visible') ) return;
+	var parent = this.jquery_place().parent();
+
+	if( parent.hasClass('fields') ){
+		var found = false;
+		for(var i=2; i<COLUMNS_CSS_CLASSES.length; i++)
+			if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
+				parent.removeClass( COLUMNS_CSS_CLASSES[i] );
+				parent.addClass( COLUMNS_CSS_CLASSES[i-1] );
+				console.log('remove '+COLUMNS_CSS_CLASSES[i]);
+				console.log('add '+COLUMNS_CSS_CLASSES[i-1]);
+
+				found = true;
+				break;
+			};
+
+		if(!found){
+			parent.removeClass( 'fields' );
+			parent.removeClass( 'two' );
+		}
+	}
+	
+
+	this.jquery_place().hide();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+ControlBase.prototype.show = function(not_update_columns){
+	if( this.jquery_place().is(':visible') ) return;
+	var parent = this.jquery_place().parent();
+	
+	if( parent.hasClass('fields') ){
+		for(var i=0; i<COLUMNS_CSS_CLASSES.length-1; i++)
+			if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
+				parent.removeClass( COLUMNS_CSS_CLASSES[i] );
+				parent.addClass( COLUMNS_CSS_CLASSES[i+1] );
+				console.log('remove '+COLUMNS_CSS_CLASSES[i]);
+				console.log('add '+COLUMNS_CSS_CLASSES[i+1]);
+				break;
+			};
+	}else 
+	 	if( !parent.hasClass('form') && !parent.hasClass('tab') && !parent.hasClass('ControlEmptyWidget') ){
+	 		parent.addClass( 'fields' );
+			parent.addClass( 'two' );
+	 	}
+	this.jquery_place().show();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
 ControlBase.prototype.deserialize = function(data){
 	$.extend(this.properties, data);
 	this.set_value(this.properties.value);
 	if(this.properties.visible) 
-		this.jquery_place().show();
+		this.show();
 	else 
-		this.jquery_place().hide();
+		this.hide();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,8 +119,5 @@ ControlBase.prototype.serialize = function(){
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlBase.prototype.init_control = function(){
-	if(this.properties.visible) 
-		this.jquery_place().show();
-	else 
-		this.jquery_place().hide();
+	if(!this.properties.visible) this.hide();
 };

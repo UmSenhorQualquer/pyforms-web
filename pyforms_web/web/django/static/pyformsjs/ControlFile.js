@@ -38,9 +38,6 @@ ControlFile.prototype.init_control = function(){
 	this.jquery().unbind('click');
 	this.jquery().click(reload_folder);
 
-	if(this.properties.visible) 
-		this.jquery_place().show();
-	else 
-		this.jquery_place().hide();
+	if(!this.properties.visible) this.hide();
 };
 

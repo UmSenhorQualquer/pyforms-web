@@ -33,10 +33,7 @@ ControlImage.prototype.init_control = function(){
 	html += "</div>";
 	this.jquery_place().replaceWith(html);
 
-	if(this.properties.visible) 
-		this.jquery_place().show();
-	else 
-		this.jquery_place().hide();
+	if(!this.properties.visible) this.hide();
 };
 
 ////////////////////////////////////////////////////////////////////////////////

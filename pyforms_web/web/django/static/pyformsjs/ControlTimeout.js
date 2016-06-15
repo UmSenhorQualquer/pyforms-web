@@ -16,10 +16,7 @@ ControlTimeout.prototype.init_control = function(){
 	html 	+= '</div>'
 	this.jquery_place().replaceWith(html);
 
-	if(this.properties.visible) 
-		this.jquery_place().show();
-	else 
-		this.jquery_place().hide();
+	if(!this.properties.visible) this.hide();
 
 	this.set_value(this.properties.value);
 	if (this.properties.play=='True') this.update_progress_bar(true);
@@ -72,7 +69,7 @@ ControlTimeout.prototype.deserialize = function(data){
 		this.update_progress_bar(false);
 
 	if(this.properties.visible) 
-		this.jquery_place().show();
+		this.show();
 	else 
-		this.jquery_place().hide();
+		this.hide();
 };

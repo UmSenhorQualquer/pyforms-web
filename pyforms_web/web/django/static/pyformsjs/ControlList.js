@@ -10,6 +10,7 @@ ControlList.prototype = Object.create(ControlBase.prototype);
 
 ControlList.prototype.init_control = function(){
 	this.set_value(this.properties.value);
+	if(!this.properties.visible) this.hide();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,6 +32,11 @@ ControlList.prototype.get_value = function(){
 
 ControlList.prototype.set_value = function(value){
 	this.load_table();
+
+	if(this.properties.visible) 
+		this.show();
+	else 
+		this.hide();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,10 +110,7 @@ ControlList.prototype.load_table = function(){
 		}
 	});
 
-	if(this.properties.visible) 
-		this.jquery_place().show();
-	else 
-		this.jquery_place().hide();
+	
 };
 
 ////////////////////////////////////////////////////////////////////////////////

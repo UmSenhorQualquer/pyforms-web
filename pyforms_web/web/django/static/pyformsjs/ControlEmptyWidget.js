@@ -15,10 +15,7 @@ ControlEmptyWidget.prototype.init_control = function(){
 	var html = "<div id='"+this.place_id()+"' class='field ControlEmptyWidget ui segment' >"+widget_html+"</div>";
 	this.jquery_place().replaceWith(html);
 
-	if(this.properties.visible) 
-		this.jquery_place().show();
-	else 
-		this.jquery_place().hide();
+	if(!this.properties.visible) this.hide();
 };
 
 ////////////////////////////////////////////////////////////
@@ -55,9 +52,9 @@ ControlEmptyWidget.prototype.deserialize = function(data){
 	this.set_value(this.properties.value);
 
 	if(this.properties.visible) 
-		this.jquery_place().show();
+		this.show();
 	else 
-		this.jquery_place().hide();
+		this.hide();
 
 	
 };

@@ -47,10 +47,7 @@ ControlVisVis.prototype.init_control = function(){
 
 	this.chart = chart;
 
-	if(this.properties.visible) 
-		this.jquery_place().show();
-	else 
-		this.jquery_place().hide();
+	if(!this.properties.visible) this.hide();
 };
 
 
