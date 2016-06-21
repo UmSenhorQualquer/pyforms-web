@@ -25,7 +25,9 @@ function PyformsManager(){
 	this.applications = [];
 	$.ajaxSetup({async: false, cache: true});
 
+	$.getStylesheet("/static/pyforms.css");
 	$.getScript("/static/jquery.json-2.4.min.js");
+	$.getScript("/static/base64.js");
 
 	$.getScript("/static/pyformsjs/ControlBase.js");
 	$.getScript("/static/pyformsjs/ControlText.js");

@@ -102,6 +102,10 @@ ControlBase.prototype.show = function(not_update_columns){
 
 ControlBase.prototype.deserialize = function(data){
 	$.extend(this.properties, data);
+
+	console.log(this.name+" - deserialize called");
+
+
 	this.set_value(this.properties.value);
 	if(this.properties.visible) 
 		this.show();
