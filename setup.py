@@ -35,6 +35,7 @@ setup(
 	package_data={'pyforms_web': [
 			'web/django/*.js',
 			'web/django/static/*.js',
+			'web/django/static/*.css',
 			'web/django/static/jqplot/*.js',
 			'web/django/static/jqplot/*.css',
 			'web/django/static/jqplot/plugins/*.js',
