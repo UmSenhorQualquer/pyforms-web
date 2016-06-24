@@ -17,7 +17,7 @@ ControlDir.prototype.init_control = function(){
 	function reload_folder(){
 		var folder = get_current_folder();
 		$( "#dialog-content-"+self.control_id()).load(
-			'/plugins/myarea/browse/?filter-folders=true&p='+folder+'&control-id='+self.control_id(),
+			'/pyforms/filesbrowser/?filter-folders=true&p='+folder+'&control-id='+self.control_id(),
 			function(){
 				$( "#dialog"+self.control_id() ).modal('show');
 			}

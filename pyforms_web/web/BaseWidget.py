@@ -8,6 +8,8 @@ from pyforms_web.web.Controls.ControlPlayer import ControlPlayer
 from pyforms_web.web.Controls.ControlButton import ControlButton
 import uuid, os, shutil, base64
 
+from maestro.conf import settings
+
 class BaseWidget(object):
 
 	_formset   = None
@@ -45,7 +47,7 @@ class BaseWidget(object):
 		self._js = '[{0}]'.format(",".join(self._controls))
 		self._html += """
 		<script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1} {3}) );</script>
-		""".format(self.__class__.__name__, self._js, self._id, parent_code)
+		""".format(self.modulename, self._js, self._id, parent_code)
 		self._formLoaded = True
 		return { 'code': self._html, 'controls_js': self._js, 'title': self._title }
 		
@@ -256,8 +258,7 @@ class BaseWidget(object):
 
 	@httpRequest.setter
 	def httpRequest(self, value): 
-		from opencsp import AVAILABLE_STORAGES
-		self.storage = AVAILABLE_STORAGES.get(value.user)
+		#self.storage = settings['MAESTRO_STORAGE_MANAGER'].get(value.user)
 		self._httpRequest = value
 		for control in self.formControls.values(): control.httpRequest = value
 	#######################################################

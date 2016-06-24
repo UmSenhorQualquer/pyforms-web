@@ -1,13 +1,13 @@
 (function($) {
   $.getStylesheet = function (href) {
-    var $d = $.Deferred();
-    var $link = $('<link/>', {
-       rel: 'stylesheet',
-       type: 'text/css',
-       href: href
-    }).appendTo('head');
-    $d.resolve($link);
-    return $d.promise();
+	var $d = $.Deferred();
+	var $link = $('<link/>', {
+	   rel: 'stylesheet',
+	   type: 'text/css',
+	   href: href
+	}).appendTo('head');
+	$d.resolve($link);
+	return $d.promise();
   };
 
   
@@ -121,3 +121,19 @@ PyformsManager.prototype.split_id = function(control_id){
 ////////////////////////////////////////////////////////////
 if(pyforms==undefined) var pyforms = new PyformsManager()
 ////////////////////////////////////////////////////////////
+
+
+function show_upload_window(){
+	if($('#MyAreaAppIDModal').size()==0){
+		pyforms.find_app('MyAreaAppID').loading();
+		var html = '<div class="ui fullscreen modal" id="MyAreaAppIDModal" ><i class="close icon"></i><div class="header">Upload files</div><div class="content"></div></div>';
+		$('body').prepend(html);
+		$('#MyAreaAppIDModal').modal('show');
+		$('#MyAreaAppIDModal .content').html('');
+		$('#MyAreaAppIDModal .content').load("/pyforms/filesbrowser/upload_form/",function() {
+			$('#MyAreaAppIDModal').modal('show');
+			pyforms.find_app('MyAreaAppID').not_loading();
+		});
+	}else
+		$('#MyAreaAppIDModal').modal('show');    
+};

@@ -2,25 +2,19 @@ import inspect, sys
 
 class ApplicationsLoader:
 
-	def __init__(self, applicationsPath):
-		sys.path.append(applicationsPath)
-		self._storage = {}
+	_storage = {}
 
+	@staticmethod
+	def createInstance(modulename):
 
-	def __getitem__(self, moduleclassname):
-		if moduleclassname not in self._storage:
-			modulename = '.'.join( [moduleclassname.lower(), moduleclassname] )
-			moduleclass = __import__(modulename, fromlist=[moduleclassname])
-			moduleclass =  getattr(moduleclass, moduleclassname)
-			self._storage[moduleclassname] = moduleclass
-		else:
-			moduleclass = self._storage[moduleclassname]
-		return moduleclass
+		if modulename not in ApplicationsLoader._storage:
+			modules = modulename.split('.')
+			moduleclass = __import__( '.'.join(modules[:-1]) , fromlist=[modules[-1]] )
+			ApplicationsLoader._storage[modulename] = getattr(moduleclass, modules[-1])
+		
+		moduleclass = ApplicationsLoader._storage[modulename]
 
-	def createInstance(self, moduleclassname):
-		app = self[moduleclassname]()
-		#app.initForm()
-		return app
+		obj = moduleclass()
+		obj.modulename = modulename
+		return obj
 
-	def moduleClassPath(self, moduleclassname):
-		return inspect.getfile(self[moduleclassname])

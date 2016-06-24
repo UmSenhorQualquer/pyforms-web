@@ -1,0 +1,4 @@
+
+
+class RemoteFile(object): pass
+

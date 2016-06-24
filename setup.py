@@ -28,11 +28,13 @@ setup(
 	packages=[
 		'pyforms_web',
 		'pyforms_web.web',
+		'pyforms_web.web.storage',
 		'pyforms_web.web.Controls', 
 		'pyforms_web.web.django', 
 		'pyforms_web.web.django.templatetags', 
 		],
 	package_data={'pyforms_web': [
+			'web/django/templates/pyforms/*.*',
 			'web/django/*.js',
 			'web/django/static/*.js',
 			'web/django/static/*.css',
