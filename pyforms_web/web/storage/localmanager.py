@@ -42,7 +42,7 @@ class LocalStorageManager(object):
 
 	@property
 	def user_path(self):
-		userpath = os.path.join(settings.PYFORMS_USERS_AREA_PATH,self._user.username)
+		userpath = settings.PYFORMS_USERS_AREA_PATH
 		if not os.path.isdir(userpath): os.mkdir(userpath)
 		return userpath
 
