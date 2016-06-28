@@ -75,7 +75,7 @@ class LocalStorageManager(object):
 
 	def list(self, path):
 		for f in os.listdir( self.__user_path(path) ):
-			yield self.file_info( f )
+			yield self.file_info( os.path.join(path, f) )
 
 	def file_info(self, path):
 		return self.__parseFile( self.__user_path(path) )
