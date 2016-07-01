@@ -6,7 +6,7 @@ from pyforms_web.web.Controls.ControlText import ControlText
 from pyforms_web.web.Controls.ControlCheckBox import ControlCheckBox
 from pyforms_web.web.Controls.ControlPlayer import ControlPlayer
 from pyforms_web.web.Controls.ControlButton import ControlButton
-import uuid, os, shutil, base64
+import uuid, os, shutil, base64, inspect
 
 from maestro.conf import settings
 
@@ -279,3 +279,8 @@ class BaseWidget(object):
 
 	@title.setter
 	def title(self, value): self._title = value
+
+	@property
+	def modulename(self):
+		return inspect.getmodule(self).__name__ + '.' + self.__class__.__name__
+	

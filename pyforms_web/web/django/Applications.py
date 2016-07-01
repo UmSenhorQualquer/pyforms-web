@@ -15,6 +15,5 @@ class ApplicationsLoader:
 		moduleclass = ApplicationsLoader._storage[modulename]
 
 		obj = moduleclass()
-		obj.modulename = modulename
 		return obj
 
