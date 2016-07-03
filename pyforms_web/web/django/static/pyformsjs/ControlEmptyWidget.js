@@ -37,6 +37,12 @@ ControlEmptyWidget.prototype.deserialize = function(data){
 		delete this.properties.child_widget_id;
 	}
 
+	if(data.visible) 
+		this.show();
+	else 
+		this.hide();
+
+
 	if( data.html!==undefined ){
 		this.jquery_place().html( Base64.decode(data.html) );
 		delete data.html;
@@ -51,10 +57,6 @@ ControlEmptyWidget.prototype.deserialize = function(data){
 	
 	this.set_value(this.properties.value);
 
-	if(this.properties.visible) 
-		this.show();
-	else 
-		this.hide();
-
+	
 	
 };

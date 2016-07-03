@@ -122,7 +122,7 @@ class BaseWidget(object):
 					panel = self.generatePanel( row )
 					layout += "<div class='rows' >%s</div>" % panel
 				elif row == " ":
-					layout += "<div class='space' ></div>"
+					layout += "<div class='field' ></div>"
 				elif type(row) is dict:
 					tabs = self.generateTabs(row)
 					layout += tabs
@@ -148,7 +148,7 @@ class BaseWidget(object):
 					panel 	= self.generatePanel( row )
 					layout += "<div class='fields' >{0}</div>".format(panel)
 				elif row == " ":
-					layout += "<div class='space' ></div>"
+					layout += "<div class='field' ></div>"
 				elif type(row) is dict:
 					tabs 	= self.generateTabs(row)
 					layout += tabs
@@ -258,7 +258,7 @@ class BaseWidget(object):
 
 	@httpRequest.setter
 	def httpRequest(self, value): 
-		#self.storage = settings['MAESTRO_STORAGE_MANAGER'].get(value.user)
+		self.storage = settings['MAESTRO_STORAGE_MANAGER'].get(value.user)
 		self._httpRequest = value
 		for control in self.formControls.values(): control.httpRequest = value
 	#######################################################
