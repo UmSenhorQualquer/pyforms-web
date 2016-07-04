@@ -58,9 +58,7 @@ ControlBase.prototype.hide = function(not_update_columns){
 			if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
 				parent.removeClass( COLUMNS_CSS_CLASSES[i] );
 				parent.addClass( COLUMNS_CSS_CLASSES[i-1] );
-				console.log('remove '+COLUMNS_CSS_CLASSES[i]);
-				console.log('add '+COLUMNS_CSS_CLASSES[i-1]);
-
+				
 				found = true;
 				break;
 			};
@@ -73,6 +71,7 @@ ControlBase.prototype.hide = function(not_update_columns){
 	
 
 	this.jquery_place().hide();
+	this.properties.visible = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -86,8 +85,6 @@ ControlBase.prototype.show = function(not_update_columns){
 			if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
 				parent.removeClass( COLUMNS_CSS_CLASSES[i] );
 				parent.addClass( COLUMNS_CSS_CLASSES[i+1] );
-				console.log('remove '+COLUMNS_CSS_CLASSES[i]);
-				console.log('add '+COLUMNS_CSS_CLASSES[i+1]);
 				break;
 			};
 	}else 
@@ -96,6 +93,7 @@ ControlBase.prototype.show = function(not_update_columns){
 			parent.addClass( 'two' );
 	 	}
 	this.jquery_place().show();
+	this.properties.visible = 1;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

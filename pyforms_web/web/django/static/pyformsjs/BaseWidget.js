@@ -59,13 +59,15 @@ BaseWidget.prototype.current_folder = function(){
 ////////////////////////////////////////////////////////////
 
 BaseWidget.prototype.fire_event = function(dom_in, event){
+	
 	var data = {event: {control:dom_in, event: event}, userpath: this.current_folder() };
 	this.events_queue.push(data)
 
 	if(this.parent_id===undefined)
 		this.update_data( this.events_queue.pop(0) );
-	else
+	else{
 		this.update_data();
+	}
 }
 
 ////////////////////////////////////////////////////////////
@@ -165,6 +167,18 @@ BaseWidget.prototype.update_controls = function(){
 
 ////////////////////////////////////////////////////////////
 
-BaseWidget.prototype.close = function(){	
+BaseWidget.prototype.close_sub_apps = function(){
+
+	for (var index = 0; index <  this.controls.length; index++) {
+		if( this.controls[index].properties.child_widget_id!==undefined )
+			pyforms.remove_app(this.controls[index].properties.child_widget_id);
+	};
+};
+
+
+////////////////////////////////////////////////////////////
+
+BaseWidget.prototype.close = function(){
+	this.close_sub_apps();
 	$("#app-"+this.widget_id).remove();
 };

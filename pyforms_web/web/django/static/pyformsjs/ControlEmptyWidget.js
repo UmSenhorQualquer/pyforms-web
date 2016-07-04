@@ -25,16 +25,22 @@ ControlEmptyWidget.prototype.serialize = function(){
 
 	var child_app = pyforms.find_app(this.properties.child_widget_id);
 	this.properties['widget_data'] = child_app.serialize();
+	
+	if( child_app.events_queue.length>0 ) this.properties['widget_data']['event'] = child_app.events_queue.pop(0);
+
 	return this.properties;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlEmptyWidget.prototype.deserialize = function(data){
-	if(data.clear_widget!==undefined && this.properties.child_widget_id!==undefined){
+	
+	if(data.clear_widget==1){
+		pyforms.remove_app( this.properties.child_widget_id );
 		this.jquery_place().html('');
-		pyforms.remove_app(this.properties.child_widget_id);
-		delete this.properties.child_widget_id;
+		if( data.child_widget_id===undefined ) delete this.properties.child_widget_id;
+		delete this.properties.clear_widget;
+		delete data.clear_widget;
 	}
 
 	if(data.visible) 
@@ -48,8 +54,11 @@ ControlEmptyWidget.prototype.deserialize = function(data){
 		delete data.html;
 	}
 
+	
+
 	$.extend(this.properties, data);
 
+	
 	if(this.properties.child_widget_id!==undefined){
 		var child_app = pyforms.find_app(this.properties.child_widget_id);
 		child_app.deserialize(this.properties.widget_data);
@@ -57,6 +66,4 @@ ControlEmptyWidget.prototype.deserialize = function(data){
 	
 	this.set_value(this.properties.value);
 
-	
-	
 };

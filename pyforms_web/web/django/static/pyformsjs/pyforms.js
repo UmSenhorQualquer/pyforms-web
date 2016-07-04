@@ -68,17 +68,34 @@ function PyformsManager(){
 
 ////////////////////////////////////////////////////////////
 
+
+
 PyformsManager.prototype.add_app = function(app){
+
+	//remove the application first
+	for(var i=0; i<this.applications.length; i++)
+		if( this.applications[i]!=undefined && this.applications[i].widget_id==app.widget_id ){
+			this.applications[i].close_sub_apps();
+			delete this.applications[i];
+			this.applications.slice(i,1);
+			break;
+		}
+
 	this.applications.push(app);
+
+	
 };
 
 ////////////////////////////////////////////////////////////
 
 PyformsManager.prototype.remove_app = function(app_id){
 	for(var i=0; i<this.applications.length; i++)
-		if( this.applications[i].widget_id==app_id ){
-			var app = this.applications.pop(i);
+		if( this.applications[i]!=undefined && this.applications[i].widget_id==app_id ){
+			var app = this.applications[i];
 			app.close();
+			delete this.applications[i];
+			this.applications.slice(i,1);
+			
 			break;
 		}
 };
@@ -86,9 +103,9 @@ PyformsManager.prototype.remove_app = function(app_id){
 
 ////////////////////////////////////////////////////////////
 
-PyformsManager.prototype.find_app = function(app_id){	
+PyformsManager.prototype.find_app = function(app_id){
 	for(var i=0; i<this.applications.length; i++){
-		if( this.applications[i].widget_id==app_id ) return this.applications[i]
+		if( this.applications[i]!=undefined && this.applications[i].widget_id==app_id ) return this.applications[i]
 	}
 	return undefined;
 };

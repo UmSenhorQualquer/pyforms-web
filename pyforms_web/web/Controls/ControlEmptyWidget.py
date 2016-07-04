@@ -47,6 +47,7 @@ class ControlEmptyWidget(ControlBase):
 		if isinstance(self.value, BaseWidget):
 			data.update({'widget_data': self.value.serializeForm()})
 			
+			
 		return data
 
 	def deserialize(self, properties):
