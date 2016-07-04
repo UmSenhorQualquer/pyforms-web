@@ -11,7 +11,7 @@ ControlButton.prototype = Object.create(ControlBase.prototype);
 ControlButton.prototype.init_control = function(){
 
 	var html = "<div class='field ControlButton' id='"+this.place_id()+"' ><label>&nbsp;</label>";
-	html +="<button type='button' title='"+this.properties.help+"' id='"+this.control_id()+"' class='ui button' >";
+	html +="<button type='button' title='"+this.properties.help+"' id='"+this.control_id()+"' class='ui button blue' >";
 	html += this.properties.label;
 	html += '</button>';
 	html += '</div>';

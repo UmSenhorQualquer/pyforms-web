@@ -22,6 +22,8 @@ ControlCombo.prototype.init_control = function(){
 	}
 
 	if(!this.properties.visible) this.hide();
+
+	$('#'+this.control_id()).dropdown();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
