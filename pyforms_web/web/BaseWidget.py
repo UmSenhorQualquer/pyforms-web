@@ -135,7 +135,9 @@ class BaseWidget(object):
 						elif row.startswith('h3:'): layout += "<h3>%s</h3>" % row[3:]
 						elif row.startswith('h4:'): layout += "<h4>%s</h4>" % row[3:]
 						elif row.startswith('h5:'): layout += "<h5>%s</h5>" % row[3:]
-						else: layout += "<span class='info' >%s</span>" % row
+						elif row.startswith('warning:'): layout += "<div class='ui warning visible  message'>%s</div>" % row[8:]
+						elif row.startswith('alert:'): 	 layout += "<div class='ui alert message'>%s</div>" % row[6:]
+						else: layout += "<div class='ui message'>%s</div>" % row
 					else:
 						#self._controls.append( control.initControl() )
 						layout += "%s" % control
@@ -161,7 +163,10 @@ class BaseWidget(object):
 						elif row.startswith('h3:'): layout += "<h3>%s</h3>" % row[3:]
 						elif row.startswith('h4:'): layout += "<h4>%s</h4>" % row[3:]
 						elif row.startswith('h5:'): layout += "<h5>%s</h5>" % row[3:]
-						else: layout += "<span class='info' >%s</span>" % row
+						elif row.startswith('warning:'): 	layout += "<div class='ui warning visible  message'>%s</div>" % row[8:]
+						elif row.startswith('alert:'): 		layout += "<div class='ui alert message'>%s</div>" % row[6:]
+						else: layout += "<div class='ui message'>%s</div>" % row
+						
 					else:
 						#self._controls.append( control.initControl() )
 						layout += str(control)

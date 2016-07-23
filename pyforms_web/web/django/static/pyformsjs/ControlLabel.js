@@ -8,6 +8,12 @@ ControlLabel.prototype = Object.create(ControlBase.prototype);
 
 ////////////////////////////////////////////////////////////////////////////////
 
+ControlLabel.prototype.get_value = function(){ 
+	return this.properties.value;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
 ControlLabel.prototype.init_control = function(){
 	var html = '<div class="ui '+this.properties.css+' message" id="'+this.place_id()+'"  >';
 	   html += '<div class="header">';
@@ -18,6 +24,9 @@ ControlLabel.prototype.init_control = function(){
 	   html += '</p>';
 	   html += '</div>';
 	this.jquery_place().replaceWith(html);
+
+	console.log(html);
+	console.log(this.properties.value);
 
 	if(!this.properties.visible) this.hide();
 };
