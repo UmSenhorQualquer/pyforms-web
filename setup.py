@@ -41,6 +41,8 @@ setup(
 			'web/django/static/jqplot/*.js',
 			'web/django/static/jqplot/*.css',
 			'web/django/static/jqplot/plugins/*.js',
+			'web/django/static/jquery.flowchart/*.js',
+			'web/django/static/jquery.flowchart/*.css',
 			'web/django/static/pyformsjs/*.js']
 		},
 

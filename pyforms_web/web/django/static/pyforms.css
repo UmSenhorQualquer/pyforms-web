@@ -105,3 +105,8 @@ h3.subtitle {
 	position: relative;
 	top: 11px;
 }
+
+.ControlWorkflow .flowchart-container{
+	width:  100%;
+	height: 100%;
+}
