@@ -19,6 +19,11 @@ ControlWorkflow.prototype.init_control = function(){
 	if(!this.properties.visible) this.hide();
 
 	$( '#'+this.control_id() ).flowchart({ data: this.properties.value, multipleLinksOnOutput:true });
+
+	if(this.properties.operator_selected_evt)
+		$( '#'+this.control_id() ).flowchart('selectOperator', function(operatorId){
+			self.basewidget.fire_event( self.name, 'operator_selected_evt' );
+		});
 	
 };
 
@@ -32,4 +37,12 @@ ControlWorkflow.prototype.set_value = function(value){
 
 ControlWorkflow.prototype.get_value = function(){ 
 	return $( '#'+this.control_id() ).flowchart('getData');
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+ControlWorkflow.prototype.serialize = function(){
+	this.properties.value = this.get_value();
+	//this.properties.selected_operator = $( '#'+this.control_id() ).flowchart('getSelectedOperatorId');
+	return this.properties; 
 };
