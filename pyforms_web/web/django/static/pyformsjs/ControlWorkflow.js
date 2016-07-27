@@ -18,20 +18,18 @@ ControlWorkflow.prototype.init_control = function(){
 
 	if(!this.properties.visible) this.hide();
 
-
-	this.set_value(this.properties.value);
+	$( '#'+this.control_id() ).flowchart({ data: this.properties.value, multipleLinksOnOutput:true });
+	
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlWorkflow.prototype.set_value = function(value){
-	$( '#'+this.control_id() ).flowchart({ data: value, multipleLinksOnOutput:true });
+	$( '#'+this.control_id() ).flowchart('setData', value);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlWorkflow.prototype.get_value = function(){ 
-	return this.properties.value;
+	return $( '#'+this.control_id() ).flowchart('getData');
 };
-
-////////////////////////////////////////////////////////////////////////////////
