@@ -21,9 +21,27 @@ ControlWorkflow.prototype.init_control = function(){
 	$( '#'+this.control_id() ).flowchart({ data: this.properties.value, multipleLinksOnOutput:true });
 
 	if(this.properties.operator_selected_evt)
-		$( '#'+this.control_id() ).flowchart('selectOperator', function(operatorId){
-			self.basewidget.fire_event( self.name, 'operator_selected_evt' );
-		});
+		$( '#'+this.control_id() ).flowchart({ onOperatorSelect: function(operatorId){
+			self.properties.selected_operator = operatorId;
+				
+			if( !self.properties.stop_operator_select_evt ){
+				self.properties.no_selected_operator_update = 1;
+				self.properties.selected_operator = operatorId;
+				self.basewidget.fire_event( self.name, 'operator_selected_evt' );
+				self.properties.no_selected_operator_update = undefined;
+			}
+			
+			return true;
+		} });
+
+	if(this.properties.operator_unselected_evt)
+		$( '#'+this.control_id() ).flowchart({ onOperatorUnselect: function(){
+			self.properties.selected_operator = undefined;
+			self.properties.no_selected_operator_update = 1;
+			self.basewidget.fire_event( self.name, 'operator_unselected_evt' );
+			self.properties.no_selected_operator_update = undefined;
+			return true;
+		} });
 	
 };
 
@@ -31,6 +49,8 @@ ControlWorkflow.prototype.init_control = function(){
 
 ControlWorkflow.prototype.set_value = function(value){
 	$( '#'+this.control_id() ).flowchart('setData', value);
+
+	
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +63,30 @@ ControlWorkflow.prototype.get_value = function(){
 
 ControlWorkflow.prototype.serialize = function(){
 	this.properties.value = this.get_value();
-	//this.properties.selected_operator = $( '#'+this.control_id() ).flowchart('getSelectedOperatorId');
+	if( !this.properties.no_selected_operator_update ){
+		var selected_operator = $( '#'+this.control_id() ).flowchart('getSelectedOperatorId');
+		if( selected_operator ) this.properties.selected_operator = selected_operator;
+	}
 	return this.properties; 
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+ControlWorkflow.prototype.deserialize = function(data){
+	$.extend(this.properties, data);
+
+	this.set_value(this.properties.value);
+
+	if( this.properties.selected_operator ){
+		this.properties.stop_operator_select_evt = 1;
+		$('#'+this.control_id() ).flowchart('selectOperator', this.properties.selected_operator);
+		this.properties.stop_operator_select_evt = undefined;
+	}
+	
+
+	if(this.properties.visible) 
+		this.show();
+	else 
+		this.hide();
 };

@@ -59,6 +59,11 @@ ControlCombo.prototype.deserialize = function(data){
 	}
 
 	this.set_value(this.properties.value);
+
+	if(!this.properties.visible) this.hide();
+	else this.show();
+
+	
 };
 
 ////////////////////////////////////////////////////////////////////////////////
