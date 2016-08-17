@@ -18,7 +18,9 @@ ControlVisVis.prototype.init_control = function(){
 	var legend = self.properties.legend;
 	var data   = self.properties.value;
 
-	if(data.length==0){ data = [[[0,0]]] }
+	if(data.length==0 || data[0].length==0 ){ 
+		data = [[[0,0]]];
+	};
 	var chart = $.jqplot(this.control_id(), data, {
 		title:self.label,
 		seriesDefaults:{
