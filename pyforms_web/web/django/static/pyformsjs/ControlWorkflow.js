@@ -37,9 +37,12 @@ ControlWorkflow.prototype.init_control = function(){
 	if(this.properties.operator_unselected_evt)
 		$( '#'+this.control_id() ).flowchart({ onOperatorUnselect: function(){
 			self.properties.selected_operator = undefined;
-			self.properties.no_selected_operator_update = 1;
-			self.basewidget.fire_event( self.name, 'operator_unselected_evt' );
-			self.properties.no_selected_operator_update = undefined;
+				
+			if( !self.properties.stop_operator_unselect_evt ){
+				self.properties.no_selected_operator_update = 1;
+				self.basewidget.fire_event( self.name, 'operator_unselected_evt' );
+				self.properties.no_selected_operator_update = undefined;
+			}
 			return true;
 		} });
 	
@@ -49,8 +52,6 @@ ControlWorkflow.prototype.init_control = function(){
 
 ControlWorkflow.prototype.set_value = function(value){
 	$( '#'+this.control_id() ).flowchart('setData', value);
-
-	
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,6 +77,11 @@ ControlWorkflow.prototype.serialize = function(){
 ControlWorkflow.prototype.deserialize = function(data){
 	$.extend(this.properties, data);
 
+	if(this.properties.visible) 
+		this.show();
+	else 
+		this.hide();
+
 	this.set_value(this.properties.value);
 
 	if( this.properties.selected_operator ){
@@ -84,9 +90,11 @@ ControlWorkflow.prototype.deserialize = function(data){
 		this.properties.stop_operator_select_evt = undefined;
 	}
 	
+	if( data.deleteSelected ){
+		this.properties.stop_operator_unselect_evt = 1;
+		$( '#'+this.control_id() ).flowchart('deleteSelected');
+		this.properties.stop_operator_unselect_evt = undefined;
+	};
 
-	if(this.properties.visible) 
-		this.show();
-	else 
-		this.hide();
+	
 };

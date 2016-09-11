@@ -50,6 +50,7 @@ ControlEmptyWidget.prototype.deserialize = function(data){
 
 
 	if( data.html!==undefined ){
+		console.log(Base64.decode(data.html));
 		this.jquery_place().html( Base64.decode(data.html) );
 		delete data.html;
 	}

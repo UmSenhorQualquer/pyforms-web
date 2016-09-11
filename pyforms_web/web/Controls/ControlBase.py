@@ -54,6 +54,7 @@ class ControlBase(object):
 	def show(self): 
 		self._visible = True
 
+
 	def hide(self): 
 		self._visible = False
 
