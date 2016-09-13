@@ -7,8 +7,7 @@ from pyforms_web.web.Controls.ControlCheckBox import ControlCheckBox
 from pyforms_web.web.Controls.ControlPlayer import ControlPlayer
 from pyforms_web.web.Controls.ControlButton import ControlButton
 import uuid, os, shutil, base64, inspect
-
-from maestro.conf import settings
+from pysettings import conf
 
 class BaseWidget(object):
 
@@ -263,7 +262,7 @@ class BaseWidget(object):
 
 	@httpRequest.setter
 	def httpRequest(self, value): 
-		self.storage = settings['MAESTRO_STORAGE_MANAGER'].get(value.user)
+		self.storage = conf.MAESTRO_STORAGE_MANAGER.get(value.user)
 		self._httpRequest = value
 		for control in self.formControls.values(): control.httpRequest = value
 	#######################################################

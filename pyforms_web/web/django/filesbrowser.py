@@ -7,7 +7,7 @@ from pyforms.Controls import ControlCheckBox
 from pyforms.Controls import ControlButton
 from django.utils import timezone
 
-from maestro.conf import settings
+from pysettings import conf
 
 import uuid, time, os
 
@@ -69,7 +69,7 @@ class FilesBrowserApp(BaseWidget):
 	def populate_table(self):
 		request 	= self.httpRequest
 		self._directory.value = request.GET.get('p',self._directory.value)
-		storage 	= settings['MAESTRO_STORAGE_MANAGER'].get(request.user)
+		storage 	= conf.MAESTRO_STORAGE_MANAGER.get(request.user)
 		path 		= self._directory.value
 
 		files 		= []
