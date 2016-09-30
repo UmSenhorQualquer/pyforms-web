@@ -2,6 +2,7 @@ import cv2, base64, numpy as np, StringIO, pyforms.Utils.tools as tools
 from pyforms_web.web.Controls.ControlBase import ControlBase
 from PIL import Image
 
+from django.conf import settings
 
 class ControlPlayer(ControlBase):
 

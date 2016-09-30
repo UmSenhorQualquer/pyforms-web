@@ -1,7 +1,6 @@
 from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.conf import settings
 from django.views.decorators.cache 			import never_cache
 from django.views.decorators.csrf 			import csrf_exempt
 import json, simplejson, os
@@ -26,7 +25,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 import os, simplejson
-from django.conf import settings
 from django.http import HttpResponse
 
 from django.middleware.csrf import get_token
@@ -41,7 +39,6 @@ from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseServerError
 import simplejson, json, glob, os
-from django.conf import settings
 import time, shlex
 
 def sizeof_fmt(num):

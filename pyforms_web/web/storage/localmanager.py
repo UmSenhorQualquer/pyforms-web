@@ -2,7 +2,7 @@ import os, shutil, subprocess
 from django.utils 					import timezone
 from pyforms_web.web.storage.remotefile import RemoteFile
 
-from django.conf import settings
+from pysettings import conf
 
 def get_thumb(fileinfo, size=32):
 	if fileinfo.type=='dir': return "/static/icons/folder{0}.png".format(size)
@@ -42,7 +42,7 @@ class LocalStorageManager(object):
 
 	@property
 	def user_path(self):
-		userpath = settings.PYFORMS_USERS_AREA_PATH
+		userpath = conf.PYFORMS_USERS_AREA_PATH
 		if not os.path.isdir(userpath): os.mkdir(userpath)
 		return userpath
 
