@@ -51,10 +51,9 @@ class LocalStorageManager(object):
 		
 	def put_file_contents(self, remote_path, data):
 		infile = open(self.__user_path(remote_path), 'wb')
-		buff = data.read()
-		while len(buff)>0:
-			infile.write(buff)
-			buff = data.read()
+		
+		for buff in data:
+			infile.write(buff)			
 		infile.close()
 		return True
 

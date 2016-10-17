@@ -58,15 +58,15 @@ BaseWidget.prototype.current_folder = function(){
 
 ////////////////////////////////////////////////////////////
 
-BaseWidget.prototype.fire_event = function(dom_in, event){
-	
+BaseWidget.prototype.fire_event = function(dom_in, event, show_loading){
+
 	var data = {event: {control:dom_in, event: event}, userpath: this.current_folder() };
 	this.events_queue.push(data)
 
 	if(this.parent_id===undefined)
-		this.update_data( this.events_queue.pop(0) );
+		this.update_data( this.events_queue.pop(0), show_loading );
 	else{
-		this.update_data();
+		this.update_data(undefined, show_loading);
 	}
 }
 
@@ -124,15 +124,16 @@ BaseWidget.prototype.not_loading = function(){
 
 ////////////////////////////////////////////////////////////
 
-BaseWidget.prototype.update_data = function(data2send){	
+BaseWidget.prototype.update_data = function(data2send, show_loading){	
 	if(data2send===undefined) data2send = {};
+	if( show_loading===undefined ) show_loading = true;
 
 	if(this.parent_id!==undefined){
 		var parent_widget = this.parent_widget();
 		parent_widget.update_data(data2send);
 	}else{
 		
-		this.loading();
+		if(show_loading) this.loading();
 		data2send = this.serialize_data(data2send);
 		var self 	= this;
 		var jsondata =  $.toJSON(data2send);
@@ -152,7 +153,7 @@ BaseWidget.prototype.update_data = function(data2send){
 		}).fail(function(xhr){
 			error(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
 		}).always(function(){
-			self.not_loading();
+			if(show_loading) self.not_loading();
 		});
 
 		if(  this.events_queue.length>0 )  this.update_data(  this.events_queue.pop(0) );

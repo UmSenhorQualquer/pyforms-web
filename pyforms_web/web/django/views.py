@@ -55,6 +55,13 @@ def filesbrowser_browse(request):
 	params = { 'application': application, 'appInstance': app, 'csrf_token': get_token(request)}
 	params.update( app.initForm() )
 
-	return render_to_response(
-		os.path.join('pyforms', 'pyforms-template-no-title.html'),
-		params, context_instance=RequestContext(request))
+	try:
+		#For django versions < 1.10
+		return render_to_response(
+			os.path.join('pyforms', 'pyforms-template-no-title.html'),
+			params, context_instance=RequestContext(request))
+	except:
+		#For django versions => 1.10
+		return render_to_response(
+			os.path.join('pyforms', 'pyforms-template-no-title.html'),
+			params)
