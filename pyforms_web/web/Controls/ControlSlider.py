@@ -43,7 +43,7 @@ class ControlSlider(ControlBase):
 	@value.setter
 	def value(self, value):
 		oldvalue = self._value
-		self._value = value
+		self._value = int(value)
 		if oldvalue!=value: self.valueUpdated(value)
 
 
