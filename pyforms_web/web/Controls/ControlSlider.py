@@ -14,12 +14,8 @@ class ControlSlider(ControlBase):
 		
 		ControlBase.__init__(self, label, defaultValue)
 		
-	def initControl(self): return "new ControlSlider('{0}', {1})".format( self._name, str(self.serialize()) )
+	def init_form(self): return "new ControlSlider('{0}', {1})".format( self._name, str(self.serialize()) )
 
-	def valueChanged(self, value):
-		self._updateSlider = False
-		self.value = value
-		self._updateSlider = True
 
 
 	def changed(self): pass
@@ -44,7 +40,7 @@ class ControlSlider(ControlBase):
 	def value(self, value):
 		oldvalue = self._value
 		self._value = int(value)
-		if oldvalue!=value: self.valueUpdated(value)
+		if oldvalue!=value: self.changed_event()
 
 
 	def serialize(self):

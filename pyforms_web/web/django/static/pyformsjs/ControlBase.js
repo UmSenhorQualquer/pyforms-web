@@ -11,6 +11,12 @@ function ControlBase(name, properties){
 
 ////////////////////////////////////////////////////////////////////////////////
 
+ControlBase.prototype.app_id = function(){ 
+	return this.basewidget.widget_id; 
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
 ControlBase.prototype.control_id = function(){ 
 	return this.basewidget.control_id(this.name); 
 };

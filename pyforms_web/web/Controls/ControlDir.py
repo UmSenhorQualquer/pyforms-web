@@ -2,7 +2,7 @@ from pyforms_web.web.Controls.ControlBase import ControlBase
 
 class ControlDir(ControlBase):
 
-	def initControl(self):
+	def init_form(self):
 		return "new ControlDir('{0}', {1})".format( self._name, str(self.serialize()) )
 
 	@property

@@ -3,7 +3,7 @@ from pyforms_web.web.Controls.ControlBase import ControlBase
 
 class ControlButton(ControlBase):
 
-    def initControl(self): return "new ControlButton('{0}', {1})".format( self._name, str(self.serialize()) )
+    def init_form(self): return "new ControlButton('{0}', {1})".format( self._name, str(self.serialize()) )
 
     def pressed(self): 
         """

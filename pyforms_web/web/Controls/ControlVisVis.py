@@ -7,7 +7,7 @@ class ControlVisVis(ControlBase):
 		self._legend = []
 		super(ControlVisVis, self).__init__(label, defaultValue, helptext)
 
-	def initControl(self): return "new ControlVisVis('{0}', {1})".format( self._name, str(self.serialize()) )
+	def init_form(self): return "new ControlVisVis('{0}', {1})".format( self._name, str(self.serialize()) )
 
 
 

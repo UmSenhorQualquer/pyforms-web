@@ -14,7 +14,7 @@ ControlDate.prototype.init_control = function(){
 
 	var self = this;
 	this.jquery().change(function(){
-		self.basewidget.fire_event( self.name, 'changed' );
+		self.basewidget.fire_event( self.name, 'changed_event' );
 	});
 
 	if(!this.properties.visible) this.hide();

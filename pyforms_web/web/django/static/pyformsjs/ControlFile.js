@@ -6,7 +6,7 @@ function add_file2control(control_id, filename){
 	var widget_id 		= ids[0];
 	var control_name 	= ids[1];
 
-	pyforms.find_app(widget_id).fire_event( control_name, 'changed' )
+	pyforms.find_app(widget_id).fire_event( control_name, 'changed_event' )
 }
 
 

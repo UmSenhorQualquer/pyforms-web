@@ -7,7 +7,7 @@ class ControlCombo(ControlBase):
         super(ControlCombo, self).__init__(label, defaultValue,helptext)
         self._items = {}
 
-    def initControl(self): return "new ControlCombo('{0}', {1})".format( self._name, str(self.serialize()) )
+    def init_form(self): return "new ControlCombo('{0}', {1})".format( self._name, str(self.serialize()) )
 
     def currentIndexChanged(self, index):
         if not self._addingItem:
@@ -55,7 +55,7 @@ class ControlCombo(ControlBase):
     def value(self, value):
         for key, val in self._items.items():
             if value == val:
-                if self._value!=value: self.valueUpdated(value)
+                if self._value!=value: self.changed_event()
                 self._value = val
 
     @property

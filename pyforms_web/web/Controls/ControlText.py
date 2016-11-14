@@ -2,7 +2,7 @@ from pyforms_web.web.Controls.ControlBase import ControlBase
 
 class ControlText(ControlBase):
 
-	def initControl(self):
+	def init_form(self):
 		return """new ControlText('{0}', {1})""".format(
 			self._name, 
 			str(self.serialize()) 

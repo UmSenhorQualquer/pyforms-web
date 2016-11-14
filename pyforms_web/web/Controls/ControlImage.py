@@ -12,7 +12,7 @@ class ControlImage(ControlBase):
 
 		ControlBase.__init__(self, label, defaultValue, helptext)
 
-	def initControl(self):
+	def init_form(self):
 		return "new ControlImage('{0}', {1})".format( self._name, str(self.serialize()) )
 
 	def save(self, data):
@@ -29,7 +29,7 @@ class ControlImage(ControlBase):
 	@value.setter
 	def value(self, value):
 		if len(value)==0: self._value = ''
-		elif isinstance(value, np.ndarray): 			self._value = value
+		elif isinstance(value, np.ndarray): 		self._value = value
 		elif isinstance( value, (str, unicode) ): 	self._value = cv2.imread(value)
 		
 

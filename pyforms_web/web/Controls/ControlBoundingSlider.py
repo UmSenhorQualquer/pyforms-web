@@ -12,21 +12,13 @@ class ControlBoundingSlider(ControlBase):
 		super(ControlBase, self).__init__(label, defaultValue, helpText)
 		
 		
-	def initControl(self):
+	def init_form(self):
 		return "new ControlDir('{0}', {1})".format( self._name, str(self.serialize()) )
 
 
 	def _update(self, minval, maxval): self.value = minval, maxval
 		
-	def valueChanged(self, value): self.value = value
-
-	def load(self, data):
-		if 'value' in data: self.value = data['value']
-
-	def save(self, data):
-		if self.value: data['value'] = self.value
-
-		
+	
 
 	@property
 	def min(self): return self._min

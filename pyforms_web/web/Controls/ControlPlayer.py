@@ -9,7 +9,7 @@ class ControlPlayer(ControlBase):
 		self._filename = ''
 		ControlBase.__init__(self, label, defaultValue, helptext)
 
-	def initControl(self): 
+	def init_form(self): 
 		return "new ControlPlayer('{0}', {1})".format( self._name, str(self.serialize()) )
 
 	def processFrame(self, frame):  return frame

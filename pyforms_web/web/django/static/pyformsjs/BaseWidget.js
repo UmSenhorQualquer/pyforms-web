@@ -83,6 +83,7 @@ BaseWidget.prototype.deserialize = function(data){
 		var name 		= this.controls[index].name;
 		if(data[name])  this.controls[index].deserialize( data[name] );
 	};
+	this.children_windows = data['children-windows']
 };
 ////////////////////////////////////////////////////////////
 
@@ -107,6 +108,7 @@ BaseWidget.prototype.serialize_data = function(data){
 		var name 	= this.controls[index].name;
 		data[name] 	= this.controls[index].serialize();
 	};
+	data['children-windows'] = this.children_windows;	
 	return data;
 };
 

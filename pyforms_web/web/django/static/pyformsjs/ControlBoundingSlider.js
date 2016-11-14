@@ -31,7 +31,7 @@ ControlBoundingSlider.prototype.init_control = function(){
 	this.jquery.slider({ 
 		range: true,
 		slide: function( event, ui ) { $( "#value-"+this.control_id() ).html( ui.value ); },
-		stop:  function(){ self.basewidget.fire_event( self.name, 'changed' )}, 
+		stop:  function(){ self.basewidget.fire_event( self.name, 'changed_event' )}, 
 		min: this.properties.min, max: this.properties.max, values: this.properties.value 
 	});
 

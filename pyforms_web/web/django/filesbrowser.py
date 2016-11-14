@@ -38,7 +38,7 @@ class FilesBrowserApp(BaseWidget):
 	
 		
 
-	def initForm(self):
+	def init_form(self):
 		self._files_table.horizontalHeaders 	= [
 			'','File','Type','Size','Modifed', ''
 		]
@@ -50,7 +50,7 @@ class FilesBrowserApp(BaseWidget):
 		
 		
 		self.populate_table()
-		return super(FilesBrowserApp, self).initForm()
+		return super(FilesBrowserApp, self).init_form()
 
 	def __file_selected(self):
 		pass

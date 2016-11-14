@@ -15,7 +15,7 @@ class ControlTimeout(ControlBase):
 		self.value = 10000
 		self._update_interval = 1000
 
-	def initControl(self):
+	def init_form(self):
 		return """new ControlTimeout('{0}', {1})""".format(
 			self._name, 
 			str(self.serialize()) 

@@ -38,7 +38,7 @@ ControlCheckBox.prototype.init_control = function(){
 		this.jquery().prop('checked', false);
 
 	var self = this;
-	this.jquery().click(function(){ self.basewidget.fire_event( self.name, 'changed' ); });
+	this.jquery().click(function(){ self.basewidget.fire_event( self.name, 'changed_event' ); });
 
 	if(!this.properties.visible) this.hide();
 };

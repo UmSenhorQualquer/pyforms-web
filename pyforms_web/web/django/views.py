@@ -53,7 +53,7 @@ def filesbrowser_browse(request):
 	app.httpRequest = request
 	
 	params = { 'application': application, 'appInstance': app, 'csrf_token': get_token(request)}
-	params.update( app.initForm() )
+	params.update( app.init_form() )
 
 	try:
 		#For django versions < 1.10

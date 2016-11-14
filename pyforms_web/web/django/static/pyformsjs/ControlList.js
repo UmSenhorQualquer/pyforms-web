@@ -85,7 +85,7 @@ ControlList.prototype.load_table = function(){
 			cell.find('input').focusout(function(){
 				cell.html($(this).val());
 				self.being_edited = false;
-				self.basewidget.fire_event( self.name, 'changed' );
+				self.basewidget.fire_event( self.name, 'changed_event' );
 			});
 		});
 	}else{

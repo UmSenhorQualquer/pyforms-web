@@ -47,8 +47,10 @@ function PyformsManager(){
 	$.getScript("/static/pyformsjs/ControlLabel.js");
 	$.getScript("/static/pyformsjs/ControlTimeout.js");
 	$.getScript("/static/pyformsjs/ControlEmptyWidget.js");
+	$.getScript("/static/pyformsjs/ControlMenu.js");
 	$.getScript("/static/pyformsjs/ControlWorkflow.js");
 	$.getScript("/static/pyformsjs/BaseWidget.js");
+
 
 	$.getScript("/static/jquery.flowchart/jquery.panzoom.min.js");
 	$.getScript("/static/jquery.flowchart/jquery.mousewheel.min.js");

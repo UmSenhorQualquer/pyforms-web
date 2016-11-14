@@ -6,7 +6,7 @@ class ControlFile(ControlBase):
 		self._filename = ''
 		ControlBase.__init__(self, label, defaultValue, helptext)
 
-	def initControl(self):
+	def init_form(self):
 		return "new ControlFile('{0}', {1})".format( self._name, str(self.serialize()) )
 
 	@property

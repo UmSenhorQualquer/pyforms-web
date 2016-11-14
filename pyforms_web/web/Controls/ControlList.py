@@ -10,7 +10,7 @@ class ControlList(ControlBase):
 		super(ControlList, self).__init__(label, defaultValue, helptext)
 
 
-	def initControl(self): return "new ControlList('{0}', {1})".format( self._name, str(self.serialize()) )
+	def init_form(self): return "new ControlList('{0}', {1})".format( self._name, str(self.serialize()) )
 
 	def itemSelectionChanged(self): pass
 

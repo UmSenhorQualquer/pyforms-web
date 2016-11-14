@@ -25,8 +25,6 @@ ControlLabel.prototype.init_control = function(){
 	   html += '</div>';
 	this.jquery_place().replaceWith(html);
 
-	console.log(html);
-	console.log(this.properties.value);
 
 	if(!this.properties.visible) this.hide();
 };

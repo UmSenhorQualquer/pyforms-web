@@ -6,7 +6,7 @@ class ControlLabel(ControlBase):
 		self._css = ''
 		super(ControlLabel, self).__init__(label, defaultValue, helptext)
 
-	def initControl(self):
+	def init_form(self):
 		return """new ControlLabel('{0}', {1})""".format(
 			self._name, 
 			str(self.serialize()) 

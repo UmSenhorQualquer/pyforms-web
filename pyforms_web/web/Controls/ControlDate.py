@@ -3,7 +3,7 @@ from pyforms_web.web.Controls.ControlBase import ControlBase
 
 class ControlDate(ControlBase):
 
-	def initControl(self): return "new ControlDate('{0}', {1})".format( self._name, str(self.serialize()) )
+	def init_form(self): return "new ControlDate('{0}', {1})".format( self._name, str(self.serialize()) )
 
 	@property
 	def value(self): 
@@ -22,5 +22,5 @@ class ControlDate(ControlBase):
 			value = datetime.datetime.strptime(value, "%Y-%m-%d")
 			print value
 			self._value = value
-			if oldvalue!=value: self.valueUpdated(value)
+			if oldvalue!=value: self.changed_event()
 

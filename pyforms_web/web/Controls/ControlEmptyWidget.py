@@ -10,7 +10,7 @@ class ControlEmptyWidget(ControlBase):
 		self._widget = None
 		self._update_html = False
 
-	def initControl(self):
+	def init_form(self):
 		return """new ControlEmptyWidget('{0}', {1})""".format(
 			self._name, 
 			self.serialize()
@@ -37,10 +37,10 @@ class ControlEmptyWidget(ControlBase):
 		data.update({'value':base64.b64encode(value) })
 
 		if isinstance(self.value, BaseWidget) and self._update_html:
-			self._widget = self.value.initForm(parent=self.parent)
+			self._widget = self.value.init_form(parent=self.parent)
 			data.update({'clear_widget': 1})
 			data.update({'html':base64.b64encode(self._widget['code']) })
-			data.update({'child_widget_id': self.value._id })
+			data.update({'child_widget_id': self.value.uid })
 		elif self.value=='' or self.value==None:
 			data.update({'clear_widget': 1})
 			

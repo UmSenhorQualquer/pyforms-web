@@ -14,12 +14,12 @@ class ControlBase(object):
 		self._label     = label
 		self._visible   = True
 		self._popupMenu = None
-		self._id = uuid.uuid4()
+		self.uid = uuid.uuid4()
 		self._controlHTML = ""
 
 
-	def initControl(self):
-		self._controlHTML = "<div id='id{0}' ><input type='text' id='{1}' /></div>".format( self._id, self._name )
+	def init_form(self):
+		self._controlHTML = "<div id='id{0}' ><input type='text' id='{1}' /></div>".format( self.uid, self._name )
 		return self._controlHTML
 
 	def serialize(self):
@@ -41,7 +41,7 @@ class ControlBase(object):
 
 	def updateControl(self): pass
 
-	def changed(self): pass
+	def changed_event(self): pass
 
 	def load(self, data):
 		if 'value' in data: self.value = data['value']
@@ -51,12 +51,9 @@ class ControlBase(object):
 
 	def valueUpdated(self, value): pass
 
-	def show(self): 
-		self._visible = True
+	def show(self): self._visible = True
 
-
-	def hide(self): 
-		self._visible = False
+	def hide(self): self._visible = False
 
 	def openPopupMenu(self, position): pass
 
@@ -88,7 +85,7 @@ class ControlBase(object):
 	def value(self, value):
 		oldvalue = self._value
 		self._value = value
-		if oldvalue!=value: self.valueUpdated(value)
+		if oldvalue!=value: self.changed_event()
 
 	############################################################################
 
@@ -143,7 +140,7 @@ class ControlBase(object):
 	@minHeight.setter
 	def minHeight(self, value): pass
 
-	def __str__(self): return "<span id='place-{0}-{1}' />".format(self.parent._id, self._name)
+	def __str__(self): return "<span id='place-{0}-{1}' />".format(self.parent.uid, self._name)
 
 
 
