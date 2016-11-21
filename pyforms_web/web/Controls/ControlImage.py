@@ -30,7 +30,7 @@ class ControlImage(ControlBase):
 	@value.setter
 	def value(self, value):
 		if self._value!=value: 
-			self._update_client = True
+			self.mark_to_update_client()
 			self.changed_event()
 
 		if len(value)==0: self._value = ''

@@ -1,5 +1,27 @@
 import datetime, json
 from pysettings import conf
+from crequest.middleware import CrequestMiddleware
+
+class Apps2Update(object):
+
+	def __init__(self):
+		self._top_apps = []
+		self._bottom_apps = []
+
+	def add_top(self, app):
+		if app in self._bottom_apps: return
+		if app in self._top_apps: return
+
+		self._top_apps.append(app)
+
+	def add_bottom(self, app):
+		if app in self._top_apps: self._top_apps.remove(app)
+		if app in self._bottom_apps: return
+		
+		self._bottom_apps.append(app)
+
+	@property
+	def applications(self): return self._top_apps+self._bottom_apps
 
 class UserRunningApps(object):
 
@@ -7,11 +29,13 @@ class UserRunningApps(object):
 		self._apps = {}
 
 	def add_app(self, app):
-		print self._apps
 		if app.uid in self._apps.keys(): return
 		self._apps[app.uid] = [datetime.datetime.now(), app]
 		
-		
+	def remove_app(self, app_id):
+		item = self._apps.get(app_id, None)
+		if item is not None: del self._apps[app_id]
+
 	def get_app(self, app_id): 
 		self.__garbage_collector()
 		
@@ -39,9 +63,83 @@ class ApplicationsLoader:
 	_opened_apps = {}
 
 	@staticmethod
-	def createInstance(modulename, user, data=None):
-		if data is not None:
-			app  = ApplicationsLoader._opened_apps[user].get_app(data['uid'])
+	def create_instance(request, modulename, app_data=None):
+		updated_apps = request.updated_apps = Apps2Update()
+
+		# check if the module was already imported, if not import it.
+		if modulename not in ApplicationsLoader._storage:
+			modules = modulename.split('.')
+			moduleclass = __import__( '.'.join(modules[:-1]) , fromlist=[modules[-1]] )
+			ApplicationsLoader._storage[modulename] = getattr(moduleclass, modules[-1])
+		
+		moduleclass = ApplicationsLoader._storage[modulename]
+		app = moduleclass()
+
+		for m in updated_apps.applications: m.commit()
+
+		return app
+
+	@staticmethod
+	def run_instance(request, modulename, app_data=None):
+		updated_apps = request.updated_apps = Apps2Update()
+
+		# check if the module was already imported, if not import it.
+		if modulename not in ApplicationsLoader._storage:
+			modules = modulename.split('.')
+			moduleclass = __import__( '.'.join(modules[:-1]) , fromlist=[modules[-1]] )
+			ApplicationsLoader._storage[modulename] = getattr(moduleclass, modules[-1])
+		
+		moduleclass = ApplicationsLoader._storage[modulename]
+		app = moduleclass()
+
+		results = updated_apps.applications
+		data = [r.serializeForm() for r in results if r.is_new_app]
+		for m in results: m.commit()
+
+		return data
+
+	@staticmethod
+	def remove_instance(request, application_id):
+		user_apps = ApplicationsLoader._opened_apps.get(request.user, None)
+		if user_apps is None: return None
+		user_apps.remove_app(application_id)
+		
+	@staticmethod
+	def get_instance(request, application_id, app_data=None):
+		updated_apps = request.updated_apps = Apps2Update()
+
+		user_apps = ApplicationsLoader._opened_apps.get(request.user, None)
+		if user_apps is None: return None
+		app = user_apps.get_app(application_id)
+		if app is None: return None
+
+		if app_data is not None: app.loadSerializedForm(app_data)
+
+		for m in updated_apps.applications: m.commit()
+		return app
+
+
+	@staticmethod
+	def update_instance(request, application_id, app_data=None):
+		updated_apps = request.updated_apps = Apps2Update()
+
+		user_apps = ApplicationsLoader._opened_apps.get(request.user, None)
+		if user_apps is None: return None
+		app = user_apps.get_app(application_id)
+		if app is None: return None
+		if app_data is not None: app.loadSerializedForm(app_data)
+
+		results = updated_apps.applications
+		data = [r.serializeForm() for r in results if r.is_new_app]
+		for m in results: m.commit()
+
+		return data
+
+	@staticmethod
+	def createInstance(modulename, user, data=None, app_id=None ):
+		if data is not None or app_id is not None:
+			if app_id is None: app_id = data['uid']
+			app  = ApplicationsLoader._opened_apps[user].get_app(app_id)
 		else:
 			if modulename not in ApplicationsLoader._storage:
 				modules = modulename.split('.')
@@ -51,6 +149,7 @@ class ApplicationsLoader:
 			moduleclass = ApplicationsLoader._storage[modulename]
 
 			app = moduleclass()
+			app.application = modulename
 
 			
 		return app
@@ -61,5 +160,6 @@ class ApplicationsLoader:
 		if user not in ApplicationsLoader._opened_apps.keys():
 			ApplicationsLoader._opened_apps[user] = UserRunningApps()
 		ApplicationsLoader._opened_apps[user].add_app(app)
+		CrequestMiddleware.get_request().updated_apps.add_top(app)
 		
 	

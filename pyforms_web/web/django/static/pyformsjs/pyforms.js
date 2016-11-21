@@ -90,8 +90,6 @@ PyformsManager.prototype.add_app = function(app){
 		}
 
 	this.applications.push(app);
-
-	
 };
 
 ////////////////////////////////////////////////////////////
@@ -103,7 +101,13 @@ PyformsManager.prototype.remove_app = function(app_id){
 			app.close();
 			delete this.applications[i];
 			this.applications.slice(i,1);
-			
+			$.ajax({
+				method: 'get',
+				cache: false,
+				dataType: "json",
+				url: '/pyforms/remove/'+app_id+'/?nocache='+$.now(),
+				contentType: "application/json; charset=utf-8",
+			});
 			break;
 		}
 };
@@ -113,7 +117,9 @@ PyformsManager.prototype.remove_app = function(app_id){
 
 PyformsManager.prototype.find_app = function(app_id){
 	for(var i=0; i<this.applications.length; i++){
-		if( this.applications[i]!=undefined && this.applications[i].widget_id==app_id ) return this.applications[i]
+		if( this.applications[i]!=undefined && this.applications[i].widget_id==app_id )
+			return this.applications[i];
+			
 	}
 	return undefined;
 };
@@ -153,7 +159,7 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 			method: 'post',
 			cache: false,
 			dataType: "json",
-			url: '/pyforms/update/'+basewidget.name+'/?nocache='+$.now(),
+			url: '/pyforms/update/'+basewidget.widget_id+'/?nocache='+$.now(),
 			data: jsondata,
 			contentType: "application/json; charset=utf-8",
 			success: function(res){
@@ -162,7 +168,10 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 				else
 					for(var i=0; i<res.length; i++){
 						var app = self.find_app(res[i]['uid']);
-						app.deserialize(res[i]);
+						if( app===undefined)
+							open_application(res[i]);
+						else
+							app.deserialize(res[i]);
 					};
 			}
 		}).fail(function(xhr){

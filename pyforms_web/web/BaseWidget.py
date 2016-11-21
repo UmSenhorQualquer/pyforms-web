@@ -6,7 +6,8 @@ from pyforms_web.web.Controls.ControlText import ControlText
 from pyforms_web.web.Controls.ControlCheckBox import ControlCheckBox
 from pyforms_web.web.Controls.ControlPlayer import ControlPlayer
 from pyforms_web.web.Controls.ControlButton import ControlButton
-from pyforms_web.web.django.Applications import ApplicationsLoader, UserRunningApps
+from pyforms_web.web.django.Applications import ApplicationsLoader
+from crequest.middleware import CrequestMiddleware
 import uuid, os, shutil, base64, inspect
 import base64, dill, StringIO
 from pysettings import conf
@@ -21,9 +22,12 @@ class BaseWidget(object):
 		self._controls      = []
 		self._html          = ''
 		self._js            = ''
-		self._uid 			= str(uuid.uuid4())
+		if not hasattr(self, '_uid'): self._uid = str(uuid.uuid4())
 
 		self._parent_window = parent_win
+		self.is_new_app = True
+
+		ApplicationsLoader.add_app(self.httpRequest.user, self)
 
 		
 
@@ -214,7 +218,7 @@ class BaseWidget(object):
 					
 
 	def serializeForm(self):
-		res = {'uid':self.uid}
+		res = {'uid':self.uid, 'layout_position': self.layout_position if hasattr(self, 'layout_position') else 5 }
 		for key, item in self.controls.items():
 			if item.was_updated:
 				res[item._name] = item.serialize()
@@ -279,27 +283,15 @@ class BaseWidget(object):
 
 	#### Variable connected to the Storage manager of the corrent user
 	@property
-	def storage(self): return self._storage
+	def storage(self):
+		user = self.httpRequest.user
+		return conf.MAESTRO_STORAGE_MANAGER.get(user)
 
-	@storage.setter
-	def storage(self, value): 
-		self._storage = value
-		for control in self.controls.values(): control.storage = value
 	#######################################################
 
 	#### This variable has the current http request #######
 	@property
-	def httpRequest(self): return self._httpRequest
-
-	@httpRequest.setter
-	def httpRequest(self, value): 
-		user = value.user
-		self.storage = conf.MAESTRO_STORAGE_MANAGER.get(user)
-		self._httpRequest = value
-		for control in self.controls.values(): control.httpRequest = value
-
-		# register the application globaly
-		ApplicationsLoader.add_app(user, self)
+	def httpRequest(self): return CrequestMiddleware.get_request()
 
 	#######################################################
 

@@ -48,7 +48,7 @@ class ControlPlayer(ControlBase):
 
 	@value.setter
 	def value(self, value):
-		if self._value!=value: self._update_client = True
+		if self._value!=value: self.mark_to_update_client()
 		
 		if isinstance( value, (str, unicode) ):
 			if len(value.strip())==0: return
@@ -105,7 +105,7 @@ class ControlPlayer(ControlBase):
 
 	@video_index.setter
 	def video_index(self, value):
-		if self._value!=value: self._update_client = True
+		if self._value!=value: self.mark_to_update_client()
 		if isinstance(self._value, (str, unicode)): return
 		if isinstance( value, (str, unicode) ):
 			if len(value.strip())>0:

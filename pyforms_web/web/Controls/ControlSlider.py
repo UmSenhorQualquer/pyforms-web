@@ -26,7 +26,7 @@ class ControlSlider(ControlBase):
 
 	@min.setter
 	def min(self, value):
-		if self._min!=value: self._update_client = True
+		if self._min!=value: self.mark_to_update_client()
 		self._min = value
 
 	@property
@@ -34,7 +34,7 @@ class ControlSlider(ControlBase):
 
 	@max.setter
 	def max(self, value):
-		if self._max!=value: self._update_client = True
+		if self._max!=value: self.mark_to_update_client()
 		self._max = value
 
 	@property
@@ -45,7 +45,7 @@ class ControlSlider(ControlBase):
 		oldvalue = self._value
 		self._value = int(value)
 		if oldvalue!=value: 
-			self._update_client = True
+			self.mark_to_update_client()
 			self.changed_event()
 
 

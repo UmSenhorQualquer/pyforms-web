@@ -1,4 +1,6 @@
 import uuid
+from pysettings import conf
+from crequest.middleware import CrequestMiddleware
 
 class ControlBase(object):
 
@@ -51,15 +53,19 @@ class ControlBase(object):
 	def valueUpdated(self, value): pass
 
 	def show(self): 
-		self._update_client = True
+		self.mark_to_update_client()
 		self._visible = True
 
 	def hide(self): 
-		self._update_client = True
+		self.mark_to_update_client()
 		self._visible = False
 
-	def commit(self): self._update_client = False
+	def commit(self): 
+		self._update_client = False
 
+	def mark_to_update_client(self):
+		 self._update_client = True
+		 if self.parent is not None: self.httpRequest.updated_apps.add_top(self.parent)
 
 	def openPopupMenu(self, position): pass
 
@@ -81,7 +87,7 @@ class ControlBase(object):
 	def enabled(self): return True
 	@enabled.setter
 	def enabled(self, value): 
-		self._update_client = True
+		self.mark_to_update_client()
 
 	############################################################################
 
@@ -92,7 +98,7 @@ class ControlBase(object):
 		oldvalue = self._value
 		self._value = value
 		if oldvalue!=value: 
-			self._update_client = True
+			self.mark_to_update_client()
 			self.changed_event()
 
 	############################################################################
@@ -102,7 +108,7 @@ class ControlBase(object):
 	def name(self): return self._name
 	@name.setter
 	def name(self, value):
-		if self._name!=value: self._update_client = True
+		if self._name!=value: self.mark_to_update_client()
 		self._name = value
 
 	############################################################################
@@ -112,7 +118,7 @@ class ControlBase(object):
 
 	@label.setter
 	def label(self, value): 
-		if self._label!=value: self._update_client=True
+		if self._label!=value: self.mark_to_update_client()
 		self._label = value
 
 	############################################################################
@@ -122,7 +128,7 @@ class ControlBase(object):
 
 	@parent.setter
 	def parent(self, value): 
-		if self._parent!=value: self._update_client=True
+		if self._parent!=value: self.mark_to_update_client()
 		self._parent = value
 
 
@@ -133,18 +139,14 @@ class ControlBase(object):
 
 	#### Variable connected to the Storage manager of the corrent user
 	@property
-	def storage(self): return self._storage
-
-	@storage.setter
-	def storage(self, value): self._storage = value
+	def storage(self): 
+		user = self.httpRequest.user
+		return conf.MAESTRO_STORAGE_MANAGER.get(user)
 	#######################################################
 
 	#### This variable has the current http request #######
 	@property
-	def httpRequest(self): return self._httpRequest
-
-	@httpRequest.setter
-	def httpRequest(self, value): self._httpRequest = value
+	def httpRequest(self): return CrequestMiddleware.get_request()
 	#######################################################
 
 	@property

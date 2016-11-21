@@ -12,7 +12,7 @@ class ControlWorkflow(ControlBase):
 	@selected_operator.setter
 	def selected_operator(self, value):
 		if not hasattr(self, '_selected_operator'): return
-		if self._selected_operator!=value: self._update_client = True
+		if self._selected_operator!=value: self.mark_to_update_client()
 		
 		self._selected_operator = value
 
@@ -23,7 +23,7 @@ class ControlWorkflow(ControlBase):
 	@selected_link.setter
 	def selected_link(self, value):
 		if not hasattr(self, '_selected_link'): return
-		if self._selected_link!=value: self._update_client = True
+		if self._selected_link!=value: self.mark_to_update_client()
 		
 		self._selected_link = value
 

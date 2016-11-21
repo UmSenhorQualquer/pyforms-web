@@ -21,7 +21,7 @@ class ControlList(ControlBase):
 
 	@horizontalHeaders.setter
 	def horizontalHeaders(self, value): 
-		self._update_client = True
+		self.mark_to_update_client()
 		self._titles = value
 
 	@property
@@ -29,7 +29,7 @@ class ControlList(ControlBase):
 
 	@selectEntireRow.setter
 	def selectEntireRow(self, value): 
-		self._update_client = True
+		self.mark_to_update_client()
 		self._selectEntireRow = value
 
 	@property
@@ -37,7 +37,7 @@ class ControlList(ControlBase):
 
 	@readOnly.setter
 	def readOnly(self, value): 
-		self._update_client = True
+		self.mark_to_update_client()
 		self._read_only = value
 
 	@property
@@ -45,7 +45,7 @@ class ControlList(ControlBase):
 
 	@mouseSelectedRowIndex.setter
 	def mouseSelectedRowIndex(self, value): 
-		self._update_client = True
+		self.mark_to_update_client()
 		self._selected_index = value
 
 

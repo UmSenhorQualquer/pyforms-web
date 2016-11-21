@@ -15,7 +15,7 @@ class ControlVisVis(ControlBase):
 	def legend(self):return self._legend
 	@legend.setter
 	def legend(self, value):
-		if self._legend!=value: self._update_client = True
+		if self._legend!=value: self.mark_to_update_client()
 		self._legend = value
 
 

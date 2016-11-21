@@ -22,6 +22,6 @@ class ControlDate(ControlBase):
 			value = datetime.datetime.strptime(value, "%Y-%m-%d")
 			self._value = value
 			if oldvalue!=value: 
-				self._update_client = True
+				self.mark_to_update_client()
 				self.changed_event()
 

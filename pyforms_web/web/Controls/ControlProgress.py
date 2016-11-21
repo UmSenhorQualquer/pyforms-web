@@ -20,13 +20,13 @@ class ControlProgress(ControlBase):
     def min(self): return self._min
     @min.setter
     def min(self, value): 
-        if self._min!=value: self._update_client = True
+        if self._min!=value: self.mark_to_update_client()
         self._min = value
 
     @property
     def max(self): return self._max
     @max.setter
     def max(self, value): 
-        if self._max!=value: self._update_client = True
+        if self._max!=value: self.mark_to_update_client()
         self._max = value
         

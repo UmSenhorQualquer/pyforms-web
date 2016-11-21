@@ -7,19 +7,41 @@ import json, simplejson, os
 from django.contrib.staticfiles.views import serve
 from pyforms_web.web.django import ApplicationsLoader
 
+class Apps2Update(object):
+
+	def __init__(self):
+		self._top_apps = []
+		self._bottom_apps = []
+
+	def add_top(self, app):
+		if app in self._bottom_apps: return
+		if app in self._top_apps: return
+
+		self._top_apps.append(app)
+
+	def add_bottom(self, app):
+		if app in self._top_apps: self._top_apps.remove(app)
+		if app in self._bottom_apps: return
+		
+		self._bottom_apps.append(app)
+
+	@property
+	def applications(self): return self._top_apps+self._bottom_apps
+
 @never_cache
 @csrf_exempt
-def updateapplicationform(request, application):
+def removeapplicationform(request, application_id):
+	data = ApplicationsLoader.remove_instance(request, application_id)
+	return HttpResponse(simplejson.dumps({'res':'OK'}), "application/json")
+
+
+@never_cache
+@csrf_exempt
+def updateapplicationform(request, application_id):
 	data = json.loads(request.body)
-	module 				= ApplicationsLoader.createInstance(application, request.user, data)
-	if module is None:  return HttpResponse(simplejson.dumps({'error':'Application session ended.'}), "application/json")
-	module.httpRequest 	= request
-	module.loadSerializedForm( data )
-	result = module.serializeForm()
-
-	module.commit()
-
-	return HttpResponse(simplejson.dumps([result]), "application/json")
+	data = ApplicationsLoader.update_instance(request, application_id, data)
+	if data is None:  return HttpResponse(simplejson.dumps({'error':'Application session ended.'}), "application/json")
+	return HttpResponse(simplejson.dumps(data), "application/json")
 
 
 
@@ -51,19 +73,14 @@ def sizeof_fmt(num):
 
 def filesbrowser_browse(request):
 	application = 'pyforms_web.web.django.filesbrowser.FilesBrowserApp'
-	app = ApplicationsLoader.createInstance(application)
-	app.httpRequest = request
 	
+	app = ApplicationsLoader.create_instance(request, application)
 	params = { 'application': application, 'appInstance': app, 'csrf_token': get_token(request)}
 	params.update( app.init_form() )
 
 	try:
 		#For django versions < 1.10
-		return render_to_response(
-			os.path.join('pyforms', 'pyforms-template-no-title.html'),
-			params, context_instance=RequestContext(request))
+		return render_to_response(os.path.join('pyforms', 'pyforms-template-no-title.html'),params, context_instance=RequestContext(request))
 	except:
 		#For django versions => 1.10
-		return render_to_response(
-			os.path.join('pyforms', 'pyforms-template-no-title.html'),
-			params)
+		return render_to_response(os.path.join('pyforms', 'pyforms-template-no-title.html'),params)

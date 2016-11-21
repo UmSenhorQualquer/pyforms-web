@@ -50,7 +50,6 @@ ControlEmptyWidget.prototype.deserialize = function(data){
 
 
 	if( data.html!==undefined ){
-		console.log(Base64.decode(data.html));
 		this.jquery_place().html( Base64.decode(data.html) );
 		delete data.html;
 	}
@@ -70,6 +69,6 @@ ControlEmptyWidget.prototype.deserialize = function(data){
 };
 
 
-ControlBase.prototype.update_server = function(){
+ControlEmptyWidget.prototype.update_server = function(){
 	return true;
 };

@@ -58,9 +58,14 @@ class ControlEmptyWidget(ControlBase):
 					self.value.loadSerializedForm( widget_data )
 
 
+	def mark_to_update_client(self):
+		 self._update_client = True
+		 if self.parent is not None: self.httpRequest.updated_apps.add_bottom(self.parent)
+
 	@property
 	def value(self): return ControlBase.value.fget(self)
+
 	@value.setter
 	def value(self, value):
 		ControlBase.value.fset(self, value)
-		if value is not None: value.httpRequest = self.httpRequest
+		if value: value.is_new_app = False

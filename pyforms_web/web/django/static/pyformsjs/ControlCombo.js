@@ -13,8 +13,6 @@ ControlCombo.prototype.init_control = function(){
 
 	this.jquery_place().replaceWith(html);
 	var select = document.getElementById(this.control_id());
-	console.log(select);
-	console.log(this.control_id());
 	var index;
 	for (var index = 0; index < this.properties.items.length; ++index) {
 		var option = document.createElement("option");

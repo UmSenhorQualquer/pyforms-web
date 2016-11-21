@@ -144,10 +144,15 @@ BaseWidget.prototype.close_sub_apps = function(){
 	};
 };
 
+////////////////////////////////////////////////////////////
+
+BaseWidget.prototype.jquery = function(){
+	return $("#app-"+this.widget_id);
+};
 
 ////////////////////////////////////////////////////////////
 
 BaseWidget.prototype.close = function(){
 	this.close_sub_apps();
-	$("#app-"+this.widget_id).remove();
+	this.jquery().remove();
 };
