@@ -8,21 +8,12 @@ class ControlEmptyWidget(ControlBase):
 	def __init__(self, label = "", defaultValue = "", helptext=''):
 		super(ControlEmptyWidget,self).__init__(label, defaultValue, helptext)
 		self._widget = None
-		self._update_html = False
 
 	def init_form(self):
 		return """new ControlEmptyWidget('{0}', {1})""".format(
 			self._name, 
 			self.serialize()
 		)
-
-	@property
-	def value(self): return ControlBase.value.fget(self)
-
-	@value.setter
-	def value(self, value):
-		self._update_html = True
-		ControlBase.value.fset(self, value )
 
 
 	def serialize(self):
@@ -36,7 +27,7 @@ class ControlEmptyWidget(ControlBase):
 		
 		data.update({'value':base64.b64encode(value) })
 
-		if isinstance(self.value, BaseWidget) and self._update_html:
+		if isinstance(self.value, BaseWidget) and self._update_client:
 			self._widget = self.value.init_form(parent=self.parent)
 			data.update({'clear_widget': 1})
 			data.update({'html':base64.b64encode(self._widget['code']) })
@@ -66,5 +57,10 @@ class ControlEmptyWidget(ControlBase):
 					self.value.parent = self.parent
 					self.value.loadSerializedForm( widget_data )
 
-		self._update_html = False
-		
+
+	@property
+	def value(self): return ControlBase.value.fget(self)
+	@value.setter
+	def value(self, value):
+		ControlBase.value.fset(self, value)
+		if value is not None: value.httpRequest = self.httpRequest

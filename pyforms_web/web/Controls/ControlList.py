@@ -20,25 +20,33 @@ class ControlList(ControlBase):
 	def horizontalHeaders(self): return map(str, self._titles)
 
 	@horizontalHeaders.setter
-	def horizontalHeaders(self, value): self._titles = value
+	def horizontalHeaders(self, value): 
+		self._update_client = True
+		self._titles = value
 
 	@property
 	def selectEntireRow(self): return self._selectEntireRow
 
 	@selectEntireRow.setter
-	def selectEntireRow(self, value): self._selectEntireRow = value
+	def selectEntireRow(self, value): 
+		self._update_client = True
+		self._selectEntireRow = value
 
 	@property
 	def readOnly(self): return self._read_only
 
 	@readOnly.setter
-	def readOnly(self, value): self._read_only = value
+	def readOnly(self, value): 
+		self._update_client = True
+		self._read_only = value
 
 	@property
 	def mouseSelectedRowIndex(self): return self._selected_index
 
 	@mouseSelectedRowIndex.setter
-	def mouseSelectedRowIndex(self, value): self._selected_index = value
+	def mouseSelectedRowIndex(self, value): 
+		self._update_client = True
+		self._selected_index = value
 
 
 	@property

@@ -7,10 +7,11 @@ from PIL import Image
 
 class ControlImage(ControlBase):
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
-		self._filename = ''
 
-		ControlBase.__init__(self, label, defaultValue, helptext)
+	def __init__(self, label = "", defaultValue = "", helptext=''):
+		self._filename
+		super(ControlImage, self).__init__(label, defaultValue,helptext)
+	 
 
 	def init_form(self):
 		return "new ControlImage('{0}', {1})".format( self._name, str(self.serialize()) )
@@ -28,6 +29,10 @@ class ControlImage(ControlBase):
 
 	@value.setter
 	def value(self, value):
+		if self._value!=value: 
+			self._update_client = True
+			self.changed_event()
+
 		if len(value)==0: self._value = ''
 		elif isinstance(value, np.ndarray): 		self._value = value
 		elif isinstance( value, (str, unicode) ): 	self._value = cv2.imread(value)

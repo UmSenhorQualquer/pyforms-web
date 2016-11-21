@@ -1,6 +1,4 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
-import pyforms.Utils.tools as tools
-
 
 class ControlProgress(ControlBase):
 
@@ -21,10 +19,14 @@ class ControlProgress(ControlBase):
     @property
     def min(self): return self._min
     @min.setter
-    def min(self, value): self._min = value
+    def min(self, value): 
+        if self._min!=value: self._update_client = True
+        self._min = value
 
     @property
     def max(self): return self._max
     @max.setter
-    def max(self, value): self._max = value
+    def max(self, value): 
+        if self._max!=value: self._update_client = True
+        self._max = value
         

@@ -68,3 +68,8 @@ ControlEmptyWidget.prototype.deserialize = function(data){
 	this.set_value(this.properties.value);
 
 };
+
+
+ControlBase.prototype.update_server = function(){
+	return true;
+};

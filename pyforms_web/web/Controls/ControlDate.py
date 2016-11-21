@@ -20,7 +20,8 @@ class ControlDate(ControlBase):
 		if len(value)>0:
 			oldvalue = self._value
 			value = datetime.datetime.strptime(value, "%Y-%m-%d")
-			print value
 			self._value = value
-			if oldvalue!=value: self.changed_event()
+			if oldvalue!=value: 
+				self._update_client = True
+				self.changed_event()
 

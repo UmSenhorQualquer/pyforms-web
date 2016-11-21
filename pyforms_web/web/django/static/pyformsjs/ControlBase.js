@@ -2,8 +2,6 @@ var COLUMNS_CSS_CLASSES = ['one', 'two', 'three', 'four', 'five', 'six', 'seven'
 
 function ControlBase(name, properties){
 	var self = this;
-
-
 	this.name 			= name;
 	this.properties 	= properties;
 	this.basewidget 	= undefined; //Will be set in runtime by the parent BaseWidget object.
@@ -126,4 +124,10 @@ ControlBase.prototype.serialize = function(){
 
 ControlBase.prototype.init_control = function(){
 	if(!this.properties.visible) this.hide();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+ControlBase.prototype.update_server = function(){
+	return this.get_value()!=this.properties.value
 };

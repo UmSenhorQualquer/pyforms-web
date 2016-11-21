@@ -137,8 +137,43 @@ PyformsManager.prototype.split_id = function(control_id){
 };
 
 
+PyformsManager.prototype.query_server = function(basewidget, data2send, show_loading){	
+	if(data2send===undefined) 		data2send = {};
+	if(show_loading===undefined) 	show_loading = true;
 
+	if(basewidget.parent_id!==undefined){
+		var parent_widget = basewidget.parent_widget();
+		this.query_server(parent_widget, data2send);
+	}else{
+		if(show_loading) basewidget.loading();
+		data2send = basewidget.serialize_data(data2send);
+		var jsondata =  $.toJSON(data2send);
+		var self = this;
+		$.ajax({
+			method: 'post',
+			cache: false,
+			dataType: "json",
+			url: '/pyforms/update/'+basewidget.name+'/?nocache='+$.now(),
+			data: jsondata,
+			contentType: "application/json; charset=utf-8",
+			success: function(res){
+				if( res.result=='error' )
+					error(res.msg);
+				else
+					for(var i=0; i<res.length; i++){
+						var app = self.find_app(res[i]['uid']);
+						app.deserialize(res[i]);
+					};
+			}
+		}).fail(function(xhr){
+			error(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
+		}).always(function(){
+			if(show_loading) basewidget.not_loading();
+		});
 
+		if(  basewidget.events_queue.length>0 )  this.query_server(basewidget, basewidget.events_queue.pop(0) );
+	}
+}
 
 
 

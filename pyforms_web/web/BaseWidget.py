@@ -6,6 +6,7 @@ from pyforms_web.web.Controls.ControlText import ControlText
 from pyforms_web.web.Controls.ControlCheckBox import ControlCheckBox
 from pyforms_web.web.Controls.ControlPlayer import ControlPlayer
 from pyforms_web.web.Controls.ControlButton import ControlButton
+from pyforms_web.web.django.Applications import ApplicationsLoader, UserRunningApps
 import uuid, os, shutil, base64, inspect
 import base64, dill, StringIO
 from pysettings import conf
@@ -213,11 +214,12 @@ class BaseWidget(object):
 					
 
 	def serializeForm(self):
-		res = {}
+		res = {'uid':self.uid}
 		for key, item in self.controls.items():
-			res[item._name] = item.serialize()
-			if isinstance(item, ControlPlayer ) and item._value!=None and item._value!='':
-				item._value.release() #release any open video				
+			if item.was_updated:
+				res[item._name] = item.serialize()
+				if isinstance(item, ControlPlayer ) and item._value!=None and item._value!='':
+					item._value.release() #release any open video
 		"""
 		children_windows = []
 		for var_name, win in self.children_windows.items():
@@ -228,6 +230,9 @@ class BaseWidget(object):
 		if len(children_windows)>0: res['children-windows'] = children_windows
 		"""
 		return res
+
+	def commit(self):
+		for key, item in self.controls.items(): item.commit()
 
 	############################################################################
 	############ Parent class functions reemplementation #######################
@@ -288,9 +293,14 @@ class BaseWidget(object):
 
 	@httpRequest.setter
 	def httpRequest(self, value): 
-		self.storage = conf.MAESTRO_STORAGE_MANAGER.get(value.user)
+		user = value.user
+		self.storage = conf.MAESTRO_STORAGE_MANAGER.get(user)
 		self._httpRequest = value
 		for control in self.controls.values(): control.httpRequest = value
+
+		# register the application globaly
+		ApplicationsLoader.add_app(user, self)
+
 	#######################################################
 
 

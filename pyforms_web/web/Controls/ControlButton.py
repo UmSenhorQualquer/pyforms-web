@@ -1,4 +1,3 @@
-import pyforms.Utils.tools as tools
 from pyforms_web.web.Controls.ControlBase import ControlBase
 
 class ControlButton(ControlBase):
@@ -30,5 +29,6 @@ class ControlButton(ControlBase):
         self._label   = properties.get('label','')
         self._help    = properties.get('help','')
         if properties.get('value',None):
-            self.value    = properties.get('value',None)
+            self.value = properties.get('value',None)
         self._visible = properties.get('visible',True)
+

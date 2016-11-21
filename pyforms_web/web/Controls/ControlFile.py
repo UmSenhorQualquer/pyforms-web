@@ -2,10 +2,6 @@ from pyforms_web.web.Controls.ControlBase import ControlBase
 
 class ControlFile(ControlBase):
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
-		self._filename = ''
-		ControlBase.__init__(self, label, defaultValue, helptext)
-
 	def init_form(self):
 		return "new ControlFile('{0}', {1})".format( self._name, str(self.serialize()) )
 

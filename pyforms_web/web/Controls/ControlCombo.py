@@ -29,6 +29,8 @@ class ControlCombo(ControlBase):
 
         if firstValue: self.value = self._items[label]
 
+        self._update_client = True
+
     def __add__(self, val):
         if isinstance( val, tuple ):
             self.addItem(val[0], val[1])
@@ -42,6 +44,8 @@ class ControlCombo(ControlBase):
         self._items = {}
         self._value = None
 
+        self._update_client = True
+
     @property
     def items(self): return self._items.values()
 
@@ -54,6 +58,7 @@ class ControlCombo(ControlBase):
     @value.setter
     def value(self, value):
         for key, val in self._items.items():
+            self._update_client = True
             if value == val:
                 if self._value!=value: self.changed_event()
                 self._value = val
@@ -64,6 +69,7 @@ class ControlCombo(ControlBase):
     @text.setter
     def text(self, value):
         for key, val in self._items.items():
+            self._update_client = True
             if value == key:
                 self.value = val
                 break

@@ -24,4 +24,5 @@ class ControlMenu(ControlBase):
 			'visible':  int(self._visible)
 		}
 
-	def deserialize(self, properties): pass
+	def deserialize(self, properties):
+		pass

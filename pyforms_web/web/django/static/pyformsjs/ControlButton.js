@@ -36,3 +36,7 @@ ControlButton.prototype.get_value = function(){
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+ControlButton.prototype.update_server = function(){
+	return false;
+};

@@ -1,4 +1,4 @@
-import cv2, base64, numpy as np, StringIO, pyforms.Utils.tools as tools
+import cv2, base64, numpy as np, StringIO
 from pyforms_web.web.Controls.ControlBase import ControlBase
 from PIL import Image
 
@@ -48,6 +48,8 @@ class ControlPlayer(ControlBase):
 
 	@value.setter
 	def value(self, value):
+		if self._value!=value: self._update_client = True
+		
 		if isinstance( value, (str, unicode) ):
 			if len(value.strip())==0: return
 			link = self.storage.public_download_link(value)
@@ -103,6 +105,7 @@ class ControlPlayer(ControlBase):
 
 	@video_index.setter
 	def video_index(self, value):
+		if self._value!=value: self._update_client = True
 		if isinstance(self._value, (str, unicode)): return
 		if isinstance( value, (str, unicode) ):
 			if len(value.strip())>0:
@@ -110,16 +113,6 @@ class ControlPlayer(ControlBase):
 		elif not isinstance( self._value, (str, unicode) ):
 			self._value.set(1, float(value))
 		
-
-		
-	@property
-	def startFrame(self): 
-		return 0 if self._value else -1
-
-	@property
-	def endFrame(self): 
-		return self._value.get(cv2.CAP_PROP_FRAME_COUNT ) if self._value else -1
-
 
 	@property
 	def image(self): 

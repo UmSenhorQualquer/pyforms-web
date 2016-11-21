@@ -64,16 +64,16 @@ BaseWidget.prototype.fire_event = function(dom_in, event, show_loading){
 	this.events_queue.push(data)
 
 	if(this.parent_id===undefined)
-		this.update_data( this.events_queue.pop(0), show_loading );
+		pyforms.query_server(this, this.events_queue.pop(0), show_loading );
 	else{
-		this.update_data(undefined, show_loading);
+		pyforms.query_server(this, undefined, show_loading);
 	}
 }
 
 ////////////////////////////////////////////////////////////
 
 BaseWidget.prototype.update_controls = function(){		
-	this.update_data({ userpath: this.current_folder() }); 
+	pyforms.query_server(this, { userpath: this.current_folder() }); 
 };
 
 ////////////////////////////////////////////////////////////
@@ -105,9 +105,13 @@ BaseWidget.prototype.serialize = function(){
 
 BaseWidget.prototype.serialize_data = function(data){
 	for (var index = 0; index <  this.controls.length; index++) {
-		var name 	= this.controls[index].name;
-		data[name] 	= this.controls[index].serialize();
+		var control = this.controls[index];
+		if( control.update_server() ){
+			var name 	= control.name;
+			data[name] 	= control.serialize();
+		};
 	};
+	data['uid'] 			 = this.widget_id;
 	data['children-windows'] = this.children_windows;	
 	return data;
 };
@@ -126,46 +130,8 @@ BaseWidget.prototype.not_loading = function(){
 
 ////////////////////////////////////////////////////////////
 
-BaseWidget.prototype.update_data = function(data2send, show_loading){	
-	if(data2send===undefined) data2send = {};
-	if( show_loading===undefined ) show_loading = true;
-
-	if(this.parent_id!==undefined){
-		var parent_widget = this.parent_widget();
-		parent_widget.update_data(data2send);
-	}else{
-		
-		if(show_loading) this.loading();
-		data2send = this.serialize_data(data2send);
-		var self 	= this;
-		var jsondata =  $.toJSON(data2send);
-		$.ajax({
-			method: 'post',
-			cache: false,
-			dataType: "json",
-			url: '/pyforms/update/'+this.name+'/?nocache='+$.now(),
-			data: jsondata,
-			contentType: "application/json; charset=utf-8",
-			success: function(res){
-				if( res.result=='error' )
-					error(res.msg);
-				else
-					self.deserialize(res);
-			}
-		}).fail(function(xhr){
-			error(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
-		}).always(function(){
-			if(show_loading) self.not_loading();
-		});
-
-		if(  this.events_queue.length>0 )  this.update_data(  this.events_queue.pop(0) );
-	}
-}
-
-////////////////////////////////////////////////////////////
-
 BaseWidget.prototype.update_controls = function(){	
-	this.update_data({ userpath: this.current_folder() }); 
+	pyforms.query_server(this, { userpath: this.current_folder() }); 
 };
 
 ////////////////////////////////////////////////////////////

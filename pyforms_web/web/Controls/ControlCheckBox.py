@@ -1,11 +1,8 @@
-import pyforms.Utils.tools as tools
 from pyforms_web.web.Controls.ControlBase import ControlBase
 
 class ControlCheckBox(ControlBase):
 
 	def init_form(self): return "new ControlCheckBox('{0}', {1})".format( self._name, str(self.serialize()) )
-
-	
 
 	def serialize(self):
 		return { 

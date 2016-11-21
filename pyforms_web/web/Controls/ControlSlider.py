@@ -25,13 +25,17 @@ class ControlSlider(ControlBase):
 	def min(self): return self._min
 
 	@min.setter
-	def min(self, value):  self._min = value
+	def min(self, value):
+		if self._min!=value: self._update_client = True
+		self._min = value
 
 	@property
 	def max(self):  return  self._max
 
 	@max.setter
-	def max(self, value):  self._max = value
+	def max(self, value):
+		if self._max!=value: self._update_client = True
+		self._max = value
 
 	@property
 	def value(self): return int(self._value)
@@ -40,7 +44,9 @@ class ControlSlider(ControlBase):
 	def value(self, value):
 		oldvalue = self._value
 		self._value = int(value)
-		if oldvalue!=value: self.changed_event()
+		if oldvalue!=value: 
+			self._update_client = True
+			self.changed_event()
 
 
 	def serialize(self):

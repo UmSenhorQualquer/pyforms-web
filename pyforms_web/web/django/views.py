@@ -10,14 +10,16 @@ from pyforms_web.web.django import ApplicationsLoader
 @never_cache
 @csrf_exempt
 def updateapplicationform(request, application):
-	module 				= ApplicationsLoader.createInstance(application)
+	data = json.loads(request.body)
+	module 				= ApplicationsLoader.createInstance(application, request.user, data)
+	if module is None:  return HttpResponse(simplejson.dumps({'error':'Application session ended.'}), "application/json")
 	module.httpRequest 	= request
+	module.loadSerializedForm( data )
+	result = module.serializeForm()
 
-	module.loadSerializedForm( json.loads(request.body) )
-	
-	result 				= module.serializeForm()
+	module.commit()
 
-	return HttpResponse(simplejson.dumps(result), "application/json")
+	return HttpResponse(simplejson.dumps([result]), "application/json")
 
 
 
