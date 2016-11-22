@@ -67,9 +67,9 @@ class ApplicationsLoader:
 	def create_instance(request, modulename, app_data=None):
 		if os.path.isfile('oppened-apps.dat'):
 			with open('oppened-apps.dat', 'r') as f:
-				self._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
-			self._opened_apps = {}
+			ApplicationsLoader._opened_apps = {}
 		
 		updated_apps = request.updated_apps = Apps2Update()
 
@@ -85,7 +85,7 @@ class ApplicationsLoader:
 		for m in updated_apps.applications: m.commit()
 
 		with open('oppened-apps.dat', 'w') as f:
-			dill.dump(self._opened_apps, f)
+			dill.dump(ApplicationsLoader._opened_apps, f)
 		
 
 		return app
@@ -94,9 +94,9 @@ class ApplicationsLoader:
 	def run_instance(request, modulename, app_data=None):
 		if os.path.isfile('oppened-apps.dat'):
 			with open('oppened-apps.dat', 'r') as f:
-				self._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
-			self._opened_apps = {}
+			ApplicationsLoader._opened_apps = {}
 
 		updated_apps = request.updated_apps = Apps2Update()
 
@@ -114,7 +114,7 @@ class ApplicationsLoader:
 		for m in results: m.commit()
 
 		with open('oppened-apps.dat', 'w') as f:
-			dill.dump(self._opened_apps, f)
+			dill.dump(ApplicationsLoader._opened_apps, f)
 
 		return data
 
@@ -122,24 +122,24 @@ class ApplicationsLoader:
 	def remove_instance(request, application_id):
 		if os.path.isfile('oppened-apps.dat'):
 			with open('oppened-apps.dat', 'r') as f:
-				self._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
-			self._opened_apps = {}
+			ApplicationsLoader._opened_apps = {}
 
 		user_apps = ApplicationsLoader._opened_apps.get(request.user, None)
 		if user_apps is None: return None
 		user_apps.remove_app(application_id)
 
 		with open('oppened-apps.dat', 'w') as f:
-			dill.dump(self._opened_apps, f)
+			dill.dump(ApplicationsLoader._opened_apps, f)
 		
 	@staticmethod
 	def get_instance(request, application_id, app_data=None):
 		if os.path.isfile('oppened-apps.dat'):
 			with open('oppened-apps.dat', 'r') as f:
-				self._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
-			self._opened_apps = {}
+			ApplicationsLoader._opened_apps = {}
 
 		updated_apps = request.updated_apps = Apps2Update()
 
@@ -153,7 +153,7 @@ class ApplicationsLoader:
 		for m in updated_apps.applications: m.commit()
 
 		with open('oppened-apps.dat', 'w') as f:
-			dill.dump(self._opened_apps, f)
+			dill.dump(ApplicationsLoader._opened_apps, f)
 		return app
 
 
@@ -161,9 +161,9 @@ class ApplicationsLoader:
 	def update_instance(request, application_id, app_data=None):
 		if os.path.isfile('oppened-apps.dat'):
 			with open('oppened-apps.dat', 'r') as f:
-				self._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
-			self._opened_apps = {}
+			ApplicationsLoader._opened_apps = {}
 
 		updated_apps = request.updated_apps = Apps2Update()
 
@@ -178,7 +178,7 @@ class ApplicationsLoader:
 		for m in results: m.commit()
 
 		with open('oppened-apps.dat', 'w') as f:
-			dill.dump(self._opened_apps, f)
+			dill.dump(ApplicationsLoader._opened_apps, f)
 
 		return data
 
@@ -186,9 +186,9 @@ class ApplicationsLoader:
 	def createInstance(modulename, user, data=None, app_id=None ):
 		if os.path.isfile('oppened-apps.dat'):
 			with open('oppened-apps.dat', 'r') as f:
-				self._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
-			self._opened_apps = {}
+			ApplicationsLoader._opened_apps = {}
 
 		if data is not None or app_id is not None:
 			if app_id is None: app_id = data['uid']
@@ -205,7 +205,7 @@ class ApplicationsLoader:
 			app.application = modulename
 
 		with open('oppened-apps.dat', 'w') as f:
-			dill.dump(self._opened_apps, f)
+			dill.dump(ApplicationsLoader._opened_apps, f)
 			
 		return app
 
@@ -213,9 +213,9 @@ class ApplicationsLoader:
 	def add_app(user, app):
 		if os.path.isfile('oppened-apps.dat'):
 			with open('oppened-apps.dat', 'r') as f:
-				self._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
-			self._opened_apps = {}
+			ApplicationsLoader._opened_apps = {}
 
 		# register the application globaly
 		if user not in ApplicationsLoader._opened_apps.keys():
@@ -224,6 +224,6 @@ class ApplicationsLoader:
 		CrequestMiddleware.get_request().updated_apps.add_top(app)
 
 		with open('oppened-apps.dat', 'w') as f:
-			dill.dump(self._opened_apps, f)
+			dill.dump(ApplicationsLoader._opened_apps, f)
 		
 	
