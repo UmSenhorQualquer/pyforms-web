@@ -65,12 +65,12 @@ class ApplicationsLoader:
 
 	@staticmethod
 	def create_instance(request, modulename, app_data=None):
-		if os.path.isfile('oppened-apps.dat'):
-			with open('oppened-apps.dat', 'r') as f:
+		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
+			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
 				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
-		
+
 		updated_apps = request.updated_apps = Apps2Update()
 
 		# check if the module was already imported, if not import it.
@@ -84,7 +84,7 @@ class ApplicationsLoader:
 
 		for m in updated_apps.applications: m.commit()
 
-		with open('oppened-apps.dat', 'w') as f:
+		with open('/var/www/orquestra-server/oppened-apps.dat', 'w') as f:
 			dill.dump(ApplicationsLoader._opened_apps, f)
 		
 
@@ -92,8 +92,8 @@ class ApplicationsLoader:
 
 	@staticmethod
 	def run_instance(request, modulename, app_data=None):
-		if os.path.isfile('oppened-apps.dat'):
-			with open('oppened-apps.dat', 'r') as f:
+		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
+			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
 				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
@@ -113,15 +113,15 @@ class ApplicationsLoader:
 		data = [r.serializeForm() for r in results if r.is_new_app]
 		for m in results: m.commit()
 
-		with open('oppened-apps.dat', 'w') as f:
+		with open('/var/www/orquestra-server/oppened-apps.dat', 'w') as f:
 			dill.dump(ApplicationsLoader._opened_apps, f)
 
 		return data
 
 	@staticmethod
 	def remove_instance(request, application_id):
-		if os.path.isfile('oppened-apps.dat'):
-			with open('oppened-apps.dat', 'r') as f:
+		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
+			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
 				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
@@ -130,13 +130,13 @@ class ApplicationsLoader:
 		if user_apps is None: return None
 		user_apps.remove_app(application_id)
 
-		with open('oppened-apps.dat', 'w') as f:
+		with open('/var/www/orquestra-server/oppened-apps.dat', 'w') as f:
 			dill.dump(ApplicationsLoader._opened_apps, f)
 		
 	@staticmethod
 	def get_instance(request, application_id, app_data=None):
-		if os.path.isfile('oppened-apps.dat'):
-			with open('oppened-apps.dat', 'r') as f:
+		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
+			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
 				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
@@ -152,15 +152,15 @@ class ApplicationsLoader:
 
 		for m in updated_apps.applications: m.commit()
 
-		with open('oppened-apps.dat', 'w') as f:
+		with open('/var/www/orquestra-server/oppened-apps.dat', 'w') as f:
 			dill.dump(ApplicationsLoader._opened_apps, f)
 		return app
 
 
 	@staticmethod
 	def update_instance(request, application_id, app_data=None):
-		if os.path.isfile('oppened-apps.dat'):
-			with open('oppened-apps.dat', 'r') as f:
+		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
+			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
 				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
@@ -177,15 +177,15 @@ class ApplicationsLoader:
 		data = [r.serializeForm() for r in results if r.is_new_app]
 		for m in results: m.commit()
 
-		with open('oppened-apps.dat', 'w') as f:
+		with open('/var/www/orquestra-server/oppened-apps.dat', 'w') as f:
 			dill.dump(ApplicationsLoader._opened_apps, f)
 
 		return data
 
 	@staticmethod
 	def createInstance(modulename, user, data=None, app_id=None ):
-		if os.path.isfile('oppened-apps.dat'):
-			with open('oppened-apps.dat', 'r') as f:
+		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
+			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
 				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
@@ -204,15 +204,15 @@ class ApplicationsLoader:
 			app = moduleclass()
 			app.application = modulename
 
-		with open('oppened-apps.dat', 'w') as f:
+		with open('/var/www/orquestra-server/oppened-apps.dat', 'w') as f:
 			dill.dump(ApplicationsLoader._opened_apps, f)
 			
 		return app
 
 	@staticmethod
 	def add_app(user, app):
-		if os.path.isfile('oppened-apps.dat'):
-			with open('oppened-apps.dat', 'r') as f:
+		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
+			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
 				ApplicationsLoader._opened_apps = dill.loads(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
@@ -223,7 +223,7 @@ class ApplicationsLoader:
 		ApplicationsLoader._opened_apps[user].add_app(app)
 		CrequestMiddleware.get_request().updated_apps.add_top(app)
 
-		with open('oppened-apps.dat', 'w') as f:
+		with open('/var/www/orquestra-server/oppened-apps.dat', 'w') as f:
 			dill.dump(ApplicationsLoader._opened_apps, f)
 		
 	
