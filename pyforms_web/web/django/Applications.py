@@ -37,7 +37,7 @@ class UserRunningApps(object):
 		if item is not None: del self._apps[app_id]
 
 	def get_app(self, app_id): 
-		self.__garbage_collector()
+		#self.__garbage_collector()
 		
 		item = self._apps.get(app_id, None)
 
