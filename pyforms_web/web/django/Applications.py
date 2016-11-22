@@ -67,7 +67,7 @@ class ApplicationsLoader:
 	def create_instance(request, modulename, app_data=None):
 		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
 			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
-				ApplicationsLoader._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.load(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
 
@@ -94,7 +94,7 @@ class ApplicationsLoader:
 	def run_instance(request, modulename, app_data=None):
 		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
 			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
-				ApplicationsLoader._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.load(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
 
@@ -122,7 +122,7 @@ class ApplicationsLoader:
 	def remove_instance(request, application_id):
 		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
 			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
-				ApplicationsLoader._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.load(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
 
@@ -137,7 +137,7 @@ class ApplicationsLoader:
 	def get_instance(request, application_id, app_data=None):
 		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
 			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
-				ApplicationsLoader._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.load(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
 
@@ -161,7 +161,7 @@ class ApplicationsLoader:
 	def update_instance(request, application_id, app_data=None):
 		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
 			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
-				ApplicationsLoader._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.load(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
 
@@ -186,7 +186,7 @@ class ApplicationsLoader:
 	def createInstance(modulename, user, data=None, app_id=None ):
 		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
 			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
-				ApplicationsLoader._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.load(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
 
@@ -213,7 +213,7 @@ class ApplicationsLoader:
 	def add_app(user, app):
 		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
 			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
-				ApplicationsLoader._opened_apps = dill.loads(f)
+				ApplicationsLoader._opened_apps = dill.load(f)
 		else:
 			ApplicationsLoader._opened_apps = {}
 
