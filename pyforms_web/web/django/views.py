@@ -40,7 +40,7 @@ def removeapplicationform(request, application_id):
 def updateapplicationform(request, application_id):
 	data = json.loads(request.body)
 	data = ApplicationsLoader.update_instance(request, application_id, data)
-	if data is None:  return HttpResponse(simplejson.dumps({'error':'Application session ended.'}), "application/json")
+	if data is None:  return HttpResponse(simplejson.dumps({'result':'error', 'msg':'Application session ended.'}), "application/json")
 	return HttpResponse(simplejson.dumps(data), "application/json")
 
 
