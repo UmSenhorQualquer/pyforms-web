@@ -164,7 +164,7 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 			contentType: "application/json; charset=utf-8",
 			success: function(res){
 				if( res.result=='error' )
-					error(res.msg);
+					error_msg(res.msg);
 				else
 					for(var i=0; i<res.length; i++){
 						var app = self.find_app(res[i]['uid']);
@@ -175,7 +175,7 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 					};
 			}
 		}).fail(function(xhr){
-			error(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
+			error_msg(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
 		}).always(function(){
 			if(show_loading) basewidget.not_loading();
 		});
