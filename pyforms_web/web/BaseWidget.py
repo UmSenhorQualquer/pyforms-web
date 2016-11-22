@@ -218,7 +218,12 @@ class BaseWidget(object):
 					
 
 	def serializeForm(self):
-		res = {'uid':self.uid, 'layout_position': self.layout_position if hasattr(self, 'layout_position') else 5 }
+		res = {
+			'uid':				self.uid, 
+			'layout_position': 	self.layout_position if hasattr(self, 'layout_position') else 5,
+			'title': 			self.title
+		}
+
 		for key, item in self.controls.items():
 			if item.was_updated:
 				res[item._name] = item.serialize()
