@@ -65,7 +65,8 @@ class ControlBase(object):
 
 	def mark_to_update_client(self):
 		 self._update_client = True
-		 if self.parent is not None and self.httpRequest is not None: self.httpRequest.updated_apps.add_top(self.parent)
+		 if self.parent is not None and self.httpRequest is not None and hasattr(self.httpRequest,'updated_apps'):
+		 	self.httpRequest.updated_apps.add_top(self.parent)
 
 	def openPopupMenu(self, position): pass
 
