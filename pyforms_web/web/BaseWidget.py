@@ -288,9 +288,21 @@ class BaseWidget(object):
 
 	#### Variable connected to the Storage manager of the corrent user
 	@property
-	def storage(self):
-		user = self.httpRequest.user
-		return conf.MAESTRO_STORAGE_MANAGER.get(user)
+	def session_storage(self): return conf.MAESTRO_STORAGE_MANAGER.get(self.session_user) if( self.session_user is not None ) else None
+
+	#######################################################
+
+	#### This variable has the current http request #######
+	@property
+	def session_user(self): 
+		if self.httpRequest is not None:
+			return self.httpRequest.user
+		elif hasattr(self, '_session_user'): 
+			return self._session_user
+		else:
+			return None
+	@session_user.setter
+	def session_user(self, value): self._session_user = value
 
 	#######################################################
 
