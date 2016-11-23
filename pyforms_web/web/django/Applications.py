@@ -195,7 +195,7 @@ class ApplicationsLoader:
 			dill.dump(ApplicationsLoader._opened_apps, f)
 
 		return data
-
+	"""
 	@staticmethod
 	def createInstance(modulename, user, data=None, app_id=None ):
 		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
@@ -221,7 +221,7 @@ class ApplicationsLoader:
 		with open('/var/www/orquestra-server/oppened-apps.dat', 'w') as f:
 			dill.dump(ApplicationsLoader._opened_apps, f)
 			
-		return app
+		return app"""
 
 	@staticmethod
 	def add_app(user, app):
