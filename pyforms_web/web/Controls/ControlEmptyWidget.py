@@ -60,7 +60,8 @@ class ControlEmptyWidget(ControlBase):
 
 	def mark_to_update_client(self):
 		 self._update_client = True
-		 if self.parent is not None: self.httpRequest.updated_apps.add_bottom(self.parent)
+		 if self.parent is not None and self.httpRequest is not None and hasattr(self.httpRequest,'updated_apps'):
+		 	self.httpRequest.updated_apps.add_bottom(self.parent)
 
 	@property
 	def value(self): return ControlBase.value.fget(self)

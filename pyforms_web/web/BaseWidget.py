@@ -27,7 +27,8 @@ class BaseWidget(object):
 		self._parent_window = parent_win
 		self.is_new_app = True
 
-		if self.httpRequest: ApplicationsLoader.add_app(self.httpRequest.user, self)
+		if self.httpRequest and hasattr(self.httpRequest, 'updated_apps'): 
+			ApplicationsLoader.add_app(self.httpRequest.user, self)
 
 		
 
