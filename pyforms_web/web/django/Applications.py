@@ -74,7 +74,7 @@ class ApplicationsLoader:
 		moduleclass = ApplicationsLoader._storage[modulename]
 
 		obj = moduleclass()
-		obj.modulename = modulename
+		#obj.modulename = modulename
 		return obj
 
 	@staticmethod
