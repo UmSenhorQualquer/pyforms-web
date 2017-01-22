@@ -7,7 +7,7 @@ from pyforms_web.web.Controls.ControlCheckBox import ControlCheckBox
 from pyforms_web.web.Controls.ControlPlayer import ControlPlayer
 from pyforms_web.web.Controls.ControlButton import ControlButton
 from pyforms_web.web.django.Applications import ApplicationsLoader
-from crequest.middleware import CrequestMiddleware
+from pyforms_web.web.django.middleware import PyFormsMiddleware
 import uuid, os, shutil, base64, inspect
 import base64, dill, StringIO
 from pysettings import conf
@@ -27,8 +27,7 @@ class BaseWidget(object):
 		self._parent_window = parent_win
 		self.is_new_app = True
 
-		if self.httpRequest and hasattr(self.httpRequest, 'updated_apps'): 
-			ApplicationsLoader.add_app(self.httpRequest.user, self)
+		PyFormsMiddleware += self
 
 		
 
@@ -303,7 +302,7 @@ class BaseWidget(object):
 
 	#### This variable has the current http request #######
 	@property
-	def httpRequest(self): return CrequestMiddleware.get_request()
+	def httpRequest(self): return PyFormsMiddleware.get_request()
 
 	#######################################################
 

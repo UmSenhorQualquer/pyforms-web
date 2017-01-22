@@ -22,7 +22,6 @@ setup(
 	author_email		='ricardojvr@gmail.com',
 	license 			='MIT',
 
-	download_urlname	='https://github.com/UmSenhorQualquer/pyforms',
 	url 				='https://github.com/UmSenhorQualquer/pyforms',
 	include_package_data=True,
 	packages=[
@@ -31,6 +30,7 @@ setup(
 		'pyforms_web.web.storage',
 		'pyforms_web.web.Controls', 
 		'pyforms_web.web.django', 
+		'pyforms_web.web.django.middleware', 
 		'pyforms_web.web.django.templatetags', 
 		],
 	package_data={'pyforms_web': [
