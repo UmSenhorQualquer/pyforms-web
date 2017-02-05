@@ -1,6 +1,6 @@
 import uuid
 from pysettings import conf
-from crequest.middleware import CrequestMiddleware
+from pyforms_web.web.django.middleware import PyFormsMiddleware
 
 class ControlBase(object):
 
@@ -38,9 +38,9 @@ class ControlBase(object):
 		self._visible = properties.get('visible',True)
 		
 			
-	def finishEditing(self): self.updateControl()
+	def finish_editing(self): self.update_control()
 
-	def updateControl(self): pass
+	def update_control(self): pass
 
 	def changed_event(self): pass
 
@@ -50,7 +50,6 @@ class ControlBase(object):
 	def save(self, data):
 		if self.value: data['value'] = self.value
 
-	def valueUpdated(self, value): pass
 
 	def show(self): 
 		self.mark_to_update_client()
@@ -60,19 +59,25 @@ class ControlBase(object):
 		self.mark_to_update_client()
 		self._visible = False
 
-	def commit(self): 
+	def commit(self):
+		# don't send any apdate to the client
 		self._update_client = False
 
 	def mark_to_update_client(self):
-		 self._update_client = True
-		 if self.parent is not None and self.httpRequest is not None and hasattr(self.httpRequest,'updated_apps'):
-		 	self.httpRequest.updated_apps.add_top(self.parent)
+		self._update_client = True
+		
+		if 	self.parent is not None and \
+			self.http_request is not None and \
+			hasattr(self.http_request,'updated_apps'):
 
-	def openPopupMenu(self, position): pass
+			self.http_request.updated_apps.add_top(self.parent)
 
-	def addPopupSubMenuOption(self, label, options): pass
+	def add_popup_menu_option(self, 
+		label, function_action=None, 
+		key=None, icon=None, submenu=None
+	): pass
 
-	def addPopupMenuOption(self, label, functionAction = None): pass
+	def add_popup_submenu(self, label, submenu=None): pass
 
 	def __repr__(self): return str(self.value)
 
@@ -141,13 +146,13 @@ class ControlBase(object):
 	#### Variable connected to the Storage manager of the corrent user
 	@property
 	def storage(self): 
-		user = self.httpRequest.user
+		user = self.http_request.user
 		return conf.MAESTRO_STORAGE_MANAGER.get(user)
 	#######################################################
 
 	#### This variable has the current http request #######
 	@property
-	def httpRequest(self): return CrequestMiddleware.get_request()
+	def http_request(self): return PyFormsMiddleware.get_request()
 	#######################################################
 
 	@property

@@ -1,17 +1,15 @@
 from pyforms_web.web.django.middleware.apps_2_update import Apps2Update
-from pyforms_web.web.django.middleware.user_apps import UserApps
-import threading
-
+from pysettings import conf
+import threading, os, dill
 
 class PyFormsMiddleware(object):
-	_request 		= {}
-	_applications 	= {}
-	_session_active = {}
+	_request = {}
 	
 	def process_request(self, request):
 		"""Store request"""
+		request.updated_apps = Apps2Update()
 		self.__class__.set_request(request)
-
+		
 	def process_response(self, request, response):
 		"""Delete request"""
 		self.__class__.del_request()
@@ -36,48 +34,32 @@ class PyFormsMiddleware(object):
 		"""Delete request"""
 		cls._request.pop(threading.current_thread(), None)
 
-	@classmethod
-	def user(cls): return cls.get_request().user
-
-
-	@classmethod
-	def __add__(cls, app):
-		user = cls.user()
-		if cls._session_active.get(user, False):
-			if user not in cls._applications: cls._applications[user] = {}
-			cls._applications[user][app.uid] = app
-		return cls
-
-	@classmethod
-	def __sub__(cls):
-		user = cls.user()
-		if user not in cls._applications: 	   return cls
-		if app.uid in cls._applications[user]: del cls._applications[user][app.uid]
-
+	
 	##################################################################################################
 	##################################################################################################
 	##################################################################################################
+	@classmethod
+	def user(cls): 		return cls.get_request().user
 
 	@classmethod
-	def start_session(cls):
+	def add(cls, app): 	cls.get_request().updated_apps.add_top(app)
+	
+	@classmethod
+	def get_instance(cls, app_id):
 		user=cls.user()
-		cls._session_active[user]=Apps2Update()
+		app_path = os.path.join(
+			conf.PYFORMS_WEB_APPS_CACHE_DIR,
+			'{0}-{1}'.format(user.pk, user.username),
+			"{0}.app".format(app_id)
+		)
 
-	@classmethod
-	def register_update(cls, app, top=False):
-		user=cls.user()
-		app2update = cls._session_active[user]
-		if top:
-			app2update.add_top(app)
+		if os.path.isfile(app_path): 
+			with open(app_path, 'rb') as f: 
+				return dill.load(f)
 		else:
-			app2update.add_bottom(app)
+			return None
+		
 
-	@classmethod
-	def updated_applications(cls):
-		return cls._session_active[user].applications
-
-	@classmethod
-	def commit(csl): cls._session_active[user]=False
 
 	##################################################################################################
 	##################################################################################################

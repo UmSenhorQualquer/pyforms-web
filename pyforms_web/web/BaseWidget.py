@@ -27,7 +27,7 @@ class BaseWidget(object):
 		self._parent_window = parent_win
 		self.is_new_app = True
 
-		PyFormsMiddleware += self
+		PyFormsMiddleware.add(self)
 
 		
 
@@ -39,6 +39,8 @@ class BaseWidget(object):
 		"""
 		Generate the module Form
 		"""
+		#for c in self.controls.values(): c.parent = parent
+
 		self._html = ''
 		self._js = ''
 		self._controls = [c.init_form() for c in self.controls.values()]
@@ -179,13 +181,10 @@ class BaseWidget(object):
 		
 		return layout
 
-	def findParameterByLabel(self, label):
-		for a in self.controls.values():
-			if a._label == label: return a._name 
-		return None
 
 
-	def loadSerializedForm(self, params):
+
+	def load_serialized_form(self, params):
 		widgets = []
 
 		"""
@@ -217,7 +216,7 @@ class BaseWidget(object):
 
 					
 
-	def serializeForm(self):
+	def serialize_form(self):
 		res = {
 			'uid':				self.uid, 
 			'layout_position': 	self.layout_position if hasattr(self, 'layout_position') else 5,
@@ -225,6 +224,7 @@ class BaseWidget(object):
 		}
 
 		for key, item in self.controls.items():
+
 			if item.was_updated:
 				res[item._name] = item.serialize()
 				if isinstance(item, ControlPlayer ) and item._value!=None and item._value!='':
@@ -242,6 +242,20 @@ class BaseWidget(object):
 
 	def commit(self):
 		for key, item in self.controls.items(): item.commit()
+
+		user = PyFormsMiddleware.user()
+		# save the modifications
+		userpath = os.path.join(
+			conf.PYFORMS_WEB_APPS_CACHE_DIR,
+			'{0}-{1}'.format(user.pk, user.username) 
+		)
+		if not os.path.exists(userpath): os.makedirs(userpath)
+
+		app_path = os.path.join(userpath, "{0}.app".format(self.uid) )
+		with open(app_path, 'wb') as f: 
+			dill.dump(self, f)
+		
+
 
 	############################################################################
 	############ Parent class functions reemplementation #######################
@@ -292,7 +306,7 @@ class BaseWidget(object):
 		if hasattr(self, '_storage'):
 			return self._storage
 		else:
-			return conf.MAESTRO_STORAGE_MANAGER.get(self.httpRequest.user)
+			return conf.MAESTRO_STORAGE_MANAGER.get(self.http_request.user)
 	@storage.setter 
 	def storage(self, value): self._storage = value
 
@@ -302,7 +316,7 @@ class BaseWidget(object):
 
 	#### This variable has the current http request #######
 	@property
-	def httpRequest(self): return PyFormsMiddleware.get_request()
+	def http_request(self): return PyFormsMiddleware.get_request()
 
 	#######################################################
 

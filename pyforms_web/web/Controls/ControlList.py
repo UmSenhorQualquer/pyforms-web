@@ -4,7 +4,7 @@ class ControlList(ControlBase):
 
 	def __init__(self, label = "", defaultValue = "", helptext=''):
 		self._titles 			= []
-		self._selectEntireRow 	= False
+		self._select_entire_row 	= False
 		self._read_only 		= False
 		self._selected_index 	= -1
 		super(ControlList, self).__init__(label, defaultValue, helptext)
@@ -12,39 +12,39 @@ class ControlList(ControlBase):
 
 	def init_form(self): return "new ControlList('{0}', {1})".format( self._name, str(self.serialize()) )
 
-	def itemSelectionChanged(self): pass
+	def item_selection_changed_event(self): pass
 
 	def dbl_click(self): pass
 
 	@property
-	def horizontalHeaders(self): return map(str, self._titles)
+	def horizontal_headers(self): return map(str, self._titles)
 
-	@horizontalHeaders.setter
-	def horizontalHeaders(self, value): 
+	@horizontal_headers.setter
+	def horizontal_headers(self, value): 
 		self.mark_to_update_client()
 		self._titles = value
 
 	@property
-	def selectEntireRow(self): return self._selectEntireRow
+	def select_entire_row(self): return self._select_entire_row
 
-	@selectEntireRow.setter
-	def selectEntireRow(self, value): 
+	@select_entire_row.setter
+	def select_entire_row(self, value): 
 		self.mark_to_update_client()
-		self._selectEntireRow = value
+		self._select_entire_row = value
 
 	@property
-	def readOnly(self): return self._read_only
+	def readonly(self): return self._read_only
 
-	@readOnly.setter
-	def readOnly(self, value): 
+	@readonly.setter
+	def readonly(self, value): 
 		self.mark_to_update_client()
 		self._read_only = value
 
 	@property
-	def mouseSelectedRowIndex(self): return self._selected_index
+	def selected_row_index(self): return self._selected_index
 
-	@mouseSelectedRowIndex.setter
-	def mouseSelectedRowIndex(self, value): 
+	@selected_row_index.setter
+	def selected_row_index(self, value): 
 		self.mark_to_update_client()
 		self._selected_index = value
 
@@ -61,17 +61,17 @@ class ControlList(ControlBase):
 		data 	= ControlBase.serialize(self)
 		
 		data.update({ 
-			'horizontal_headers': 	self.horizontalHeaders,
+			'horizontal_headers': 	self.horizontal_headers,
 			'read_only':			1 if self._read_only else 0,
 			'selected_index':		self._selected_index,
-			'select_entire_row': 	1 if self._selectEntireRow else 0,
+			'select_entire_row': 	1 if self._select_entire_row else 0,
 		})
 		return data
 		
 	def deserialize(self, properties):
 		ControlBase.deserialize(self,properties)
 		
-		self.horizontalHeaders 	= properties['horizontal_headers']
+		self.horizontal_headers 	= properties['horizontal_headers']
 		self._read_only 		= properties['read_only']==1
 		self._selected_index 	= properties['selected_index']
-		self._selectEntireRow 	= properties['select_entire_row']==1
+		self._select_entire_row 	= properties['select_entire_row']==1

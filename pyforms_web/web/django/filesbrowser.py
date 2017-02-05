@@ -33,20 +33,20 @@ class FilesBrowserApp(BaseWidget):
 			'_files_table',
 		]
 
-		self._files_table.itemSelectionChanged = self.__file_selected
+		self._files_table.item_selection_changed_event = self.__file_selected
 		self._files_table.dbl_click 		   = self.__file_dblclick
 	
 		
 
 	def init_form(self):
-		self._files_table.horizontalHeaders 	= [
+		self._files_table.horizontal_headers 	= [
 			'','File','Type','Size','Modifed', ''
 		]
-		self._files_table.selectEntireRow 	= True
-		self._files_table.readOnly 			= True
+		self._files_table.select_entire_row 	= True
+		self._files_table.readonly 			= True
 
-		self._control_id.value = self.httpRequest.GET.get('control-id','')
-		self._only_folders.value = self.httpRequest.GET.get('filter-folders','false')=='true'
+		self._control_id.value = self.http_request.GET.get('control-id','')
+		self._only_folders.value = self.http_request.GET.get('filter-folders','false')=='true'
 		
 		
 		self.populate_table()
@@ -57,7 +57,7 @@ class FilesBrowserApp(BaseWidget):
 
 
 	def __file_dblclick(self):
-		selected_row = self._files_table.value[self._files_table.mouseSelectedRowIndex]
+		selected_row = self._files_table.value[self._files_table.selected_row_index]
 		filetype 	 = selected_row[2]
 		if filetype.lower()=='dir':
 			if selected_row[1]=='..':
@@ -67,7 +67,7 @@ class FilesBrowserApp(BaseWidget):
 			self.populate_table()
 
 	def populate_table(self):
-		request 	= self.httpRequest
+		request 	= self.http_request
 		self._directory.value = request.GET.get('p',self._directory.value)
 		storage 	= conf.MAESTRO_STORAGE_MANAGER.get(request.user)
 		path 		= self._directory.value

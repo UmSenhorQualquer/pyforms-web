@@ -36,7 +36,7 @@ class ControlEmptyWidget(ControlBase):
 			data.update({'clear_widget': 1})
 			
 		if isinstance(self.value, BaseWidget):
-			data.update({'widget_data': self.value.serializeForm()})
+			data.update({'widget_data': self.value.serialize_form()})
 			
 			
 		return data
@@ -55,13 +55,13 @@ class ControlEmptyWidget(ControlBase):
 				self.value  = dill.loads(serialized_basewidget)
 				if self.value and self.value!='':
 					self.value.parent = self.parent
-					self.value.loadSerializedForm( widget_data )
+					self.value.load_serialized_form( widget_data )
 
 
 	def mark_to_update_client(self):
 		 self._update_client = True
-		 if self.parent is not None and self.httpRequest is not None and hasattr(self.httpRequest,'updated_apps'):
-		 	self.httpRequest.updated_apps.add_bottom(self.parent)
+		 if self.parent is not None and self.http_request is not None and hasattr(self.http_request,'updated_apps'):
+		 	self.http_request.updated_apps.add_bottom(self.parent)
 
 	@property
 	def value(self): return ControlBase.value.fget(self)

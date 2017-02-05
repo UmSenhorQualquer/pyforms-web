@@ -61,7 +61,7 @@ class LocalStorageManager(object):
 		shutil.copy2(local_source_file, self.__user_path(remote_path) )
 		return True
 
-	def get_file_handler(self, path):
+	def get_file_handler(self, path): 
 		infile = open(self.__user_path(path), 'rb')
 		return infile
 

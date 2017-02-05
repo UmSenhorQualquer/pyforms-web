@@ -106,10 +106,17 @@ ControlList.prototype.load_table = function(){
 
 			self.properties.selected_index = $("#"+self.control_id()+" tbody tr" ).index($(this).parent());
 
-			self.basewidget.fire_event( self.name, 'itemSelectionChanged' );
+			self.basewidget.fire_event( self.name, 'item_selection_changed_event' );
 		}
 	});
 
+	// remove the selection if the header is selected
+	$("#"+this.control_id()+" thead th" ).click(function(){
+		$("#"+self.control_id()+" tbody td" ).removeClass('active');
+		$("#"+self.control_id()+" tbody tr" ).removeClass('active');
+		self.properties.selected_index = -1;
+		self.basewidget.fire_event( self.name, 'item_selection_changed_event' );
+	});
 	
 };
 

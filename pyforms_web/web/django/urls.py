@@ -1,8 +1,10 @@
 from django.conf.urls 				import url
-from pyforms_web.web.django.views 	import *
+from pyforms_web.web.django.views 	import update_app, remove_app, filesbrowser_browse, register_app, open_app
 
-urlpatterns = [ 
-	url(r'^update/(?P<application_id>[a-zA-Z._\- 0-9]+)/', 	updateapplicationform),
-	url(r'^remove/(?P<application_id>[a-zA-Z._\- 0-9]+)/', 	removeapplicationform),
-	url(r'^filesbrowser/', 					filesbrowser_browse),
+urlpatterns = [
+	url(r'^app/register/(?P<app_module>[a-zA-Z._\- 0-9]+)/', register_app	),
+	url(r'^app/open/(?P<app_id>[a-zA-Z._\- 0-9]+)/', 		 open_app		),
+	url(r'^app/update/(?P<app_id>[a-zA-Z._\- 0-9]+)/',		 update_app		),
+	url(r'^app/remove/(?P<app_id>[a-zA-Z._\- 0-9]+)/', 		 remove_app		),
+	url(r'^filesbrowser/', filesbrowser_browse),
 ]

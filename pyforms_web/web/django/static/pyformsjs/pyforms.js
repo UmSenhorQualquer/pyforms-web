@@ -105,7 +105,7 @@ PyformsManager.prototype.remove_app = function(app_id){
 				method: 'get',
 				cache: false,
 				dataType: "json",
-				url: '/pyforms/remove/'+app_id+'/?nocache='+$.now(),
+				url: '/pyforms/app/remove/'+app_id+'/?nocache='+$.now(),
 				contentType: "application/json; charset=utf-8",
 			});
 			break;
@@ -159,7 +159,7 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 			method: 'post',
 			cache: false,
 			dataType: "json",
-			url: '/pyforms/update/'+basewidget.widget_id+'/?nocache='+$.now(),
+			url: '/pyforms/app/update/'+basewidget.widget_id+'/?nocache='+$.now(),
 			data: jsondata,
 			contentType: "application/json; charset=utf-8",
 			success: function(res){
