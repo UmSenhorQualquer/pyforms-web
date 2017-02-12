@@ -31,6 +31,7 @@ function PyformsManager(){
 
 	$.getScript("/static/pyformsjs/ControlBase.js");
 	$.getScript("/static/pyformsjs/ControlText.js");
+	$.getScript("/static/pyformsjs/ControlTextArea.js");
 	$.getScript("/static/pyformsjs/ControlButton.js");
 	$.getScript("/static/pyformsjs/ControlFile.js");
 	$.getScript("/static/pyformsjs/ControlDir.js");

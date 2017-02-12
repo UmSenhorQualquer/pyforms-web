@@ -14,7 +14,7 @@ class ControlCombo(ControlBase):
             if len(item)>=1: 
                 OTControlBase.value.fset(self, self._items[str(item)])
             
-    def addItem(self, label, value = None):
+    def add_item(self, label, value = None):
         if self._items==None: self._items={}
         self._addingItem = True
         
@@ -33,9 +33,9 @@ class ControlCombo(ControlBase):
 
     def __add__(self, val):
         if isinstance( val, tuple ):
-            self.addItem(val[0], val[1])
+            self.add_item(val[0], val[1])
         else:
-            self.addItem(val)
+            self.add_item(val)
         
         return self
 
@@ -89,7 +89,7 @@ class ControlCombo(ControlBase):
         self._items = {}
 
         for item in properties['items']:
-            self.addItem(item['label'], item['value'])
+            self.add_item(item['label'], item['value'])
 
         self.value = properties['value']
 

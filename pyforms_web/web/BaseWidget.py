@@ -342,3 +342,10 @@ class BaseWidget(object):
 	def modulename(self):
 		return inspect.getmodule(self).__name__ + '.' + self.__class__.__name__
 	
+
+
+	@property
+	def formset(self): return self._formset
+
+	@formset.setter
+	def formset(self, value): self._formset = value
