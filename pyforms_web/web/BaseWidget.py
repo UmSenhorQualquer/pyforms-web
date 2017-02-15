@@ -6,11 +6,12 @@ from pyforms_web.web.Controls.ControlText import ControlText
 from pyforms_web.web.Controls.ControlCheckBox import ControlCheckBox
 from pyforms_web.web.Controls.ControlPlayer import ControlPlayer
 from pyforms_web.web.Controls.ControlButton import ControlButton
-from pyforms_web.web.django.Applications import ApplicationsLoader
-from pyforms_web.web.django.middleware import PyFormsMiddleware
+from pyforms_web.web.djangoapp.Applications import ApplicationsLoader
+from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 import uuid, os, shutil, base64, inspect
 import base64, dill, StringIO
 from pysettings import conf
+from django.template.loader import render_to_string
 
 class BaseWidget(object):
 
@@ -23,6 +24,8 @@ class BaseWidget(object):
 		self._html          = ''
 		self._js            = ''
 		if not hasattr(self, '_uid'): self._uid = str(uuid.uuid4())
+
+		self._messages = []
 
 		self._parent_window = parent_win
 		self.is_new_app = True
@@ -45,7 +48,7 @@ class BaseWidget(object):
 		self._js = ''
 		self._controls = [c.init_form() for c in self.controls.values()]
 		if self._formset != None: 
-			self._html += self.generate_panel(self._formset)
+			self._html += self.generate_panel(self._formset, add_field_class=False)
 			#self._js = '[{0}]'.format(",".join(self._controls))
 
 
@@ -57,6 +60,7 @@ class BaseWidget(object):
 		<script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1} {3}) );</script>
 		""".format(self.modulename, self._js, self.uid, parent_code)
 		self._formLoaded = True
+
 		return { 'code': self._html, 'controls_js': self._js, 'title': self._title }
 		
 
@@ -91,7 +95,7 @@ class BaseWidget(object):
 		elif len(row)==11: return 'eleven'
 		else: return ''
 
-	def generate_panel(self, formset):
+	def generate_panel(self, formset, add_field_class=True):
 		"""
 		Generate a panel for the module form with all the controls
 		formset format example: [('_video', '_arenas', '_run'), {"Player":['_threshold', "_player", "=", "_results", "_query"], "Background image":[(' ', '_selectBackground', '_paintBackground'), '_image']}, "_progress"]
@@ -128,7 +132,7 @@ class BaseWidget(object):
 			for row in formset:
 				if isinstance(row, (list, tuple)):
 					panel = self.generate_panel( row )
-					layout += "<div class='rows' >%s</div>" % panel
+					layout += "<div class='rows %s' >%s</div>" % ('field' if add_field_class else '', panel)
 				elif row == " ":
 					layout += "<div class='field' ></div>"
 				elif type(row) is dict:
@@ -158,7 +162,7 @@ class BaseWidget(object):
 					panel 	= self.generate_panel( row )
 					layout += "<div class='fields' >{0}</div>".format(panel)
 				elif row == " ":
-					layout += "<div class='field' ></div>"
+					layout += "<div class='field-empty-space' ></div>"
 				elif type(row) is dict:
 					tabs 	= self.generate_tabs(row)
 					layout += tabs
@@ -194,6 +198,8 @@ class BaseWidget(object):
 			win.parent_win = self
 			setattr(self, var_name, win)			
 		"""
+
+
 		for key, value in params.items():
 			control = self.controls.get(key, None)
 			if control!=None: 
@@ -217,11 +223,16 @@ class BaseWidget(object):
 					
 
 	def serialize_form(self):
+		
 		res = {
 			'uid':				self.uid, 
 			'layout_position': 	self.layout_position if hasattr(self, 'layout_position') else 5,
 			'title': 			self.title
 		}
+
+		if len(self._messages)>0: 
+			res.update({'messages': self._messages})
+			self._messages = []
 
 		for key, item in self.controls.items():
 
@@ -293,11 +304,17 @@ class BaseWidget(object):
 
 		return result
 
-	def start_progress(self, total = 100): pass
+	def message(self, msg, title=None, msg_type=None):
+		msg = { 'type': msg_type if msg_type else '', 'messages':msg if isinstance(msg, list) else [msg], 'title':title }
+		self._messages.append(msg)
+	def success(self,	msg, title=None):	self.message(msg, title, msg_type='success')
+	def info(self, 		msg, title=None):	self.message(msg, title, msg_type='info')
+	def warning(self, 	msg, title=None):	self.message(msg, title, msg_type='warning')
+	def alert(self, 	msg, title=None):	self.message(msg, title, msg_type='alert')
 
-	def update_progress(self): pass
 
-	def end_progress(self): pass
+	
+	
 
 
 	#### Variable connected to the Storage manager of the corrent user
@@ -322,8 +339,12 @@ class BaseWidget(object):
 
 
 	@property
-	def form(self): return """<form class='ui form' id='app-{1}' >{0}</form>""".format(self._html, self.uid)
-
+	def form(self): 
+		return render_to_string( 
+			os.path.join('pyforms', 'basewidget-template.html'), 
+			{'application_html': self._html, 'application_id': self.uid}
+		)
+		
 	@property
 	def js(self): return self._js
 	

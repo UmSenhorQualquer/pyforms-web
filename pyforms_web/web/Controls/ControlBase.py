@@ -1,6 +1,6 @@
 import uuid
 from pysettings import conf
-from pyforms_web.web.django.middleware import PyFormsMiddleware
+from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 
 class ControlBase(object):
 
@@ -12,6 +12,7 @@ class ControlBase(object):
 		self._parent    = None
 		self._label     = label
 		self._visible   = True
+		self._error 	= False
 		self.uid = uuid.uuid4()
 		self._controlHTML = ""
 
@@ -27,7 +28,8 @@ class ControlBase(object):
 			'value':    self.value,
 			'label':    str(self._label if self._label else ''),
 			'help':     str(self._help if self._help else ''),
-			'visible':  int(self._visible)
+			'visible':  int(self._visible),
+			'error': 	int(self._error)
 		}
 
 	def deserialize(self, properties):
@@ -157,4 +159,10 @@ class ControlBase(object):
 
 	@property
 	def was_updated(self): return self._update_client
-	
+
+	@property
+	def error(self): return self._error
+	@error.setter
+	def error(self, value): 
+		if value: self.mark_to_update_client()
+		self._error = value

@@ -10,7 +10,18 @@ __email__       = "ricardojvr@gmail.com"
 __status__      = "Production"
 
 
+
+
 from setuptools import setup
+import os, fnmatch
+
+
+def find_files(package_name,directory, pattern):
+    for root, dirs, files in os.walk(os.path.join(package_name, directory)):
+        for basename in files:
+            if fnmatch.fnmatch(basename, pattern):
+                filename = os.path.join(root[len(package_name)+1:], basename)
+                yield filename
 
 setup(
 
@@ -29,21 +40,12 @@ setup(
 		'pyforms_web.web',
 		'pyforms_web.web.storage',
 		'pyforms_web.web.Controls', 
-		'pyforms_web.web.django', 
-		'pyforms_web.web.django.middleware', 
-		'pyforms_web.web.django.templatetags', 
+		'pyforms_web.web.djangoapp', 
+		'pyforms_web.web.djangoapp.middleware', 
+		'pyforms_web.web.djangoapp.templatetags', 
 		],
-	package_data={'pyforms_web': [
-			'web/django/templates/pyforms/*.*',
-			'web/django/*.js',
-			'web/django/static/*.js',
-			'web/django/static/*.css',
-			'web/django/static/jqplot/*.js',
-			'web/django/static/jqplot/*.css',
-			'web/django/static/jqplot/plugins/*.js',
-			'web/django/static/jquery.flowchart/*.js',
-			'web/django/static/jquery.flowchart/*.css',
-			'web/django/static/pyformsjs/*.js']
+	package_data={'pyforms_web':
+		list(find_files('pyforms_web','web/djangoapp/static/', '*.*'))+list(find_files('pyforms_web','web/djangoapp/templates/', '*.*'))
 		},
 
 	install_requires=[

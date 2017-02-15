@@ -27,7 +27,7 @@ class ControlEmptyWidget(ControlBase):
 		
 		data.update({'value':base64.b64encode(value) })
 
-		if isinstance(self.value, BaseWidget) and self._update_client:
+		if isinstance(self.value, BaseWidget) and self.was_updated:
 			self._widget = self.value.init_form(parent=self.parent)
 			data.update({'clear_widget': 1})
 			data.update({'html':base64.b64encode(self._widget['code']) })
