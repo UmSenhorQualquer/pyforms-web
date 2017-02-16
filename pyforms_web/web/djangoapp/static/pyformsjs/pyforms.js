@@ -17,7 +17,7 @@ var PYFORMS_CHECKER_LOOP_INTERVAL = 500;
 
 
 $.ajaxSetup({cache:true});
-if(typeof(loading)!="function") var loading = function(){};
+if(typeof(loading)!="function") 	var loading = function(){};
 if(typeof(not_loading)!="function") var not_loading = function(){};
 
 
@@ -26,6 +26,8 @@ function PyformsManager(){
 
 	this.loop_checks  = [];
 	this.loop 		  = undefined;
+
+	this.layout_places = [];
 
 	this.applications = [];
 	$.ajaxSetup({async: false, cache: true});
@@ -217,6 +219,20 @@ PyformsManager.prototype.checker_loop = function(){
 	}
 };
 
+PyformsManager.prototype.register_layout_place = function(place_id, place_generator){	
+	this.layout_places.push({place:place_id, handler:place_generator})
+	console.log(this.layout_places);
+};
+
+PyformsManager.prototype.open_application = function(app_data){
+	var layout_position = app_data['layout_position'];
+	var application_id  = app_data['uid'];
+	for(var i=0; i<this.layout_places.length; i++){
+		console.log( this.layout_places[i].place + ' '+ layout_position);
+		if( this.layout_places[i].place==layout_position )
+			this.layout_places[i].handler(application_id, app_data['title'], "/pyforms/app/open/"+application_id+"/");
+	};
+};
 
 ////////////////////////////////////////////////////////////
 if(pyforms==undefined) var pyforms = new PyformsManager()

@@ -13,6 +13,7 @@ class ControlBase(object):
 		self._label     = label
 		self._visible   = True
 		self._error 	= False
+		self._css 		= None
 		self.uid = uuid.uuid4()
 		self._controlHTML = ""
 
@@ -23,7 +24,7 @@ class ControlBase(object):
 		return self._controlHTML
 
 	def serialize(self):
-		return { 
+		res = { 
 			'name':     str(self.__class__.__name__), 
 			'value':    self.value,
 			'label':    str(self._label if self._label else ''),
@@ -31,6 +32,8 @@ class ControlBase(object):
 			'visible':  int(self._visible),
 			'error': 	int(self._error)
 		}
+		if self._css: res.update({'css':self._css})
+		return res
 
 	def deserialize(self, properties):
 		
@@ -38,6 +41,7 @@ class ControlBase(object):
 		self._label   = properties.get('label','')
 		self._help    = properties.get('help','')
 		self._visible = properties.get('visible',True)
+
 		
 			
 	def finish_editing(self): self.update_control()
@@ -166,3 +170,10 @@ class ControlBase(object):
 	def error(self, value): 
 		if value: self.mark_to_update_client()
 		self._error = value
+
+	@property
+	def css(self): return self._css
+	@css.setter
+	def css(self, value): 
+		if value: self.mark_to_update_client()
+		self._css = value

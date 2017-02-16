@@ -47,6 +47,7 @@ class ModelAdmin(BaseWidget):
 		self._create_btn 	= ControlButton('<i class="plus icon"></i> Create')
 		self._remove_btn 	= ControlButton('<i class="minus icon"></i> Remove')			
 		self._cancel_btn 	= ControlButton('<i class="hide icon"></i> Cancel')
+
 		
 		self.edit_fields.append( self._save_btn )
 		self.edit_fields.append( self._create_btn )

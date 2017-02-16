@@ -36,6 +36,7 @@ ControlBoundingSlider.prototype.init_control = function(){
 	});
 
 	if(!this.properties.visible) this.hide();
+	
 };
 
 ////////////////////////////////////////////////////////////////////////////////

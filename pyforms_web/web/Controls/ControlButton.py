@@ -2,6 +2,10 @@ from pyforms_web.web.Controls.ControlBase import ControlBase
 
 class ControlButton(ControlBase):
 
+    def __init__(self, label = "", defaultValue = "", helptext=''):
+        super(ControlButton, self).__init__(label, defaultValue, helptext)
+        self._css = 'blue'
+
     def init_form(self): return "new ControlButton('{0}', {1})".format( self._name, str(self.serialize()) )
 
     def pressed(self): 
@@ -18,6 +22,7 @@ class ControlButton(ControlBase):
             'help':     str(self._help),
             'visible':  int(self._visible)
         }
+        if self._css: res.update({'css':self._css})
         if isinstance(self.value, (str, unicode)) and len(self.value)>0: 
             res.update({'value':self.value})
         else:
