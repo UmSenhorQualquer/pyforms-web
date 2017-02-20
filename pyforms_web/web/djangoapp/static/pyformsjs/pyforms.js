@@ -12,7 +12,7 @@ var PYFORMS_CHECKER_LOOP_INTERVAL = 500;
 	return $d.promise();
   };
 
-  
+
 })(jQuery);
 
 
@@ -49,6 +49,7 @@ function PyformsManager(){
 	$.getScript("/static/pyformsjs/ControlCombo.js");
 	$.getScript("/static/pyformsjs/ControlDate.js");
 	$.getScript("/static/pyformsjs/ControlImage.js");
+  $.getScript("/static/pyformsjs/ControlItemList.js");
 	$.getScript("/static/pyformsjs/ControlList.js");
 	$.getScript("/static/pyformsjs/ControlPlayer.js");
 	$.getScript("/static/pyformsjs/ControlProgress.js");
@@ -133,12 +134,12 @@ PyformsManager.prototype.find_app = function(app_id){
 	for(var i=0; i<this.applications.length; i++){
 		if( this.applications[i]!=undefined && this.applications[i].widget_id==app_id )
 			return this.applications[i];
-			
+
 	}
 	return undefined;
 };
 
-PyformsManager.prototype.find_control = function(control_id){	
+PyformsManager.prototype.find_control = function(control_id){
 	var ids 			= this.split_id(control_id);
 	var widget_id 		= ids[0];
 	var control_name 	= ids[1];
@@ -148,7 +149,7 @@ PyformsManager.prototype.find_control = function(control_id){
 };
 
 
-PyformsManager.prototype.split_id = function(control_id){	
+PyformsManager.prototype.split_id = function(control_id){
 	var split_in 		= control_id.lastIndexOf("-");
 	var widget_id 		= control_id.substring(0, split_in);
 	var control_name 	= control_id.substring(split_in+1);
@@ -157,7 +158,7 @@ PyformsManager.prototype.split_id = function(control_id){
 };
 
 
-PyformsManager.prototype.query_server = function(basewidget, data2send, show_loading){	
+PyformsManager.prototype.query_server = function(basewidget, data2send, show_loading){
 	if(data2send===undefined) 		data2send = {};
 	if(show_loading===undefined) 	show_loading = true;
 
@@ -199,7 +200,7 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 }
 
 
-PyformsManager.prototype.register_checkloop = function(check_event){	
+PyformsManager.prototype.register_checkloop = function(check_event){
 	this.loop_checks.push(check_event);
 	if(this.loop===undefined){
 		this.loop = setInterval(pyforms.checker_loop, PYFORMS_CHECKER_LOOP_INTERVAL);
@@ -219,7 +220,7 @@ PyformsManager.prototype.checker_loop = function(){
 	}
 };
 
-PyformsManager.prototype.register_layout_place = function(place_id, place_generator){	
+PyformsManager.prototype.register_layout_place = function(place_id, place_generator){
 	this.layout_places.push({place:place_id, handler:place_generator})
 };
 
@@ -235,4 +236,3 @@ PyformsManager.prototype.open_application = function(app_data){
 ////////////////////////////////////////////////////////////
 if(pyforms==undefined) var pyforms = new PyformsManager()
 ////////////////////////////////////////////////////////////
-

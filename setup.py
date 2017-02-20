@@ -27,7 +27,7 @@ setup(
 
 	name				='PyForms-Web',
 	version 			='0.1.5',
-	description 		="""Pyforms is a Python 2.7 and 3.0 framework to develop GUI application, 
+	description 		="""Pyforms is a Python 2.7 and 3.0 framework to develop GUI application,
 		which promotes modular software design and code reusability with minimal effort.""",
 	author  			='Ricardo Ribeiro',
 	author_email		='ricardojvr@gmail.com',
@@ -39,10 +39,10 @@ setup(
 		'pyforms_web',
 		'pyforms_web.web',
 		'pyforms_web.web.storage',
-		'pyforms_web.web.Controls', 
-		'pyforms_web.web.djangoapp', 
-		'pyforms_web.web.djangoapp.middleware', 
-		'pyforms_web.web.djangoapp.templatetags', 
+		'pyforms_web.web.Controls',
+		'pyforms_web.web.djangoapp',
+		'pyforms_web.web.djangoapp.middleware',
+		'pyforms_web.web.djangoapp.templatetags',
 		],
 	package_data={'pyforms_web':
 		list(find_files('pyforms_web','web/djangoapp/static/', '*.*'))+list(find_files('pyforms_web','web/djangoapp/templates/', '*.*'))
