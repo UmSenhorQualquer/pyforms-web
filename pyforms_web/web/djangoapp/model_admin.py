@@ -4,7 +4,7 @@ from pyforms_web.web.Controls.ControlText import ControlText
 from pyforms_web.web.Controls.ControlCombo import ControlCombo
 from pyforms_web.web.Controls.ControlDate import ControlDate
 from pyforms_web.web.Controls.ControlButton import ControlButton
-from pyforms_web.web.Controls.ControlList import ControlList
+from pyforms_web.web.Controls.ControlQueryList import ControlQueryList
 from pyforms_web.web.Controls.ControlMultipleSelection import ControlMultipleSelection
 from pyforms_web.web.Controls.ControlEmptyWidget import ControlEmptyWidget
 from pyforms_web.web.Controls.ControlFileUpload import ControlFileUpload
@@ -24,6 +24,7 @@ def get_strs(l):
 
 class ModelAdmin(BaseWidget):
 
+	list_filter  = None
 	list_display = None
 	inlines 	 = []
 	fieldsets	 = None
@@ -42,7 +43,7 @@ class ModelAdmin(BaseWidget):
 
 		
 		self._add_btn 		= ControlButton('<i class="plus icon"></i> Add')
-		self._list 			= ControlList('List')
+		self._list 			= ControlQueryList('List')
 		self._save_btn 		= ControlButton('<i class="save icon"></i> Save')
 		self._create_btn 	= ControlButton('<i class="plus icon"></i> Create')
 		self._remove_btn 	= ControlButton('<i class="minus icon"></i> Remove')			
@@ -62,6 +63,7 @@ class ModelAdmin(BaseWidget):
 		self._list.item_selection_changed_event = self.__list_item_selection_changed_event
 
 		self._list.select_entire_row = True
+		self._list.readonly = True
 		self.__populate_list()
 
 		self.set_model_formfields()
@@ -124,17 +126,12 @@ class ModelAdmin(BaseWidget):
 			
 		if self.list_display is None:
 			self._list.horizontal_headers = ['',self.model._meta.verbose_name]
-			self._list.value = [ [m.pk, str(m)] for m in queryset]
 		else:
 			self._list.horizontal_headers = ['']+[self.model._meta.get_field(field_name).verbose_name for field_name in self.list_display]
-			rows = []
-			for m in queryset:
-				row = [m.pk]
-				for field_name in self.list_display:
-					row.append( getattr(m, field_name) )
-				rows.append(row)
-			self._list.value = rows
+			self._list.list_display = self.list_display
 
+		if self.list_filter: self._list.list_filter = self.list_filter
+		self._list.value = queryset
 		
 		
 	def __add_btn_event(self):
@@ -306,8 +303,9 @@ class ModelAdmin(BaseWidget):
 		self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
 
 	def __list_item_selection_changed_event(self):
-		if self._list.selected_row_index>=0:
-			self.object_pk = self._list.value[self._list.selected_row_index][0]
+		obj = self.get_selected_row_object()
+		if obj:
+			self.object_pk = obj.pk
 			self.show_edit_form()
 			
 
@@ -334,3 +332,7 @@ class ModelAdmin(BaseWidget):
 		fields = get_strs(self.fieldsets) if self.fieldsets else [field.name for field in self.model._meta.get_fields()]
 		if self.parent_field: fields.remove(self.parent_field.name)
 		return fields
+
+	def get_selected_row_object(self):
+		if self._list.selected_row_index<0: return None
+		return self._list.value[self._list.selected_row_index]
