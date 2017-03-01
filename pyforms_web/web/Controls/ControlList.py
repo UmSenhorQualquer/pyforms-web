@@ -1,5 +1,5 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
-
+import simplejson
 class ControlList(ControlBase):
 
 	def __init__(self, label = "", defaultValue = "", helptext=''):
@@ -10,7 +10,7 @@ class ControlList(ControlBase):
 		super(ControlList, self).__init__(label, defaultValue, helptext)
 
 
-	def init_form(self): return "new ControlList('{0}', {1})".format( self._name, str(self.serialize()) )
+	def init_form(self): return "new ControlList('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	def item_selection_changed_event(self): pass
 

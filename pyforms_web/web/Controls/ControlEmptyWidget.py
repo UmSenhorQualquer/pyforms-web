@@ -1,7 +1,7 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
 from pyforms_web.web.BaseWidget import BaseWidget
 import base64, dill, StringIO
-
+import simplejson
 
 class ControlEmptyWidget(ControlBase):
 
@@ -12,9 +12,8 @@ class ControlEmptyWidget(ControlBase):
 	def init_form(self):
 		return """new ControlEmptyWidget('{0}', {1})""".format(
 			self._name, 
-			self.serialize()
+			simplejson.dumps(self.serialize())
 		)
-
 
 	def serialize(self):
 		data = ControlBase.serialize(self)

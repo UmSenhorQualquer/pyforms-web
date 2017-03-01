@@ -1,11 +1,11 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
-
+import simplejson
 class ControlMenu(ControlBase):
 
 	def init_form(self):
 		return """new ControlMenu('{0}', {1})""".format(
 			self._name, 
-			str(self.serialize()) 
+			simplejson.dumps(self.serialize()) 
 		)
 
 	def serialize(self):

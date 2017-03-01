@@ -1,4 +1,5 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
+import simplejson
 
 class ControlBoundingSlider(ControlBase):
 
@@ -10,7 +11,7 @@ class ControlBoundingSlider(ControlBase):
 		
 		
 	def init_form(self):
-		return "new ControlBoundingSlider('{0}', {1})".format( self._name, str(self.serialize()) )
+		return u"new ControlBoundingSlider('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	@property
 	def min(self): return self._min

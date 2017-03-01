@@ -1,4 +1,5 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
+import simplejson
 
 class ControlButton(ControlBase):
 
@@ -6,7 +7,7 @@ class ControlButton(ControlBase):
         super(ControlButton, self).__init__(label, defaultValue, helptext)
         self._css = 'blue'
 
-    def init_form(self): return "new ControlButton('{0}', {1})".format( self._name, str(self.serialize()) )
+    def init_form(self): return "new ControlButton('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
     def pressed(self): 
         """

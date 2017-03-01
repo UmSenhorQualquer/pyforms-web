@@ -1,4 +1,5 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
+import simplejson
 
 class ControlCombo(ControlBase):
 
@@ -7,7 +8,7 @@ class ControlCombo(ControlBase):
 		super(ControlCombo, self).__init__(label, defaultValue,helptext)
 		self._items = {}
 
-	def init_form(self): return "new ControlCombo('{0}', {1})".format( self._name, str(self.serialize()) )
+	def init_form(self): return "new ControlCombo('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	def currentIndexChanged(self, index):
 		if not self._addingItem:
@@ -79,9 +80,9 @@ class ControlCombo(ControlBase):
 		data = ControlBase.serialize(self)
 		items = []
 		for key, value in self._items.items():
-			items.append({'label': str(key), 'value': str(value) }) 
+			items.append({'label': key, 'value': value }) 
 
-		data.update({ 'items': items, 'value': str(self._value) })
+		data.update({ 'items': items, 'value': self._value })
 		return data
 		
 	def deserialize(self, properties):

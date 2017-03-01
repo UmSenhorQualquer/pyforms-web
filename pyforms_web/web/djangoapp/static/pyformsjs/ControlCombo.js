@@ -20,7 +20,11 @@ ControlCombo.prototype.init_control = function(){
 		option.value = this.properties.items[index].value;
 		select.add(option);
 	}
-	this.jquery().dropdown();
+
+	var self = this;
+	this.jquery().dropdown({onChange:function(){
+		self.basewidget.fire_event( self.name, 'changed_event' );
+	}});
 	
 	if(!this.properties.visible) this.hide();
 	this.set_value(this.properties.value);

@@ -1,5 +1,6 @@
 import datetime, numpy as np
 from pyforms_web.web.Controls.ControlBase import ControlBase
+import simplejson
 
 class ControlVisVis(ControlBase):
 
@@ -7,7 +8,7 @@ class ControlVisVis(ControlBase):
 		self._legend = []
 		super(ControlVisVis, self).__init__(label, defaultValue, helptext)
 
-	def init_form(self): return "new ControlVisVis('{0}', {1})".format( self._name, str(self.serialize()) )
+	def init_form(self): return "new ControlVisVis('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 
 

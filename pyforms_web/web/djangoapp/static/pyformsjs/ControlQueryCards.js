@@ -1,14 +1,14 @@
 
 
-function ControlQueryList(name, properties){
+function ControlQueryCards(name, properties){
 	ControlBase.call(this, name, properties);
 	this.being_edited = false;
 };
-ControlQueryList.prototype = Object.create(ControlBase.prototype);
+ControlQueryCards.prototype = Object.create(ControlBase.prototype);
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ControlQueryList.prototype.init_control = function(){
+ControlQueryCards.prototype.init_control = function(){
 	var html = "<div id='"+this.place_id()+"' class='field'>";
 
 	var filters = this.properties.filters_list;
@@ -32,21 +32,8 @@ ControlQueryList.prototype.init_control = function(){
 	};
 
 
-	html += "<table class='ui selectable celled table ControlQueryList sortable' id='"+this.control_id()+"' >";
-	// render the table titles
-	var titles = this.properties.horizontal_headers;
-	if(titles.length>0){
-		html += "<thead>";
-		html += "<tr>";
-		for(var i=0; i<titles.length; i++) html += "<th column='"+titles[i].column+"' >"+titles[i].label+"</th>";
-		html += "</tr>";
-		html += "</thead>";
-	};
-	html += "<tbody>";
-	html += "</tbody>";
-	html += "</table>";
-	html += "</div>";
-
+	html += "<div class='ui link cards' id='"+this.control_id()+"' ></div>";
+	
 	this.jquery_place().replaceWith(html);
 	this.set_value(this.properties.value);	
 
@@ -107,34 +94,30 @@ ControlQueryList.prototype.init_control = function(){
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ControlQueryList.prototype.get_value = function(){
+ControlQueryCards.prototype.get_value = function(){
 	return undefined;
 };
 
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ControlQueryList.prototype.set_value = function(value){
+ControlQueryCards.prototype.set_value = function(value){
 	var titles = this.properties.horizontal_headers;
 	var data   = this.properties.values;
 	
 	var rows_html = '';
 	for(var i=0; i<data.length; i++){
 		var selected = this.properties.selected_row_id==data[i][0];
-		rows_html += "<tr row-id='"+data[i][0]+"' >";
+		rows_html += "<div class='card' row-id='"+data[i][0]+"' >";
 		for(var j=1; j<data[i].length; j++) 
-			rows_html += "<td class='"+(selected?'active':'')+"' >"+data[i][j]+"</td>";
-		rows_html += "</tr>";
+			rows_html += "<div class='content "+(selected?'active':'')+"' >"+data[i][j]+"</div>";
+		rows_html += "</div>";
 	};
-	$( "#"+this.control_id()+" tbody" ).html(rows_html);
-	$( "#"+this.control_id()+" tfoot" ).remove();
+	$( "#"+this.control_id() ).html( rows_html);
 
 	var html 		= '';
 	var pages_list 	= this.properties.pages.pages_list;
 	if(pages_list.length>1){
-		html += '<tfoot>';
-		html += '<tr>';
-		html += '<th colspan="3">';
 		html += '<div class="ui right floated pagination menu small">';
 		var start_page = 0;
 		var end_page = (pages_list.length-1)>5?(pages_list.length-1):pages_list.length;
@@ -146,11 +129,8 @@ ControlQueryList.prototype.set_value = function(value){
 			if( pages_list[pages_list.length-1]>0 ) 
 				html += '<a pageindex="'+pages_list[pages_list.length-1]+'" class="icon item"><i class="right chevron icon"></i></a>';
 		html += '</div>';
-		html += '</th>';
-		html += '</tr>';
-		html += '</tfoot>';
-
-		$( "#"+this.control_id()+" tbody ").after(html);
+		
+		$( "#"+this.control_id() ).append(html);
 	};
 	
 	this.set_click_events();
@@ -164,7 +144,7 @@ ControlQueryList.prototype.set_value = function(value){
 ////////////////////////////////////////////////////////////////////////////////
 
 
-ControlQueryList.prototype.set_click_events = function(){
+ControlQueryCards.prototype.set_click_events = function(){
 	var self = this;
 
 	$("#"+this.control_id()+" tbody td" ).click(function(){

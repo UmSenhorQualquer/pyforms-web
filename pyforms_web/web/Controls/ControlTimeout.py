@@ -3,7 +3,7 @@ from django.utils 	import timezone
 from datetime 		import datetime, timedelta
 import time
 import dateutil.parser
-
+import simplejson
 
 class ControlTimeout(ControlBase):
 
@@ -18,7 +18,7 @@ class ControlTimeout(ControlBase):
 	def init_form(self):
 		return """new ControlTimeout('{0}', {1})""".format(
 			self._name, 
-			str(self.serialize()) 
+			simplejson.dumps(self.serialize()) 
 		)
 
 	def trigger_event(self):

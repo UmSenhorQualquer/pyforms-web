@@ -61,7 +61,7 @@ class BaseWidget(object):
 		""".format(self.modulename, self._js, self.uid, parent_code)
 		self._formLoaded = True
 
-		return { 'code': self._html, 'controls_js': self._js, 'title': self._title }
+		return { 'code': self._html, 'title': self._title, 'app_id':self.uid }
 		
 
 	def generate_tabs(self, formsetdict):

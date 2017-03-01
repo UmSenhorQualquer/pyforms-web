@@ -1,8 +1,9 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
+import simplejson
 
 class ControlCheckBox(ControlBase):
 
-	def init_form(self): return "new ControlCheckBox('{0}', {1})".format( self._name, str(self.serialize()) )
+	def init_form(self): return "new ControlCheckBox('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	def serialize(self):
 		return { 

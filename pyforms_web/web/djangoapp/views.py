@@ -6,7 +6,7 @@ from django.views.decorators.csrf 	import csrf_exempt
 from django.middleware.csrf 		import get_token
 from pyforms_web.web.djangoapp 		import ApplicationsLoader
 from pysettings 					import conf
-import json, simplejson, os
+import json, simplejson, os, re
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
@@ -22,9 +22,10 @@ def upload_files(request):
 
 		for key in request.FILES:
 			myfile = request.FILES[key]
-
+			name   = myfile.name
+			for c in r' []/\;,><&*:%=+@!#^()|?^': name = name.replace(c,'')
 			fs 			= FileSystemStorage(location=path2save, base_url=settings.MEDIA_URL+'apps/'+request.POST['app_id']+'/')
-			filename 	= fs.save(myfile.name, myfile)
+			filename 	= fs.save(name, myfile)
 			url 		= fs.url(filename)
 
 			files_data.append(url)
@@ -41,7 +42,7 @@ def upload_files(request):
 			})
 
 	data = {'files':files_data, 'metas':files_metadata  }
-	return HttpResponse(simplejson.dumps(data), "application/json")
+	return HttpResponse(simplejson.dumps(data,bigint_as_string=True ), "application/json")
 
 
 def filesbrowser_browse(request):
@@ -74,9 +75,9 @@ def register_app(request, app_module):
 
 def open_app(request, app_id):	
 	app  	= ApplicationsLoader.get_instance(request, app_id)
-	params 	= {'appInstance': app}
+	params 	= {}
 	params.update( app.init_form() )
-	return render_to_response(conf.PYFORMS_WEB_APPS_TEMPLATE, params)
+	return HttpResponse(simplejson.dumps(params), "application/json")
 	
 
 @never_cache

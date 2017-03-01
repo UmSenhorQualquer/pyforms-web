@@ -35,6 +35,7 @@ function PyformsManager(){
 	$.getStylesheet("/static/pyforms.css");
 	$.getScript("/static/jquery.json-2.4.min.js");
 	$.getScript("/static/base64.js");
+	$.getScript("/static/gmaps.min.js");
 
 	$.getScript("/static/pyformsjs/ControlBase.js");
 	$.getScript("/static/pyformsjs/ControlText.js");
@@ -51,7 +52,8 @@ function PyformsManager(){
 	$.getScript("/static/pyformsjs/ControlImage.js");
   	$.getScript("/static/pyformsjs/ControlItemList.js");
 	$.getScript("/static/pyformsjs/ControlList.js");
-	$.getScript("/static/pyformsjs/ControlQueryList.js");
+	$.getScript("/static/pyformsjs/ControlQueryList.js");	
+	$.getScript("/static/pyformsjs/ControlQueryCards.js");
 	$.getScript("/static/pyformsjs/ControlPlayer.js");
 	$.getScript("/static/pyformsjs/ControlProgress.js");
 	$.getScript("/static/pyformsjs/ControlBoundingSlider.js");
@@ -185,7 +187,7 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 					for(var i=0; i<res.length; i++){
 						var app = self.find_app(res[i]['uid']);
 						if( app===undefined)
-							open_application(res[i]);
+							self.open_application(res[i]);
 						else
 							app.deserialize(res[i]);
 					};
@@ -222,7 +224,14 @@ PyformsManager.prototype.checker_loop = function(){
 };
 
 PyformsManager.prototype.register_layout_place = function(place_id, place_generator){
-	this.layout_places.push({place:place_id, handler:place_generator})
+	var insert = true;
+	for(var i=0; i<this.layout_places.length; i++)
+		if( this.layout_places[i].place_id == place_id ){
+			this.layout_places[i].handler = place_generator;
+			insert = false;
+			break;
+		};
+	if(insert) this.layout_places.push({place:place_id, handler:place_generator})
 };
 
 PyformsManager.prototype.open_application = function(app_data){

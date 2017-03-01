@@ -1,5 +1,5 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
-
+import simplejson
 
 class ControlSlider(ControlBase):
 
@@ -14,7 +14,7 @@ class ControlSlider(ControlBase):
 		
 		ControlBase.__init__(self, label, defaultValue)
 		
-	def init_form(self): return "new ControlSlider('{0}', {1})".format( self._name, str(self.serialize()) )
+	def init_form(self): return "new ControlSlider('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 
 

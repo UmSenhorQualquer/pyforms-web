@@ -29,6 +29,8 @@ class ModelAdmin(BaseWidget):
 	inlines 	 = []
 	fieldsets	 = None
 
+	list_control = ControlQueryList
+
 	def __init__(self, title, model, parent=None):
 		BaseWidget.__init__(self, title)
 		self.model = model
@@ -42,8 +44,9 @@ class ModelAdmin(BaseWidget):
 		if parent: self.set_parent(parent[0], parent[1])
 
 		
+		print self.list_control
 		self._add_btn 		= ControlButton('<i class="plus icon"></i> Add')
-		self._list 			= ControlQueryList('List')
+		self._list 			= self.list_control('List')
 		self._save_btn 		= ControlButton('<i class="save icon"></i> Save')
 		self._create_btn 	= ControlButton('<i class="plus icon"></i> Create')
 		self._remove_btn 	= ControlButton('<i class="minus icon"></i> Remove')			
@@ -64,7 +67,7 @@ class ModelAdmin(BaseWidget):
 
 		self._list.select_entire_row = True
 		self._list.readonly = True
-		self.__populate_list()
+		self.populate_list()
 
 		self.set_model_formfields()
 		
@@ -119,16 +122,12 @@ class ModelAdmin(BaseWidget):
 		self.formset = ['_add_btn', '_list'] + self.formset + [('_save_btn', '_create_btn','_remove_btn', '_cancel_btn')]
 		return super(ModelAdmin, self).init_form(parent)
 
-	def __populate_list(self):
+	def populate_list(self):
 		queryset = self.model.objects.all()
 		if self.parent_field:
 			queryset = queryset.filter(**{self.parent_field.name: self.parent_pk})
 			
-		if self.list_display is None:
-			self._list.horizontal_headers = ['',self.model._meta.verbose_name]
-		else:
-			self._list.horizontal_headers = ['']+[self.model._meta.get_field(field_name).verbose_name for field_name in self.list_display]
-			self._list.list_display = self.list_display
+		self._list.list_display = self.list_display
 
 		if self.list_filter: self._list.list_filter = self.list_filter
 		self._list.value = queryset
@@ -139,6 +138,7 @@ class ModelAdmin(BaseWidget):
 
 	def __cancel_btn_event(self):
 		self.hide_edit_create_form()
+		self._list.selected_row_id = -1
 		
 
 
@@ -186,6 +186,7 @@ class ModelAdmin(BaseWidget):
 
 		for inline in self.inlines:
 			getattr(self, inline.__name__).value = inline( (self.model, self.object_pk) )
+			#inline( (self.model, self.object_pk) )
 
 	def hide_edit_create_form(self):
 		self._add_btn.show()
@@ -239,7 +240,7 @@ class ModelAdmin(BaseWidget):
 		obj.save()
 
 		self.object_pk = obj.pk
-		self.__populate_list()
+		self.populate_list()
 
 		if self.inlines:
 			self.show_edit_form()
@@ -297,7 +298,7 @@ class ModelAdmin(BaseWidget):
 					o = field.rel.to.objects.get(pk=value)
 					field_instance.add(o)
 
-		self.__populate_list()
+		self.populate_list()
 		self.hide_edit_create_form()
 
 		self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
@@ -314,7 +315,7 @@ class ModelAdmin(BaseWidget):
 			obj = self.model.objects.get(pk=self.object_pk)
 			obj.delete()
 			self.hide_edit_create_form()
-			self.__populate_list()
+			self.populate_list()
 
 
 	def set_parent(self, parent_model, parent_pk):
@@ -334,5 +335,5 @@ class ModelAdmin(BaseWidget):
 		return fields
 
 	def get_selected_row_object(self):
-		if self._list.selected_row_index<0: return None
-		return self._list.value[self._list.selected_row_index]
+		if self._list.selected_row_id<0: return None
+		return self._list.value.get(pk=self._list.selected_row_id)

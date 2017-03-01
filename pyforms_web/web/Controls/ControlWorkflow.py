@@ -1,9 +1,10 @@
 import datetime
 from pyforms_web.web.Controls.ControlBase import ControlBase
+import simplejson
 
 class ControlWorkflow(ControlBase):
 
-	def init_form(self): return "new ControlWorkflow('{0}', {1})".format( self._name, str(self.serialize()) )
+	def init_form(self): return "new ControlWorkflow('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	@property
 	def selected_operator(self):

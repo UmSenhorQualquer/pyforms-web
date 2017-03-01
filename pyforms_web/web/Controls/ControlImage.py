@@ -4,7 +4,7 @@ import base64
 import numpy as np 
 import StringIO
 from PIL import Image
-
+import simplejson
 class ControlImage(ControlBase):
 
 
@@ -14,7 +14,7 @@ class ControlImage(ControlBase):
 	 
 
 	def init_form(self):
-		return "new ControlImage('{0}', {1})".format( self._name, str(self.serialize()) )
+		return "new ControlImage('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	def save(self, data):
 		if self.value!=None: data['value'] = self._value

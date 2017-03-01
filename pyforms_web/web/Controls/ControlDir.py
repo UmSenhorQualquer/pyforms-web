@@ -1,12 +1,7 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
+import simplejson
 
 class ControlDir(ControlBase):
 
 	def init_form(self):
-		return "new ControlDir('{0}', {1})".format( self._name, str(self.serialize()) )
-
-	@property
-	def value(self): return str(ControlBase.value.fget(self))
-
-	@value.setter
-	def value(self, value): ControlBase.value.fset(self, value)
+		return "new ControlDir('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )

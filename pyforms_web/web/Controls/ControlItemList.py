@@ -1,5 +1,5 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
-
+import simplejson
 
 class ControlItemList(ControlBase):
     def __init__(self, label="", defaultValue="", helptext=''):
@@ -11,7 +11,7 @@ class ControlItemList(ControlBase):
     def init_form(self):
         return """new ControlItemList('{0}', {1})""".format(
             self._name,
-            str(self.serialize())
+            simplejson.dumps(self.serialize())
         )
 
     @property

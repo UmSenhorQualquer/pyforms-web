@@ -1,4 +1,5 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
+import simplejson
 
 class ControlMultipleSelection(ControlBase):
 
@@ -6,7 +7,7 @@ class ControlMultipleSelection(ControlBase):
 		super(ControlMultipleSelection, self).__init__(label, defaultValue, helptext)
 		self._items={}
 
-	def init_form(self): return "new ControlMultipleSelection('{0}', {1})".format( self._name, str(self.serialize()) )
+	def init_form(self): return "new ControlMultipleSelection('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	def add_item(self, label, value = None):
 		if self._items==None: self._items={}

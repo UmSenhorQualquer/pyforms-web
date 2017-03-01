@@ -1,7 +1,7 @@
 import cv2, base64, numpy as np, StringIO
 from pyforms_web.web.Controls.ControlBase import ControlBase
 from PIL import Image
-
+import simplejson
 
 class ControlPlayer(ControlBase):
 
@@ -10,7 +10,7 @@ class ControlPlayer(ControlBase):
 		ControlBase.__init__(self, label, defaultValue, helptext)
 
 	def init_form(self): 
-		return "new ControlPlayer('{0}', {1})".format( self._name, str(self.serialize()) )
+		return "new ControlPlayer('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	def processFrame(self, frame):  return frame
 

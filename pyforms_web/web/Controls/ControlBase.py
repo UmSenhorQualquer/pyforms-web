@@ -25,18 +25,17 @@ class ControlBase(object):
 
 	def serialize(self):
 		res = { 
-			'name':     str(self.__class__.__name__), 
+			'name':     self.__class__.__name__, 
 			'value':    self.value,
-			'label':    str(self._label if self._label else ''),
-			'help':     str(self._help if self._help else ''),
-			'visible':  int(self._visible),
-			'error': 	int(self._error)
+			'label':    self._label if self._label else '',
+			'help':     self._help if self._help else '',
+			'visible':  self._visible,
+			'error': 	self._error
 		}
 		if self._css: res.update({'css':self._css})
 		return res
 
 	def deserialize(self, properties):
-		
 		self.value    = properties.get('value',None)
 		self._label   = properties.get('label','')
 		self._help    = properties.get('help','')
@@ -85,7 +84,7 @@ class ControlBase(object):
 
 	def add_popup_submenu(self, label, submenu=None): pass
 
-	def __repr__(self): return str(self.value)
+	def __repr__(self): return self.value
 
 	############################################################################
 	############ Properties ####################################################
@@ -126,7 +125,7 @@ class ControlBase(object):
 	############################################################################
 
 	@property
-	def label(self): return str(self._label)
+	def label(self): return self._label
 
 	@label.setter
 	def label(self, value): 
