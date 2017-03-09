@@ -3,7 +3,38 @@ from django.apps import apps
 from django.db.models.constants import LOOKUP_SEP
 from django.core.exceptions import FieldDoesNotExist
 from django.utils.encoding import force_text
-import simplejson
+from django.utils.dateparse import parse_datetime
+import simplejson, datetime
+from django.utils import timezone
+from django.conf import settings
+from django.db import models
+from datetime import timedelta
+
+import locale
+
+def get_field(model, lookup):
+	# will return first non relational field's verbose_name in lookup
+	parts = lookup.split(LOOKUP_SEP)
+	for i, part in enumerate(parts):
+		try:
+			f = model._meta.get_field(part)
+		except FieldDoesNotExist:
+			# check if field is related
+			for f in model._meta.related_objects:
+				if f.get_accessor_name() == part:
+					break
+			else:
+				raise ValueError("Invalid lookup string")
+
+		if f.is_relation:
+			model = f.related_model
+			if (len(parts)-1)==i:
+				return model
+			else:
+				continue
+
+		return f
+		
 
 def get_verbose_name(model, lookup):
 	# will return first non relational field's verbose_name in lookup
@@ -93,7 +124,7 @@ class ControlQueryList(ControlBase):
 			model 		= apps.get_model(self._app, self._model)
 			qs 			= model.objects.all()
 			qs.query 	= self._query
-			for f in self.filter_by: 
+			for f in self.filter_by:
 				qs = qs.filter(**f)
 			return qs
 		else:
@@ -135,16 +166,9 @@ class ControlQueryList(ControlBase):
 				queryset = queryset.order_by( direction+sort['column'] )
 
 
-			if self.list_display is None or len(self.list_display)==0:
-				rows = [ [m.pk, str(m)] for m in queryset[row_start:row_end] ]
-			else:
-				rows = []
-				for row in queryset.values_list(*(['pk']+self.list_display) )[row_start:row_end]:
-					#row = [str(m.pk)]
-					#for field_name in self.list_display:
-					#	row.append( str(getattr(m, field_name)) )
-					rows.append(row)
+			rows = self.queryset_to_list(queryset, self.list_display, row_start, row_end)
 
+			if self.list_display:
 				#configure the headers titles
 				for column_name in self.list_display:
 					headers.append({
@@ -152,14 +176,7 @@ class ControlQueryList(ControlBase):
 						'column': column_name
 					})
 			
-			#configure the filters
-			for column_name in self.list_filter:
-				column_values = queryset.values_list(column_name, flat=True).distinct()
-				filters_list.append({
-					'label':  get_verbose_name(model, column_name),
-					'column': column_name,
-					'items':  [row for row in column_values]
-				})
+			filters_list = self.serialize_filters(self.list_filter, queryset)
 	
 
 		data.update({
@@ -203,3 +220,106 @@ class ControlQueryList(ControlBase):
 		self._selected_row_id = -1
 		self._current_page 	  = 1
 		self.mark_to_update_client()
+
+
+
+
+
+
+
+
+
+	#####################################################################
+	#####################################################################
+
+	def format_list_column(self, col_value):
+		
+
+		if isinstance(col_value, datetime.datetime ):
+			return col_value.strftime('%Y-%m-%d %H:%M') if col_value else ''
+		elif isinstance(col_value, datetime.date ):
+			return col_value.strftime('%Y-%m-%d') if col_value else ''
+		elif isinstance(col_value, bool ):
+			return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
+		elif isinstance(col_value, int ):
+			return locale.format("%d", col_value, grouping=True)
+		elif isinstance(col_value, float ):
+			return locale.format("%f", col_value, grouping=True)
+		elif isinstance(col_value, long ):
+			return locale.format("%d", col_value, grouping=True)
+		else:
+			return col_value
+
+	def queryset_to_list(self, queryset, list_display, first_row, last_row):
+
+		if not list_display:
+			return [ [m.pk, str(m)] for m in queryset[first_row:last_row] ]
+		else:
+			rows = []
+			queryset_list = queryset.values_list(*(['pk']+list_display) )
+			for row_values in queryset_list[first_row:last_row]:
+				row = [self.format_list_column(c) for c in row_values]
+				rows.append(row)
+			return rows
+
+
+	def format_filter_column(self, col_value):
+		if isinstance(col_value, datetime.datetime ):
+			return col_value.strftime('%Y-%m-%d %H:%M') if col_value else ''
+		elif isinstance(col_value, datetime.date ):
+			return col_value.strftime('%Y-%m-%d') if col_value else ''
+		elif isinstance(col_value, bool ):
+			return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
+		else:
+			return col_value
+
+	def serialize_filters(self, list_filter, queryset):
+		filters_list = []
+
+		model = apps.get_model(self._app, self._model)
+
+		#configure the filters
+		for column_name in list_filter:
+			field 			= get_field(model, column_name)
+			column_values 	= queryset.values_list(column_name, flat=True).distinct().order_by()
+						
+			field_type 		 = 'combo'
+			field_properties = {
+				'field_type': 'combo',
+				'label': 	get_verbose_name(model, column_name),
+				'column':	column_name
+			}
+
+			if isinstance(field, models.BooleanField):
+				field_properties.update({
+					'items': [(column_name, True, 'True'), (column_name, False, 'False')]
+				})
+			if isinstance(field, (models.DateField, models.DateTimeField) ):
+				column_filter = "{0}__gte".format(column_name)
+
+				now 	= timezone.now()
+				today 	= now.replace(hour=0, minute=0)
+				last_7  = now - timedelta(days=7)
+				this_month= now.replace(hour=0, minute=0, day=1)
+				last_90 = now - timedelta(days=90)
+				last_180= now - timedelta(days=180)
+				last_year= now.replace(hour=0, minute=0, month=1, day=1)
+
+				field_properties.update({
+					'items': [
+						(column_filter, today.isoformat(), 'Today'			), 
+						(column_filter, last_7.isoformat(), 'Past 7 days'	), 
+						(column_filter, this_month.isoformat(), 'This month'), 
+						(column_filter, last_90.isoformat(), 'Last 60 days'	), 
+						(column_filter, last_180.isoformat(), 'Last 90 days'), 
+						(column_filter, last_year.isoformat(), 'This year'	)
+					]
+				})
+			else:
+				filter_values = [(column_name, column_value, column_value) for column_value in column_values]
+				field_properties.update({'items': filter_values})
+
+			filters_list.append(field_properties)
+
+
+		return filters_list

@@ -15,24 +15,29 @@ ControlQueryList.prototype.init_control = function(){
 	
 	// render the filters
 	if(filters.length>0){
-		html += "<div class='fields'>";
-		for(var i=0; i<filters.length; i++){
-			html += "<div class='field'>";
-			html += "<label for='"+this.control_id()+"-filter-"+filters[i].column+"'>"+filters[i].label+"</label>";
-			html += "<select class='ui search dropdown queryset-filter' column='"+filters[i].column+"' id='"+this.control_id()+"-filter-"+filters[i].column+"' >";
-			html += "<option value='000000000000'>--- None ---</label>";
-			var data = filters[i].items;
-			for(var j=0; j<data.length; j++){
-				html += "<option value='"+data[j]+"'>"+data[j]+"</label>";
+		for(var j=0; j<filters.length; j+=5){
+			html += "<div class='fields five'>";
+			
+			for(var i=0; i<5; i++){
+				if( (j+i)>=filters.length ) break; 
+
+				html += "<div class='field'>";
+				html += "<label for='"+this.control_id()+"-filter-"+filters[(j+i)].column+"'>"+filters[(j+i)].label+"</label>";
+				html += "<select class='ui search dropdown queryset-filter' column='"+filters[(j+i)].column+"' id='"+this.control_id()+"-filter-"+filters[(j+i)].column+"' >";
+				html += "<option value='000000000000'>---</label>";
+				var data = filters[(j+i)].items;
+				for(var k=0; k<data.length; k++){
+					html += "<option filter='"+data[k][0]+"' value='"+data[k][0]+'='+data[k][1]+"'>"+data[k][2]+"</label>";
+				};
+				html += "</select>";
+				html += "</div>";
 			};
-			html += "</select>";
 			html += "</div>";
 		};
-		html += "</div>";
 	};
 
 
-	html += "<table class='ui selectable celled table ControlQueryList sortable' id='"+this.control_id()+"' >";
+	html += "<table class='ui selectable celled striped table ControlQueryList sortable' id='"+this.control_id()+"' >";
 	// render the table titles
 	var titles = this.properties.horizontal_headers;
 	if(titles.length>0){
@@ -52,13 +57,21 @@ ControlQueryList.prototype.init_control = function(){
 
 	var self = this;
 
-	$( "#"+this.place_id()+" .queryset-filter" ).dropdown({onChange:function(){
+	$( "#"+this.place_id()+" .queryset-filter" ).dropdown({onChange:function(value, text, selectedItem){
 		self.properties.filter_by = [];
 
 		$( "#"+self.place_id()+" .queryset-filter" ).each(function(){
 			var filter_value = $(this).dropdown('get value');
 			if( filter_value!='' && filter_value!='000000000000' ){
-				var key = $(this).find('select').attr('column');
+				//var key = $(this).find('select').attr('column');
+				console.log(filter_value);
+				console.log(filter_value.split('=', 2));
+				var cols = filter_value.split('=', 2);
+				var key = cols[0];
+				var filter_value = cols[1];
+				if( filter_value=='true')  filter_value = true;
+				if( filter_value=='null')  filter_value = null;
+				if( filter_value=='false') filter_value = false;
 				var filter = { [key]: filter_value};
 				self.properties.filter_by.push(filter)
 			};	
@@ -122,8 +135,8 @@ ControlQueryList.prototype.set_value = function(value){
 	for(var i=0; i<data.length; i++){
 		var selected = this.properties.selected_row_id==data[i][0];
 		rows_html += "<tr row-id='"+data[i][0]+"' >";
-		for(var j=1; j<data[i].length; j++) 
-			rows_html += "<td class='"+(selected?'active':'')+"' >"+data[i][j]+"</td>";
+		for(var j=1; j<data[i].length; j++)
+			rows_html += "<td class='"+(selected?'active':'')+"' >"+(data[i][j]?data[i][j]:'')+"</td>";
 		rows_html += "</tr>";
 	};
 	$( "#"+this.control_id()+" tbody" ).html(rows_html);
@@ -134,7 +147,7 @@ ControlQueryList.prototype.set_value = function(value){
 	if(pages_list.length>1){
 		html += '<tfoot>';
 		html += '<tr>';
-		html += '<th colspan="3">';
+		html += '<th colspan="'+this.properties.horizontal_headers.length+'">';
 		html += '<div class="ui right floated pagination menu small">';
 		var start_page = 0;
 		var end_page = (pages_list.length-1)>5?(pages_list.length-1):pages_list.length;

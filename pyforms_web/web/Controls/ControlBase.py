@@ -5,7 +5,7 @@ from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 class ControlBase(object):
 
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
+	def __init__(self, label = "", defaultValue = None, helptext=''):
 		self._name      = ""
 		self._help      = helptext
 		self._value     = defaultValue
@@ -86,6 +86,10 @@ class ControlBase(object):
 
 	def __repr__(self): return self.value
 
+
+	def clean_field(self):
+		pass
+
 	############################################################################
 	############ Properties ####################################################
 	############################################################################
@@ -106,7 +110,7 @@ class ControlBase(object):
 	def value(self): return self._value
 	@value.setter
 	def value(self, value):
-		oldvalue = self._value
+		oldvalue 	= self._value
 		self._value = value
 		if oldvalue!=value: 
 			self.mark_to_update_client()
@@ -167,7 +171,7 @@ class ControlBase(object):
 	def error(self): return self._error
 	@error.setter
 	def error(self, value): 
-		if value: self.mark_to_update_client()
+		if value!=self._error: self.mark_to_update_client()
 		self._error = value
 
 	@property

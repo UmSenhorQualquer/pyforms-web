@@ -2,12 +2,12 @@ import datetime
 from pyforms_web.web.Controls.ControlBase import ControlBase
 import simplejson
 
-class ControlDate(ControlBase):
+class ControlDateTime(ControlBase):
 
-	PYTHON_FORMAT = "%Y-%m-%d"
+	PYTHON_FORMAT = "%Y-%m-%d %H:%M"
 	JS_FORMAT = "Y-m-d"
 
-	def init_form(self): return "new ControlDate('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+	def init_form(self): return "new ControlDateTime('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	@property
 	def value(self): 
@@ -16,17 +16,12 @@ class ControlDate(ControlBase):
 		elif self._value==None:
 			return ''
 		else:
-			return self._value.strftime("%Y-%m-%d")
+			return self._value.strftime(self.PYTHON_FORMAT)
 			
 
 	@value.setter
 	def value(self, value):
-		if value:
-			oldvalue = self._value
-			self._value = value
-			if oldvalue!=value: 
-				self.mark_to_update_client()
-				self.changed_event()
+		ControlBase.value.fset(self, value)
 
 
 	def serialize(self):

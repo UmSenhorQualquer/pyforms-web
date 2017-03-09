@@ -8,7 +8,7 @@ ControlCheckBox.prototype = Object.create(ControlBase.prototype);
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlCheckBox.prototype.set_value = function(value){
-	if(value=='True')
+	if(value)
 		this.jquery().prop('checked', true);
 	else
 		this.jquery().prop('checked', false);
@@ -32,7 +32,7 @@ ControlCheckBox.prototype.init_control = function(){
 	html += "</div></div>";
 	this.jquery_place().replaceWith(html);
 	
-	if( this.properties.value=='True')
+	if( this.properties.value)
 		this.jquery().prop('checked', true);
 	else
 		this.jquery().prop('checked', false);

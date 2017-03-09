@@ -48,7 +48,10 @@ function PyformsManager(){
 	$.getScript("/static/pyformsjs/ControlSlider.js");
 	$.getScript("/static/pyformsjs/ControlCheckBox.js");
 	$.getScript("/static/pyformsjs/ControlCombo.js");
+	$.getScript("/static/pyformsjs/ControlInteger.js");
+	$.getScript("/static/pyformsjs/ControlFloat.js");
 	$.getScript("/static/pyformsjs/ControlDate.js");
+	$.getScript("/static/pyformsjs/ControlDateTime.js");
 	$.getScript("/static/pyformsjs/ControlImage.js");
   	$.getScript("/static/pyformsjs/ControlItemList.js");
 	$.getScript("/static/pyformsjs/ControlList.js");
@@ -70,6 +73,9 @@ function PyformsManager(){
 	$.getScript("/static/jquery.flowchart/jquery.mousewheel.min.js");
 	$.getScript("/static/jquery.flowchart/jquery.flowchart.min.js");
 	$.getStylesheet("/static/jquery.flowchart/jquery.flowchart.min.css");
+
+	$.getScript("/static/datetimepicker/jquery.datetimepicker.full.min.js");
+	$.getStylesheet("/static/datetimepicker/jquery.datetimepicker.min.css");
 
 	$.getScript("/static/jqplot/jquery.jqplot.min.js");
 	$.getScript("/static/jqplot/plugins/jqplot.cursor.js");

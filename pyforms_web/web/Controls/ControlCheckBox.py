@@ -8,7 +8,7 @@ class ControlCheckBox(ControlBase):
 	def serialize(self):
 		return { 
 			'name':     str(self.__class__.__name__), 
-			'value':    str(self.value),
+			'value':    self.value,
 			'label':    str(self._label if self._label else ''),
 			'help':     str(self._help if self._help else ''),
 			'visible':  int(self._visible)

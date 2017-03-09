@@ -1,6 +1,5 @@
-import datetime, json, dill, os
+import datetime, json, dill, os, traceback
 from pysettings import conf
-from crequest.middleware import CrequestMiddleware
 from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 
 class ApplicationsLoader:
@@ -55,7 +54,13 @@ class ApplicationsLoader:
 		app = PyFormsMiddleware.get_instance(application_id)
 		if app is None: return None
 		
-		if app_data is not None: app.load_serialized_form(app_data)
+		if app_data is not None:
+			try:
+				app.load_serialized_form(app_data)
+			except Exception as e:
+				traceback.print_exc()
+				app.alert(str(e))
+
 
 		data = [r.serialize_form() for r in request.updated_apps.applications if r.is_new_app]
 		

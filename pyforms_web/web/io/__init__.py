@@ -1,3 +1,4 @@
+"""
 from pysettings import conf
 from crequest.middleware import CrequestMiddleware
 
@@ -38,3 +39,4 @@ class open(object):
 	def readline(self, size=-1): 	return self.file.readline(size)
 	def readlines(self, hint=-1): 	return self.file.readlines(hint)
 	def close(self): 				self.file.close()
+"""

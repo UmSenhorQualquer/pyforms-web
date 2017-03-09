@@ -83,7 +83,7 @@ def open_app(request, app_id):
 @never_cache
 @csrf_exempt
 def update_app(request, app_id):
-	data = json.loads(request.body)
+	data = simplejson.loads(request.body)
 	data = ApplicationsLoader.update_instance(request, app_id, data)
 	if data is None:  
 		return HttpResponse(simplejson.dumps(

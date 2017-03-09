@@ -81,8 +81,20 @@ class BaseWidget(object):
 
 		return """<div id='{0}' class='ui top attached tabular menu' >{1}</div>{2}<script type='text/javascript'>$('#{0}.menu .item').tab();</script>""".format(tab_id, tabs_head, tabs_body)
 
+	def generate_segments(self, formsetdict):
+		
+		html = ''
+		for key, item in sorted(formsetdict.items()):
+			if item==True: continue
+			
+			html += "<h2 class='ui header' >{0}</h2>".format(key[key.find(':')+1:])
+			html += "<div class='ui segment pyforms-segment' >"
+			html += self.generate_panel(item, add_field_class=False)
+			html += "</div>"
+		return html
 
 	def __get_fields_class(self, row):
+
 		if 	 len(row)==2: return 'two'
 		elif len(row)==3: return 'three'
 		elif len(row)==4: return 'four'
@@ -135,6 +147,9 @@ class BaseWidget(object):
 					layout += "<div class='rows %s' >%s</div>" % ('field' if add_field_class else '', panel)
 				elif row == " ":
 					layout += "<div class='field' ></div>"
+				elif type(row) is dict and row.get('is-segment', False):
+					seg = self.generate_segments(row)
+					layout += seg
 				elif type(row) is dict:
 					tabs = self.generate_tabs(row)
 					layout += tabs
@@ -157,12 +172,15 @@ class BaseWidget(object):
 			for row in formset:
 				if isinstance(row, tuple):
 					panel 	= self.generate_panel( row )
-					layout += "<div class='fields {1}' >{0}</div>".format(panel, self.__get_fields_class(row))
+					layout += "<div class='row fields {1}' >{0}</div>".format(panel, self.__get_fields_class(row))
 				elif isinstance(row, list):
 					panel 	= self.generate_panel( row )
-					layout += "<div class='fields' >{0}</div>".format(panel)
+					layout += "<div class='row fields' >{0}</div>".format(panel)
 				elif row == " ":
 					layout += "<div class='field-empty-space' ></div>"
+				elif type(row) is dict and row.get('is-segment', False):
+					seg = self.generate_segments(row)
+					layout += seg
 				elif type(row) is dict:
 					tabs 	= self.generate_tabs(row)
 					layout += tabs
@@ -176,7 +194,7 @@ class BaseWidget(object):
 						elif row.startswith('h4:'): layout += "<h4>%s</h4>" % row[3:]
 						elif row.startswith('h5:'): layout += "<h5>%s</h5>" % row[3:]
 						elif row.startswith('warning:'): 	layout += "<div class='ui warning visible  message'>%s</div>" % row[8:]
-						elif row.startswith('alert:'): 		layout += "<div class='ui alert message'>%s</div>" % row[6:]
+						elif row.startswith('alert:'): 		layout += "<div class='ui alert error message'>%s</div>" % row[6:]
 						else: layout += "<div class='ui message'>%s</div>" % row
 						
 					else:
@@ -184,7 +202,6 @@ class BaseWidget(object):
 						layout += str(control)
 		
 		return layout
-
 
 
 
@@ -310,7 +327,7 @@ class BaseWidget(object):
 	def success(self,	msg, title=None):	self.message(msg, title, msg_type='success')
 	def info(self, 		msg, title=None):	self.message(msg, title, msg_type='info')
 	def warning(self, 	msg, title=None):	self.message(msg, title, msg_type='warning')
-	def alert(self, 	msg, title=None):	self.message(msg, title, msg_type='alert')
+	def alert(self, 	msg, title=None):	self.message(msg, title, msg_type='error')
 
 
 	

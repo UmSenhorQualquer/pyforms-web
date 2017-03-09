@@ -1,0 +1,1 @@
+from pyforms_web.web.djangoapp.model_admin.model_admin import ModelAdmin
