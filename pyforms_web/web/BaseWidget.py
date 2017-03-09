@@ -4,7 +4,10 @@ from pyforms_web.web.Controls.ControlFile import ControlFile
 from pyforms_web.web.Controls.ControlSlider import ControlSlider
 from pyforms_web.web.Controls.ControlText import ControlText
 from pyforms_web.web.Controls.ControlCheckBox import ControlCheckBox
-from pyforms_web.web.Controls.ControlPlayer import ControlPlayer
+try:
+	from pyforms_web.web.Controls.ControlPlayer import ControlPlayer
+except:
+	print "ControlPlayer is not available"
 from pyforms_web.web.Controls.ControlButton import ControlButton
 from pyforms_web.web.djangoapp.Applications import ApplicationsLoader
 from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
@@ -255,17 +258,12 @@ class BaseWidget(object):
 
 			if item.was_updated:
 				res[item._name] = item.serialize()
-				if isinstance(item, ControlPlayer ) and item._value!=None and item._value!='':
-					item._value.release() #release any open video
-		"""
-		children_windows = []
-		for var_name, win in self.children_windows.items():
-			win.parent_win = None
-
-			buf = StringIO.StringIO(); dill.dump(win, buf) 
-			children_windows.append( [var_name, base64.b64encode(buf.getvalue())] )
-		if len(children_windows)>0: res['children-windows'] = children_windows
-		"""
+				try:
+					if isinstance(item, ControlPlayer ) and item._value!=None and item._value!='':
+						item._value.release() #release any open video
+				except:
+					pass
+		
 		return res
 
 	def commit(self):
