@@ -1,4 +1,4 @@
-import datetime, numpy as np
+import datetime
 from pyforms_web.web.Controls.ControlBase import ControlBase
 import simplejson
 

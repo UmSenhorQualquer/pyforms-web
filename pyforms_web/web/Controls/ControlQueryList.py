@@ -232,8 +232,7 @@ class ControlQueryList(ControlBase):
 	#####################################################################
 	#####################################################################
 
-	def format_list_column(self, col_value):
-		
+	def format_list_column(self, col_value):		
 
 		if isinstance(col_value, datetime.datetime ):
 			return col_value.strftime('%Y-%m-%d %H:%M') if col_value else ''

@@ -143,25 +143,27 @@ class ModelAdmin(BaseWidget):
 	#################################################################################
 
 
-
-
-
-
 	def init_form(self, parent=None):
 
 		self.formset = ['_add_btn', '_list'] + self.formset + [('_save_btn', '_create_btn','_remove_btn', '_cancel_btn')]
 		return super(ModelAdmin, self).init_form(parent)
 
-	def populate_list(self):
+	def get_queryset(self):
+		"""
+			this function retrives a queryset with all the rows.
+			does not include the filters made by the user in the interface
+		"""
 		queryset = self.model.objects.all()
-		if self.parent_field:
-			queryset = queryset.filter(**{self.parent_field.name: self.parent_pk})
-			
-		self._list.list_display = self.list_display
+		#used to filter the model for inline fields
+		if self.parent_field: queryset = queryset.filter(**{self.parent_field.name: self.parent_pk})
 
-		if self.list_filter: self._list.list_filter = self.list_filter
-		self._list.value = queryset
-		
+	def populate_list(self):
+		"""
+			configures the ControlQuerySet to display the data
+		"""
+		self._list.list_display = self.list_display
+		self._list.list_filter 	= self.list_filter if self.list_filter else []
+		self._list.value 		= self.get_queryset()
 		
 	def __add_btn_event(self):
 		self.show_create_form()
