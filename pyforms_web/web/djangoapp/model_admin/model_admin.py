@@ -156,6 +156,7 @@ class ModelAdmin(BaseWidget):
 		queryset = self.model.objects.all()
 		#used to filter the model for inline fields
 		if self.parent_field: queryset = queryset.filter(**{self.parent_field.name: self.parent_pk})
+		return queryset
 
 	def populate_list(self):
 		"""
