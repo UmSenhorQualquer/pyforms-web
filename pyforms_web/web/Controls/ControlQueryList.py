@@ -4,6 +4,7 @@ from django.db.models.constants import LOOKUP_SEP
 from django.core.exceptions import FieldDoesNotExist
 from django.utils.encoding import force_text
 from django.utils.dateparse import parse_datetime
+from django.db.models import Q
 import simplejson, datetime
 from django.utils import timezone
 from django.conf import settings
@@ -69,6 +70,9 @@ class ControlQueryList(ControlBase):
 
 		self.list_display 		= []
 		self.list_filter 		= []
+		self.search_fields  	= []
+
+		self.search_field_key   = None
 		self.filter_by 			= []
 		self.sort_by 			= []
 		self._selected_row_id   = -1 #row selected by the mouse
@@ -126,6 +130,13 @@ class ControlQueryList(ControlBase):
 			qs.query 	= self._query
 			for f in self.filter_by:
 				qs = qs.filter(**f)
+
+			if self.search_field_key and len(self.search_field_key)>0:
+				search_filter = None
+				for s in self.search_fields:
+					q = Q(**{s: self.search_field_key})
+					search_filter = (search_filter | q) if search_filter else q
+				qs = qs.filter(search_filter)
 			return qs
 		else:
 			return None
@@ -177,8 +188,9 @@ class ControlQueryList(ControlBase):
 					})
 			
 			filters_list = self.serialize_filters(self.list_filter, queryset)
+		
+		if len(self.search_fields)>0: data.update({'search_field_key': ''})
 	
-
 		data.update({
 			'filters_list': 		filters_list,
 			'filter_by':			self.filter_by,
@@ -203,6 +215,7 @@ class ControlQueryList(ControlBase):
 
 	def deserialize(self, properties):
 		ControlBase.deserialize(self,properties)
+		self.search_field_key   = properties.get('search_field_key', None)
 		self.sort_by 			= properties.get('sort_by', [])
 		self.filter_by 			= properties.get('filter_by',[])
 		self._current_page	    = int(properties['pages']['current_page'])

@@ -12,11 +12,13 @@ from pyforms_web.web.Controls.ControlButton import ControlButton
 from pyforms_web.web.djangoapp.Applications import ApplicationsLoader
 from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 import uuid, os, shutil, base64, inspect
-import base64, dill, StringIO
+import base64, dill, StringIO, simplejson
 from pysettings import conf
 from django.template.loader import render_to_string
 
 class BaseWidget(object):
+
+	refresh_timeout = 120000
 
 	def __init__(self, title, parent_win=None):
 		self._formset 		= None
@@ -55,16 +57,18 @@ class BaseWidget(object):
 			#self._js = '[{0}]'.format(",".join(self._controls))
 
 
-		parent_code = ''
-		if parent: parent_code = ",'{0}'".format(parent.uid)
+		parent_code = 'undefined'
+		if parent: parent_code = "'{0}'".format(parent.uid)
+
+		extra_data = {'refresh_timeout': self.refresh_timeout}
 
 		self._js = '[{0}]'.format(",".join(self._controls))
 		self._html += """
-		<script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1} {3}) );</script>
-		""".format(self.modulename, self._js, self.uid, parent_code)
+		<script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1}, {3}, {4}) );</script>
+		""".format(self.modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data))
 		self._formLoaded = True
 
-		return { 'code': self._html, 'title': self._title, 'app_id':self.uid }
+		return { 'code': self._html, 'title': self._title, 'app_id':self.uid, 'refresh_timeout':  self.refresh_timeout }
 		
 
 	def generate_tabs(self, formsetdict):

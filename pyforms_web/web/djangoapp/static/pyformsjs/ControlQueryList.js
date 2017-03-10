@@ -13,6 +13,12 @@ ControlQueryList.prototype.init_control = function(){
 
 	var filters = this.properties.filters_list;
 	
+	if( this.properties.search_field_key!=undefined ){
+		html += "<div class='field'>";
+		html += "<input placeholder='Search by' type='text' name='search_key' id='"+this.control_id()+"-search' />";
+		html += "</div>";
+	};
+
 	// render the filters
 	if(filters.length>0){
 		for(var j=0; j<filters.length; j+=5){
@@ -56,6 +62,15 @@ ControlQueryList.prototype.init_control = function(){
 	this.set_value(this.properties.value);	
 
 	var self = this;
+
+	if( this.properties.search_field_key!=undefined )
+		$("#"+this.control_id()+"-search").keypress(function (ev) {
+			var keycode = (ev.keyCode ? ev.keyCode : ev.which);
+			if (keycode == '13') {
+				self.properties.search_field_key = $(this).val();
+				self.basewidget.fire_event( self.name, 'filter_changed_event' );
+			}
+		})
 
 	$( "#"+this.place_id()+" .queryset-filter" ).dropdown({onChange:function(value, text, selectedItem){
 		self.properties.filter_by = [];
@@ -130,6 +145,11 @@ ControlQueryList.prototype.get_value = function(){
 ControlQueryList.prototype.set_value = function(value){
 	var titles = this.properties.horizontal_headers;
 	var data   = this.properties.values;
+
+	if(this.properties.search_field_key==null)
+		$("#"+this.place_id()+"-search").val('');
+	else
+		$("#"+this.place_id()+"-search").val(this.properties.search_field_key);
 	
 	var rows_html = '';
 	for(var i=0; i<data.length; i++){

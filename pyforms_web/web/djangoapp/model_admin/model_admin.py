@@ -23,16 +23,24 @@ import os
 
 class ModelAdmin(BaseWidget):
 
+	inlines 	 = []
 	list_filter  = None
 	list_display = None
-	inlines 	 = []
+	search_fields= None
+	
 	fieldsets	 = None
 
 	list_control = ControlQueryList
 
 	def __init__(self, title, model, parent=None):
+		"""
+		Parameters:
+      		title  - Title of the app.
+      		model  - Model with the App will represent.
+      		parent - Variable with the content [model, foreign key id]. It is used to transform the App in an inline App
+		"""
 		BaseWidget.__init__(self, title)
-		self.model = model
+		self.model 		 = model
 		self.edit_fields = []
 
 		self.parent_pk		= None
@@ -40,8 +48,11 @@ class ModelAdmin(BaseWidget):
 		self.parent_model 	= None
 		self.object_pk 		= None
 
+		# used to configure the interface to inline
+		# it will filter the dataset by the foreign key
 		if parent: self.set_parent(parent[0], parent[1])
 
+		# buttons
 		self._add_btn 		= ControlButton('<i class="plus icon"></i> Add')
 		self._list 			= self.list_control('List')
 		self._save_btn 		= ControlButton('<i class="save icon"></i> Save')
@@ -54,7 +65,8 @@ class ModelAdmin(BaseWidget):
 		self.edit_fields.append( self._remove_btn )
 		self.edit_fields.append( self._cancel_btn )
 				
-		self._add_btn.value 	= self.__add_btn_event
+		# events
+		self._add_btn.value 	= self.show_create_form
 		self._cancel_btn.value 	= self.__cancel_btn_event
 		self._create_btn.value 	= self.__save_btn_event
 		self._remove_btn.value 	= self.__remove_btn_event
@@ -62,19 +74,47 @@ class ModelAdmin(BaseWidget):
 		self._list.item_selection_changed_event = self.__list_item_selection_changed_event
 
 		self.populate_list()
-		self.set_model_formfields()
+		self.create_model_formfields()
 		
 
+	#################################################################################
+	#################################################################################
 
+	def init_form(self, parent=None):
 
-
+		self.formset = ['_add_btn', '_list'] + self.formset + [('_save_btn', '_create_btn','_remove_btn', '_cancel_btn')]
+		return super(ModelAdmin, self).init_form(parent)
 
 	#################################################################################
 	#################################################################################
 
-	def set_model_formfields(self):
-		#setup the interface to edit the model
 
+	
+	def get_queryset(self):
+		"""
+			the function retrives a queryset with all the rows.
+			does not include the filters made by the user in the interface
+		"""
+		queryset = self.model.objects.all()
+		#used to filter the model for inline fields
+		if self.parent_field: queryset = queryset.filter(**{self.parent_field.name: self.parent_pk})
+		return queryset
+
+	def populate_list(self):
+		"""
+			configures the ControlQuerySet to display the data
+		"""
+		self._list.list_display  = self.list_display  if self.list_display  else []
+		self._list.list_filter 	 = self.list_filter   if self.list_filter   else []
+		self._list.search_fields = self.search_fields if self.search_fields else []
+		self._list.value 		 = self.get_queryset()
+		
+	
+	def create_model_formfields(self):
+		"""
+			Create the model edition form
+		"""
+		
 		fields2show = self.get_visible_fields_names()		
 		formset 	= []
 
@@ -138,43 +178,7 @@ class ModelAdmin(BaseWidget):
 
 		self.hide_edit_create_form()
 
-
-	#################################################################################
-	#################################################################################
-
-
-	def init_form(self, parent=None):
-
-		self.formset = ['_add_btn', '_list'] + self.formset + [('_save_btn', '_create_btn','_remove_btn', '_cancel_btn')]
-		return super(ModelAdmin, self).init_form(parent)
-
-	def get_queryset(self):
-		"""
-			this function retrives a queryset with all the rows.
-			does not include the filters made by the user in the interface
-		"""
-		queryset = self.model.objects.all()
-		#used to filter the model for inline fields
-		if self.parent_field: queryset = queryset.filter(**{self.parent_field.name: self.parent_pk})
-		return queryset
-
-	def populate_list(self):
-		"""
-			configures the ControlQuerySet to display the data
-		"""
-		self._list.list_display = self.list_display
-		self._list.list_filter 	= self.list_filter if self.list_filter else []
-		self._list.value 		= self.get_queryset()
-		
-	def __add_btn_event(self):
-		self.show_create_form()
-
-	def __cancel_btn_event(self):
-		self.hide_edit_create_form()
-		self._list.selected_row_id = -1
-		
-
-
+	
 	def show_create_form(self):
 		self._add_btn.hide()
 		self._list.hide()
@@ -184,7 +188,7 @@ class ModelAdmin(BaseWidget):
 		fields2show = self.get_visible_fields_names()
 		
 		for field in self.model._meta.get_fields():
-			if field.name not in fields2show: 		continue
+			if field.name not in fields2show: 						continue
 			if isinstance(field, models.AutoField): 				continue
 			elif isinstance(field, models.BigAutoField):  			continue
 			elif isinstance(field, models.BigIntegerField):  		getattr(self, field.name).value = None
@@ -447,15 +451,36 @@ class ModelAdmin(BaseWidget):
 
 			return None
 
+	def set_parent(self, parent_model, parent_pk):
+		self.parent_pk 		= parent_pk
+		self.parent_model 	= parent_model
 
-	def __create_btn_event(self):
-		obj = self.save_event()
-		if obj:
-			if self.inlines:
-				self.show_edit_form()
-			else:
-				self.hide_edit_create_form()
-			self.success('The object <b>{0}</b> was created with success!'.format(obj),'Success!')
+		for field in self.model._meta.get_fields():
+			if isinstance(field, models.ForeignKey):
+				if parent_model == field.rel.to:
+					self.parent_field = field
+					break
+
+
+	def get_visible_fields_names(self):
+		#return the names of the visible fields
+		fields = get_fieldsets_strings(self.fieldsets) if self.fieldsets else [field.name for field in self.model._meta.get_fields()]
+		if self.parent_field: fields.remove(self.parent_field.name)
+		return fields
+
+	def get_selected_row_object(self):
+		#return the current selected object
+		if self._list.selected_row_id<0: return None
+		return self._list.value.get(pk=self._list.selected_row_id)
+
+
+	#################################################################################
+	#### PRIVATE FUNCTIONS ##########################################################
+	#################################################################################
+
+	def __cancel_btn_event(self):
+		self.hide_edit_create_form()
+		self._list.selected_row_id = -1
 
 	def __save_btn_event(self):
 		obj = self.save_event()
@@ -478,24 +503,4 @@ class ModelAdmin(BaseWidget):
 			self.populate_list()
 
 
-	def set_parent(self, parent_model, parent_pk):
-		self.parent_pk 		= parent_pk
-		self.parent_model 	= parent_model
-
-		for field in self.model._meta.get_fields():
-			if isinstance(field, models.ForeignKey):
-				if parent_model == field.rel.to:
-					self.parent_field = field
-					break
-
-
-	def get_visible_fields_names(self):
-		#return the names of the visible fields
-		fields = get_fieldsets_strings(self.fieldsets) if self.fieldsets else [field.name for field in self.model._meta.get_fields()]
-		if self.parent_field: fields.remove(self.parent_field.name)
-		return fields
-
-	def get_selected_row_object(self):
-		#return the current selected object
-		if self._list.selected_row_id<0: return None
-		return self._list.value.get(pk=self._list.selected_row_id)
+	

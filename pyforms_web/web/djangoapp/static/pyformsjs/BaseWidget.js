@@ -1,6 +1,6 @@
 
 
-function BaseWidget(widget_id, widget_name, controls, parent_id){
+function BaseWidget(widget_id, widget_name, controls, parent_id, data){
 	this.name 		= widget_name;
 	this.widget_id 	= widget_id;
 	this.controls 	= controls;
@@ -16,7 +16,15 @@ function BaseWidget(widget_id, widget_name, controls, parent_id){
 		controls[index].init_control();
 	};
 	//$('.application-tabs').tabs()
+
+	//add auto refresh
+	//this.timeout_loop = setInterval(this.refresh_timeout_event, data.refresh_timeout);
 }
+////////////////////////////////////////////////////////////
+
+BaseWidget.prototype.refresh_timeout_event = function(){
+	console.log('0');
+};
 
 ////////////////////////////////////////////////////////////
 
@@ -202,6 +210,7 @@ BaseWidget.prototype.jquery = function(){
 ////////////////////////////////////////////////////////////
 
 BaseWidget.prototype.close = function(){
+	clearTimeout(this.timeout_loop);
 	this.close_sub_apps();
 	this.jquery().remove();
 };
