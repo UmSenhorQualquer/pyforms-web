@@ -14,6 +14,7 @@ class ControlBase(object):
 		self._visible   = True
 		self._error 	= False
 		self._css 		= None
+		self._enabled   = True
 		self.uid = uuid.uuid4()
 		self._controlHTML = ""
 
@@ -30,7 +31,8 @@ class ControlBase(object):
 			'label':    self._label if self._label else '',
 			'help':     self._help if self._help else '',
 			'visible':  self._visible,
-			'error': 	self._error
+			'error': 	self._error,
+			'enabled': 	self._enabled
 		}
 		if self._css: res.update({'css':self._css})
 		return res
@@ -99,10 +101,12 @@ class ControlBase(object):
 
 
 	@property
-	def enabled(self): return True
+	def enabled(self): return self._enabled
 	@enabled.setter
-	def enabled(self, value): 
-		self.mark_to_update_client()
+	def enabled(self, value):		
+		if self._enabled!=value:
+			self._enabled = value
+			self.mark_to_update_client()
 
 	############################################################################
 

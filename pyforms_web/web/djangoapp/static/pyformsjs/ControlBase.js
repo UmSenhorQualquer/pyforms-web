@@ -126,6 +126,12 @@ ControlBase.prototype.deserialize = function(data){
 	else 
 		this.hide();
 
+	if(!this.properties.enabled){
+		this.jquery().attr('disabled', '');
+	}else{
+		this.jquery().removeAttr('disabled');
+	};
+
 	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 };
 
@@ -139,6 +145,11 @@ ControlBase.prototype.serialize = function(){
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlBase.prototype.init_control = function(){
+	if(!this.properties.enabled){
+		this.jquery().attr('disabled', '');
+	}else{
+		this.jquery().removeAttr('disabled');
+	};
 	if(!this.properties.visible) this.hide();
 	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 	if(this.properties.css) this.jquery().addClass(this.properties.css);

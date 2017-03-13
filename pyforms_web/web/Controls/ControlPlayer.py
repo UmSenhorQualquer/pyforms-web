@@ -1,6 +1,9 @@
-import cv2, base64, numpy as np, StringIO
+try:
+	import cv2, base64, numpy as np, StringIO
+	from PIL import Image
+except:
+	print "control player will not work. Libraries missing"
 from pyforms_web.web.Controls.ControlBase import ControlBase
-from PIL import Image
 import simplejson
 
 class ControlPlayer(ControlBase):
@@ -83,11 +86,11 @@ class ControlPlayer(ControlBase):
 				buff.close()
 				data.update({ 'base64content': base64.b64encode(content) })
 
-		data.update({ 'value':       self._filename      })
-		data.update({ 'filename':       self._filename      })
-		data.update({ 'startFrame':     self.startFrame     })
-		data.update({ 'endFrame':       self.endFrame       })
-		data.update({ 'video_index':    self.video_index    })
+			data.update({ 'value':       self._filename      })
+			data.update({ 'filename':       self._filename      })
+			data.update({ 'startFrame':     self.startFrame     })
+			data.update({ 'endFrame':       self.endFrame       })
+			data.update({ 'video_index':    self.video_index    })
 		return data
 
 

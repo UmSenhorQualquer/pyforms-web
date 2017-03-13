@@ -98,7 +98,7 @@ BaseWidget.prototype.deserialize = function(data){
 	this.children_windows = data['children-windows']
 
 
-
+	
 
 	if(data.messages!=undefined)
 		for (var i=0; i<data.messages.length; i++){
