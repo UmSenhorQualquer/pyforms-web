@@ -38,7 +38,10 @@ class ControlBase(object):
 		return res
 
 	def deserialize(self, properties):
-		self.value    = properties.get('value',None)
+		value = properties.get('value',None)
+		if value is not None and len(value)==0:  value = None
+
+		self.value    = value
 		self._label   = properties.get('label','')
 		self._help    = properties.get('help','')
 		self._visible = properties.get('visible',True)

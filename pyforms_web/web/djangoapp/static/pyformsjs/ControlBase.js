@@ -51,7 +51,7 @@ ControlBase.prototype.get_value = function(){
 ControlBase.prototype.set_value = function(value){
 	if(this.jquery().size()>0) 
 		if(this.properties.value)
-			this.jquery().val(value); 
+			this.jquery().val(this.properties.value); 
 		else
 			this.jquery().val(''); 
 };

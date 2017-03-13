@@ -13,7 +13,7 @@ ControlText.prototype.init_control = function(){
 	this.jquery_place().replaceWith(html);
 
 	if(this.properties.value)
-			this.jquery().val(value); 
+			this.jquery().val(this.properties.value); 
 		else
 			this.jquery().val(''); 
 
