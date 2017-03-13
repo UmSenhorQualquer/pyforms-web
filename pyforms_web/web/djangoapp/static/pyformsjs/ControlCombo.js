@@ -70,6 +70,12 @@ ControlCombo.prototype.deserialize = function(data){
 		this.jquery().removeAttr('disabled');
 	};
 
+	if(!this.properties.enabled){
+		this.jquery().attr('disabled', '');
+	}else{
+		this.jquery().removeAttr('disabled');
+	};
+
 	if(!this.properties.visible) this.hide();
 	else this.show();
 	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
