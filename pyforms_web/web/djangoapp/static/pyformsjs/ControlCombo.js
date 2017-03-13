@@ -30,9 +30,9 @@ ControlCombo.prototype.init_control = function(){
 	this.set_value(this.properties.value);
 
 	if(!this.properties.enabled){
-		this.jquery().addClass("disabled")
+		$('#'+this.place_id()+' .ui.dropdown').addClass("disabled")
 	}else{
-		this.jquery().removeClass("disabled")
+		$('#'+this.place_id()+' .ui.dropdown').removeClass("disabled")
 	};
 
 	
@@ -72,9 +72,9 @@ ControlCombo.prototype.deserialize = function(data){
 	this.set_value(this.properties.value);
 
 	if(!this.properties.enabled){
-		this.jquery().addClass("disabled")
+		$('#'+this.place_id()+' .ui.dropdown').addClass("disabled")
 	}else{
-		this.jquery().removeClass("disabled")
+		$('#'+this.place_id()+' .ui.dropdown').removeClass("disabled")
 	};
 
 
