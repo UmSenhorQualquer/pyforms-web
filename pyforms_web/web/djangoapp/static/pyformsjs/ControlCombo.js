@@ -30,9 +30,9 @@ ControlCombo.prototype.init_control = function(){
 	this.set_value(this.properties.value);
 
 	if(!this.properties.enabled){
-		this.jquery().attr('disabled', '');
+		this.jquery().addClass("disabled")
 	}else{
-		this.jquery().removeAttr('disabled');
+		this.jquery().removeClass("disabled")
 	};
 
 	
@@ -72,9 +72,9 @@ ControlCombo.prototype.deserialize = function(data){
 	this.set_value(this.properties.value);
 
 	if(!this.properties.enabled){
-		this.jquery().attr('disabled', '');
+		this.jquery().addClass("disabled")
 	}else{
-		this.jquery().removeAttr('disabled');
+		this.jquery().removeClass("disabled")
 	};
 
 
