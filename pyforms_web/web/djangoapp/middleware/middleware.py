@@ -54,6 +54,20 @@ class PyFormsMiddleware(object):
 				return dill.load(f)
 		else:
 			return None
+
+	@classmethod
+	def remove_instance(cls, app_id):
+		user=cls.user()
+		app_path = os.path.join(
+			conf.PYFORMS_WEB_APPS_CACHE_DIR,
+			'{0}-{1}'.format(user.pk, user.username),
+			"{0}.app".format(app_id)
+		)
+		if os.path.isfile(app_path): 
+			os.remove(app_path)
+			return True
+		else:
+			return False
 		
 
 

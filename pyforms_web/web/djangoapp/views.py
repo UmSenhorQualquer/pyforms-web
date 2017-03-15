@@ -10,6 +10,8 @@ import json, simplejson, os, re
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
+from django.core.exceptions import PermissionDenied
+
 @csrf_exempt
 def upload_files(request):
 
@@ -65,7 +67,10 @@ def filesbrowser_browse(request):
 
 
 def register_app(request, app_module):
-	data = ApplicationsLoader.register_instance(request, app_module)
+	try:
+		data = ApplicationsLoader.register_instance(request, app_module)
+	except PermissionDenied as e:
+		data = {'error': str(e)}
 	if data is None: 
 		return HttpResponse(
 			simplejson.dumps({'error':'Application session ended.'}), "application/json"
@@ -73,10 +78,14 @@ def register_app(request, app_module):
 	return HttpResponse(simplejson.dumps(data), "application/json")
 
 
-def open_app(request, app_id):	
-	app  	= ApplicationsLoader.get_instance(request, app_id)
-	params 	= {}
-	params.update( app.init_form() )
+def open_app(request, app_id):
+	try:
+		app  	= ApplicationsLoader.get_instance(request, app_id)
+		params 	= {}
+		params.update( app.init_form() )
+	except PermissionDenied as e:
+		params = {'error': str(e)}
+	
 	return HttpResponse(simplejson.dumps(params), "application/json")
 	
 
@@ -96,6 +105,9 @@ def update_app(request, app_id):
 @never_cache
 @csrf_exempt
 def remove_app(request, app_id):
-	data = ApplicationsLoader.remove_instance(request, app_id)
-	return HttpResponse(simplejson.dumps({'res':'OK'}), "application/json")
+	if ApplicationsLoader.remove_instance(request, app_id):
+		data = {'res':'OK'}
+	else:
+		data = {'res': 'ERROR', 'msg': 'the instance was not removed successfully'}
+	return HttpResponse(simplejson.dumps(data), "application/json")
 

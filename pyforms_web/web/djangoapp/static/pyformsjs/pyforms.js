@@ -11,8 +11,6 @@ var PYFORMS_CHECKER_LOOP_INTERVAL = 500;
 	$d.resolve($link);
 	return $d.promise();
   };
-
-
 })(jQuery);
 
 
@@ -96,6 +94,9 @@ function PyformsManager(){
 	$.getStylesheet("/static/filer/css/jquery.filer-dragdropbox-theme.css");
 
 	$.ajaxSetup({async: true, cache: false});
+
+
+	setInterval(this.garbage_collector, 5000); //Run the garbage collector for times to times.
 }
 
 ////////////////////////////////////////////////////////////
@@ -118,22 +119,27 @@ PyformsManager.prototype.add_app = function(app){
 
 ////////////////////////////////////////////////////////////
 
-PyformsManager.prototype.remove_app = function(app_id){
-	for(var i=0; i<this.applications.length; i++)
-		if( this.applications[i]!=undefined && this.applications[i].widget_id==app_id ){
-			var app = this.applications[i];
+PyformsManager.prototype.remove_app = function(app_id, app_index){
+	var app = null;
+	if(app_index==undefined)
+		for(var i=0; i<this.applications.length; i++)
+			if( this.applications[i]!=undefined && this.applications[i].widget_id==app_id )
+				app_index = i;
+			
+	app = this.applications[app_index];
+	if(app!=undefined && app!=null){
+		$.ajax({
+			method: 'get',
+			cache: false,
+			dataType: "json",
+			url: '/pyforms/app/remove/'+app.widget_id+'/?nocache='+$.now(),
+			contentType: "application/json; charset=utf-8"
+		}).always(function(){
 			app.close();
-			delete this.applications[i];
-			this.applications.slice(i,1);
-			$.ajax({
-				method: 'get',
-				cache: false,
-				dataType: "json",
-				url: '/pyforms/app/remove/'+app_id+'/?nocache='+$.now(),
-				contentType: "application/json; charset=utf-8",
-			});
-			break;
-		}
+			delete pyforms.applications[app_index];
+			pyforms.applications.slice(app_index,1);
+		});
+	}
 };
 
 
@@ -248,6 +254,17 @@ PyformsManager.prototype.open_application = function(app_data){
 			this.layout_places[i].handler(application_id, app_data['title'], "/pyforms/app/open/"+application_id+"/");
 	};
 };
+
+PyformsManager.prototype.garbage_collector = function(){
+	/*
+	check if the html elements of the application exists,
+	otherwise remove the application.
+	*/
+	for(var i=pyforms.applications.length-1; i>=0; i--)
+		if( pyforms.applications[i]!=undefined && pyforms.applications[i].jquery().length==0 )
+			pyforms.remove_app(null, i);
+};
+
 
 ////////////////////////////////////////////////////////////
 if(pyforms==undefined) var pyforms = new PyformsManager()

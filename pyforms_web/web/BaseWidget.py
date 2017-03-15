@@ -332,8 +332,17 @@ class BaseWidget(object):
 	def alert(self, 	msg, title=None):	self.message(msg, title, msg_type='error')
 
 
-	
-	
+	@classmethod
+	def has_permissions(cls, user):
+		if hasattr(cls, 'groups'):
+			if user.is_superuser and 'superuser' in cls.groups: 
+				return True
+			if user.groups.filter(name__in=cls.groups).exists():
+				return True
+		else:
+			return True
+
+		return False
 
 
 	#### Variable connected to the Storage manager of the corrent user

@@ -1,6 +1,7 @@
 import datetime, json, dill, os, traceback
 from pysettings import conf
 from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
+from django.core.exceptions import PermissionDenied
 
 class ApplicationsLoader:
 
@@ -14,9 +15,15 @@ class ApplicationsLoader:
 			moduleclass = __import__( '.'.join(modules[:-1]) , fromlist=[modules[-1]] )
 			ApplicationsLoader._storage[modulename] = getattr(moduleclass, modules[-1])
 		moduleclass = ApplicationsLoader._storage[modulename]
-		app 		= moduleclass()
 
-		data = [{'uid': app.uid, 'layout_position': 0, 'title':app.title}]
+		if not moduleclass.has_permissions(request.user):
+			raise PermissionDenied('The user do not have access to the application')
+
+		app = moduleclass()
+
+
+
+		data = [{'uid': app.uid, 'layout_position': app.layout_position, 'title':app.title}]
 		for m in request.updated_apps.applications: m.commit()
 		
 		return data
@@ -24,23 +31,17 @@ class ApplicationsLoader:
 
 	@staticmethod
 	def remove_instance(request, application_id):
-		if os.path.isfile('/var/www/orquestra-server/oppened-apps.dat'):
-			with open('/var/www/orquestra-server/oppened-apps.dat', 'r') as f:
-				ApplicationsLoader._opened_apps = dill.load(f)
-		else:
-			ApplicationsLoader._opened_apps = {}
-
-		user_apps = ApplicationsLoader._opened_apps.get(request.user, None)
-		if user_apps is None: return None
-		user_apps.remove_app(application_id)
-
-		with open('/var/www/orquestra-server/oppened-apps.dat', 'w') as f:
-			dill.dump(ApplicationsLoader._opened_apps, f)
+		return PyFormsMiddleware.remove_instance(application_id)
 		
 	@staticmethod
 	def get_instance(request, application_id, app_data=None):
 		app = PyFormsMiddleware.get_instance(application_id)
+
 		if app is None: return None
+
+		if not app.has_permissions(request.user):
+			raise PermissionDenied('The user do not have access to the application')
+
 		
 		if app_data is not None: app.load_serialized_form(app_data)
 
