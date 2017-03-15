@@ -11,7 +11,7 @@ class ControlDate(ControlBase):
 
 	@property
 	def value(self): 
-		if isinstance(self._value, str):
+		if isinstance(self._value, (str,unicode) ):
 			return self._value
 		elif self._value==None:
 			return ''
