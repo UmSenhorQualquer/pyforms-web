@@ -39,7 +39,9 @@ class ControlBase(object):
 
 	def deserialize(self, properties):
 		value = properties.get('value',None)
-		if value is not None and len(value)==0:  value = None
+		if 	value is not None and \
+			(type(value)==unicode or type(value)==str) and len(value)==0: 
+				value = None
 
 		self.value    = value
 		self._label   = properties.get('label','')
