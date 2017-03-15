@@ -12,7 +12,7 @@ from pyforms_web.web.Controls.ControlButton import ControlButton
 from pyforms_web.web.djangoapp.Applications import ApplicationsLoader
 from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 import uuid, os, shutil, base64, inspect
-import base64, dill, StringIO, simplejson
+import base64, dill, StringIO, simplejson, filelock
 from pysettings import conf
 from django.template.loader import render_to_string
 
@@ -282,8 +282,11 @@ class BaseWidget(object):
 		if not os.path.exists(userpath): os.makedirs(userpath)
 
 		app_path = os.path.join(userpath, "{0}.app".format(self.uid) )
-		with open(app_path, 'wb') as f: 
-			dill.dump(self, f)
+
+		lock = filelock.FileLock("lockfile.txt")
+		with lock.acquire(timeout=4):
+			with open(app_path, 'wb') as f: 
+				dill.dump(self, f)
 		
 
 

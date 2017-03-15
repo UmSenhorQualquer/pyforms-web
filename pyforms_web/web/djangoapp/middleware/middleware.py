@@ -1,6 +1,6 @@
 from pyforms_web.web.djangoapp.middleware.apps_2_update import Apps2Update
 from pysettings import conf
-import threading, os, dill
+import threading, os, dill, filelock
 
 class PyFormsMiddleware(object):
 	_request = {}
@@ -49,9 +49,12 @@ class PyFormsMiddleware(object):
 			"{0}.app".format(app_id)
 		)
 
+
 		if os.path.isfile(app_path): 
-			with open(app_path, 'rb') as f: 
-				return dill.load(f)
+			lock = filelock.FileLock("lockfile.txt")
+			with lock.acquire(timeout=4):
+				with open(app_path, 'rb') as f: 
+					return dill.load(f)
 		else:
 			return None
 
@@ -63,8 +66,10 @@ class PyFormsMiddleware(object):
 			'{0}-{1}'.format(user.pk, user.username),
 			"{0}.app".format(app_id)
 		)
-		if os.path.isfile(app_path): 
-			os.remove(app_path)
+		if os.path.isfile(app_path):
+			lock = filelock.FileLock("lockfile.txt")
+			with lock.acquire(timeout=4): 
+				os.remove(app_path)
 			return True
 		else:
 			return False
