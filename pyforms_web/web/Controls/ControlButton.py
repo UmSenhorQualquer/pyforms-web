@@ -17,12 +17,7 @@ class ControlButton(ControlBase):
         if not isinstance(self._value, (str, unicode)): self._value()
 
     def serialize(self):
-        res = {
-            'name':     str(self.__class__.__name__), 
-            'label':    str(self._label),
-            'help':     str(self._help),
-            'visible':  int(self._visible)
-        }
+        res = super(ControlButton, self).serialize()
         if self._css: res.update({'css':self._css})
         if isinstance(self.value, (str, unicode)) and len(self.value)>0: 
             res.update({'value':self.value})
