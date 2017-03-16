@@ -157,7 +157,7 @@ class ControlBase(object):
 
 
 
-	def __str__(self): return "<span id='place-{0}-{1}' />".format(self.parent.uid, self._name)
+	def __str__(self): return "<span id='place-{0}-{1}' />".format(self.parent.uid if self.parent else '', self._name)
 
 
 

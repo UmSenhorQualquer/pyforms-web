@@ -87,7 +87,7 @@ function PyformsManager(){
 	$.getScript("/static/jqplot/plugins/jqplot.categoryAxisRenderer.min.js");
 	$.getScript("/static/jqplot/plugins/jqplot.barRenderer.min.js");
 	$.getScript("/static/jqplot/plugins/jqplot.pointLabels.min.js");
-	$.getStylesheet("/static/jqplot/jquery.jqplot.min.css");
+	$.getStylesheet("/static/jqplot/jquery.jqplot.css");
 
 	$.getScript("/static/filer/js/jquery.filer.min.js");
 	$.getStylesheet("/static/filer/css/jquery.filer.css");

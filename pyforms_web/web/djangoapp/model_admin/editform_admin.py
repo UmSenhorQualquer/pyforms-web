@@ -21,18 +21,12 @@ from django.db import models
 import os
 
 
-class ModelAdmin(BaseWidget):
+class EditFormAdmin(BaseWidget):
 
 	inlines 	 = []
-	list_filter  = None
-	list_display = None
-	search_fields= None
-	
 	fieldsets	 = None
 
-	list_control = ControlQueryList
-
-	def __init__(self, title, model, parent=None):
+	def __init__(self, title, model, pk, parent=None):
 		"""
 		Parameters:
       		title  - Title of the app.
@@ -53,63 +47,33 @@ class ModelAdmin(BaseWidget):
 		if parent: self.set_parent(parent[0], parent[1])
 
 		# buttons
-		self._add_btn 		= ControlButton('<i class="plus icon"></i> Add')
-		self._list 			= self.list_control('List')
 		self._save_btn 		= ControlButton('<i class="save icon"></i> Save')
 		self._create_btn 	= ControlButton('<i class="plus icon"></i> Create')
 		self._remove_btn 	= ControlButton('<i class="minus icon"></i> Remove')			
-		self._cancel_btn 	= ControlButton('<i class="hide icon"></i> Cancel')
-
+		
 		self.edit_fields.append( self._save_btn )
 		self.edit_fields.append( self._create_btn )
 		self.edit_fields.append( self._remove_btn )
-		self.edit_fields.append( self._cancel_btn )
 				
 		# events
-		self._add_btn.value 	= self.show_create_form
-		self._cancel_btn.value 	= self.__cancel_btn_event
 		self._create_btn.value 	= self.__save_btn_event
 		self._remove_btn.value 	= self.__remove_btn_event
 		self._save_btn.value 	= self.__save_btn_event
-		self._list.item_selection_changed_event = self.__list_item_selection_changed_event
-
-		self.populate_list()
+		
 		self.create_model_formfields()
-		
-		
+		if pk:
+			self.object_pk = pk
+			self.show_edit_form()
 
 	#################################################################################
 	#################################################################################
 
 	def init_form(self, parent=None):
-
-		self.formset = ['_add_btn', '_list'] + self.formset + [('_save_btn', '_create_btn','_remove_btn', '_cancel_btn')]
-		return super(ModelAdmin, self).init_form(parent)
+		self.formset = self.formset + [('_save_btn', '_create_btn','_remove_btn')]
+		return super(EditFormAdmin, self).init_form(parent)
 
 	#################################################################################
 	#################################################################################
-
-
-	
-	def get_queryset(self):
-		"""
-			the function retrives a queryset with all the rows.
-			does not include the filters made by the user in the interface
-		"""
-		queryset = self.model.objects.all()
-		#used to filter the model for inline fields
-		if self.parent_field: queryset = queryset.filter(**{self.parent_field.name: self.parent_pk})
-		return queryset
-
-	def populate_list(self):
-		"""
-			configures the ControlQuerySet to display the data
-		"""
-		self._list.list_display  = self.list_display  if self.list_display  else []
-		self._list.list_filter 	 = self.list_filter   if self.list_filter   else []
-		self._list.search_fields = self.search_fields if self.search_fields else []
-		self._list.value 		 = self.get_queryset()
-		
 	
 	def create_model_formfields(self):
 		"""
@@ -177,12 +141,9 @@ class ModelAdmin(BaseWidget):
 			
 		self.formset = self.fieldsets if self.fieldsets else formset
 
-		self.hide_edit_create_form()
 
 	
 	def show_create_form(self):
-		self._add_btn.hide()
-		self._list.hide()
 		for field in self.edit_fields: field.show()
 		self._save_btn.hide()
 
@@ -220,8 +181,6 @@ class ModelAdmin(BaseWidget):
 			elif isinstance(field, models.ForeignKey):				getattr(self, field.name).value = None
 
 	def show_edit_form(self):
-		self._add_btn.hide()
-		self._list.hide()
 		for field in self.edit_fields: 		field.show()
 		for field in self.inlines_controls: field.show()
 		self._create_btn.hide()
@@ -267,13 +226,6 @@ class ModelAdmin(BaseWidget):
 		for inline in self.inlines:
 			getattr(self, inline.__name__).value = inline( (self.model, self.object_pk) )
 
-	def hide_edit_create_form(self):
-		self._add_btn.show()
-		self._list.show()
-		for field in self.edit_fields: 		field.hide()
-		for field in self.inlines_controls: field.hide()
-		self._list.selected_row_index = -1
-		self.object_pk = None
 
 	def save_event(self):
 		fields2show = self.get_visible_fields_names()
@@ -442,7 +394,6 @@ class ModelAdmin(BaseWidget):
 
 
 			self.object_pk = obj.pk
-			self.populate_list()
 
 			return obj
 
@@ -469,39 +420,21 @@ class ModelAdmin(BaseWidget):
 		if self.parent_field: fields.remove(self.parent_field.name)
 		return fields
 
-	def get_selected_row_object(self):
-		#return the current selected object
-		if self._list.selected_row_id<0: return None
-		return self._list.value.get(pk=self._list.selected_row_id)
-
 
 	#################################################################################
 	#### PRIVATE FUNCTIONS ##########################################################
 	#################################################################################
 
-	def __cancel_btn_event(self):
-		self.hide_edit_create_form()
-		self._list.selected_row_id = -1
-
 	def __save_btn_event(self):
 		obj = self.save_event()
 		if obj:
-			self.hide_edit_create_form()
 			self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
 
-	def __list_item_selection_changed_event(self):
-		obj = self.get_selected_row_object()
-		if obj:
-			self.object_pk = obj.pk
-			self.show_edit_form()
-			
-
+	
 	def __remove_btn_event(self):
 		if self.object_pk:
 			obj = self.model.objects.get(pk=self.object_pk)
 			obj.delete()
-			self.hide_edit_create_form()
-			self.populate_list()
-
+			self.close()
 
 	

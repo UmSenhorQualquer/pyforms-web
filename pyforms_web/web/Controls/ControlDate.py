@@ -20,13 +20,12 @@ class ControlDate(ControlBase):
 			
 
 	@value.setter
-	def value(self, value):
-		if value:
-			oldvalue = self._value
-			self._value = value
-			if oldvalue!=value: 
-				self.mark_to_update_client()
-				self.changed_event()
+	def value(self, value):		
+		oldvalue = self._value
+		self._value = value
+		if oldvalue!=value: 
+			self.mark_to_update_client()
+			self.changed_event()
 
 
 	def serialize(self):

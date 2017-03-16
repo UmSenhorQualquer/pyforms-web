@@ -47,6 +47,12 @@ ControlMultipleSelection.prototype.init_control = function(){
 	this.jquery_place().replaceWith(html);	
 	this.jquery().dropdown({forceSelection:false});
 
+	if(!this.properties.enabled){
+		$("#"+this.place_id()+' .ui.dropdown').addClass('disabled');
+	}else{
+		$("#"+this.place_id()+' .ui.dropdown').removeClass('disabled');
+	};
+
 	if(!this.properties.visible) this.hide();
 	this.set_value(this.properties.value);
 	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 

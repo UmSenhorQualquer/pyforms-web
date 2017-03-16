@@ -22,9 +22,10 @@ ControlVisVis.prototype.init_control = function(){
 		data = [[[0,0]]];
 	};
 	var chart = $.jqplot(this.control_id(), data, {
-		title:self.label,
+		grid:{ borderColor: 'transparent', shadow: false, drawBorder: false, shadowColor: 'transparent', background: 'transparent'},
+ 		title:self.label,
 		seriesDefaults:{
-			showMarker:true, showLine:true, lineWidth:0.5,
+			showMarker:false, showLine:true, lineWidth:1,
 			markerOptions:{ size: 6 }
 		},
 		legend: {

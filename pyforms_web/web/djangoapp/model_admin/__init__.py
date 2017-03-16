@@ -1,1 +1,3 @@
 from pyforms_web.web.djangoapp.model_admin.model_admin import ModelAdmin
+from pyforms_web.web.djangoapp.model_admin.editform_admin import EditFormAdmin
+from pyforms_web.web.djangoapp.model_admin.viewform_admin import ViewFormAdmin

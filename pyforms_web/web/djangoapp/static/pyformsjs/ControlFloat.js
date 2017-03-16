@@ -19,6 +19,12 @@ ControlFloat.prototype.init_control = function(){
 
 	if(!this.properties.visible) this.hide();
 
+	if(!this.properties.enabled){
+		this.jquery().attr('disabled', '');
+	}else{
+		this.jquery().removeAttr('disabled');
+	};
+
 	
 	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
 };

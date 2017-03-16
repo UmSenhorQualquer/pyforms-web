@@ -26,7 +26,7 @@ class ControlVisVis(ControlBase):
 		for row in self._value:
 			new_row = []
 			for value in row:
-				if value is None or len(value)==0: break
+				if value is None: break
 				if isinstance(value[0], datetime.datetime): value[0] = unicode(value[0])
 				if isinstance(value[0], datetime.date): value[0] = unicode(value[0])
 				if isinstance(value[0], unicode): value[0] = str(value[0])
