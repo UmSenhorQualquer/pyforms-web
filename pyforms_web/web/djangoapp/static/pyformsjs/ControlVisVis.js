@@ -24,7 +24,7 @@ ControlVisVis.prototype.init_control = function(){
 	var chart = $.jqplot(this.control_id(), data, {
 		grid:{ borderColor: 'transparent', shadow: false, drawBorder: false, shadowColor: 'transparent', background: 'transparent'},
  		title:self.label,
-		seriesDefaults:{
+ 		seriesDefaults:{
 			showMarker:false, showLine:true, lineWidth:1,
 			markerOptions:{ size: 6 }
 		},
