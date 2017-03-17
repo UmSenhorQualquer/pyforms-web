@@ -21,7 +21,6 @@ class ControlLabel(ControlBase):
     def serialize(self):
         data = ControlBase.serialize(self)
         data.update({'css': str(self.css)})
-        data.update({'value': str(self.value)})
         return data
 
     def deserialize(self, properties):
