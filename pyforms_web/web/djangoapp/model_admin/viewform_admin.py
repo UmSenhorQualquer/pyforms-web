@@ -12,6 +12,7 @@ from pyforms_web.web.Controls.ControlMultipleSelection 	import ControlMultipleSe
 from pyforms_web.web.Controls.ControlEmptyWidget 		import ControlEmptyWidget
 from pyforms_web.web.Controls.ControlFileUpload 		import ControlFileUpload
 from pyforms_web.web.Controls.ControlCheckBox 			import ControlCheckBox
+from pyforms_web.web.Controls.ControlLabel 			import ControlLabel
 
 from django.core.exceptions import ValidationError, FieldDoesNotExist
 from pyforms_web.web.djangoapp.model_admin.utils import get_fieldsets_strings
@@ -96,7 +97,7 @@ class ViewFormAdmin(BaseWidget):
 			elif isinstance(field, models.PositiveSmallIntegerField): 	pyforms_field = ControlText( field.verbose_name )
 			elif isinstance(field, models.SlugField):  					pyforms_field = ControlText( field.verbose_name )
 			elif isinstance(field, models.SmallIntegerField):  			pyforms_field = ControlText( field.verbose_name )
-			elif isinstance(field, models.TextField):  					pyforms_field = ControlTextArea( field.verbose_name )
+			elif isinstance(field, models.TextField):  					pyforms_field = ControlLabel( field.verbose_name )
 			elif isinstance(field, models.TimeField):  					pyforms_field = ControlText( field.verbose_name )
 			elif isinstance(field, models.URLField):  					pyforms_field = ControlText( field.verbose_name )
 			elif isinstance(field, models.UUIDField):  					pyforms_field = ControlText( field.verbose_name )
