@@ -50,7 +50,7 @@ class ViewFormAdmin(BaseWidget):
 		self.create_model_formfields()
 		if pk:
 			self.object_pk = pk
-			self.show_edit_form()
+			self.show_form()
 
 	#################################################################################
 	#################################################################################
