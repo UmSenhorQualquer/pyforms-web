@@ -114,3 +114,11 @@ h3.subtitle {
 .field-empty-space{
 	height: 30px;
 }
+
+.ControlQueryList td, .ControlQueryList th{
+	cursor: pointer !important;
+}
+
+.ControlList td, .ControlList th{
+	cursor: pointer !important;
+}

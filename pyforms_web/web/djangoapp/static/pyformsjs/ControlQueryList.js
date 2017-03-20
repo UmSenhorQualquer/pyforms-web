@@ -9,7 +9,7 @@ ControlQueryList.prototype = Object.create(ControlBase.prototype);
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlQueryList.prototype.init_control = function(){
-	var html = "<div id='"+this.place_id()+"' class='field'>";
+	var html = "<div id='"+this.place_id()+"' class='field ControlQueryList'>";
 
 	var filters = this.properties.filters_list;
 	
