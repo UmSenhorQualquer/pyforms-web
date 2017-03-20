@@ -46,8 +46,6 @@ class ViewFormAdmin(BaseWidget):
 		# used to configure the interface to inline
 		# it will filter the dataset by the foreign key
 		if parent: self.set_parent(parent[0], parent[1])
-
-		
 		
 		self.create_model_formfields()
 		if pk:
@@ -65,8 +63,7 @@ class ViewFormAdmin(BaseWidget):
 	def create_model_formfields(self):
 		"""
 			Create the model edition form
-		"""
-		
+		"""		
 		fields2show = self.get_visible_fields_names()		
 		formset 	= []
 
@@ -129,9 +126,11 @@ class ViewFormAdmin(BaseWidget):
 		self.formset = self.fieldsets if self.fieldsets else formset
 
 
+	def hide_form(self):
+		for field in self.edit_fields: 		field.hide()
+		for field in self.inlines_controls: field.hide()
 	
-	
-	def show_edit_form(self):
+	def show_form(self):
 		for field in self.edit_fields: 		field.show()
 		for field in self.inlines_controls: field.show()
 		
@@ -139,8 +138,6 @@ class ViewFormAdmin(BaseWidget):
 		fields2show = self.get_visible_fields_names()
 		for field in self.model._meta.get_fields():
 			if field.name not in fields2show: continue
-
-
 
 			if isinstance(field, models.AutoField): 				continue
 			elif isinstance(field, models.BigAutoField):  			continue
@@ -175,7 +172,6 @@ class ViewFormAdmin(BaseWidget):
 			elif isinstance(field, models.ManyToManyField):					
 				getattr(self, field.name).value = [str(o.pk) for o in getattr(obj, field.name).all()]
 			
-
 			getattr(self, field.name).enabled = False
 
 		for inline in self.inlines:

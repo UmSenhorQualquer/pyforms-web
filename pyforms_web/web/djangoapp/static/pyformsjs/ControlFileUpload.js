@@ -44,9 +44,10 @@ ControlFileUpload.prototype.init_control = function(){
 		filerKit.append(this.properties.file_data);
 	};
 	
+	console.log(!this.properties.visible);
+	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
 
 	if(!this.properties.visible) this.hide();
-	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
 };
 
 
@@ -63,6 +64,7 @@ ControlFileUpload.prototype.set_value = function(value){
 	if(this.properties.file_data){
 		filerKit.append(this.properties.file_data);
 	};
+	if(!this.properties.visible) this.hide();
 };
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -49,16 +49,20 @@ class EditFormAdmin(BaseWidget):
 		# buttons
 		self._save_btn 		= ControlButton('<i class="save icon"></i> Save')
 		self._create_btn 	= ControlButton('<i class="plus icon"></i> Create')
-		self._remove_btn 	= ControlButton('<i class="minus icon"></i> Remove')			
+		self._remove_btn 	= ControlButton('<i class="minus icon"></i> Remove')	
+		self._cancel_btn 	= ControlButton('<i class="hide icon"></i> Cancel')
+		
 		
 		self.edit_fields.append( self._save_btn )
 		self.edit_fields.append( self._create_btn )
 		self.edit_fields.append( self._remove_btn )
+		self.edit_fields.append( self._cancel_btn )
 				
 		# events
 		self._create_btn.value 	= self.__save_btn_event
 		self._remove_btn.value 	= self.__remove_btn_event
 		self._save_btn.value 	= self.__save_btn_event
+		self._cancel_btn.value 	= self.cancel_btn_event
 		
 		self.create_model_formfields()
 		if pk:
@@ -69,12 +73,23 @@ class EditFormAdmin(BaseWidget):
 	#################################################################################
 
 	def init_form(self, parent=None):
-		self.formset = self.formset + [('_save_btn', '_create_btn','_remove_btn')]
+		self.formset = self.formset + [('_save_btn', '_create_btn','_remove_btn', '_cancel_btn')]
 		return super(EditFormAdmin, self).init_form(parent)
 
 	#################################################################################
 	#################################################################################
 	
+	def hide_form(self):
+		for field in self.edit_fields: 		field.hide()
+		for field in self.inlines_controls: field.hide()
+	
+	def show_form(self):
+		for field in self.edit_fields: 		field.show()
+		for field in self.inlines_controls: field.show()
+
+	def cancel_btn_event(self): 
+		self.hide_form()
+
 	def create_model_formfields(self):
 		"""
 			Create the model edition form
@@ -146,6 +161,7 @@ class EditFormAdmin(BaseWidget):
 	def show_create_form(self):
 		for field in self.edit_fields: field.show()
 		self._save_btn.hide()
+		self._remove_btn.hide()
 
 		fields2show = self.get_visible_fields_names()
 		
@@ -180,7 +196,8 @@ class EditFormAdmin(BaseWidget):
 			elif isinstance(field, models.UUIDField):  				getattr(self, field.name).value = None
 			elif isinstance(field, models.ForeignKey):				getattr(self, field.name).value = None
 
-	def show_edit_form(self):
+	def show_edit_form(self, pk=None):
+		if pk: self.object_pk = pk
 		for field in self.edit_fields: 		field.show()
 		for field in self.inlines_controls: field.show()
 		self._create_btn.hide()
@@ -225,6 +242,15 @@ class EditFormAdmin(BaseWidget):
 			
 		for inline in self.inlines:
 			getattr(self, inline.__name__).value = inline( (self.model, self.object_pk) )
+
+	def delete_event(self):
+		if self.object_pk:
+			obj = self.model.objects.get(pk=self.object_pk)
+			obj.delete()
+			self.object_pk = None
+			return True
+		else:
+			return False
 
 
 	def save_event(self):
@@ -425,6 +451,8 @@ class EditFormAdmin(BaseWidget):
 	#### PRIVATE FUNCTIONS ##########################################################
 	#################################################################################
 
+
+
 	def __save_btn_event(self):
 		obj = self.save_event()
 		if obj:
@@ -432,9 +460,7 @@ class EditFormAdmin(BaseWidget):
 
 	
 	def __remove_btn_event(self):
-		if self.object_pk:
-			obj = self.model.objects.get(pk=self.object_pk)
-			obj.delete()
-			self.close()
+		self.delete_event()
+		self.success('The object was deleted with success!','Success!')
 
 	

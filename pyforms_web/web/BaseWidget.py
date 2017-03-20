@@ -211,6 +211,10 @@ class BaseWidget(object):
 		return layout
 
 
+	def mark_to_update_client(self):
+		if 	self.http_request is not None and \
+			hasattr(self.http_request,'updated_apps'):
+			self.http_request.updated_apps.add_top(self)
 
 	def load_serialized_form(self, params):
 		widgets = []
@@ -329,6 +333,8 @@ class BaseWidget(object):
 	def message(self, msg, title=None, msg_type=None):
 		msg = { 'type': msg_type if msg_type else '', 'messages':msg if isinstance(msg, list) else [msg], 'title':title }
 		self._messages.append(msg)
+		self.mark_to_update_client()
+
 	def success(self,	msg, title=None):	self.message(msg, title, msg_type='success')
 	def info(self, 		msg, title=None):	self.message(msg, title, msg_type='info')
 	def warning(self, 	msg, title=None):	self.message(msg, title, msg_type='warning')

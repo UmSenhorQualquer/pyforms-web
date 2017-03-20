@@ -52,10 +52,12 @@ function PyformsManager(){
 	$.getScript("/static/pyformsjs/ControlDateTime.js");
 	$.getScript("/static/pyformsjs/ControlImage.js");
   	$.getScript("/static/pyformsjs/ControlHtml.js");
-  	$.getScript("/static/pyformsjs/ControlItemList.js");
+  	$.getScript("/static/pyformsjs/ControlEmail.js");
+  	$.getScript("/static/pyformsjs/ControlItemsList.js");
 	$.getScript("/static/pyformsjs/ControlList.js");
 	$.getScript("/static/pyformsjs/ControlQueryList.js");	
 	$.getScript("/static/pyformsjs/ControlQueryCards.js");
+	$.getScript("/static/pyformsjs/ControlPassword.js");
 	$.getScript("/static/pyformsjs/ControlPlayer.js");
 	$.getScript("/static/pyformsjs/ControlProgress.js");
 	$.getScript("/static/pyformsjs/ControlBoundingSlider.js");

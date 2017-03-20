@@ -28,8 +28,8 @@ class ControlBase(object):
 		res = { 
 			'name':     self.__class__.__name__, 
 			'value':    self.value,
-			'label':    self._label if self._label else '',
-			'help':     self._help if self._help else '',
+			'label':    unicode(self._label if self._label else ''),
+			'help':     unicode(self._help if self._help else ''),
 			'visible':  self._visible,
 			'error': 	self._error,
 			'enabled': 	self._enabled
@@ -81,7 +81,6 @@ class ControlBase(object):
 		if 	self.parent is not None and \
 			self.http_request is not None and \
 			hasattr(self.http_request,'updated_apps'):
-
 			self.http_request.updated_apps.add_top(self.parent)
 
 	def add_popup_menu_option(self, 
@@ -127,6 +126,9 @@ class ControlBase(object):
 
 	############################################################################
 
+	@property
+	def visible(self): return self._visible
+	
 
 	@property
 	def name(self): return self._name
