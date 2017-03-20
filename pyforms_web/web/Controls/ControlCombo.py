@@ -1,12 +1,12 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
-import simplejson
+import simplejson, collections
 
 class ControlCombo(ControlBase):
 
 
 	def __init__(self, label = "", defaultValue = "", helptext=''):
 		super(ControlCombo, self).__init__(label, defaultValue,helptext)
-		self._items = {}
+		self._items = collections.OrderedDict()
 
 	def init_form(self): return "new ControlCombo('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
@@ -16,11 +16,11 @@ class ControlCombo(ControlBase):
 				OTControlBase.value.fset(self, self._items[str(item)])
 			
 	def add_item(self, label, value = None):
-		if self._items==None: self._items={}
+		if self._items==None: self._items=collections.OrderedDict()
 		self._addingItem = True
 		
 		firstValue = False
-		if self._items=={}: firstValue = True
+		if len(self._items)==0: firstValue = True
 
 		if value==None:
 			self._items[label] = label
@@ -42,7 +42,7 @@ class ControlCombo(ControlBase):
 
 
 	def clearItems(self):
-		self._items = {}
+		self._items = collections.OrderedDict()
 		self._value = None
 
 		self.mark_to_update_client()
