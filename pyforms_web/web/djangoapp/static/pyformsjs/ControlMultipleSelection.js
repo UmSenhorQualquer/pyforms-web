@@ -17,7 +17,8 @@ ControlMultipleSelection.prototype.set_value = function(value){
 				break;
 			};
 
-	if(count!=value.length)	this.jquery().dropdown('set exactly', this.properties.value);
+	if(count!=value.length || count==0 || value.length==0)	
+		this.jquery().dropdown('set exactly', this.properties.value);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

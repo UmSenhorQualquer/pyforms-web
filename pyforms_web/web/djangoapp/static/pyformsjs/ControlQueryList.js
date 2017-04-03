@@ -79,8 +79,7 @@ ControlQueryList.prototype.init_control = function(){
 			var filter_value = $(this).dropdown('get value');
 			if( filter_value!='' && filter_value!='000000000000' ){
 				//var key = $(this).find('select').attr('column');
-				console.log(filter_value);
-				console.log(filter_value.split('=', 2));
+				
 				var cols = filter_value.split('=', 2);
 				var key = cols[0];
 				var filter_value = cols[1];

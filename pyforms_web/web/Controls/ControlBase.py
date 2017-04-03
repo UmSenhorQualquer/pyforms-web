@@ -15,6 +15,7 @@ class ControlBase(object):
 		self._error 	= False
 		self._css 		= None
 		self._enabled   = True
+		self.include_label = True
 		self.uid = uuid.uuid4()
 		self._controlHTML = ""
 
@@ -32,9 +33,11 @@ class ControlBase(object):
 			'help':     unicode(self._help if self._help else ''),
 			'visible':  self._visible,
 			'error': 	self._error,
-			'enabled': 	self._enabled
+			'enabled': 	self._enabled,
+			'include_label': self.include_label
 		}
-		if self._css: res.update({'css':self._css})
+		if self._css is not None: 
+			res.update({'css':self._css})
 		return res
 
 	def deserialize(self, properties):
@@ -191,3 +194,12 @@ class ControlBase(object):
 	def css(self, value): 
 		if value: self.mark_to_update_client()
 		self._css = value
+
+	@property
+	def control_id(self):
+		return "{0}-{1}".format(self._parent.uid, self.name)
+
+	@property
+	def place_id(self):
+	    return 'place-'+self.control_id
+	

@@ -11,7 +11,7 @@ class ApplicationsLoader:
 	def register_instance(request, modulename, app_data=None):
 		# check if the module was already imported, if not import it.
 		if modulename not in ApplicationsLoader._storage:
-			modules = modulename.split('.')
+			modules = str(modulename).split('.')
 			moduleclass = __import__( '.'.join(modules[:-1]) , fromlist=[modules[-1]] )
 			ApplicationsLoader._storage[modulename] = getattr(moduleclass, modules[-1])
 		moduleclass = ApplicationsLoader._storage[modulename]

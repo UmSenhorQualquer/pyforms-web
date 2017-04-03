@@ -55,9 +55,10 @@ class ControlPlayer(ControlBase):
 		
 		if isinstance( value, (str, unicode) ):
 			if len(value.strip())==0: return
-			link = self.storage.public_download_link(value)
+			#link = self.storage.public_download_link(value)
+			link = value#self.storage.public_download_link(value)
 
-			ControlBase.value.fset(self, cv2.VideoCapture( link ) )
+			#ControlBase.value.fset(self, cv2.VideoCapture( link ) )
 
 			self._filename = value
 		else:
@@ -69,8 +70,9 @@ class ControlPlayer(ControlBase):
 	def serialize(self):
 		data    = ControlBase.serialize(self)
 
-		if self.value:
-			capture = self.value
+		if self._filename:
+			capture = cv2.VideoCapture( self._filename )
+			#capture = self.value
 			_, image = capture.read()
 
 			
@@ -86,11 +88,13 @@ class ControlPlayer(ControlBase):
 				buff.close()
 				data.update({ 'base64content': base64.b64encode(content) })
 
+
 			data.update({ 'value':       self._filename      })
 			data.update({ 'filename':       self._filename      })
-			data.update({ 'startFrame':     self.startFrame     })
-			data.update({ 'endFrame':       self.endFrame       })
+			data.update({ 'startFrame':     0     })
+			data.update({ 'endFrame':       1000       })
 			data.update({ 'video_index':    self.video_index    })
+		print data
 		return data
 
 

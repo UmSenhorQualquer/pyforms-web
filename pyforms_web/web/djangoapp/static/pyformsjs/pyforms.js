@@ -45,6 +45,7 @@ function PyformsManager(){
 	$.getScript("/static/pyformsjs/ControlMultipleSelection.js");
 	$.getScript("/static/pyformsjs/ControlSlider.js");
 	$.getScript("/static/pyformsjs/ControlCheckBox.js");
+	$.getScript("/static/pyformsjs/ControlTemplate.js");
 	$.getScript("/static/pyformsjs/ControlCombo.js");
 	$.getScript("/static/pyformsjs/ControlInteger.js");
 	$.getScript("/static/pyformsjs/ControlFloat.js");
@@ -55,7 +56,8 @@ function PyformsManager(){
   	$.getScript("/static/pyformsjs/ControlEmail.js");
   	$.getScript("/static/pyformsjs/ControlItemsList.js");
 	$.getScript("/static/pyformsjs/ControlList.js");
-	$.getScript("/static/pyformsjs/ControlQueryList.js");	
+	$.getScript("/static/pyformsjs/ControlQueryList.js");
+	$.getScript("/static/pyformsjs/ControlFeed.js");	
 	$.getScript("/static/pyformsjs/ControlQueryCards.js");
 	$.getScript("/static/pyformsjs/ControlPassword.js");
 	$.getScript("/static/pyformsjs/ControlPlayer.js");
@@ -196,9 +198,11 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 			data: jsondata,
 			contentType: "application/json; charset=utf-8",
 			success: function(res){
+
 				if( res.result=='error' )
 					error_msg(res.msg);
-				else
+				else{
+					$.ajaxSetup({async: false, cache: true});
 					for(var i=0; i<res.length; i++){
 						var app = self.find_app(res[i]['uid']);
 						if( app===undefined)
@@ -206,6 +210,8 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 						else
 							app.deserialize(res[i]);
 					};
+					$.ajaxSetup({async: true, cache: true});
+				};
 			}
 		}).fail(function(xhr){
 			error_msg(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
@@ -238,23 +244,80 @@ PyformsManager.prototype.checker_loop = function(){
 	}
 };
 
-PyformsManager.prototype.register_layout_place = function(place_id, place_generator){
+PyformsManager.prototype.register_layout_place = function(place_id, place_generator, place_activator, place_closer){
 	var insert = true;
 	for(var i=0; i<this.layout_places.length; i++)
 		if( this.layout_places[i].place_id == place_id ){
-			this.layout_places[i].handler = place_generator;
+			this.layout_places[i].open_handler = place_generator;
+			this.layout_places[i].activate_handler = place_activator;
+			this.layout_places[i].close_handler = place_closer;
 			insert = false;
 			break;
 		};
-	if(insert) this.layout_places.push({place:place_id, handler:place_generator})
+	if(insert) this.layout_places.push({
+		place:place_id, open_handler:place_generator, 
+		activate_handler:place_activator, close_handler: place_closer
+	})
 };
 
 PyformsManager.prototype.open_application = function(app_data){
+	var app = pyforms.find_app(app_data['uid']);
+	
 	var layout_position = app_data['layout_position'];
 	var application_id  = app_data['uid'];
+	
+	// if the application exists activate the layout
+	if( app!=undefined){
+
+		for(var i=0; i<this.layout_places.length; i++){
+			if( this.layout_places[i].place==layout_position && this.layout_places[i].activate_handler ){
+				this.layout_places[i].activate_handler(application_id);
+				break;
+			}
+		};
+
+		not_loading();
+		return;
+	}
+
+
+	
+	var application_id  = app_data['uid'];
+	var application_url = "/pyforms/app/open/"+application_id+"/";
+	var application_title = app_data['title'];
+	var found_place = false;
 	for(var i=0; i<this.layout_places.length; i++){
-		if( this.layout_places[i].place==layout_position )
-			this.layout_places[i].handler(application_id, app_data['title'], "/pyforms/app/open/"+application_id+"/");
+		if( this.layout_places[i].place==layout_position ){
+			this.layout_places[i].open_handler(application_id, application_title, application_url);
+			found_place = true;
+			break;
+		}
+	};
+
+	if(!found_place){
+		//console.log('not found '+layout_position+ ' '+ $('#'+layout_position).size());
+		$.ajax({
+			method: 	'get',
+			cache: 		false,
+			dataType: 	"json",
+			url: application_url,
+			contentType: "application/json; charset=utf-8",
+			success: function(res){
+				if( res.result=='error' )
+					error_msg(res.msg);
+				else{
+					var html = "<form class='ui form' id='app-"+res.app_id+"' >";
+					html += res.code;
+					html += '</form>';
+
+					$('#'+layout_position).html(html);
+				};
+			}
+		}).fail(function(xhr){
+			error_msg(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
+		}).always(function(){
+			pyforms.garbage_collector();
+		});
 	};
 };
 

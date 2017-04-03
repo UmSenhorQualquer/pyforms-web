@@ -18,7 +18,7 @@ from django.template.loader import render_to_string
 
 class BaseWidget(object):
 
-	refresh_timeout = 120000
+	refresh_timeout = None
 
 	def __init__(self, title, parent_win=None):
 		self._formset 		= None
@@ -30,6 +30,8 @@ class BaseWidget(object):
 		self._js            = ''
 		if not hasattr(self, '_uid'): self._uid = str(uuid.uuid4())
 
+
+
 		self._messages = []
 
 		self._parent_window = parent_win
@@ -37,7 +39,8 @@ class BaseWidget(object):
 
 		PyFormsMiddleware.add(self)
 
-		
+	def refresh_event(self):
+		print "x"
 
 	############################################################################
 	############ Module functions  #############################################
@@ -196,12 +199,15 @@ class BaseWidget(object):
 					if control==None:
 						if row.startswith('info:'): layout += "<pre class='info' >%s</pre>" % row[5:]
 						elif row.startswith('h1:'): layout += "<h1>%s</h1>" % row[3:]
+						elif row.startswith('h1-right:'): layout += "<h1 class='ui right floated header' >%s</h1>" % row[9:]
 						elif row.startswith('h2:'): layout += "<h2>%s</h2>" % row[3:]
+						elif row.startswith('h2-right:'): layout += "<h2 class='ui right floated header' >%s</h2>" % row[9:]
 						elif row.startswith('h3:'): layout += "<h3>%s</h3>" % row[3:]
 						elif row.startswith('h4:'): layout += "<h4>%s</h4>" % row[3:]
 						elif row.startswith('h5:'): layout += "<h5>%s</h5>" % row[3:]
 						elif row.startswith('warning:'): 	layout += "<div class='ui warning visible  message'>%s</div>" % row[8:]
 						elif row.startswith('alert:'): 		layout += "<div class='ui alert error message'>%s</div>" % row[6:]
+						elif row == '-': layout += '<div class="ui clearing divider"></div>'
 						else: layout += "<div class='ui message'>%s</div>" % row
 						
 					else:
@@ -219,6 +225,9 @@ class BaseWidget(object):
 	def load_serialized_form(self, params):
 		widgets = []
 
+		if hasattr(self, 'parent') and isinstance(self.parent, (str,unicode)):
+			self.parent = PyFormsMiddleware.get_instance(self.parent)
+			
 		"""
 		for var_name, base64data in params.get('children-windows', []):
 			serialized_win = base64.b64decode(base64data)

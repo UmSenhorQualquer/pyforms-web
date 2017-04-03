@@ -18,12 +18,16 @@ function BaseWidget(widget_id, widget_name, controls, parent_id, data){
 	//$('.application-tabs').tabs()
 
 	//add auto refresh
-	//this.timeout_loop = setInterval(this.refresh_timeout_event, data.refresh_timeout);
+
+	if(data.refresh_timeout){
+		var self = this;
+		this.timeout_loop = setInterval(function(){ self.refresh_timeout_event(); }, data.refresh_timeout);
+	};
 }
 ////////////////////////////////////////////////////////////
 
 BaseWidget.prototype.refresh_timeout_event = function(){
-	console.log('0');
+	this.fire_event('self', 'refresh_event');
 };
 
 ////////////////////////////////////////////////////////////

@@ -56,7 +56,7 @@ ControlItemsList.prototype.set_value = function(data){
 		if(data[i].tags || this.properties.select_btn_label){
 			html += '<div class="extra">';
 			if(this.properties.select_btn_label){
-				html += '<div row-number="'+i+'" class="ui right floated primary button">'
+				html += '<div row-number="'+i+'" class="ui right floated primary mini button">'
 				html += this.properties.select_btn_label;
 				html += '</div>'
 			};

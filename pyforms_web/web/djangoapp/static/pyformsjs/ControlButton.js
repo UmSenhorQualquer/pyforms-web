@@ -10,7 +10,8 @@ ControlButton.prototype = Object.create(ControlBase.prototype);
 
 ControlButton.prototype.init_control = function(){
 
-	var html = "<div class='field ControlButton' id='"+this.place_id()+"' ><label>&nbsp;</label>";
+	var html = "<div class='field ControlButton' id='"+this.place_id()+"' >";
+	if(this.properties.include_label) html += '<label>&nbsp;</label>';
 	html +="<button type='button' title='"+this.properties.help+"' id='"+this.control_id()+"' class='ui button' >";
 	html += this.properties.label;
 	html += '</button>';
@@ -37,8 +38,37 @@ ControlButton.prototype.get_value = function(){
 	return this.properties.value;
 };
 
+
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlButton.prototype.update_server = function(){
 	return false;
+};
+
+
+ControlButton.prototype.deserialize = function(data){
+	if(data.css!=this.properties.css)
+		this.jquery().removeClass(this.properties.css);
+	
+
+	$.extend(this.properties, data);
+	this.set_value(this.properties.value);
+
+	this.jquery().html(this.properties.label);
+
+	this.jquery().addClass(this.properties.css);
+	
+	
+	if(this.properties.visible) 
+		this.show();
+	else 
+		this.hide();
+
+	if(!this.properties.enabled){
+		this.jquery().attr('disabled', '');
+	}else{
+		this.jquery().removeAttr('disabled');
+	};
+
+	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 };

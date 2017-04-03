@@ -149,11 +149,13 @@ class EditFormAdmin(BaseWidget):
 		self.inlines_controls 		= []
 		for inline in self.inlines:
 			pyforms_field = ControlEmptyWidget()
+			#pyforms_field._parent = self
 			setattr(self, inline.__name__, pyforms_field)
 			self.inlines_controls_name.append(inline.__name__)
 			self.inlines_controls.append( pyforms_field )
 			formset.append(inline.__name__)
 			
+		for c in self.controls: pass
 		self.formset = self.fieldsets if self.fieldsets else formset
 
 
@@ -242,6 +244,8 @@ class EditFormAdmin(BaseWidget):
 			
 		for inline in self.inlines:
 			getattr(self, inline.__name__).value = inline( (self.model, self.object_pk) )
+
+		return obj
 
 	def delete_event(self):
 		if self.object_pk:
@@ -338,6 +342,7 @@ class EditFormAdmin(BaseWidget):
 						os.rename(from_path, to_path)
 
 						url = '/'.join([field.upload_to]+[os.path.basename(value) ])
+						if url[0]=='/': url = url[1:]
 						setattr(obj, field.name, url)
 					elif field.null:
 						setattr(obj, field.name, None)
@@ -398,6 +403,9 @@ class EditFormAdmin(BaseWidget):
 				
 					except FieldDoesNotExist:
 						field_error = False
+					except AttributeError:
+						field_error = False
+
 
 					if field_error: html += '<ul>'
 					for msg in messages: html += '<li>{0}</li>'.format(msg)
@@ -410,14 +418,22 @@ class EditFormAdmin(BaseWidget):
 			obj.save()
 			
 			for field in self.model._meta.get_fields():
-				if isinstance(field, models.ManyToManyField):
+				if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
 					values = getattr(self, field.name).value
 					field_instance = getattr(obj, field.name)
 					field_instance.clear()
-					for value in values:
-						o = field.rel.to.objects.get(pk=value)
-						field_instance.add(o)
 
+					if field_instance.through is None:
+						for value in values:
+							o = field.rel.to.objects.get(pk=value)
+							field_instance.add(o)
+					else:
+						for value in values:
+							o = field.rel.to.objects.get(pk=value)
+							rel_obj = field_instance.through()
+							setattr(rel_obj,obj.__class__.__name__.lower(), obj)
+							setattr(rel_obj,o.__class__.__name__.lower(), o)
+							rel_obj.save()
 
 			self.object_pk = obj.pk
 

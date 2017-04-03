@@ -44,7 +44,6 @@ ControlFileUpload.prototype.init_control = function(){
 		filerKit.append(this.properties.file_data);
 	};
 	
-	console.log(!this.properties.visible);
 	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
 
 	if(!this.properties.visible) this.hide();

@@ -12,7 +12,7 @@ ControlEmptyWidget.prototype.init_control = function(){
 	var widget_html = '';
 	if( this.properties.html!==undefined ) widget_html = Base64.decode(this.properties.html);
 
-	var html = "<div id='"+this.place_id()+"' class='field ControlEmptyWidget ui segment' >"+widget_html+"</div>";
+	var html = "<div id='"+this.place_id()+"' class='field ControlEmptyWidget "+this.properties.css+"' >"+widget_html+"</div>";
 	this.jquery_place().replaceWith(html);
 
 	if(!this.properties.visible) this.hide();

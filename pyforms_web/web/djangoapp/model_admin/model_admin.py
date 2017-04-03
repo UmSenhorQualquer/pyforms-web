@@ -119,6 +119,7 @@ class ModelAdmin(BaseWidget):
 		fields2show = self.get_visible_fields_names()		
 		formset 	= []
 
+
 		for field in self.model._meta.get_fields():
 			if field.name not in fields2show: continue #only create this field if is visible
 			pyforms_field = None
@@ -150,7 +151,8 @@ class ModelAdmin(BaseWidget):
 			elif isinstance(field, models.TimeField):  					pyforms_field = ControlText( field.verbose_name )
 			elif isinstance(field, models.URLField):  					pyforms_field = ControlText( field.verbose_name )
 			elif isinstance(field, models.UUIDField):  					pyforms_field = ControlText( field.verbose_name )
-			elif isinstance(field, models.ForeignKey): 	
+			elif isinstance(field, models.ForeignKey):
+
 				#Foreign key
 				pyforms_field = ControlCombo( field.verbose_name )
 				for instance in field.rel.to.objects.all(): pyforms_field.add_item( str(instance), instance.pk )			
@@ -170,13 +172,15 @@ class ModelAdmin(BaseWidget):
 		self.inlines_controls 		= []
 		for inline in self.inlines:
 			pyforms_field = ControlEmptyWidget()
+			#pyforms_field._parent = self
 			setattr(self, inline.__name__, pyforms_field)
 			self.inlines_controls_name.append(inline.__name__)
 			self.inlines_controls.append( pyforms_field )
 			formset.append(inline.__name__)
-			
-		self.formset = self.fieldsets if self.fieldsets else formset
 
+		self.formset = self.fieldsets if self.fieldsets else formset
+		
+		for c in self.controls: pass
 		self.hide_edit_create_form()
 
 	
@@ -265,7 +269,8 @@ class ModelAdmin(BaseWidget):
 				getattr(self, field.name).value = [str(o.pk) for o in getattr(obj, field.name).all()]
 			
 		for inline in self.inlines:
-			getattr(self, inline.__name__).value = inline( (self.model, self.object_pk) )
+			o = inline( (self.model, self.object_pk) )
+			getattr(self, inline.__name__).value = o
 
 	def hide_edit_create_form(self):
 		self._add_btn.show()
@@ -399,26 +404,29 @@ class ModelAdmin(BaseWidget):
 					getattr(self, field.name).error = False
 					setattr(obj, field.name, getattr(self, field.name).value)
 				elif isinstance(field, models.ForeignKey):
-					getattr(self, field.name).error = False
-					value = getattr(self, field.name).value
-					value = field.rel.to.objects.get(pk=value)
-					setattr(obj, field.name, value)
-
+					if self.parent_field!=field:
+						getattr(self, field.name).error = False
+						value = getattr(self, field.name).value
+						value = field.rel.to.objects.get(pk=value)
+						setattr(obj, field.name, value)
+			
+			if self.parent_field:	
+				parent_obj = self.parent_model.objects.get(pk=self.parent_pk)
+				setattr(obj, self.parent_field.name, parent_obj)
+				
 			try:
 				obj.full_clean()
 			except ValidationError as e:
 				html = '<ul class="list">'
 				for key, messages in e.message_dict.items():
-					
 					try:
 						field = self.model._meta.get_field(key)
 						getattr(self, field.name).error = True
-
 						html += '<li><b>{0}</b>'.format(field.verbose_name)
-
 						field_error = True
-				
 					except FieldDoesNotExist:
+						field_error = False
+					except AttributeError:
 						field_error = False
 
 					if field_error: html += '<ul>'
@@ -432,14 +440,22 @@ class ModelAdmin(BaseWidget):
 			obj.save()
 			
 			for field in self.model._meta.get_fields():
-				if isinstance(field, models.ManyToManyField):
+				if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
 					values = getattr(self, field.name).value
 					field_instance = getattr(obj, field.name)
 					field_instance.clear()
-					for value in values:
-						o = field.rel.to.objects.get(pk=value)
-						field_instance.add(o)
 
+					if field_instance.through is None:
+						for value in values:
+							o = field.rel.to.objects.get(pk=value)
+							field_instance.add(o)
+					else:
+						for value in values:
+							o = field.rel.to.objects.get(pk=value)
+							rel_obj = field_instance.through()
+							setattr(rel_obj,obj.__class__.__name__.lower(), obj)
+							setattr(rel_obj,o.__class__.__name__.lower(), o)
+							rel_obj.save()
 
 			self.object_pk = obj.pk
 			self.populate_list()
