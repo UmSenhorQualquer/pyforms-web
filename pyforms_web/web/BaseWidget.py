@@ -7,12 +7,12 @@ from pyforms_web.web.Controls.ControlCheckBox import ControlCheckBox
 try:
 	from pyforms_web.web.Controls.ControlPlayer import ControlPlayer
 except:
-	print "ControlPlayer is not available"
+	print("ControlPlayer is not available")
 from pyforms_web.web.Controls.ControlButton import ControlButton
 from pyforms_web.web.djangoapp.Applications import ApplicationsLoader
 from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 import uuid, os, shutil, base64, inspect
-import base64, dill, StringIO, simplejson, filelock
+import base64, dill, simplejson, filelock
 from pysettings import conf
 from django.template.loader import render_to_string
 
@@ -40,7 +40,7 @@ class BaseWidget(object):
 		PyFormsMiddleware.add(self)
 
 	def refresh_event(self):
-		print "x"
+		print("x")
 
 	############################################################################
 	############ Module functions  #############################################
@@ -225,7 +225,7 @@ class BaseWidget(object):
 	def load_serialized_form(self, params):
 		widgets = []
 
-		if hasattr(self, 'parent') and isinstance(self.parent, (str,unicode)):
+		if hasattr(self, 'parent') and isinstance(self.parent, (str,str)):
 			self.parent = PyFormsMiddleware.get_instance(self.parent)
 			
 		"""

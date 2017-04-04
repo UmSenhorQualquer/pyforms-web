@@ -1,6 +1,6 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
 from pyforms_web.web.BaseWidget import BaseWidget
-import base64, dill, StringIO
+import base64, dill
 import simplejson
 from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 

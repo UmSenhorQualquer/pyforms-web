@@ -27,10 +27,10 @@ class ControlVisVis(ControlBase):
 			new_row = []
 			for value in row:
 				if value is None: break
-				if isinstance(value[0], datetime.datetime): value[0] = unicode(value[0])
-				if isinstance(value[0], datetime.date): value[0] = unicode(value[0])
-				if isinstance(value[0], unicode): value[0] = str(value[0])
-				if isinstance(value[1], unicode): value[1] = str(value[1])
+				if isinstance(value[0], datetime.datetime): value[0] = str(value[0])
+				if isinstance(value[0], datetime.date): value[0] = str(value[0])
+				if isinstance(value[0], str): value[0] = str(value[0])
+				if isinstance(value[1], str): value[1] = str(value[1])
 				new_row.append(value)
 			rows.append(new_row)
 		return rows

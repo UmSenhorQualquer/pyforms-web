@@ -25,10 +25,10 @@ class ControlMultipleSelection(ControlBase):
 		data = ControlBase.serialize(self)
 		items = []
 		for key, value in self._items.items():
-			value = int(value) if isinstance(value, long) else value
+			value = int(value) if isinstance(value, int) else value
 			items.append({'label': str(key), 'value': value}) 
 
-		value = int(self._value) if isinstance(self._value, long) else self._value
+		value = int(self._value) if isinstance(self._value, int) else self._value
 			
 		data.update({ 'items': items, 'value': value})
 		return data

@@ -2,7 +2,7 @@ from pyforms_web.web.Controls.ControlBase import ControlBase
 import cv2
 import base64
 import numpy as np 
-import StringIO
+from io import StringIO
 from PIL import Image
 import simplejson
 
@@ -37,7 +37,7 @@ class ControlImage(ControlBase):
 
 		if len(value)==0: self._value = ''
 		elif isinstance(value, np.ndarray): 		self._value = value
-		elif isinstance( value, (str, unicode) ): 	self._value = cv2.imread(value)
+		elif isinstance( value, (str, str) ): 	self._value = cv2.imread(value)
 		
 
 	def serialize(self):

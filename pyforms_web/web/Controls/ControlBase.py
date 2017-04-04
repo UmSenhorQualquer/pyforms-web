@@ -29,8 +29,8 @@ class ControlBase(object):
 		res = { 
 			'name':     self.__class__.__name__, 
 			'value':    self.value,
-			'label':    unicode(self._label if self._label else ''),
-			'help':     unicode(self._help if self._help else ''),
+			'label':    str(self._label if self._label else ''),
+			'help':     str(self._help if self._help else ''),
 			'visible':  self._visible,
 			'error': 	self._error,
 			'enabled': 	self._enabled,
@@ -43,7 +43,7 @@ class ControlBase(object):
 	def deserialize(self, properties):
 		value = properties.get('value',None)
 		if 	value is not None and \
-			(type(value)==unicode or type(value)==str) and len(value)==0: 
+			(type(value)==str or type(value)==str) and len(value)==0: 
 				value = None
 
 		self.value    = value

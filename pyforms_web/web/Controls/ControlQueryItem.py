@@ -257,7 +257,7 @@ class ControlQueryItem(ControlBase):
 			return locale.format("%d", col_value, grouping=True)
 		elif isinstance(col_value, float ):
 			return locale.format("%f", col_value, grouping=True)
-		elif isinstance(col_value, long ):
+		elif isinstance(col_value, int ):
 			return locale.format("%d", col_value, grouping=True)
 		else:
 			return col_value

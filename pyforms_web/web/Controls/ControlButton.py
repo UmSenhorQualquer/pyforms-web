@@ -14,12 +14,12 @@ class ControlButton(ControlBase):
         This event is called when the button is pressed.
         The correspondent js event is defined in the framework.js file
         """
-        if not isinstance(self._value, (str, unicode)): self._value()
+        if not isinstance(self._value, (str, str)): self._value()
 
     def serialize(self):
         res = super(ControlButton, self).serialize()
         if self._css: res.update({'css':self._css})
-        if isinstance(self.value, (str, unicode)) and len(self.value)>0: 
+        if isinstance(self.value, (str, str)) and len(self.value)>0: 
             res.update({'value':self.value})
         else:
             res.update({'value':''})

@@ -1,10 +1,11 @@
 try:
-	import cv2, base64, numpy as np, StringIO
+	import cv2, base64, numpy as np
 	from PIL import Image
 except:
-	print "control player will not work. Libraries missing"
+	print( "control player will not work. Libraries missing")
 from pyforms_web.web.Controls.ControlBase import ControlBase
 import simplejson
+from io import StringIO
 
 class ControlPlayer(ControlBase):
 
@@ -53,7 +54,7 @@ class ControlPlayer(ControlBase):
 	def value(self, value):
 		if self._value!=value: self.mark_to_update_client()
 		
-		if isinstance( value, (str, unicode) ):
+		if isinstance( value, (str, str) ):
 			if len(value.strip())==0: return
 			#link = self.storage.public_download_link(value)
 			link = value#self.storage.public_download_link(value)
@@ -94,7 +95,6 @@ class ControlPlayer(ControlBase):
 			data.update({ 'startFrame':     0     })
 			data.update({ 'endFrame':       1000       })
 			data.update({ 'video_index':    self.video_index    })
-		print data
 		return data
 
 
@@ -113,11 +113,11 @@ class ControlPlayer(ControlBase):
 	@video_index.setter
 	def video_index(self, value):
 		if self._value!=value: self.mark_to_update_client()
-		if isinstance(self._value, (str, unicode)): return
-		if isinstance( value, (str, unicode) ):
+		if isinstance(self._value, (str, str)): return
+		if isinstance( value, (str, str) ):
 			if len(value.strip())>0:
 				self._value.set(1, float(value))
-		elif not isinstance( self._value, (str, unicode) ):
+		elif not isinstance( self._value, (str, str) ):
 			self._value.set(1, float(value))
 		
 
