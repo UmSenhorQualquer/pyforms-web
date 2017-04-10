@@ -9,8 +9,10 @@ ControlTextArea.prototype = Object.create(ControlBase.prototype);
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlTextArea.prototype.init_control = function(){
-	var html = "<div id='"+this.place_id()+"' class='field ControlTextArea' ><label>"+this.properties.label+"</label><textarea placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' >"+this.properties.value+"</textarea></div>";
+	var html = "<div id='"+this.place_id()+"' class='field ControlTextArea' ><label>"+this.properties.label+"</label><textarea placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' ></textarea></div>";
 	this.jquery_place().replaceWith(html);
+
+	this.set_value(this.properties.value);
 
 	var self = this;
 	this.jquery().change(function(){

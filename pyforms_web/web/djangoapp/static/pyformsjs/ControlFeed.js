@@ -36,10 +36,10 @@ ControlFeed.prototype.compare_obj = function(a, b){
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlFeed.prototype.set_value = function(data){
-	console.log(data);
+	
 	if(data.length==0) return; //no data to process
 
-	data.sort(this.compare_obj);
+	//data.sort(this.compare_obj);
 	var i = 0
 
 	var self = this;
@@ -59,8 +59,6 @@ ControlFeed.prototype.set_value = function(data){
 				e.attr('pk', data[i].pk);
 				self.set_actions(e);
 				$(this).remove();
-				
-
 				i++;
 			};
 		};
@@ -73,29 +71,23 @@ ControlFeed.prototype.set_value = function(data){
 		self.set_actions(e);
 	};
 
-	var self = this;
-	this.jquery().find('.extra .button').click(function(){
-		self.properties.selected_index = $(this).attr('row-number');
-		self.basewidget.fire_event( self.name, 'item_selection_changed_event' );
-	});
-
 	if(this.properties.visible) this.show(); else this.hide();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlFeed.prototype.set_actions = function(element){
-	var actions = this.properties.actions;
+	this.properties.action_param = undefined;
 	var self = this;
-	if(actions)
-		for(var i=0; i<actions.length;i++){
-			element.find('[action="'+actions[i]+'"]').click(function(){
-				var action = $(this).attr('action');
-				self.properties.selected_index = element.attr('pk');
-				self.basewidget.fire_event( 'self', action );
-			});
-		};
+	
+	element.find('[action]').click(function(){
+		console.log(element.html());
+		var action 					 = $(this).attr('action');
+		var action_param 			 = $(this).attr('action-param');
+		self.properties.action_param = action_param;
+		self.basewidget.fire_event( 'self', action );
 
+	});
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -103,3 +95,6 @@ ControlFeed.prototype.set_actions = function(element){
 ControlFeed.prototype.update_server = function(){
 	return true;
 };
+
+
+////////////////////////////////////////////////////////////////////////////////

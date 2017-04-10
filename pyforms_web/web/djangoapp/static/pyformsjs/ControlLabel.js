@@ -15,7 +15,7 @@ ControlLabel.prototype.get_value = function(){
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlLabel.prototype.init_control = function(){
-	var html = '<div class="ui '+this.properties.css+' message" id="'+this.place_id()+'"  >';
+	var html = '<div class="ui field '+this.properties.css+' message ControlLabel" id="'+this.place_id()+'"  >';
 	   html += '<div class="header">';
 	   html += this.properties.label;
 	   html += '</div>';

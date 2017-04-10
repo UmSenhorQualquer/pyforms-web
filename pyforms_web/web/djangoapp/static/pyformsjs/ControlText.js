@@ -12,10 +12,7 @@ ControlText.prototype.init_control = function(){
 	var html = "<div id='"+this.place_id()+"' class='field ControlText' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value='' /></div>";
 	this.jquery_place().replaceWith(html);
 
-	if(this.properties.value)
-			this.jquery().val(this.properties.value); 
-		else
-			this.jquery().val(''); 
+	this.set_value(this.properties.value);
 
 	var self = this;
 	this.jquery().change(function(){

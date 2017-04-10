@@ -331,6 +331,17 @@ PyformsManager.prototype.garbage_collector = function(){
 			pyforms.remove_app(null, i);
 };
 
+PyformsManager.prototype.close_layout_place = function(layout_position){
+	for(var i=0; i<this.layout_places.length; i++){
+		if( this.layout_places[i].place==layout_position && this.layout_places[i].close_handler ){
+			this.layout_places[i].close_handler();
+			break;
+		}
+	};
+};
+
+
+
 
 ////////////////////////////////////////////////////////////
 if(pyforms==undefined) var pyforms = new PyformsManager()

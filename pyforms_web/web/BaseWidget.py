@@ -28,13 +28,14 @@ class BaseWidget(object):
 		self._controls      = []
 		self._html          = ''
 		self._js            = ''
+		self._close_widget  = False
 		if not hasattr(self, '_uid'): self._uid = str(uuid.uuid4())
 
 
 
 		self._messages = []
 
-		self._parent_window = parent_win
+		self.parent = parent_win
 		self.is_new_app = True
 
 		PyFormsMiddleware.add(self)
@@ -63,7 +64,7 @@ class BaseWidget(object):
 		parent_code = 'undefined'
 		if parent: parent_code = "'{0}'".format(parent.uid)
 
-		extra_data = {'refresh_timeout': self.refresh_timeout}
+		extra_data = {'refresh_timeout': self.refresh_timeout, 'messages':self._messages}
 
 		self._js = '[{0}]'.format(",".join(self._controls))
 		self._html += """
@@ -71,7 +72,10 @@ class BaseWidget(object):
 		""".format(self.modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data))
 		self._formLoaded = True
 
-		return { 'code': self._html, 'title': self._title, 'app_id':self.uid, 'refresh_timeout':  self.refresh_timeout }
+		self._messages = []
+		self.mark_to_update_client()
+
+		return {'code': self._html, 'title': self._title, 'app_id':self.uid, 'refresh_timeout':  self.refresh_timeout }
 		
 
 	def generate_tabs(self, formsetdict):
@@ -166,7 +170,7 @@ class BaseWidget(object):
 				else:
 					control = self.controls.get(row, None)
 					if control==None:
-						if row.startswith('info:'): layout += "<pre class='info' >%s</pre>" % row[5:]
+						if row.startswith('info:'): layout += "<span class='info' >%s</span>" % row[5:]
 						elif row.startswith('h1:'): layout += "<h1>%s</h1>" % row[3:]
 						elif row.startswith('h2:'): layout += "<h2>%s</h2>" % row[3:]
 						elif row.startswith('h3:'): layout += "<h3>%s</h3>" % row[3:]
@@ -197,7 +201,7 @@ class BaseWidget(object):
 				else:
 					control = self.controls.get(row, None)
 					if control==None:
-						if row.startswith('info:'): layout += "<pre class='info' >%s</pre>" % row[5:]
+						if row.startswith('info:'): layout += "<span class='info' >%s</span>" % row[5:]
 						elif row.startswith('h1:'): layout += "<h1>%s</h1>" % row[3:]
 						elif row.startswith('h1-right:'): layout += "<h1 class='ui right floated header' >%s</h1>" % row[9:]
 						elif row.startswith('h2:'): layout += "<h2>%s</h2>" % row[3:]
@@ -264,7 +268,8 @@ class BaseWidget(object):
 		res = {
 			'uid':				self.uid, 
 			'layout_position': 	self.layout_position if hasattr(self, 'layout_position') else 5,
-			'title': 			self.title
+			'title': 			self.title,
+			'close_widget':		self._close_widget
 		}
 
 		if len(self._messages)>0: 
@@ -346,7 +351,7 @@ class BaseWidget(object):
 
 	def success(self,	msg, title=None):	self.message(msg, title, msg_type='success')
 	def info(self, 		msg, title=None):	self.message(msg, title, msg_type='info')
-	def warning(self, 	msg, title=None):	self.message(msg, title, msg_type='warning')
+	def warning(self, 	msg, title=None):	self.message(msg, title, msg_type='warning');
 	def alert(self, 	msg, title=None):	self.message(msg, title, msg_type='error')
 
 
@@ -409,10 +414,13 @@ class BaseWidget(object):
 	def modulename(self):
 		return inspect.getmodule(self).__name__ + '.' + self.__class__.__name__
 	
-
-
 	@property
 	def formset(self): return self._formset
 
 	@formset.setter
 	def formset(self, value): self._formset = value
+
+
+	def close(self): 
+		self.mark_to_update_client()
+		self._close_widget = True

@@ -2,27 +2,12 @@ from pyforms_web.web.Controls.ControlBase import ControlBase
 import simplejson
 
 class ControlLabel(ControlBase):
-    def __init__(self, label="", defaultValue="", helptext=''):
-        self._css = ''
-        super(ControlLabel, self).__init__(label, defaultValue, helptext)
+	def __init__(self, label="", defaultValue="", helptext=''):
+		self._css = ''
+		super(ControlLabel, self).__init__(label, defaultValue, helptext)
 
-    def init_form(self):
-        return """new ControlLabel('{0}', {1})""".format(
-            self._name,
-            simplejson.dumps(self.serialize())
-        )
-
-    @property
-    def css(self): return self._css
-
-    @css.setter
-    def css(self, value): self._css = value
-
-    def serialize(self):
-        data = ControlBase.serialize(self)
-        data.update({'css': str(self.css)})
-        return data
-
-    def deserialize(self, properties):
-        ControlBase.deserialize(self, properties)
-        self.css = properties[u'css']
+	def init_form(self):
+		return """new ControlLabel('{0}', {1})""".format(
+			self._name,
+			simplejson.dumps(self.serialize())
+		)

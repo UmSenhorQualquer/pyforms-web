@@ -11,6 +11,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
 from django.core.exceptions import PermissionDenied
+from django.utils.text import slugify
 
 @csrf_exempt
 def upload_files(request):
@@ -24,7 +25,7 @@ def upload_files(request):
 
 		for key in request.FILES:
 			myfile = request.FILES[key]
-			name   = myfile.name
+			name   = slugify(myfile.name)
 			for c in r' []/\;,><&*:%=+@!#^()|?^': name = name.replace(c,'')
 			fs 			= FileSystemStorage(location=path2save, base_url=settings.MEDIA_URL+'apps/'+request.POST['app_id']+'/')
 			filename 	= fs.save(name, myfile)
@@ -83,6 +84,8 @@ def open_app(request, app_id):
 		app  	= ApplicationsLoader.get_instance(request, app_id)
 		params 	= {}
 		params.update( app.init_form() )
+
+		for m in request.updated_apps.applications: m.commit()
 	except PermissionDenied as e:
 		params = {'error': str(e)}
 	

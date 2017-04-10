@@ -15,10 +15,29 @@ function BaseWidget(widget_id, widget_name, controls, parent_id, data){
 		controls[index].basewidget = this;
 		controls[index].init_control();
 	};
-	//$('.application-tabs').tabs()
+
+
+	if(data.messages!=undefined)
+		for (var i=0; i<data.messages.length; i++){
+			var msg = data.messages[i]; 
+			if(msg.type!='') this.jquery().addClass(msg.type);
+
+			var html = '<div class="ui '+msg.type+' message">';
+			html 	+= '<i class="close icon"></i>';
+			if(msg.title)  html += '<div class="header">'+msg.title+'</div>';	
+			if(msg.messages.length==1)	
+				html 	+= '<p>'+msg.messages[0]+'</p>';
+			else{
+				html 	+= '<ul class="list">';
+				for(var i=0; i<msg.messages.length; i++) html += '<li>'+msg.messages[i]+'</li>';
+				html 	+= '</ul>';
+			};
+			$(html).prependTo(this.jquery()).find('.close').on('click', function(){
+				$(this).closest('.message').transition({animation:'fade',onComplete:function(){$(this).remove();} });
+			});
+		};
 
 	//add auto refresh
-
 	if(data.refresh_timeout){
 		var self = this;
 		this.timeout_loop = setInterval(function(){ self.refresh_timeout_event(); }, data.refresh_timeout);
@@ -102,7 +121,6 @@ BaseWidget.prototype.deserialize = function(data){
 	this.children_windows = data['children-windows']
 
 
-	
 
 	if(data.messages!=undefined)
 		for (var i=0; i<data.messages.length; i++){
@@ -124,6 +142,11 @@ BaseWidget.prototype.deserialize = function(data){
 			});
 		};
 	
+
+	if(data['close_widget']){ 
+		pyforms.remove_app(data['uid']);
+		pyforms.close_layout_place(data['layout_position']);
+	}
 };
 ////////////////////////////////////////////////////////////
 

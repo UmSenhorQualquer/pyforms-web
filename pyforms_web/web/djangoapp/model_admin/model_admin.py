@@ -487,7 +487,7 @@ class ModelAdmin(BaseWidget):
 
 	def get_selected_row_object(self):
 		#return the current selected object
-		if self._list.selected_row_id<0: return None
+		if int(self._list.selected_row_id)<0: return None
 		return self._list.value.get(pk=self._list.selected_row_id)
 
 

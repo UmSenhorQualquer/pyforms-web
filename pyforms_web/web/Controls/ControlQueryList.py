@@ -110,7 +110,7 @@ class ControlQueryList(ControlBase):
 			end_page = total_n_pages
 			if (end_page-4)>=1: start_page = (end_page-4)
 
-		return [(start_page-1) if start_page>1 else -1] + range(start_page, end_page+1) + [ (end_page+1) if end_page<total_n_pages else -1]
+		return [int(start_page-1) if int(start_page)>1 else -1] + list(range(int(start_page), int(end_page)+1)) + [ int(end_page+1) if int(end_page)<int(total_n_pages) else -1]
 
 
 
