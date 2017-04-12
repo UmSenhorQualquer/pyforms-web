@@ -119,10 +119,13 @@ class ControlQueryList(ControlBase):
 	@property
 	def selected_row_id(self): return self._selected_row_id
 	@selected_row_id.setter
-	def selected_row_id(self, value): self._selected_row_id = value
+	def selected_row_id(self, value): 
+		print('selected_row_id', value)
+		self._selected_row_id = value
 	
 	@property
 	def value(self):
+		print(self.search_field_key, '1 -----------')
 		if self._app and self._model and self._query:
 			# reconstruct the query ################################
 			model 		= apps.get_model(self._app, self._model)
@@ -131,7 +134,9 @@ class ControlQueryList(ControlBase):
 			for f in self.filter_by:
 				qs = qs.filter(**f)
 
+			print(self.search_field_key, '2 -----------')
 			if self.search_field_key and len(self.search_field_key)>0:
+				print(self.search_field_key, '3 -----------')
 				search_filter = None
 				for s in self.search_fields:
 					q = Q(**{s: self.search_field_key})
@@ -143,15 +148,17 @@ class ControlQueryList(ControlBase):
 
 	@value.setter
 	def value(self, value):
-		if value:
-			self._model = value.model._meta.label.split('.')[-1]
-			self._query = value.query
-			self._app   = value.model._meta.app_label
-			self._selected_row_id = -1
-			
+		print('++++++++++++++')
+				
 		oldvalue = self._value
 		self._value = value
 		if oldvalue!=value: 
+			if value:
+				self._model = value.model._meta.label.split('.')[-1]
+				self._query = value.query
+				self._app   = value.model._meta.app_label
+				self._selected_row_id = -1
+				
 			self.mark_to_update_client()
 			self.changed_event()
 
@@ -168,14 +175,12 @@ class ControlQueryList(ControlBase):
 		if queryset:
 			model 	 	 	= queryset.model
 			
-
 			row_start = self.rows_per_page*(self._current_page-1)
 			row_end   = self.rows_per_page*(self._current_page)
 
 			for sort in self.sort_by:
 				direction = '-' if sort['desc'] else ''
 				queryset = queryset.order_by( direction+sort['column'] )
-
 
 			rows = self.queryset_to_list(queryset, self.list_display, row_start, row_end)
 
@@ -189,7 +194,8 @@ class ControlQueryList(ControlBase):
 			
 			filters_list = self.serialize_filters(self.list_filter, queryset)
 		
-		if len(self.search_fields)>0: data.update({'search_field_key': ''})
+		if len(self.search_fields)>0:
+			data.update({'search_field_key': self.search_field_key if self.search_field_key is not None else ''})
 	
 		data.update({
 			'filters_list': 		filters_list,
@@ -202,8 +208,6 @@ class ControlQueryList(ControlBase):
 			'selected_row_id':		self._selected_row_id
 		})
 
-		if self._selected_row_id: 
-			data.update({})
 
 		return data
 
@@ -214,7 +218,10 @@ class ControlQueryList(ControlBase):
 
 
 	def deserialize(self, properties):
-		ControlBase.deserialize(self,properties)
+		self._label   = properties.get('label','')
+		self._help    = properties.get('help','')
+		self._visible = properties.get('visible',True)
+		
 		self.search_field_key   = properties.get('search_field_key', None)
 		self.sort_by 			= properties.get('sort_by', [])
 		self.filter_by 			= properties.get('filter_by',[])

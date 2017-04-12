@@ -31,8 +31,6 @@ class BaseWidget(object):
 		self._close_widget  = False
 		if not hasattr(self, '_uid'): self._uid = str(uuid.uuid4())
 
-
-
 		self._messages = []
 
 		self.parent = parent_win

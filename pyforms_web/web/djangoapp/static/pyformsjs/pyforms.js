@@ -56,6 +56,7 @@ function PyformsManager(){
   	$.getScript("/static/pyformsjs/ControlEmail.js");
   	$.getScript("/static/pyformsjs/ControlItemsList.js");
 	$.getScript("/static/pyformsjs/ControlList.js");
+	$.getScript("/static/pyformsjs/ControlQueryCombo.js");
 	$.getScript("/static/pyformsjs/ControlQueryList.js");
 	$.getScript("/static/pyformsjs/ControlFeed.js");	
 	$.getScript("/static/pyformsjs/ControlQueryCards.js");

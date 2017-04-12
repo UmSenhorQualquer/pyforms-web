@@ -41,7 +41,7 @@ class ControlCombo(ControlBase):
 		return self
 
 
-	def clearItems(self):
+	def clear_items(self):
 		self._items = collections.OrderedDict()
 		self._value = None
 
@@ -80,7 +80,8 @@ class ControlCombo(ControlBase):
 		data = ControlBase.serialize(self)
 		items = []
 		for key, value in self._items.items():
-			items.append({'label': key, 'value': value }) 
+			items.append({'text': key, 'value': value, 'name': key }) 
+		
 		data.update({ 'items': items, 'value': self._value })
 		return data
 		

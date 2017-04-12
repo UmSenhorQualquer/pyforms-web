@@ -50,19 +50,21 @@ class EditFormAdmin(BaseWidget):
 		self._save_btn 		= ControlButton('<i class="save icon"></i> Save')
 		self._create_btn 	= ControlButton('<i class="plus icon"></i> Create')
 		self._remove_btn 	= ControlButton('<i class="minus icon"></i> Remove')	
-		self._cancel_btn 	= ControlButton('<i class="hide icon"></i> Cancel')
+		self._cancel_btn 	= ControlButton('<i class="hide icon"></i> Close')
 		
 		
 		self.edit_fields.append( self._save_btn )
 		self.edit_fields.append( self._create_btn )
 		self.edit_fields.append( self._remove_btn )
 		self.edit_fields.append( self._cancel_btn )
+
+		for field in self.edit_fields: field.hide()
 				
 		# events
 		self._create_btn.value 	= self.__save_btn_event
 		self._remove_btn.value 	= self.__remove_btn_event
 		self._save_btn.value 	= self.__save_btn_event
-		self._cancel_btn.value 	= self.cancel_btn_event
+		self._cancel_btn.value 	= self.hide_form
 		
 		self.create_model_formfields()
 		if pk:
@@ -87,8 +89,54 @@ class EditFormAdmin(BaseWidget):
 		for field in self.edit_fields: 		field.show()
 		for field in self.inlines_controls: field.show()
 
-	def cancel_btn_event(self): 
-		self.hide_form()
+
+
+
+
+
+
+
+
+
+
+	#################################################################################
+	#################################################################################
+
+	def update_related_fields(self):
+
+		fields2show = self.get_visible_fields_names()		
+		formset 	= []
+
+		for field in self.model._meta.get_fields():
+			if field.name not in fields2show: continue #only update this field if is visible
+			pyforms_field = None
+
+			if isinstance(field, models.ForeignKey):
+				#Foreign key
+				pyforms_field = getattr(self, field.name)
+				pyforms_field.clear_items()
+				for instance in field.rel.to.objects.all():
+					pyforms_field.add_item( str(instance), instance.pk )			
+			elif isinstance(field, models.ManyToManyField):
+				#Many to Many field
+				pyforms_field = getattr(self, field.name)
+				pyforms_field.clear_items()
+				for instance in field.rel.to.objects.all():
+					pyforms_field.add_item( str(instance), instance.pk )
+
+		"""
+		#Create the inlines eition forms.
+		self.inlines_controls_name 	= []
+		self.inlines_controls 		= []
+		for inline in self.inlines:
+			pyforms_field = ControlEmptyWidget()
+			#pyforms_field._parent = self
+			setattr(self, inline.__name__, pyforms_field)
+			self.inlines_controls_name.append(inline.__name__)
+			self.inlines_controls.append( pyforms_field )
+			formset.append(inline.__name__)"""
+			
+
 
 	def create_model_formfields(self):
 		"""
@@ -129,16 +177,9 @@ class EditFormAdmin(BaseWidget):
 			elif isinstance(field, models.TimeField):  					pyforms_field = ControlText( field.verbose_name.capitalize() )
 			elif isinstance(field, models.URLField):  					pyforms_field = ControlText( field.verbose_name.capitalize() )
 			elif isinstance(field, models.UUIDField):  					pyforms_field = ControlText( field.verbose_name.capitalize() )
-			elif isinstance(field, models.ForeignKey): 	
-				#Foreign key
-				pyforms_field = ControlCombo( field.verbose_name.capitalize() )
-				for instance in field.rel.to.objects.all(): pyforms_field.add_item( str(instance), instance.pk )			
-			elif isinstance(field, models.ManyToManyField):
-				#Many to Many field
-				pyforms_field = ControlMultipleSelection( field.verbose_name.capitalize() )
-				for instance in field.rel.to.objects.all():
-					pyforms_field.add_item( str(instance), instance.pk )
-
+			elif isinstance(field, models.ForeignKey): 					pyforms_field = ControlCombo( field.verbose_name.capitalize() )
+			elif isinstance(field, models.ManyToManyField):  			pyforms_field = ControlMultipleSelection( field.verbose_name.capitalize() )
+				
 			if pyforms_field is not None: 
 				setattr(self, field.name, pyforms_field)
 				formset.append(field.name)
@@ -161,11 +202,9 @@ class EditFormAdmin(BaseWidget):
 
 	
 	def show_create_form(self):
-		for field in self.edit_fields: field.show()
-		self._save_btn.hide()
-		self._remove_btn.hide()
-
 		fields2show = self.get_visible_fields_names()
+
+		#self.update_related_fields()
 		
 		for field in self.model._meta.get_fields():
 			if field.name not in fields2show: 						continue
@@ -198,11 +237,20 @@ class EditFormAdmin(BaseWidget):
 			elif isinstance(field, models.UUIDField):  				getattr(self, field.name).value = None
 			elif isinstance(field, models.ForeignKey):				getattr(self, field.name).value = None
 
+		for field in self.edit_fields: field.show()
+		self._save_btn.hide()
+		self._remove_btn.hide()
+
+
+
+
 	def show_edit_form(self, pk=None):
 		if pk: self.object_pk = pk
 		for field in self.edit_fields: 		field.show()
 		for field in self.inlines_controls: field.show()
 		self._create_btn.hide()
+
+		self.update_related_fields()
 
 		obj = self.model.objects.get(pk=self.object_pk)
 		fields2show = self.get_visible_fields_names()
@@ -240,7 +288,7 @@ class EditFormAdmin(BaseWidget):
 				v = getattr(obj, field.name)
 				getattr(self, field.name).value = v.pk if v else None
 			elif isinstance(field, models.ManyToManyField):					
-				getattr(self, field.name).value = [str(o.pk) for o in getattr(obj, field.name).all()]
+				getattr(self, field.name).value = [o.pk for o in getattr(obj, field.name).all()]
 			
 		for inline in self.inlines:
 			getattr(self, inline.__name__).value = inline( (self.model, self.object_pk) )
@@ -428,6 +476,7 @@ class EditFormAdmin(BaseWidget):
 							o = field.rel.to.objects.get(pk=value)
 							field_instance.add(o)
 					else:
+						print(values)
 						for value in values:
 							o = field.rel.to.objects.get(pk=value)
 							rel_obj = field_instance.through()

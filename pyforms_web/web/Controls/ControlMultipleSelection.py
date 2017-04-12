@@ -7,6 +7,7 @@ class ControlMultipleSelection(ControlBase):
 		super(ControlMultipleSelection, self).__init__(label, defaultValue, helptext)
 		self._items={}
 
+
 	def init_form(self): return "new ControlMultipleSelection('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	def add_item(self, label, value = None):
@@ -20,24 +21,35 @@ class ControlMultipleSelection(ControlBase):
 		self.mark_to_update_client()
 
 
+	def clear_items(self):
+		self._items = {}
+		self._value = None
+		self.mark_to_update_client()
+
 
 	def serialize(self):
 		data = ControlBase.serialize(self)
 		items = []
 		for key, value in self._items.items():
-			value = int(value) if isinstance(value, int) else value
-			items.append({'label': str(key), 'value': value}) 
+			items.append({'text': str(key), 'value': str(value), 'name': str(key)})
+		
+		#value = str(self._value) if self._value is not None else None
+		if isinstance(self._value, list) and len(self._value)>0:
+			value = list(map(str,sorted(self._value)))
+		else:
+			value = None
 
-		value = int(self._value) if isinstance(self._value, int) else self._value
-			
-		data.update({ 'items': items, 'value': value})
+
+		data.update({ 'items': items, 'value': value })
 		return data
 		
+	
+
 	def deserialize(self, properties):
-		ControlBase.deserialize(self,properties)
-		self._items = {}
-
-		for item in properties['items']:
-			self.add_item(item['label'], item['value'])
-
-		self.value = properties['value']
+		ControlBase.deserialize(self, properties)
+		value = properties.get('value', [])
+		values = []
+		for v in value:
+			if len(v.strip())>0:
+				values.append(v)
+		self._value = values
