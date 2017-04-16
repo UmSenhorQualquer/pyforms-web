@@ -40,11 +40,13 @@ class ModelAdmin(EditFormAdmin):
       		model  - Model with the App will represent.
       		parent - Variable with the content [model, foreign key id]. It is used to transform the App in an inline App
 		"""
-		EditFormAdmin.__init__(self, title, model, None, parent)
-
 		# buttons
 		self._add_btn 		= ControlButton('<i class="plus icon"></i> Add')
 		self._list 			= self.list_control('List')
+		
+		
+		EditFormAdmin.__init__(self, title, model, None, parent)
+
 		
 		# events
 		self._add_btn.value 	= self.show_create_form

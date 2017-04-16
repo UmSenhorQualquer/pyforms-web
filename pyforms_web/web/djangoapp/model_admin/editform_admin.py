@@ -61,15 +61,17 @@ class EditFormAdmin(BaseWidget):
 		for field in self.edit_fields: field.hide()
 				
 		# events
-		self._create_btn.value 	= self.__save_btn_event
+		self._create_btn.value 	= self.__create_btn_event
 		self._remove_btn.value 	= self.__remove_btn_event
 		self._save_btn.value 	= self.__save_btn_event
-		self._cancel_btn.value 	= self.hide_form
+		self._cancel_btn.value 	= self.cancel_btn_event
 		
 		self.create_model_formfields()
 		if pk:
 			self.object_pk = pk
 			self.show_edit_form()
+		else:
+			self.show_create_form()
 
 	#################################################################################
 	#################################################################################
@@ -90,6 +92,8 @@ class EditFormAdmin(BaseWidget):
 		for field in self.inlines_controls: field.show()
 
 
+	def cancel_btn_event(self):
+		self.hide_form()
 
 
 
@@ -516,6 +520,11 @@ class EditFormAdmin(BaseWidget):
 	#### PRIVATE FUNCTIONS ##########################################################
 	#################################################################################
 
+	def __create_btn_event(self):
+		self.object_pk = None
+		obj = self.save_event()
+		if obj:
+			self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
 
 
 	def __save_btn_event(self):
