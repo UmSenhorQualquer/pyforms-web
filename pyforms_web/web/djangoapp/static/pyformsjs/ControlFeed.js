@@ -44,33 +44,20 @@ ControlFeed.prototype.set_value = function(data){
 
 	var self = this;
 
-	this.jquery().children().each(function(){
-		var pk = $(this).attr('pk');
-		if(i<data.length){
-			if( pk>data[i].pk ){
-				var e = $(data[i].html)
-				e.insertBefore( $(this) );
-				e.attr('pk', data[i].pk);
-				self.set_actions(e);
-				i++;
-			}else if( pk==data[i].pk ){
-				var e = $(data[i].html)
-				e.insertBefore( $(this) );
-				e.attr('pk', data[i].pk);
-				self.set_actions(e);
-				$(this).remove();
-				i++;
-			};
+	for(var i=0; i<data.length; i++){
+		var elements = this.jquery().find('[pk="'+data[i].pk+'"]');
+		//console.log(elements.size());
+		var e = $(data[i].html);
+		e.attr('pk', data[i].pk);
+		if(elements.size()>0){
+			elements.replaceWith(e);
+		}else{
+			this.jquery().prepend( e );			
 		};
-	});
-
-	for(var j=i;j<data.length;j++){
-		var e = $(data[j].html);
-		e.prependTo(this.jquery());
-		e.attr('pk', data[j].pk);
 		self.set_actions(e);
+		
 	};
-
+	
 	if(this.properties.visible) this.show(); else this.hide();
 };
 
@@ -81,12 +68,10 @@ ControlFeed.prototype.set_actions = function(element){
 	var self = this;
 	
 	element.find('[action]').click(function(){
-		console.log(element.html());
 		var action 					 = $(this).attr('action');
 		var action_param 			 = $(this).attr('action-param');
 		self.properties.action_param = action_param;
 		self.basewidget.fire_event( 'self', action );
-
 	});
 };
 

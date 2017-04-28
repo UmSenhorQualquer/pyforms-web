@@ -9,7 +9,6 @@ ControlButton.prototype = Object.create(ControlBase.prototype);
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlButton.prototype.init_control = function(){
-
 	var html = "<div class='field ControlButton' id='"+this.place_id()+"' >";
 	if(this.properties.include_label) html += '<label>&nbsp;</label>';
 	html +="<button type='button' title='"+this.properties.help+"' id='"+this.control_id()+"' class='ui button' >";
@@ -27,7 +26,8 @@ ControlButton.prototype.init_control = function(){
 			self.basewidget.fire_event( self.name, 'pressed' );
 	});
 
-	if(!this.properties.visible) this.hide();
+	//console.log(!this.properties.visible, this.jquery_place().html(), '-');
+	if(!this.properties.visible) this.hide(undefined, true);
 	if(this.properties.css) this.jquery().addClass(this.properties.css);
 
 };
@@ -57,7 +57,6 @@ ControlButton.prototype.deserialize = function(data){
 	this.jquery().html(this.properties.label);
 
 	this.jquery().addClass(this.properties.css);
-	
 	
 	if(this.properties.visible) 
 		this.show();

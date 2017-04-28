@@ -1,6 +1,6 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
 from django.template.loader import render_to_string
-import simplejson
+import simplejson, base64
 
 class ControlTemplate(ControlBase):
 
@@ -19,6 +19,9 @@ class ControlTemplate(ControlBase):
 	def serialize(self):
 		data = super(ControlTemplate,self).serialize()		
 		html = render_to_string(self._template, self.value)
+
+		html = base64.b64encode(html.encode('utf-8'))
+
 		data.update({'value':html})
 		return data
 

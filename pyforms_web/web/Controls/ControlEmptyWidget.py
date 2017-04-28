@@ -32,10 +32,10 @@ class ControlEmptyWidget(ControlBase):
 		self._visible 	  = properties.get('visible',True)
 
 		if isinstance(self.value, BaseWidget):
-			self._value 		= PyFormsMiddleware.get_instance(self.value.uid)
-			self._value.parent 	= self.parent
+			self.value 		= PyFormsMiddleware.get_instance(self.value.uid)
+			if self.value is not None: self.value.parent = self.parent
 		else:
-			self._value = None
+			self.value = None
 		
 
 

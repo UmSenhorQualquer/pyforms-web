@@ -266,9 +266,12 @@ PyformsManager.prototype.open_application = function(app_data){
 	
 	var layout_position = app_data['layout_position'];
 	var application_id  = app_data['uid'];
+
+	//console.log('open_application', app_data);
 	
 	// if the application exists activate the layout
 	if( app!=undefined){
+		//console.log('application-exists');
 
 		for(var i=0; i<this.layout_places.length; i++){
 			if( this.layout_places[i].place==layout_position && this.layout_places[i].activate_handler ){

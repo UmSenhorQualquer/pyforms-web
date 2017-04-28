@@ -19,16 +19,16 @@ ControlText.prototype.init_control = function(){
 		self.basewidget.fire_event( this.name, 'changed_event' );
 	});
 
-	if(!this.properties.visible) this.hide();
-
+	
 	if(!this.properties.enabled){
 		this.jquery().attr('disabled', '');
 	}else{
 		this.jquery().removeAttr('disabled');
 	};
-
 	
 	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
+
+	if(!this.properties.visible) this.hide(undefined, true);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

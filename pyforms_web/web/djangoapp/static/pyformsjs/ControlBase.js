@@ -58,8 +58,9 @@ ControlBase.prototype.set_value = function(value){
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ControlBase.prototype.hide = function(not_update_columns){
-	if( !this.jquery_place().is(':visible') ) return;
+ControlBase.prototype.hide = function(not_update_columns, init_form){
+	if(init_form==undefined)
+		if( !this.jquery_place().is(':visible') ) return;
 	var parent = this.jquery_place().parent();
 
 	if( parent.hasClass('row') )
@@ -79,9 +80,10 @@ ControlBase.prototype.hide = function(not_update_columns){
 			}
 		}
 
+	
 	this.jquery_place().hide();
-	this.properties.visible = 0;
-
+	this.properties.visible = false;
+	
 	var pyforms_segment = this.jquery_place().parents('.pyforms-segment');
 	if( pyforms_segment  && pyforms_segment.find('.field:visible').length == 0 ){
 		pyforms_segment.hide();
@@ -93,6 +95,7 @@ ControlBase.prototype.hide = function(not_update_columns){
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlBase.prototype.show = function(not_update_columns){
+	console.log(this.name, 'show');
 	if( this.jquery_place().is(':visible') ) return;
 	var parent = this.jquery_place().parent();
 	

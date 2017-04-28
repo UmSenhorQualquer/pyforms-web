@@ -14,7 +14,7 @@ ControlTemplate.prototype.init_control = function(){
 
 	this.set_value(this.properties.value);
 	
-	if(!this.properties.visible) this.hide();
+	if(!this.properties.visible) this.hide(undefined, true);
 
 	if(!this.properties.enabled){
 		this.jquery().attr('disabled', '');
@@ -27,8 +27,10 @@ ControlTemplate.prototype.init_control = function(){
 
 
 ControlTemplate.prototype.set_value = function(value){
-	if(value){
-		this.jquery().html(value); 
+	var html = Base64.decode(value);
+
+	if(html){
+		this.jquery().html(html); 
 		this.set_actions();
 	}
 	else
