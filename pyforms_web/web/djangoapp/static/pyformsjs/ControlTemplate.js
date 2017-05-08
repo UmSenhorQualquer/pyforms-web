@@ -41,7 +41,7 @@ ControlTemplate.prototype.set_value = function(value){
 
 ControlTemplate.prototype.set_actions = function(){
 	this.properties.action_param = undefined;
-	var self 	= this;
+	var self = this;
 	
 	this.jquery().find('[action]').click(function(){
 		var action 					 = $(this).attr('action');

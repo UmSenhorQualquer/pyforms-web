@@ -5,14 +5,23 @@ class ControlFeed(ControlBase):
 
 	def __init__(self, label = "", defaultValue = "", helptext=''):
 		self._read_only         = False
+		self.has_more		    = False
 		self._selected_index    = -1
 		self.item_selection_changed_event = None
+		self.mode = 'feed'
 		
 		super(ControlFeed, self).__init__(label, defaultValue, helptext)
 		self._value 	= []
 		self.action_param = None
+		self._clear   = False
+		
 
 	def init_form(self): return "new ControlFeed('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+
+	def clear(self):
+		self._clear = True
+		self._value = []
+		self.mark_to_update_client()
 
 	@property
 	def selected_row_index(self): return self._selected_index
@@ -42,6 +51,12 @@ class ControlFeed(ControlBase):
 		ControlBase.value.fset(self, value)
 
 
+	def serialize(self):
+		res = ControlBase.serialize(self)
+		res.update({'clear':self._clear, 'has_more': self.has_more, 'mode': self.mode})
+		self._clear = False
+		return res
+	
 
 	def deserialize(self, properties):
 		ControlBase.deserialize(self,properties)

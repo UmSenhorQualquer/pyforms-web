@@ -1,11 +1,13 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
-import simplejson
+import simplejson, collections
 
 class ControlMultipleSelection(ControlBase):
 
 	def __init__(self, label = "",  defaultValue = [],helptext=''):
 		super(ControlMultipleSelection, self).__init__(label, defaultValue, helptext)
-		self._items={}
+		self.mode   		= 'selection'
+		self._update_items	= True
+		self._items			= collections.OrderedDict()
 
 
 	def init_form(self): return "new ControlMultipleSelection('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
@@ -18,6 +20,7 @@ class ControlMultipleSelection(ControlBase):
 		else:
 			self._items[label] = value
 	   
+		self._update_items = True
 		self.mark_to_update_client()
 
 
@@ -40,16 +43,21 @@ class ControlMultipleSelection(ControlBase):
 			value = None
 
 
-		data.update({ 'items': items, 'value': value })
+		data.update({ 'items': items, 'value': value, 'mode': self.mode, 'update_items': self._update_items })
+		
+		self._update_items = False
 		return data
 		
 	
 
 	def deserialize(self, properties):
-		ControlBase.deserialize(self, properties)
 		value = properties.get('value', [])
 		values = []
 		for v in value:
 			if len(v.strip())>0:
 				values.append(v)
-		self._value = values
+		properties.update({'value':values})
+		
+		ControlBase.deserialize(self, properties)
+		
+	

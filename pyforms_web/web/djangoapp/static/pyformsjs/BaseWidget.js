@@ -230,6 +230,13 @@ BaseWidget.prototype.close_sub_apps = function(){
 
 ////////////////////////////////////////////////////////////
 
+BaseWidget.prototype.query_server = function(params){
+	pyforms.query_server(this, params); 
+};
+
+
+////////////////////////////////////////////////////////////
+
 BaseWidget.prototype.jquery = function(){
 	return $("#app-"+this.widget_id);
 };

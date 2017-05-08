@@ -29,9 +29,9 @@ class EditFormAdmin(BaseWidget):
 	def __init__(self, title, model, pk, parent=None):
 		"""
 		Parameters:
-      		title  - Title of the app.
-      		model  - Model with the App will represent.
-      		parent - Variable with the content [model, foreign key id]. It is used to transform the App in an inline App
+			title  - Title of the app.
+			model  - Model with the App will represent.
+			parent - Variable with the content [model, foreign key id]. It is used to transform the App in an inline App
 		"""
 		BaseWidget.__init__(self, title)
 		self.model 		 = model
@@ -318,7 +318,7 @@ class EditFormAdmin(BaseWidget):
 			
 			for field in self.model._meta.get_fields():
 				if field.name not in fields2show: continue
-
+			
 				if isinstance(field, models.AutoField): 			continue
 				elif isinstance(field, models.BigAutoField):  		continue
 				elif isinstance(field, models.BigIntegerField):
@@ -353,7 +353,13 @@ class EditFormAdmin(BaseWidget):
 				elif isinstance(field, models.EmailField):
 					getattr(self, field.name).error = False
 					setattr(obj, field.name, getattr(self, field.name).value)
-				elif isinstance(field, models.FileField):
+				elif isinstance(field, models.FilePathField):
+					getattr(self, field.name).error = False
+					setattr(obj, field.name, getattr(self, field.name).value)
+				elif isinstance(field, models.FloatField):
+					getattr(self, field.name).error = False
+					setattr(obj, field.name, getattr(self, field.name).value)
+				elif isinstance(field, models.ImageField):
 					getattr(self, field.name).error = False
 					value = getattr(self, field.name).value
 					if value:
@@ -368,18 +374,13 @@ class EditFormAdmin(BaseWidget):
 						os.rename(from_path, to_path)
 
 						url = '/'.join([field.upload_to]+[os.path.basename(value) ])
+						if url[0]=='/': url = url[1:]
 						setattr(obj, field.name, url)
 					elif field.null:
 						setattr(obj, field.name, None)
 					else:
 						setattr(obj, field.name, '')
-				elif isinstance(field, models.FilePathField):
-					getattr(self, field.name).error = False
-					setattr(obj, field.name, getattr(self, field.name).value)
-				elif isinstance(field, models.FloatField):
-					getattr(self, field.name).error = False
-					setattr(obj, field.name, getattr(self, field.name).value)
-				elif isinstance(field, models.ImageField):
+				elif isinstance(field, models.FileField):
 					getattr(self, field.name).error = False
 					value = getattr(self, field.name).value
 					if value:
@@ -480,7 +481,6 @@ class EditFormAdmin(BaseWidget):
 							o = field.rel.to.objects.get(pk=value)
 							field_instance.add(o)
 					else:
-						print(values)
 						for value in values:
 							o = field.rel.to.objects.get(pk=value)
 							rel_obj = field_instance.through()
