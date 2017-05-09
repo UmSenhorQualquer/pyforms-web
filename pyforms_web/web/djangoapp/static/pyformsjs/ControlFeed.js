@@ -102,3 +102,9 @@ ControlFeed.prototype.deserialize = function(data){
 
 	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 };
+
+////////////////////////////////////////////////////////////////////////////////
+
+ControlFeed.prototype.update_server = function(){
+	return this.properties.action_param != undefined;
+};

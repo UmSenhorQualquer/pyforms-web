@@ -50,3 +50,8 @@ ControlTemplate.prototype.set_actions = function(){
 		self.basewidget.fire_event( 'self', action );
 	});
 };
+
+
+ControlTemplate.prototype.update_server = function(){
+	return this.properties.action_param != undefined;
+};
