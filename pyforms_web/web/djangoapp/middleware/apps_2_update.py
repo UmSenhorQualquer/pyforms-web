@@ -7,7 +7,7 @@ class Apps2Update(object):
 
 	def add_top(self, app):
 		if app in self._bottom_apps: return
-		if app in self._top_apps: return
+		if app in self._top_apps: 	 return
 
 		self._top_apps.append(app)
 

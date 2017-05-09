@@ -40,7 +40,7 @@ ControlBase.prototype.jquery_place = function(){
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlBase.prototype.get_value = function(){ 
-	if(this.jquery().size()==0) return this.properties.value;
+	if(this.jquery().length==0) return this.properties.value;
 	var value = this.jquery().val();
 	if(value=='null') return null;
 	else return value;
@@ -49,7 +49,7 @@ ControlBase.prototype.get_value = function(){
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlBase.prototype.set_value = function(value){
-	if(this.jquery().size()>0) 
+	if(this.jquery().length>0) 
 		if(this.properties.value && this.properties.value!=null)
 			this.jquery().val(this.properties.value); 
 		else
@@ -95,7 +95,7 @@ ControlBase.prototype.hide = function(not_update_columns, init_form){
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlBase.prototype.show = function(not_update_columns){
-	console.log(this.name, 'show');
+	//console.log(this.name, 'show');
 	if( this.jquery_place().is(':visible') ) return;
 	var parent = this.jquery_place().parent();
 	

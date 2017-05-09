@@ -36,7 +36,7 @@ ControlFeed.prototype.set_value = function(data){
 		var elements = this.jquery().find('[pk="'+data[i].pk+'"]');
 		var e = $(data[i].html); e.attr('pk', data[i].pk);
 		
-		if(elements.size()>0){
+		if(elements.length>0){
 			elements.replaceWith(e);
 		}else{
 			this.jquery().append( e );

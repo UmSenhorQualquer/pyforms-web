@@ -30,7 +30,7 @@ ControlTemplate.prototype.set_value = function(value){
 	var html = Base64.decode(value);
 
 	if(html){
-		this.jquery().html(html); 
+		this.jquery().html(html);
 		this.set_actions();
 	}
 	else

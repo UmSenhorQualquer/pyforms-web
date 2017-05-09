@@ -32,7 +32,7 @@ ControlInteger.prototype.init_control = function(){
 
 
 ControlInteger.prototype.get_value = function(){ 
-	if(this.jquery().size()==0) return this.properties.value;
+	if(this.jquery().length==0) return this.properties.value;
 	var value = this.jquery().val();
 	if(value=='null' || value=='') return null;
 	else return value;
