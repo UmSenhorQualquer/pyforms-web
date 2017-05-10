@@ -269,13 +269,15 @@ PyformsManager.prototype.open_application = function(app_data){
 	if( app!=undefined){
 		app.deserialize(app_data);
 		
-		for(var i=0; i<this.layout_places.length; i++){
-			if( this.layout_places[i].place==layout_position && this.layout_places[i].activate_handler ){
-				this.layout_places[i].activate_handler(application_id);
-				break;
-			}
+		if(!app_data['close_widget']){ 
+			for(var i=0; i<this.layout_places.length; i++){
+				if( this.layout_places[i].place==layout_position && this.layout_places[i].activate_handler ){
+					this.layout_places[i].activate_handler(application_id);
+					break;
+				}
+			};
 		};
-
+		
 		not_loading();
 		return;
 	}
