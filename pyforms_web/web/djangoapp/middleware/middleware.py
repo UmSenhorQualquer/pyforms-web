@@ -49,7 +49,6 @@ class PyFormsMiddleware(object):
 			"{0}.app".format(app_id)
 		)
 
-
 		if os.path.isfile(app_path): 
 			lock = filelock.FileLock("lockfile.txt")
 			with lock.acquire(timeout=4):
