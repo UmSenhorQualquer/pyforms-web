@@ -25,15 +25,20 @@ class EditFormAdmin(BaseWidget):
 
 	inlines 	 = []
 	fieldsets	 = None
+	
+	SAVE_BTN_LABEL   = '<i class="save icon"></i> Save'
+	CREATE_BTN_LABEL = '<i class="plus icon"></i> Create'
+	CANCEL_BTN_LABEL = '<i class="hide icon"></i> Close'
+	REMOVE_BTN_LABEL = '<i class="trash outline icon"></i> Remove'
 
-	def __init__(self, title, model, pk, parent=None):
+	def __init__(self, title, model, pk, parent=None, parent_win=None):
 		"""
 		Parameters:
 			title  - Title of the app.
 			model  - Model with the App will represent.
 			parent - Variable with the content [model, foreign key id]. It is used to transform the App in an inline App
 		"""
-		BaseWidget.__init__(self, title)
+		BaseWidget.__init__(self, title, parent_win=parent_win)
 		self.model 		 = model
 		self.edit_fields = []
 
@@ -47,10 +52,13 @@ class EditFormAdmin(BaseWidget):
 		if parent: self.set_parent(parent[0], parent[1])
 
 		# buttons
-		self._save_btn 		= ControlButton('<i class="save icon"></i> Save')
-		self._create_btn 	= ControlButton('<i class="plus icon"></i> Create')
-		self._remove_btn 	= ControlButton('<i class="minus icon"></i> Remove')	
-		self._cancel_btn 	= ControlButton('<i class="hide icon"></i> Close')
+		self._save_btn 		= ControlButton(self.SAVE_BTN_LABEL)
+		self._create_btn 	= ControlButton(self.CREATE_BTN_LABEL)
+		self._remove_btn 	= ControlButton(self.REMOVE_BTN_LABEL)	
+		self._cancel_btn 	= ControlButton(self.CANCEL_BTN_LABEL)
+		
+		self._remove_btn.css = 'red basic'
+		self._cancel_btn.css = 'gray basic'
 		
 		
 		self.edit_fields.append( self._save_btn )
@@ -66,6 +74,13 @@ class EditFormAdmin(BaseWidget):
 		self._save_btn.value 	= self.__save_btn_event
 		self._cancel_btn.value 	= self.cancel_btn_event
 		
+		self._create_btn.include_label	= False
+		self._remove_btn.include_label	= False
+		self._save_btn.include_label	= False
+		self._cancel_btn.include_label	= False
+		
+		
+		
 		self.create_model_formfields()
 		if pk:
 			self.object_pk = pk
@@ -77,7 +92,7 @@ class EditFormAdmin(BaseWidget):
 	#################################################################################
 
 	def init_form(self, parent=None):
-		self.formset = self.formset + [('_save_btn', '_create_btn','_remove_btn', '_cancel_btn')]
+		self.formset = self.formset + [('_save_btn', '_create_btn', '_cancel_btn', ' ' ,'_remove_btn', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')]
 		return super(EditFormAdmin, self).init_form(parent)
 
 	#################################################################################

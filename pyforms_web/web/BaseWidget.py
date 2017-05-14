@@ -117,6 +117,17 @@ class BaseWidget(object):
 		elif len(row)==9: return 'nine'
 		elif len(row)==10: return 'ten'
 		elif len(row)==11: return 'eleven'
+		elif len(row)==12: return 'twelve'
+		elif len(row)==13: return 'thirteen'
+		elif len(row)==14: return 'fourteen'
+		elif len(row)==15: return 'fiveteen'
+		elif len(row)==16: return 'sixteen'
+		elif len(row)==17: return 'seventeen'
+		elif len(row)==18: return 'eighteen'
+		elif len(row)==19: return 'nineteen'
+		elif len(row)==20: return 'twenty'
+		elif len(row)==21: return 'twentyone'
+		elif len(row)==22: return 'twentytwo'
 		else: return ''
 
 	def generate_panel(self, formset, add_field_class=True):
