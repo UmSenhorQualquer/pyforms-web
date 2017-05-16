@@ -62,7 +62,7 @@ class ModelAdmin(EditFormAdmin):
 	#################################################################################
 
 	def init_form(self, parent=None):
-		self.formset = ['_add_btn', '_list'] + self.formset + [('_save_btn', '_create_btn','_remove_btn', '_cancel_btn')]
+		self.formset = ['_add_btn', '_list'] + self.formset + [('_save_btn', '_create_btn', '_cancel_btn', ' ' ,'_remove_btn',  ' ', ' ', ' ', ' ')]
 		return BaseWidget.init_form(self, parent)
 
 	#################################################################################

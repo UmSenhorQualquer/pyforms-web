@@ -223,7 +223,7 @@ class EditFormAdmin(BaseWidget):
 	def show_create_form(self):
 		fields2show = self.get_visible_fields_names()
 
-		#self.update_related_fields()
+		self.update_related_fields()
 		
 		for field in self.model._meta.get_fields():
 			if field.name not in fields2show: 						continue
