@@ -6,10 +6,11 @@ from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 
 class ControlEmptyWidget(ControlBase):
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
+	def __init__(self, label = "", defaultValue = "", helptext='', parent=None):
 		super(ControlEmptyWidget,self).__init__(label, defaultValue, helptext)
 		self._widget = None
 		self._css = ''
+		self._parent = parent
 
 	def init_form(self):
 		return """new ControlEmptyWidget('{0}', {1})""".format(

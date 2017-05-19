@@ -12,8 +12,18 @@ ControlEmptyWidget.prototype.init_control = function(){
 	var widget_html = '';
 	if( this.properties.html!==undefined ) widget_html = Base64.decode(this.properties.html);
 
+	console.log(widget_html, '----');
 	var html = "<div id='"+this.place_id()+"' class='field ControlEmptyWidget "+this.properties.css+"' >"+widget_html+"</div>";
 	this.jquery_place().replaceWith(html);
+	
+	console.log(this.properties);
+	if(this.properties.child_widget_id!==undefined){
+		var child_app = pyforms.find_app(this.properties.child_widget_id);
+		child_app.deserialize(this.properties.widget_data);
+	}
+	
+	this.set_value(this.properties.value);
+
 
 	if(!this.properties.visible) this.hide();
 };
