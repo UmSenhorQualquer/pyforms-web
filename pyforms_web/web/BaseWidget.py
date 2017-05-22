@@ -29,6 +29,8 @@ class BaseWidget(object):
 		self._html          = ''
 		self._js            = ''
 		self._close_widget  = False
+
+		self.init_form_result = None
 		if not hasattr(self, '_uid'): self._uid = str(uuid.uuid4())
 
 		self._messages = []

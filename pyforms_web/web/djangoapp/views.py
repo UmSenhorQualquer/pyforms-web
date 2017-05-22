@@ -63,10 +63,6 @@ def filesbrowser_browse(request):
 		return render_to_response(conf.PYFORMS_WEB_APPS_TEMPLATE_NO_TITLE,params)
 
 
-
-
-
-
 def register_app(request, app_module):
 	try:
 		data = ApplicationsLoader.register_instance(request, app_module)

@@ -9,6 +9,10 @@ class ApplicationsLoader:
 	
 	@staticmethod
 	def register_instance(request, modulename, app_data=None):
+
+		if modulename in conf.PYFORMS_APPS:
+			modulename = conf.PYFORMS_APPS[modulename]
+
 		# check if the module was already imported, if not import it.
 		if modulename not in ApplicationsLoader._storage:
 			modules = str(modulename).split('.')
@@ -20,8 +24,6 @@ class ApplicationsLoader:
 			raise PermissionDenied('The user do not have access to the application')
 
 		app = moduleclass()
-
-
 
 		data = [{'uid': app.uid, 'layout_position': app.layout_position, 'title':app.title}]
 		for m in request.updated_apps.applications: m.commit()
@@ -41,7 +43,6 @@ class ApplicationsLoader:
 
 		if not app.has_permissions(request.user):
 			raise PermissionDenied('The user do not have access to the application')
-
 		
 		if app_data is not None: app.load_serialized_form(app_data)
 
