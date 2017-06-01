@@ -17,7 +17,7 @@ class ControlList(ControlBase):
 	def dbl_click(self): pass
 
 	@property
-	def horizontal_headers(self): return map(str, self._titles)
+	def horizontal_headers(self): return self._titles
 
 	@horizontal_headers.setter
 	def horizontal_headers(self, value):
@@ -50,7 +50,7 @@ class ControlList(ControlBase):
 
 
 	@property
-	def value(self): return [map(str, row) for row in ControlBase.value.fget(self)]
+	def value(self): return ControlBase.value.fget(self)
 
 	@value.setter
 	def value(self, value):
