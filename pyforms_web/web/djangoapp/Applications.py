@@ -1,4 +1,4 @@
-import datetime, json, dill, os, traceback
+import datetime, json, dill, os, traceback, inspect
 from pysettings import conf
 from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 from django.core.exceptions import PermissionDenied
@@ -23,7 +23,12 @@ class ApplicationsLoader:
 		if not moduleclass.has_permissions(request.user):
 			raise PermissionDenied('The user do not have access to the application')
 
-		app = moduleclass()
+		sig = inspect.signature(moduleclass)
+		parameters = {}
+		for name, param in sig.parameters.items():
+			parameters[name] = request.GET.get(name, None)
+
+		app = moduleclass(**parameters)
 
 		data = [{'uid': app.uid, 'layout_position': app.layout_position, 'title':app.title}]
 		for m in request.updated_apps.applications: m.commit()

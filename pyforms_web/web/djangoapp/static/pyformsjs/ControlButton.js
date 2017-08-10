@@ -22,8 +22,10 @@ ControlButton.prototype.init_control = function(){
 	this.jquery().click(function(){
 		if( self.properties.value.length>0 )
 			eval(self.properties.value);
-		else
+		else{
+			
 			self.basewidget.fire_event( self.name, 'pressed' );
+		};
 	});
 
 	//console.log(!this.properties.visible, this.jquery_place().html(), '-');

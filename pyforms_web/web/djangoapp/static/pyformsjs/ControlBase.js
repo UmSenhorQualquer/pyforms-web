@@ -66,13 +66,18 @@ ControlBase.prototype.hide = function(not_update_columns, init_form){
 	if( parent.hasClass('row') )
 		if( parent.hasClass('fields') ){
 			var found = false;
-			for(var i=2; i<COLUMNS_CSS_CLASSES.length; i++)
-				if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
-					parent.removeClass( COLUMNS_CSS_CLASSES[i] );
-					parent.addClass( COLUMNS_CSS_CLASSES[i-1] );
-					found = true;
-					break;
-				};
+			
+			if( !parent.hasClass( 'no-alignment') ){
+				
+				for(var i=2; i<COLUMNS_CSS_CLASSES.length; i++)
+					if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
+						parent.removeClass( COLUMNS_CSS_CLASSES[i] );
+						parent.addClass( COLUMNS_CSS_CLASSES[i-1] );
+						found = true;
+						break;
+					};
+			}else
+				found = parent.find('.control:visible').length==0;
 
 			if(!found){
 				parent.removeClass( 'fields' );
@@ -80,7 +85,6 @@ ControlBase.prototype.hide = function(not_update_columns, init_form){
 			}
 		}
 
-	
 	this.jquery_place().hide();
 	this.properties.visible = false;
 	

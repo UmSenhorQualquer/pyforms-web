@@ -42,7 +42,7 @@ function BaseWidget(widget_id, widget_name, controls, parent_id, data){
 		var self = this;
 		this.timeout_loop = setInterval(function(){ self.refresh_timeout_event(); }, data.refresh_timeout);
 	};
-}
+};
 ////////////////////////////////////////////////////////////
 
 BaseWidget.prototype.refresh_timeout_event = function(){
@@ -60,7 +60,7 @@ BaseWidget.prototype.parent_widget = function(){
 	}
 	else 
 		return undefined;
-}
+};
 
 ////////////////////////////////////////////////////////////
 
@@ -70,13 +70,13 @@ BaseWidget.prototype.find_control = function(name){
 			return this.controls[index];
 	
 	return undefined;
-}
+};
 
 ////////////////////////////////////////////////////////////
 
 BaseWidget.prototype.control_id = function(name){
 	return this.widget_id+'-'+name;
-}
+};
 
 ////////////////////////////////////////////////////////////
 
@@ -89,7 +89,7 @@ BaseWidget.prototype.current_folder = function(){
 		currentfolder = '/';
 	}	
 	return currentfolder;
-}
+};
 
 ////////////////////////////////////////////////////////////
 
@@ -102,8 +102,8 @@ BaseWidget.prototype.fire_event = function(dom_in, event, show_loading){
 		pyforms.query_server(this, this.events_queue.pop(0), show_loading );
 	else{
 		pyforms.query_server(this, undefined, show_loading);
-	}
-}
+	};
+};
 
 ////////////////////////////////////////////////////////////
 
@@ -210,12 +210,6 @@ BaseWidget.prototype.not_loading = function(){
 
 	this.loading_counter--;
 	pyforms.checker_loop();
-};
-
-////////////////////////////////////////////////////////////
-
-BaseWidget.prototype.update_controls = function(){	
-	pyforms.query_server(this, { userpath: this.current_folder() }); 
 };
 
 ////////////////////////////////////////////////////////////

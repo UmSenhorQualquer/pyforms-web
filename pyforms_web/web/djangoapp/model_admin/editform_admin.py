@@ -92,7 +92,7 @@ class EditFormAdmin(BaseWidget):
 	#################################################################################
 
 	def init_form(self, parent=None):
-		self.formset = self.formset + [('_save_btn', '_create_btn', '_cancel_btn', ' ' ,'_remove_btn', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')]
+		self.formset = self.formset + [(BaseWidget.FORM_NO_ROW_ALIGNMENT, '_save_btn', '_create_btn', '_cancel_btn', ' ' ,'_remove_btn')]
 		return super(EditFormAdmin, self).init_form(parent)
 
 	#################################################################################

@@ -1,4 +1,4 @@
-var PYFORMS_CHECKER_LOOP_INTERVAL = 500;
+var PYFORMS_CHECKER_LOOP_INTERVAL = 1000;
 
 (function($) {
   $.getStylesheet = function (href) {
@@ -184,6 +184,7 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 	if(show_loading===undefined) 	show_loading = true;
 
 	if(basewidget.parent_id!==undefined){
+		// if the widget is a child of another widget
 		var parent_widget = basewidget.parent_widget();
 		this.query_server(parent_widget, data2send);
 	}else{
@@ -199,7 +200,6 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 			data: jsondata,
 			contentType: "application/json; charset=utf-8",
 			success: function(res){
-
 				if( res.result=='error' )
 					error_msg(res.msg);
 				else{
@@ -216,7 +216,10 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 			if(show_loading) basewidget.not_loading();
 		});
 
-		if(  basewidget.events_queue.length>0 )  this.query_server(basewidget, basewidget.events_queue.pop(0) );
+		// check if there are more events to process ///////////////////////////
+		if(  basewidget.events_queue.length>0 ) 
+			this.query_server(basewidget, basewidget.events_queue.pop(0) );
+		////////////////////////////////////////////////////////////////////////
 	}
 }
 

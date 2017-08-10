@@ -17,6 +17,8 @@ from pysettings import conf
 from django.template.loader import render_to_string
 
 class BaseWidget(object):
+	
+	FORM_NO_ROW_ALIGNMENT = 0
 
 	refresh_timeout = None
 
@@ -108,6 +110,8 @@ class BaseWidget(object):
 		return html
 
 	def __get_fields_class(self, row):
+		
+		if len(row)>=1 and row[0]==self.FORM_NO_ROW_ALIGNMENT: return 'no-alignment'
 
 		if 	 len(row)==2: return 'two'
 		elif len(row)==3: return 'three'
@@ -181,6 +185,8 @@ class BaseWidget(object):
 				else:
 					control = self.controls.get(row, None)
 					if control==None:
+						if not isinstance(row, str): continue
+					
 						if row.startswith('info:'): layout += "<span class='info' >%s</span>" % row[5:]
 						elif row.startswith('h1:'): layout += "<h1>%s</h1>" % row[3:]
 						elif row.startswith('h2:'): layout += "<h2>%s</h2>" % row[3:]
@@ -212,6 +218,9 @@ class BaseWidget(object):
 				else:
 					control = self.controls.get(row, None)
 					if control==None:
+						
+						if not isinstance(row, str): continue
+					
 						if row.startswith('info:'): layout += "<span class='info' >%s</span>" % row[5:]
 						elif row.startswith('h1:'): layout += "<h1>%s</h1>" % row[3:]
 						elif row.startswith('h1-right:'): layout += "<h1 class='ui right floated header' >%s</h1>" % row[9:]
@@ -224,7 +233,6 @@ class BaseWidget(object):
 						elif row.startswith('alert:'): 		layout += "<div class='ui alert error message'>%s</div>" % row[6:]
 						elif row == '-': layout += '<div class="ui clearing divider"></div>'
 						else: layout += "<div class='ui message'>%s</div>" % row
-						
 					else:
 						#self._controls.append( control.init_form() )
 						layout += str(control)
