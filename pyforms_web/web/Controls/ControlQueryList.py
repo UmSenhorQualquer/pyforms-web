@@ -322,7 +322,9 @@ class ControlQueryList(ControlBase):
 		#configure the filters
 		for column_name in list_filter:
 			field 			= get_field(model, column_name)
-			column_values 	= queryset.values_list(column_name, flat=True).distinct().order_by()
+			column_values 	= queryset.values_list(column_name, flat=True).distinct().order_by(column_name)
+
+			print(column_name, column_values.query)
 						
 			field_type 		 = 'combo'
 			field_properties = {
