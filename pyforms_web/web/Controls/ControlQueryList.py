@@ -300,8 +300,6 @@ class ControlQueryList(ControlBase):
 		}
 
 
-
-
 	def deserialize(self, properties):
 		self._label   = properties.get('label','')
 		self._help    = properties.get('help','')
@@ -324,8 +322,6 @@ class ControlQueryList(ControlBase):
 			field 			= get_field(model, column_name)
 			column_values 	= queryset.values_list(column_name, flat=True).distinct().order_by(column_name)
 
-			print(column_name, column_values.query)
-						
 			field_type 		 = 'combo'
 			field_properties = {
 				'field_type': 'combo',
