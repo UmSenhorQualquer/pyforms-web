@@ -8,7 +8,11 @@ ControlDateTime.prototype = Object.create(ControlBase.prototype);
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlDateTime.prototype.init_control = function(){
-	var html = "<div id='"+this.place_id()+"' class='field ControlDateTime' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value=\""+this.properties.value+"\" /></div>";
+
+	var value = this.properties.value;
+	if(value==null) value = '';
+
+	var html = "<div id='"+this.place_id()+"' class='field ControlDateTime' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value=\""+value+"\" /></div>";
 	this.jquery_place().replaceWith(html);
 
 	this.jquery().datetimepicker({
@@ -28,7 +32,7 @@ ControlDateTime.prototype.init_control = function(){
 		this.jquery().removeAttr('disabled');
 	};
 
-	if(!this.properties.visible) this.hide();
+	if(!this.properties.visible) this.hide(undefined, true);
 	if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
 };
 

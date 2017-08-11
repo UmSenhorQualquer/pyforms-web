@@ -14,7 +14,7 @@ class ControlDateTime(ControlBase):
 		if isinstance(self._value, (str,str)):
 			return self._value
 		elif self._value==None:
-			return ''
+			return None
 		else:
 			return self._value.strftime(self.PYTHON_FORMAT)
 			
