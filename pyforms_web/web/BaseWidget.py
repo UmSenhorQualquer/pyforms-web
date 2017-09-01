@@ -324,7 +324,6 @@ class BaseWidget(object):
 		with lock.acquire(timeout=4):
 			with open(app_path, 'wb') as f: 
 				dill.dump(self, f)
-		
 
 
 	############################################################################

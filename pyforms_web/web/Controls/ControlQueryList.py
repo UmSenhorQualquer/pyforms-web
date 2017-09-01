@@ -120,12 +120,10 @@ class ControlQueryList(ControlBase):
 	def selected_row_id(self): return self._selected_row_id
 	@selected_row_id.setter
 	def selected_row_id(self, value): 
-		print('selected_row_id', value)
 		self._selected_row_id = value
 	
 	@property
 	def value(self):
-		print(self.search_field_key, '1 -----------')
 		if self._app and self._model and self._query:
 			# reconstruct the query ################################
 			model 		= apps.get_model(self._app, self._model)
@@ -134,21 +132,19 @@ class ControlQueryList(ControlBase):
 			for f in self.filter_by:
 				qs = qs.filter(**f)
 
-			print(self.search_field_key, '2 -----------')
 			if self.search_field_key and len(self.search_field_key)>0:
-				print(self.search_field_key, '3 -----------')
 				search_filter = None
 				for s in self.search_fields:
 					q = Q(**{s: self.search_field_key})
 					search_filter = (search_filter | q) if search_filter else q
 				qs = qs.filter(search_filter)
+
 			return qs
 		else:
 			return None
 
 	@value.setter
 	def value(self, value):
-		print('++++++++++++++')
 				
 		oldvalue = self._value
 		self._value = value
@@ -217,16 +213,7 @@ class ControlQueryList(ControlBase):
 
 
 
-	def deserialize(self, properties):
-		self._label   = properties.get('label','')
-		self._help    = properties.get('help','')
-		self._visible = properties.get('visible',True)
-		
-		self.search_field_key   = properties.get('search_field_key', None)
-		self.sort_by 			= properties.get('sort_by', [])
-		self.filter_by 			= properties.get('filter_by',[])
-		self._current_page	    = int(properties['pages']['current_page'])
-		self._selected_row_id 	= properties.get('selected_row_id', -1)
+
 		
 	def page_changed_event(self): 
 		self._selected_row_id = -1
@@ -292,6 +279,39 @@ class ControlQueryList(ControlBase):
 		else:
 			return col_value
 
+	def get_datetimefield_options(self, column_name):
+		column_filter = "{0}__gte".format(column_name)
+
+		now 			= timezone.now()
+		today_begin		= now.replace(hour=0, minute=0, second=0, microsecond=0)
+		today_end		= now.replace(hour=23, minute=59, second=59, microsecond=999)
+		next_4_months 	= today_end + timedelta(days=4*30)
+
+		month_begin		= now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+		month_end		= now.replace(day=monthrange(now.year, now.month)[1], hour=23, minute=59, second=59, microsecond=999)
+		
+		return {
+			'items': [
+				("{0}__gte={1}&{0}__lte={2}".format(column_name, today_begin.isoformat(), today_end.isoformat()),  	   'Today'),
+				("{0}__gte={1}&{0}__lte={2}".format(column_name, month_begin.isoformat(), month_end.isoformat()), 	   'This month'),
+				("{0}__gte={1}&{0}__lte={2}".format(column_name, today_begin.isoformat(), next_4_months.isoformat()),  'Next 4 months'), 
+				("{0}__year={1}".format(column_name, now.year), 'This year')
+			]
+		}
+
+
+	def deserialize(self, properties):
+		self._label   = properties.get('label','')
+		self._help    = properties.get('help','')
+		self._visible = properties.get('visible',True)
+		
+		self.search_field_key   = properties.get('search_field_key', None)
+		self.sort_by 			= properties.get('sort_by', [])
+		self.filter_by 			= properties.get('filter_by',[])
+		self._current_page	    = int(properties['pages']['current_page'])
+		self._selected_row_id 	= properties.get('selected_row_id', -1)
+
+
 	def serialize_filters(self, list_filter, queryset):
 		filters_list = []
 
@@ -300,8 +320,8 @@ class ControlQueryList(ControlBase):
 		#configure the filters
 		for column_name in list_filter:
 			field 			= get_field(model, column_name)
-			column_values 	= queryset.values_list(column_name, flat=True).distinct().order_by()
-						
+			column_values 	= queryset.values_list(column_name, flat=True).distinct().order_by(column_name)
+
 			field_type 		 = 'combo'
 			field_properties = {
 				'field_type': 'combo',
@@ -311,31 +331,12 @@ class ControlQueryList(ControlBase):
 
 			if isinstance(field, models.BooleanField):
 				field_properties.update({
-					'items': [(column_name, True, 'True'), (column_name, False, 'False')]
+					'items': [ ("{0}=true".format(column_name), 'True'), ("{0}=false".format(column_name), 'False')]
 				})
 			if isinstance(field, (models.DateField, models.DateTimeField) ):
-				column_filter = "{0}__gte".format(column_name)
-
-				now 	= timezone.now()
-				today 	= now.replace(hour=0, minute=0)
-				last_7  = now - timedelta(days=7)
-				this_month= now.replace(hour=0, minute=0, day=1)
-				last_90 = now - timedelta(days=90)
-				last_180= now - timedelta(days=180)
-				last_year= now.replace(hour=0, minute=0, month=1, day=1)
-
-				field_properties.update({
-					'items': [
-						(column_filter, today.isoformat(), 'Today'			), 
-						(column_filter, last_7.isoformat(), 'Past 7 days'	), 
-						(column_filter, this_month.isoformat(), 'This month'), 
-						(column_filter, last_90.isoformat(), 'Last 60 days'	), 
-						(column_filter, last_180.isoformat(), 'Last 90 days'), 
-						(column_filter, last_year.isoformat(), 'This year'	)
-					]
-				})
+				field_properties.update(self.get_datetimefield_options(column_name))
 			else:
-				filter_values = [(column_name, column_value, column_value) for column_value in column_values]
+				filter_values = [(column_name+'='+str(column_value), column_value) for column_value in column_values]
 				field_properties.update({'items': filter_values})
 
 			filters_list.append(field_properties)

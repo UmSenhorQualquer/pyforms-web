@@ -33,7 +33,7 @@ ControlQueryList.prototype.init_control = function(){
 				html += "<option value='000000000000'>---</label>";
 				var data = filters[(j+i)].items;
 				for(var k=0; k<data.length; k++){
-					html += "<option filter='"+data[k][0]+"' value='"+data[k][0]+'='+data[k][1]+"'>"+data[k][2]+"</label>";
+					html += "<option filter='"+data[k][0]+"' value='"+data[k][0]+"'>"+data[k][1]+"</label>";
 				};
 				html += "</select>";
 				html += "</div>";
@@ -79,15 +79,19 @@ ControlQueryList.prototype.init_control = function(){
 			var filter_value = $(this).dropdown('get value');
 			if( filter_value!='' && filter_value!='000000000000' ){
 				//var key = $(this).find('select').attr('column');
+				var filters = filter_value.split('&');
+
+				for(var j=0; j<filters.length; j++){
+					var cols = filters[j].split('=', 2);
+					var key  = cols[0];
+					var filter_value = cols[1];
+					if( filter_value=='true')  filter_value = true;
+					if( filter_value=='null')  filter_value = null;
+					if( filter_value=='false') filter_value = false;
+					var filter = { [key]: filter_value};
+					self.properties.filter_by.push(filter)
+				};
 				
-				var cols = filter_value.split('=', 2);
-				var key = cols[0];
-				var filter_value = cols[1];
-				if( filter_value=='true')  filter_value = true;
-				if( filter_value=='null')  filter_value = null;
-				if( filter_value=='false') filter_value = false;
-				var filter = { [key]: filter_value};
-				self.properties.filter_by.push(filter)
 			};	
 		});
 

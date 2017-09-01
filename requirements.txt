@@ -1,5 +1,5 @@
 simplejson
-django==1.10.6
+django
 lockfile
 sorl-thumbnail
 dill
@@ -7,5 +7,5 @@ filelock
 django-allauth
 git+https://github.com/UmSenhorQualquer/pysettings.git
 git+https://github.com/UmSenhorQualquer/django-jfu.git
-git+https://UmSenhorQualquer@bitbucket.org/UmSenhorQualquer/pyforms-web.git --upgrade
-git+https://UmSenhorQualquer@bitbucket.org/UmSenhorQualquer/orquestra.git --upgrade
+git+https://UmSenhorQualquer@bitbucket.org/UmSenhorQualquer/pyforms-web.git
+git+https://UmSenhorQualquer@bitbucket.org/UmSenhorQualquer/orquestra.git

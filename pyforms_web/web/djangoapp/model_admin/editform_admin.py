@@ -80,7 +80,6 @@ class EditFormAdmin(BaseWidget):
 		self._cancel_btn.include_label	= False
 		
 		
-		
 		self.create_model_formfields()
 		if pk:
 			self.object_pk = pk
@@ -88,15 +87,20 @@ class EditFormAdmin(BaseWidget):
 		else:
 			self.show_create_form()
 
+
+		if self.fieldsets is not None: 
+			self.formset = self.fieldsets
+
+
+		self.formset = self.get_buttons_row() + self.formset 
+
+
+
 	#################################################################################
 	#################################################################################
 
-	def init_form(self, parent=None):
-		self.formset = self.formset + [(BaseWidget.FORM_NO_ROW_ALIGNMENT, '_save_btn', '_create_btn', '_cancel_btn', ' ' ,'_remove_btn')]
-		return super(EditFormAdmin, self).init_form(parent)
-
-	#################################################################################
-	#################################################################################
+	def get_buttons_row(self):
+		return [(BaseWidget.FORM_NO_ROW_ALIGNMENT, '_save_btn', '_create_btn', '_cancel_btn', ' ' ,'_remove_btn')]
 	
 	def hide_form(self):
 		for field in self.edit_fields: 		field.hide()
@@ -278,31 +282,31 @@ class EditFormAdmin(BaseWidget):
 
 			if isinstance(field, models.AutoField): 				continue
 			elif isinstance(field, models.BigAutoField):  			continue
-			elif isinstance(field, models.BigIntegerField):  		getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.BinaryField):  			getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.BooleanField):  			getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.CharField):  				getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.BigIntegerField):  		  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.BinaryField):  			  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.BooleanField):  			  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.CharField):  				  getattr(self, field.name).value = getattr(obj, field.name)
 			elif isinstance(field, models.CommaSeparatedIntegerField):getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.DateField):  				getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.DateTimeField):  			getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.DecimalField):  			getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.DurationField):  			getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.EmailField):  			getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.FileField):  				getattr(self, field.name).value = getattr(obj, field.name).url if getattr(obj, field.name) else None
-			elif isinstance(field, models.FilePathField):  			getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.FloatField):  			getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.ImageField):  			getattr(self, field.name).value = getattr(obj, field.name).url if getattr(obj, field.name) else None
-			elif isinstance(field, models.IntegerField):  			getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.GenericIPAddressField):  	getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.NullBooleanField):  		getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.PositiveIntegerField):  	getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.DateField):  				  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.DateTimeField):  		 	  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.DecimalField):  			  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.DurationField):  			  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.EmailField):  			  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.FileField):  				  getattr(self, field.name).value = getattr(obj, field.name).url if getattr(obj, field.name) else None
+			elif isinstance(field, models.FilePathField):  			  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.FloatField):  			  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.ImageField):  			  getattr(self, field.name).value = getattr(obj, field.name).url if getattr(obj, field.name) else None
+			elif isinstance(field, models.IntegerField):  			  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.GenericIPAddressField):  	  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.NullBooleanField):  		  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.PositiveIntegerField):  	  getattr(self, field.name).value = getattr(obj, field.name)
 			elif isinstance(field, models.PositiveSmallIntegerField): getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.SlugField):  				getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.SmallIntegerField):  		getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.TextField):  				getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.TimeField):  				getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.URLField):  				getattr(self, field.name).value = getattr(obj, field.name)
-			elif isinstance(field, models.UUIDField):  				getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.SlugField):  				  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.SmallIntegerField):  		  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.TextField):  				  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.TimeField):  				  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.URLField):  				  getattr(self, field.name).value = getattr(obj, field.name)
+			elif isinstance(field, models.UUIDField):  				  getattr(self, field.name).value = getattr(obj, field.name)
 			elif isinstance(field, models.ForeignKey):
 				v = getattr(obj, field.name)
 				getattr(self, field.name).value = v.pk if v else None
@@ -316,7 +320,7 @@ class EditFormAdmin(BaseWidget):
 
 	def delete_event(self):
 		if self.object_pk:
-			obj = self.model.objects.get(pk=self.object_pk)
+			obj = self.model_object
 			obj.delete()
 			self.object_pk = None
 			return True
@@ -328,7 +332,6 @@ class EditFormAdmin(BaseWidget):
 		fields2show = self.get_visible_fields_names()
 
 		try:
-
 			obj = self.model.objects.get(pk=self.object_pk) if self.object_pk else self.model()
 			
 			for field in self.model._meta.get_fields():
@@ -351,14 +354,14 @@ class EditFormAdmin(BaseWidget):
 				elif isinstance(field, models.CommaSeparatedIntegerField):
 					getattr(self, field.name).error = False	
 					setattr(obj, field.name, getattr(self, field.name).value)
-				elif isinstance(field, models.DateField):
-					getattr(self, field.name).error = False
-					value = getattr(self, field.name).value
-					setattr(obj, field.name, (value if len(value) else None) )
 				elif isinstance(field, models.DateTimeField):
 					getattr(self, field.name).error = False
 					value = getattr(self, field.name).value
-					setattr(obj, field.name, (value if len(value) else None) )
+					setattr(obj, field.name, (value if value is not None and len(value) else None) )
+				elif isinstance(field, models.DateField):
+					getattr(self, field.name).error = False
+					value = getattr(self, field.name).value
+					setattr(obj, field.name, (value if value is not None and len(value) else None) )
 				elif isinstance(field, models.DecimalField):
 					getattr(self, field.name).error = False
 					setattr(obj, field.name, getattr(self, field.name).value)
@@ -553,3 +556,10 @@ class EditFormAdmin(BaseWidget):
 		self.success('The object was deleted with success!','Success!')
 
 	
+
+	@property 
+	def model_object(self):
+		if self.object_pk is None:
+			return None
+		else:
+			return self.model.objects.get(pk=self.object_pk)
