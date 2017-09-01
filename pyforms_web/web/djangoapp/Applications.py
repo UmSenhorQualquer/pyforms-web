@@ -48,6 +48,9 @@ class ApplicationsLoader:
 
 		if not app.has_permissions(request.user):
 			raise PermissionDenied('The user do not have access to the application')
+			
+		if not app.has_session_permissions(request.user):
+			raise PermissionDenied('The user do not have access to the application')
 		
 		if app_data is not None: app.load_serialized_form(app_data)
 

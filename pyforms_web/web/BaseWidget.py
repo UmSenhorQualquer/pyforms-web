@@ -385,6 +385,9 @@ class BaseWidget(object):
 			return True
 
 		return False
+		
+	def has_session_permissions(self, user):
+		return True
 
 
 	#### Variable connected to the Storage manager of the corrent user
