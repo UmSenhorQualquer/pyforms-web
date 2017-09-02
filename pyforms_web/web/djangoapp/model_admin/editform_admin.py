@@ -92,7 +92,7 @@ class EditFormAdmin(BaseWidget):
 			self.formset = self.fieldsets
 
 
-		self.formset = self.get_buttons_row() + self.formset 
+		self.formset = self.formset + self.get_buttons_row()
 
 
 
