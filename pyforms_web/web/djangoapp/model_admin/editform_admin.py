@@ -542,6 +542,9 @@ class EditFormAdmin(BaseWidget):
 		self.object_pk = None
 		obj = self.save_event()
 		if obj:
+			self._create_btn.hide()
+			self._save_btn.show()
+			self._remove_btn.show()
 			self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
 
 
