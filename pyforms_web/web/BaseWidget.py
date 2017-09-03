@@ -35,7 +35,8 @@ class BaseWidget(object):
 		self.init_form_result = None
 		if not hasattr(self, '_uid'): self._uid = str(uuid.uuid4())
 
-		self._messages = []
+		self._messages		  = []
+		self._js_code2execute = [];
 
 		self.parent = parent_win
 		self.is_new_app = True
@@ -288,9 +289,12 @@ class BaseWidget(object):
 			'uid':				self.uid, 
 			'layout_position': 	self.layout_position if hasattr(self, 'layout_position') else 5,
 			'title': 			self.title,
-			'close_widget':		self._close_widget
+			'close_widget':		self._close_widget,
+			'js-code':			list(self._js_code2execute)
 		}
-
+		
+		self._js_code2execute = []
+		
 		if len(self._messages)>0: 
 			res.update({'messages': self._messages})
 			self._messages = []
@@ -325,6 +329,8 @@ class BaseWidget(object):
 			with open(app_path, 'wb') as f: 
 				dill.dump(self, f)
 
+	def execute_js(self, code):
+		self._js_code2execute.append(code)
 
 	############################################################################
 	############ Parent class functions reemplementation #######################

@@ -114,14 +114,19 @@ BaseWidget.prototype.update_controls = function(){
 ////////////////////////////////////////////////////////////
 
 BaseWidget.prototype.deserialize = function(data){
+	var js_code2excute = data['js-code'];
+	if(js_code2excute && js_code2excute.length>0)
+		for(var i=0; i<js_code2excute.length; i++)
+			eval(js_code2excute[i]);
+
+	
 	for (var index = 0; index < this.controls.length; index++) {
 		var name 		= this.controls[index].name;
 		if(data[name])  this.controls[index].deserialize( data[name] );
 	};
 	this.children_windows = data['children-windows']
-
-
-
+	
+	
 	if(data.messages!=undefined)
 		for (var i=0; i<data.messages.length; i++){
 			var msg = data.messages[i]; 
