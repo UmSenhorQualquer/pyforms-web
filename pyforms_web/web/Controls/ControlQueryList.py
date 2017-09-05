@@ -81,6 +81,7 @@ class ControlQueryList(ControlBase):
 		self._app 	= None
 		self._model = None
 		self._query = None
+		self._update_list = True #used to update the list to the client
 		####################################################################
 
 		super(ControlQueryList, self).__init__(label, defaultValue, helptext)
@@ -168,15 +169,21 @@ class ControlQueryList(ControlBase):
 		filters_list 	= []
 		headers 		= []
 
-		if queryset:
-			model 	 	 	= queryset.model
-			
+		if self._update_list and queryset:
 			row_start = self.rows_per_page*(self._current_page-1)
 			row_end   = self.rows_per_page*(self._current_page)
 
-			for sort in self.sort_by:
-				direction = '-' if sort['desc'] else ''
-				queryset = queryset.order_by( direction+sort['column'] )
+			model = queryset.model
+
+			if len(self.sort_by)>0:
+				for sort in self.sort_by:
+					direction = '-' if sort['desc'] else ''
+					queryset = queryset.order_by( direction+sort['column'] )
+	
+			order_by = queryset.query.order_by
+			if 'pk' not in order_by or '-pk' not in order_by: 
+				order_by.append('-pk')
+				queryset = queryset.order_by( *order_by )
 
 			rows = self.queryset_to_list(queryset, self.list_display, row_start, row_end)
 
@@ -207,13 +214,6 @@ class ControlQueryList(ControlBase):
 
 		return data
 
-	
-
-
-
-
-
-
 		
 	def page_changed_event(self): 
 		self._selected_row_id = -1
@@ -227,14 +227,6 @@ class ControlQueryList(ControlBase):
 		self._selected_row_id = -1
 		self._current_page 	  = 1
 		self.mark_to_update_client()
-
-
-
-
-
-
-
-
 
 	#####################################################################
 	#####################################################################
@@ -257,17 +249,17 @@ class ControlQueryList(ControlBase):
 			return col_value
 
 	def queryset_to_list(self, queryset, list_display, first_row, last_row):
-
 		if not list_display:
 			return [ [m.pk, str(m)] for m in queryset[first_row:last_row] ]
 		else:
 			rows = []
 			queryset_list = queryset.values_list(*(['pk']+list_display) )
+			queryset_list = queryset_list.order_by(*queryset.query.order_by)
+			
 			for row_values in queryset_list[first_row:last_row]:
 				row = [self.format_list_column(c) for c in row_values]
 				rows.append(row)
 			return rows
-
 
 	def format_filter_column(self, col_value):
 		if isinstance(col_value, datetime.datetime ):

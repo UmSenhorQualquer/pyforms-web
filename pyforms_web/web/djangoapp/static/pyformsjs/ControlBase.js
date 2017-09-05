@@ -88,11 +88,12 @@ ControlBase.prototype.hide = function(not_update_columns, init_form){
 	this.jquery_place().hide();
 	this.properties.visible = false;
 	
+	/*
 	var pyforms_segment = this.jquery_place().parents('.pyforms-segment');
 	if( pyforms_segment  && pyforms_segment.find('.field:visible').length == 0 ){
 		pyforms_segment.hide();
 		pyforms_segment.prev().hide();
-	};
+	};*/
 	
 };
 

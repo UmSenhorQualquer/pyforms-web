@@ -62,7 +62,8 @@ class ModelAdmin(BaseWidget):
 
 		
 		# events
-		self._add_btn.value 	= self.show_create_form
+		self._add_btn.include_label = False
+		self._add_btn.value 		= self.show_create_form
 		self._list.item_selection_changed_event = self.__list_item_selection_changed_event
 
 		self.populate_list()

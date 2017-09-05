@@ -1,4 +1,4 @@
-import datetime, json, dill, os, traceback, inspect
+import datetime, json, dill, os, traceback, inspect, simplejson
 from pysettings import conf
 from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 from django.core.exceptions import PermissionDenied
@@ -23,12 +23,25 @@ class ApplicationsLoader:
 		if not moduleclass.has_permissions(request.user):
 			raise PermissionDenied('The user do not have access to the application')
 
-		sig = inspect.signature(moduleclass)
-		parameters = {}
-		for name, param in sig.parameters.items():
-			parameters[name] = request.GET.get(name, None)
+		data = simplejson.loads(request.body)
 
+		## load the constructor parameters sent by the web client and init the app ###
+		parameters  = {}
+		constructor_data = data.get('constructor', {})
+		for name, param in inspect.signature(moduleclass).parameters.items():
+			parameters[name] = constructor_data.get(name, None)
 		app = moduleclass(**parameters)
+		###############################################################################
+
+		## load the method parameters sent by the web client and execute it ###########
+		parameters  = {}
+		method_data = data.get('method', {})
+		if 'method' in method_data:
+			func = getattr(app, method_data['method'])
+			for name, param in inspect.getargspec(func):
+				parameters[name] = method_data.get(name, None)
+			func(**parameters)
+		###############################################################################
 
 		data = [{'uid': app.uid, 'layout_position': app.layout_position, 'title':app.title}]
 		for m in request.updated_apps.applications: m.commit()

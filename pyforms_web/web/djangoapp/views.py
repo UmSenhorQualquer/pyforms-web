@@ -62,7 +62,8 @@ def filesbrowser_browse(request):
 		#For django versions => 1.10
 		return render_to_response(conf.PYFORMS_WEB_APPS_TEMPLATE_NO_TITLE,params)
 
-
+@never_cache
+@csrf_exempt
 def register_app(request, app_module):
 	try:
 		data = ApplicationsLoader.register_instance(request, app_module)
@@ -74,7 +75,8 @@ def register_app(request, app_module):
 		)
 	return HttpResponse(simplejson.dumps(data), "application/json")
 
-
+@never_cache
+@csrf_exempt
 def open_app(request, app_id):
 	try:
 		app  	= ApplicationsLoader.get_instance(request, app_id)

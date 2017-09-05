@@ -91,7 +91,6 @@ class EditFormAdmin(BaseWidget):
 		if self.fieldsets is not None: 
 			self.formset = self.fieldsets
 
-
 		self.formset = self.formset + self.get_buttons_row()
 
 
@@ -323,6 +322,9 @@ class EditFormAdmin(BaseWidget):
 			obj = self.model_object
 			obj.delete()
 			self.object_pk = None
+			self._remove_btn.hide()
+			self._create_btn.show()
+			self._save_btn.hide()
 			return True
 		else:
 			return False
