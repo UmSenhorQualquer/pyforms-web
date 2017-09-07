@@ -43,7 +43,7 @@ ControlQueryList.prototype.init_control = function(){
 	};
 
 
-	html += "<table class='ui selectable celled striped table ControlQueryList sortable' id='"+this.control_id()+"' >";
+	html += "<table class='ui selectable celled striped table ControlQueryList "+this.properties.css+" sortable' id='"+this.control_id()+"' >";
 	// render the table titles
 	var titles = this.properties.horizontal_headers;
 	if(titles.length>0){
