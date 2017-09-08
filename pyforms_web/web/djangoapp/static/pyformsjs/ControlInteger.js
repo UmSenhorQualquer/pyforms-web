@@ -9,8 +9,9 @@ ControlInteger.prototype = Object.create(ControlBase.prototype);
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlInteger.prototype.init_control = function(){
-	var html = "<div id='"+this.place_id()+"' class='field ControlInteger' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value=\""+this.properties.value+"\" /></div>";
+	var html = "<div id='"+this.place_id()+"' class='field ControlInteger' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' /></div>";
 	this.jquery_place().replaceWith(html);
+	this.set_value(this.properties.value);
 
 	var self = this;
 	this.jquery().change(function(){
