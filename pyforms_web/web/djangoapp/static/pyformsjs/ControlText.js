@@ -9,7 +9,10 @@ ControlText.prototype = Object.create(ControlBase.prototype);
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlText.prototype.init_control = function(){
-	var html = "<div id='"+this.place_id()+"' class='field ControlText' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value='' /></div>";
+	var html = "<div id='"+this.place_id()+"' class='field ControlText' >"
+	if(this.properties.include_label) html += "<label>"+this.properties.label+"</label>";
+	html += "<input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value='' />";
+	html += "</div>";
 	this.jquery_place().replaceWith(html);
 
 	this.set_value(this.properties.value);
