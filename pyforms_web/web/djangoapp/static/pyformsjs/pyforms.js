@@ -192,6 +192,7 @@ PyformsManager.prototype.query_server = function(basewidget, data2send, show_loa
 		data2send = basewidget.serialize_data(data2send);
 		var jsondata =  $.toJSON(data2send);
 		var self = this;
+		
 		$.ajax({
 			method: 'post',
 			cache: false,
@@ -265,8 +266,6 @@ PyformsManager.prototype.open_application = function(app_data){
 	
 	var layout_position = app_data['layout_position'];
 	var application_id  = app_data['uid'];
-
-	//console.log('open_application', app_data);
 	
 	// if the application exists activate the layout
 	if( app!=undefined){
@@ -285,7 +284,6 @@ PyformsManager.prototype.open_application = function(app_data){
 		return;
 	}
 
-
 	
 	var application_id  = app_data['uid'];
 	var application_url = "/pyforms/app/open/"+application_id+"/";
@@ -300,7 +298,6 @@ PyformsManager.prototype.open_application = function(app_data){
 	};
 
 	if(!found_place){
-		//console.log('not found '+layout_position+ ' '+ $('#'+layout_position).length);
 		$.ajax({
 			method: 	'get',
 			cache: 		false,

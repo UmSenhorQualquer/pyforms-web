@@ -27,7 +27,7 @@ class ControlBase(object):
 
 	def serialize(self):
 		res = { 
-			'name':     self.__class__.__name__, 
+			'name':     self.name, 
 			'value':    self.value,
 			'label':    str(self._label if self._label else ''),
 			'help':     str(self._help if self._help else ''),

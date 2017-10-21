@@ -146,11 +146,10 @@ class ControlQueryList(ControlBase):
 
 	@value.setter
 	def value(self, value):
-				
 		oldvalue = self._value
 		self._value = value
 		if oldvalue!=value: 
-			if value:
+			if value is not None:
 				self._model = value.model._meta.label.split('.')[-1]
 				self._query = value.query
 				self._app   = value.model._meta.app_label
@@ -159,12 +158,12 @@ class ControlQueryList(ControlBase):
 			self.mark_to_update_client()
 			self.changed_event()
 
-
+		
 
 	def serialize(self):
 		data 			= ControlBase.serialize(self)
 		queryset 		= self.value
-
+	
 		rows 			= []
 		filters_list 	= []
 		headers 		= []
@@ -187,15 +186,22 @@ class ControlQueryList(ControlBase):
 
 			rows = self.queryset_to_list(queryset, self.list_display, row_start, row_end)
 
-			if self.list_display:
-				#configure the headers titles
-				for column_name in self.list_display:
-					headers.append({
-						'label':  get_verbose_name(model, column_name),
-						'column': column_name
-					})
 			
 			filters_list = self.serialize_filters(self.list_filter, queryset)
+			
+		if self.list_display:
+			#configure the headers titles
+			for column_name in self.list_display:
+				try:
+					label = get_verbose_name(queryset.model, column_name)
+				except ValueError:
+					label = column_name
+				
+				headers.append({
+					'label':  label,
+					'column': column_name
+				})
+				
 		
 		if len(self.search_fields)>0:
 			data.update({'search_field_key': self.search_field_key if self.search_field_key is not None else ''})
@@ -210,8 +216,7 @@ class ControlQueryList(ControlBase):
 			'horizontal_headers': 	headers,
 			'selected_row_id':		self._selected_row_id
 		})
-
-
+		
 		return data
 
 		

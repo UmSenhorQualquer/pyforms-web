@@ -23,7 +23,6 @@ import os
 
 class EditFormAdmin(BaseWidget):
 
-	inlines 	 = []
 	fieldsets	 = None
 	
 	SAVE_BTN_LABEL   = '<i class="save icon"></i> Save'
@@ -31,17 +30,22 @@ class EditFormAdmin(BaseWidget):
 	CANCEL_BTN_LABEL = '<i class="hide icon"></i> Close'
 	REMOVE_BTN_LABEL = '<i class="trash outline icon"></i> Remove'
 
-	def __init__(self, title, model, pk, parent=None, parent_win=None):
+	def __init__(self, title, model, pk, parent_model=None, parent_win=None, inlines=[]):
 		"""
 		Parameters:
 			title  - Title of the app.
 			model  - Model with the App will represent.
-			parent - Variable with the content [model, foreign key id]. It is used to transform the App in an inline App
+			parent_model - Variable with the content [model, foreign key id]. It is used to transform the App in an inline App
 		"""
 		BaseWidget.__init__(self, title, parent_win=parent_win)
 		self.model 		 = model
 		self.edit_fields = []
-
+		self.inlines	 = inlines
+		
+		self.inlines_apps			= []
+		self.inlines_controls_name 	= []
+		self.inlines_controls 		= []
+		
 		self.parent_pk		= None
 		self.parent_field 	= None
 		self.parent_model 	= None
@@ -49,7 +53,7 @@ class EditFormAdmin(BaseWidget):
 
 		# used to configure the interface to inline
 		# it will filter the dataset by the foreign key
-		if parent: self.set_parent(parent[0], parent[1])
+		if parent_model: self.set_parent(parent_model[0], parent_model[1])
 
 		# buttons
 		self._save_btn 		= ControlButton(self.SAVE_BTN_LABEL)
@@ -87,14 +91,15 @@ class EditFormAdmin(BaseWidget):
 		else:
 			self.show_create_form()
 
-
+			
 		if self.fieldsets is not None: 
 			self.formset = self.fieldsets
-
+			
 		self.formset = self.formset + self.get_buttons_row()
-
-
-
+		for inline in self.inlines:
+			self.formset.append(inline.__name__)
+			
+		
 	#################################################################################
 	#################################################################################
 
@@ -146,19 +151,6 @@ class EditFormAdmin(BaseWidget):
 				for instance in field.rel.to.objects.all():
 					pyforms_field.add_item( str(instance), instance.pk )
 
-		"""
-		#Create the inlines eition forms.
-		self.inlines_controls_name 	= []
-		self.inlines_controls 		= []
-		for inline in self.inlines:
-			pyforms_field = ControlEmptyWidget()
-			#pyforms_field._parent = self
-			setattr(self, inline.__name__, pyforms_field)
-			self.inlines_controls_name.append(inline.__name__)
-			self.inlines_controls.append( pyforms_field )
-			formset.append(inline.__name__)"""
-			
-
 
 	def create_model_formfields(self):
 		"""
@@ -207,18 +199,18 @@ class EditFormAdmin(BaseWidget):
 				formset.append(field.name)
 				self.edit_fields.append( pyforms_field )
 
-		#Create the inlines eition forms.
+		#Create the inlines edition forms.
 		self.inlines_controls_name 	= []
 		self.inlines_controls 		= []
 		for inline in self.inlines:
-			pyforms_field = ControlEmptyWidget()
-			#pyforms_field._parent = self
+			pyforms_field			= ControlEmptyWidget()
+			pyforms_field.name		= inline.__name__
+			pyforms_field._parent	= self
 			setattr(self, inline.__name__, pyforms_field)
 			self.inlines_controls_name.append(inline.__name__)
 			self.inlines_controls.append( pyforms_field )
-			formset.append(inline.__name__)
 			
-		for c in self.controls: pass
+			
 		self.formset = self.fieldsets if self.fieldsets else formset
 
 
@@ -312,8 +304,12 @@ class EditFormAdmin(BaseWidget):
 			elif isinstance(field, models.ManyToManyField):					
 				getattr(self, field.name).value = [o.pk for o in getattr(obj, field.name).all()]
 			
+		self.inlines_apps = []
 		for inline in self.inlines:
-			getattr(self, inline.__name__).value = inline( (self.model, self.object_pk) )
+			getattr(self, inline.__name__)._name = inline.__name__
+			app =  inline( (self.model, self.object_pk) )
+			self.inlines_apps.append(app)
+			getattr(self, inline.__name__).value = app
 
 		return obj
 
@@ -325,6 +321,8 @@ class EditFormAdmin(BaseWidget):
 			self._remove_btn.hide()
 			self._create_btn.show()
 			self._save_btn.hide()
+			for field in self.inlines_controls: field.hide()
+			
 			return True
 		else:
 			return False
@@ -335,6 +333,9 @@ class EditFormAdmin(BaseWidget):
 
 		try:
 			obj = self.model.objects.get(pk=self.object_pk) if self.object_pk else self.model()
+			
+			if self.parent_field:
+				setattr(obj, self.parent_field.name, self.parent_model.objects.get(pk=self.parent_pk))
 			
 			for field in self.model._meta.get_fields():
 				if field.name not in fields2show: continue
@@ -547,6 +548,11 @@ class EditFormAdmin(BaseWidget):
 			self._create_btn.hide()
 			self._save_btn.show()
 			self._remove_btn.show()
+			for i, field in enumerate(self.inlines_controls):
+				app = self.inlines_apps[i]
+				app.populate_list()
+				app.parent_pk = obj.pk
+				field.show()
 			self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
 
 

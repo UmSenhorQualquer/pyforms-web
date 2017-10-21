@@ -18,4 +18,8 @@ class Apps2Update(object):
 		self._bottom_apps.append(app)
 
 	@property
-	def applications(self): return self._top_apps+self._bottom_apps
+	def applications(self):
+		#the first apps to be loaded, should be the ones without parent
+		apps = self._top_apps+self._bottom_apps
+		apps = sorted(apps, key=lambda x: ('' if (not hasattr(x, '_parent') or x._parent is None) else x._parent) )
+		return apps

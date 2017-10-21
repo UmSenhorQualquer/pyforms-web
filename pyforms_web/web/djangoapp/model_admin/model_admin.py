@@ -51,40 +51,29 @@ class ModelAdmin(BaseWidget):
 		
 		if parent: self.set_parent(parent[0], parent[1])
 
-		
 		self._add_btn 	= ControlButton('<i class="plus icon"></i> Add')
 		self._list 		= self.list_control('List')
 		self._details   = ControlEmptyWidget('Details')
 		
 		self.formset = ['_add_btn', '_list', '_details']
-		
-		#EditFormAdmin.__init__(self, title, model, None, parent)
-
-		
+	
 		# events
 		self._add_btn.include_label = False
 		self._add_btn.value 		= self.show_create_form
 		self._list.item_selection_changed_event = self.__list_item_selection_changed_event
 
 		self.populate_list()
-		#self.create_model_formfields()
-		#self.hide_edit_create_form()
 
 		self._details.hide()
 		
+		if self.parent_model:
+			self.formset = ['h2:'+title]+self.formset
+		
 		
 
 	#################################################################################
 	#################################################################################
-	def set_parent(self, parent_model, parent_pk):
-		self.parent_pk 		= parent_pk
-		self.parent_model 	= parent_model
 
-		for field in self.model._meta.get_fields():
-			if isinstance(field, models.ForeignKey):
-				if parent_model == field.rel.to:
-					self.parent_field = field
-					break
 
 	def get_queryset(self):
 		"""
@@ -103,34 +92,30 @@ class ModelAdmin(BaseWidget):
 		self._list.list_display  = self.list_display  if self.list_display  else []
 		self._list.list_filter 	 = self.list_filter   if self.list_filter   else []
 		self._list.search_fields = self.search_fields if self.search_fields else []
-		self._list.value 		 = self.get_queryset()
+		query					 = self.get_queryset()
+		self._list.value 		 = query
 
 
-	def hide_edit_create_form(self):
-		self._add_btn.show()
-		self._list.show()
-		self._details.hide()
-		self._list.selected_row_index = -1
-		self.object_pk = None
-		#self.populate_list()
 
 	def hide_form(self):
 		self._add_btn.show()
 		self._list.show()
 		self._list.selected_row_id = -1
+		self.populate_list()
 		self._details.hide()
-
-	def save_event(self):
-		res = super(ModelAdmin,self).save_event()
-		if res: self.populate_list()
-		return res
 
 	def show_create_form(self):
 		self._add_btn.hide()
 		self._list.hide()
 		self._details.show()
 
-		createform 			 = self.editmodel_class('Create', self.model, None)
+		createform = self.editmodel_class(
+			'Create', 
+			self.model, 
+			None, 
+			inlines=self.inlines,
+			parent_model=((self.parent_model, self.parent_pk) if self.parent_model is not None else None)
+		)
 		createform.hide_form = self.hide_form
 		self._details.value  = createform
 
@@ -142,7 +127,13 @@ class ModelAdmin(BaseWidget):
 
 		# create the edit form a add it to the empty widget details
 		# override the function hide_form to make sure the list is shown after the user close the edition form
-		editform 			= self.editmodel_class('Edit', self.model, pk)
+		editform = self.editmodel_class(
+			'Edit', 
+			self.model, 
+			pk, 
+			inlines=self.inlines, 
+			parent_model=((self.parent_model, self.parent_pk) if self.parent_model is not None else None)
+		)
 		editform.hide_form 	= self.hide_form
 		self._details.value = editform
 		
@@ -156,13 +147,6 @@ class ModelAdmin(BaseWidget):
 				if parent_model == field.rel.to:
 					self.parent_field = field
 					break
-
-
-	def get_visible_fields_names(self):
-		#return the names of the visible fields
-		fields = get_fieldsets_strings(self.fieldsets) if self.fieldsets else [field.name for field in self.model._meta.get_fields()]
-		if self.parent_field: fields.remove(self.parent_field.name)
-		return fields
 
 	def get_selected_row_object(self):
 		#return the current selected object
@@ -180,11 +164,6 @@ class ModelAdmin(BaseWidget):
 		if obj:
 			self.object_pk = obj.pk
 			self.show_edit_form(obj.pk)
-			
-	def delete_event(self):
-		EditFormAdmin.delete_event(self)
-		self.hide_edit_create_form()
-		self.populate_list()
 
 
 	

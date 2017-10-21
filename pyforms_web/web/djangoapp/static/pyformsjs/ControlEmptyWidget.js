@@ -43,7 +43,7 @@ ControlEmptyWidget.prototype.serialize = function(){
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlEmptyWidget.prototype.deserialize = function(data){
-
+	
 	if(data.clear_widget==1){
 		pyforms.remove_app( this.properties.child_widget_id );
 		this.jquery_place().html('');

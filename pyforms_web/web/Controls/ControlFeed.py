@@ -55,6 +55,7 @@ class ControlFeed(ControlBase):
 		res = ControlBase.serialize(self)
 		res.update({'clear':self._clear, 'has_more': self.has_more, 'mode': self.mode})
 		self._clear = False
+		self.value = []
 		return res
 	
 

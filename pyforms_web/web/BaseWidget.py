@@ -20,7 +20,7 @@ class BaseWidget(object):
 	
 	FORM_NO_ROW_ALIGNMENT = 0
 
-	refresh_timeout = None
+	refresh_timeout = None #time in milliseconds to refresh the application
 
 	def __init__(self, title, parent_win=None):
 		self._formset 		= None
