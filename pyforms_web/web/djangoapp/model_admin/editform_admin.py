@@ -30,7 +30,7 @@ class EditFormAdmin(BaseWidget):
 	CANCEL_BTN_LABEL = '<i class="hide icon"></i> Close'
 	REMOVE_BTN_LABEL = '<i class="trash outline icon"></i> Remove'
 
-	def __init__(self, title, model, pk, parent_model=None, parent_win=None, inlines=[]):
+	def __init__(self, title, model, pk, parent_model=None, parent_win=None, inlines=[], fieldsets=None):
 		"""
 		Parameters:
 			title  - Title of the app.
@@ -41,6 +41,8 @@ class EditFormAdmin(BaseWidget):
 		self.model 		 = model
 		self.edit_fields = []
 		self.inlines	 = inlines
+		
+		if fieldsets is not None: self.fieldsets=fieldsets
 		
 		self.inlines_apps			= []
 		self.inlines_controls_name 	= []
@@ -83,6 +85,7 @@ class EditFormAdmin(BaseWidget):
 		self._save_btn.include_label	= False
 		self._cancel_btn.include_label	= False
 		
+	
 		
 		self.create_model_formfields()
 		if pk:
@@ -91,14 +94,11 @@ class EditFormAdmin(BaseWidget):
 		else:
 			self.show_create_form()
 
-			
-		if self.fieldsets is not None: 
-			self.formset = self.fieldsets
-			
+
 		self.formset = self.formset + self.get_buttons_row()
 		for inline in self.inlines:
 			self.formset.append(inline.__name__)
-			
+
 		
 	#################################################################################
 	#################################################################################
@@ -128,9 +128,12 @@ class EditFormAdmin(BaseWidget):
 
 	#################################################################################
 	#################################################################################
+	
+	def related_field_queryset(self, field, query):
+		return query
 
 	def update_related_fields(self):
-
+		
 		fields2show = self.get_visible_fields_names()		
 		formset 	= []
 
@@ -142,16 +145,15 @@ class EditFormAdmin(BaseWidget):
 				#Foreign key
 				pyforms_field = getattr(self, field.name)
 				pyforms_field.clear_items()
-				for instance in field.rel.to.objects.all():
+				for instance in self.related_field_queryset(field, field.rel.to.objects.all()):
 					pyforms_field.add_item( str(instance), instance.pk )			
 			elif isinstance(field, models.ManyToManyField):
 				#Many to Many field
 				pyforms_field = getattr(self, field.name)
 				pyforms_field.clear_items()
-				for instance in field.rel.to.objects.all():
+				for instance in self.related_field_queryset(field, field.rel.to.objects.all()):
 					pyforms_field.add_item( str(instance), instance.pk )
-
-
+		
 	def create_model_formfields(self):
 		"""
 			Create the model edition form
@@ -224,6 +226,7 @@ class EditFormAdmin(BaseWidget):
 			if field.name not in fields2show: 						continue
 			if isinstance(field, models.AutoField): 				continue
 			elif isinstance(field, models.BigAutoField):  			continue
+			elif isinstance(field, models.OneToOneField) and field.name.endswith('_ptr'): 	continue
 			elif isinstance(field, models.BigIntegerField):  		getattr(self, field.name).value = None
 			elif isinstance(field, models.BinaryField):  			getattr(self, field.name).value = None
 			elif isinstance(field, models.BooleanField):  			getattr(self, field.name).value = None
@@ -273,6 +276,7 @@ class EditFormAdmin(BaseWidget):
 
 			if isinstance(field, models.AutoField): 				continue
 			elif isinstance(field, models.BigAutoField):  			continue
+			elif isinstance(field, models.OneToOneField) and field.name.endswith('_ptr'): 	continue
 			elif isinstance(field, models.BigIntegerField):  		  getattr(self, field.name).value = getattr(obj, field.name)
 			elif isinstance(field, models.BinaryField):  			  getattr(self, field.name).value = getattr(obj, field.name)
 			elif isinstance(field, models.BooleanField):  			  getattr(self, field.name).value = getattr(obj, field.name)
@@ -342,6 +346,7 @@ class EditFormAdmin(BaseWidget):
 			
 				if isinstance(field, models.AutoField): 			continue
 				elif isinstance(field, models.BigAutoField):  		continue
+				elif isinstance(field, models.OneToOneField) and field.name.endswith('_ptr'): 	continue
 				elif isinstance(field, models.BigIntegerField):
 					getattr(self, field.name).error = False
 					setattr(obj, field.name, getattr(self, field.name).value)
@@ -391,12 +396,13 @@ class EditFormAdmin(BaseWidget):
 
 						paths = [p for p in value.split('/') if len(p)>0][1:]
 						from_path 	= os.path.join(settings.MEDIA_ROOT,*paths)
-						to_path 	= os.path.join(settings.MEDIA_ROOT, field.upload_to, os.path.basename(value) )
-						os.rename(from_path, to_path)
-
-						url = '/'.join([field.upload_to]+[os.path.basename(value) ])
-						if url[0]=='/': url = url[1:]
-						setattr(obj, field.name, url)
+						if os.path.exists(from_path):
+							to_path 	= os.path.join(settings.MEDIA_ROOT, field.upload_to, os.path.basename(value) )
+							os.rename(from_path, to_path)
+	
+							url = '/'.join([field.upload_to]+[os.path.basename(value) ])
+							if url[0]=='/': url = url[1:]
+							setattr(obj, field.name, url)
 					elif field.null:
 						setattr(obj, field.name, None)
 					else:
@@ -412,12 +418,13 @@ class EditFormAdmin(BaseWidget):
 
 						paths = [p for p in value.split('/') if len(p)>0][1:]
 						from_path 	= os.path.join(settings.MEDIA_ROOT,*paths)
-						to_path 	= os.path.join(settings.MEDIA_ROOT, field.upload_to, os.path.basename(value) )
-						os.rename(from_path, to_path)
-
-						url = '/'.join([field.upload_to]+[os.path.basename(value) ])
-						if url[0]=='/': url = url[1:]
-						setattr(obj, field.name, url)
+						if os.path.exists(from_path):
+							to_path 	= os.path.join(settings.MEDIA_ROOT, field.upload_to, os.path.basename(value) )
+							os.rename(from_path, to_path)
+		
+							url = '/'.join([field.upload_to]+[os.path.basename(value) ])
+							if url[0]=='/': url = url[1:]
+							setattr(obj, field.name, url)
 					elif field.null:
 						setattr(obj, field.name, None)
 					else:
@@ -532,7 +539,8 @@ class EditFormAdmin(BaseWidget):
 
 	def get_visible_fields_names(self):
 		#return the names of the visible fields
-		fields = get_fieldsets_strings(self.fieldsets) if self.fieldsets else [field.name for field in self.model._meta.get_fields()]
+		fields = get_fieldsets_strings(self.fieldsets) if self.fieldsets else [field.name for field in self.model._meta.get_fields() if not(isinstance(field, models.OneToOneField) and field.name.endswith('_ptr'))]
+		
 		if self.parent_field: fields.remove(self.parent_field.name)
 		return fields
 

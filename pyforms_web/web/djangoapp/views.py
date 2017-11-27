@@ -25,8 +25,9 @@ def upload_files(request):
 
 		for key in request.FILES:
 			myfile = request.FILES[key]
-			name   = slugify(myfile.name)
+			name   = "".join([ (c if c.isalnum() or c=='.' else '') for c in myfile.name])
 			for c in r' []/\;,><&*:%=+@!#^()|?^': name = name.replace(c,'')
+			
 			fs 			= FileSystemStorage(location=path2save, base_url=settings.MEDIA_URL+'apps/'+request.POST['app_id']+'/')
 			filename 	= fs.save(name, myfile)
 			url 		= fs.url(filename)

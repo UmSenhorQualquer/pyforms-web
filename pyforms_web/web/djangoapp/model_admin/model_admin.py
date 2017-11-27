@@ -95,8 +95,7 @@ class ModelAdmin(BaseWidget):
 		query					 = self.get_queryset()
 		self._list.value 		 = query
 
-
-
+		
 	def hide_form(self):
 		self._add_btn.show()
 		self._list.show()
@@ -105,6 +104,7 @@ class ModelAdmin(BaseWidget):
 		self._details.hide()
 
 	def show_create_form(self):
+		
 		self._add_btn.hide()
 		self._list.hide()
 		self._details.show()
@@ -114,17 +114,20 @@ class ModelAdmin(BaseWidget):
 			self.model, 
 			None, 
 			inlines=self.inlines,
-			parent_model=((self.parent_model, self.parent_pk) if self.parent_model is not None else None)
+			parent_model=((self.parent_model, self.parent_pk) if self.parent_model is not None else None),
+			fieldsets = self.fieldsets
 		)
 		createform.hide_form = self.hide_form
 		self._details.value  = createform
 
 
 	def show_edit_form(self, pk=None):
+		
 		self._add_btn.hide()
 		self._list.hide()		
 		self._details.show()
-
+		
+	
 		# create the edit form a add it to the empty widget details
 		# override the function hide_form to make sure the list is shown after the user close the edition form
 		editform = self.editmodel_class(
@@ -132,12 +135,13 @@ class ModelAdmin(BaseWidget):
 			self.model, 
 			pk, 
 			inlines=self.inlines, 
-			parent_model=((self.parent_model, self.parent_pk) if self.parent_model is not None else None)
+			parent_model=((self.parent_model, self.parent_pk) if self.parent_model is not None else None),
+			fieldsets = self.fieldsets if hasattr(self, 'fieldsets') else None
 		)
+		
 		editform.hide_form 	= self.hide_form
 		self._details.value = editform
 		
-
 	def set_parent(self, parent_model, parent_pk):
 		self.parent_pk 		= parent_pk
 		self.parent_model 	= parent_model

@@ -67,6 +67,7 @@ function pyforms_checkhash(){
 	}); 
 	
 	run_application(app, constructor_data, method_data);
+	window.location.hash = '';
 };
 
 

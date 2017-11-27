@@ -19,6 +19,7 @@ ControlMultipleSelection.prototype.set_value = function(value){
 
 ControlMultipleSelection.prototype.get_value = function(){ 
 	var values = this.jquery().dropdown('get value');
+	if(values.length==0) return [];
 	var values = values.split(",").sort();
 	return values;
 };

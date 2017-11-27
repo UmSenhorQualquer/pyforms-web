@@ -49,6 +49,7 @@ function PyformsManager(){
 	$.getScript("/static/pyformsjs/ControlCombo.js");
 	$.getScript("/static/pyformsjs/ControlInteger.js");
 	$.getScript("/static/pyformsjs/ControlFloat.js");
+	$.getScript("/static/pyformsjs/ControlCalendar.js");
 	$.getScript("/static/pyformsjs/ControlDate.js");
 	$.getScript("/static/pyformsjs/ControlDateTime.js");
 	$.getScript("/static/pyformsjs/ControlImage.js");
