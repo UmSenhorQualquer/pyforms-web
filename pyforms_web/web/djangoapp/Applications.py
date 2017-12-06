@@ -42,8 +42,8 @@ class ApplicationsLoader:
 				parameters[name] = method_data.get(name, None)
 			func(**parameters)
 		###############################################################################
-
-		data = [{'uid': app.uid, 'layout_position': app.layout_position, 'title':app.title}]
+		
+		data = [{'uid': app.uid, 'layout_position': app.layout_position, 'title':app.title} for app in request.updated_apps.applications if app.is_new_app]
 		for m in request.updated_apps.applications: m.commit()
 		
 		return data

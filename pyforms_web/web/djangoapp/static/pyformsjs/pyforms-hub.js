@@ -70,7 +70,5 @@ function pyforms_checkhash(){
 	window.location.hash = '';
 };
 
-
-
 $(pyforms_checkhash);
 $(window).bind('hashchange',pyforms_checkhash);
