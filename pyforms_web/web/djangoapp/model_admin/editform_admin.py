@@ -145,13 +145,13 @@ class EditFormAdmin(BaseWidget):
 				#Foreign key
 				pyforms_field = getattr(self, field.name)
 				pyforms_field.clear_items()
-				for instance in self.related_field_queryset(field, field.rel.to.objects.all()):
+				for instance in self.related_field_queryset(field, field.related_model.objects.all()):
 					pyforms_field.add_item( str(instance), instance.pk )			
 			elif isinstance(field, models.ManyToManyField):
 				#Many to Many field
 				pyforms_field = getattr(self, field.name)
 				pyforms_field.clear_items()
-				for instance in self.related_field_queryset(field, field.rel.to.objects.all()):
+				for instance in self.related_field_queryset(field, field.related_model.objects.all()):
 					pyforms_field.add_item( str(instance), instance.pk )
 		
 	def create_model_formfields(self):
@@ -465,7 +465,7 @@ class EditFormAdmin(BaseWidget):
 				elif isinstance(field, models.ForeignKey):
 					getattr(self, field.name).error = False
 					value = getattr(self, field.name).value
-					value = field.rel.to.objects.get(pk=value)
+					value = field.related_model.objects.get(pk=value)
 					setattr(obj, field.name, value)
 
 			try:
@@ -506,11 +506,11 @@ class EditFormAdmin(BaseWidget):
 
 					if field_instance.through is None:
 						for value in values:
-							o = field.rel.to.objects.get(pk=value)
+							o = field.related_model.objects.get(pk=value)
 							field_instance.add(o)
 					else:
 						for value in values:
-							o = field.rel.to.objects.get(pk=value)
+							o = field.related_model.objects.get(pk=value)
 							rel_obj = field_instance.through()
 							setattr(rel_obj,obj.__class__.__name__.lower(), obj)
 							setattr(rel_obj,o.__class__.__name__.lower(), o)
@@ -532,7 +532,7 @@ class EditFormAdmin(BaseWidget):
 
 		for field in self.model._meta.get_fields():
 			if isinstance(field, models.ForeignKey):
-				if parent_model == field.rel.to:
+				if parent_model == field.related_model:
 					self.parent_field = field
 					break
 

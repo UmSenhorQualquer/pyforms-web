@@ -148,13 +148,17 @@ class ControlQueryList(ControlBase):
 	def value(self, value):
 		oldvalue = self._value
 		self._value = value
+
 		if oldvalue!=value: 
 			if value is not None:
+				if len(value.query.order_by)==0 and value.model._meta.ordering:
+					value = value.order_by(*value.model._meta.ordering)
+
 				self._model = value.model._meta.label.split('.')[-1]
 				self._query = value.query
 				self._app   = value.model._meta.app_label
 				self._selected_row_id = -1
-				
+
 			self.mark_to_update_client()
 			self.changed_event()
 
@@ -179,11 +183,13 @@ class ControlQueryList(ControlBase):
 					direction = '-' if sort['desc'] else ''
 					queryset = queryset.order_by( direction+sort['column'] )
 	
-			order_by = queryset.query.order_by
-			if 'pk' not in order_by or '-pk' not in order_by: 
-				order_by.append('-pk')
-				queryset = queryset.order_by( *order_by )
-
+			# if no order by exists add one, to avoid the values to be show randomly in the list
+			order_by = list(queryset.query.order_by)
+			if len(order_by)==0:
+				if 'pk' not in order_by or '-pk' not in order_by:
+					order_by.append('-pk')
+					queryset = queryset.order_by( *order_by )
+					
 			rows = self.queryset_to_list(queryset, self.list_display, row_start, row_end)
 
 			
@@ -258,9 +264,10 @@ class ControlQueryList(ControlBase):
 			return [ [m.pk, str(m)] for m in queryset[first_row:last_row] ]
 		else:
 			rows = []
+
 			queryset_list = queryset.values_list(*(['pk']+list_display) )
 			queryset_list = queryset_list.order_by(*queryset.query.order_by)
-			
+					
 			for row_values in queryset_list[first_row:last_row]:
 				row = [self.format_list_column(c) for c in row_values]
 				rows.append(row)

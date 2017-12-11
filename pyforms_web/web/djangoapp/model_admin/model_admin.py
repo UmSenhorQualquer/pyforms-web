@@ -148,7 +148,7 @@ class ModelAdmin(BaseWidget):
 
 		for field in self.model._meta.get_fields():
 			if isinstance(field, models.ForeignKey):
-				if parent_model == field.rel.to:
+				if parent_model == field.related_model:
 					self.parent_field = field
 					break
 

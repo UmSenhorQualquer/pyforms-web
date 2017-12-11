@@ -11,3 +11,11 @@ class ControlLabel(ControlBase):
 			self._name,
 			simplejson.dumps(self.serialize())
 		)
+
+	def deserialize(self, properties): pass
+
+	def serialize(self):
+		res = super(ControlLabel, self).serialize()
+		if self.value:
+			res.update({'value': "<br />".join(self.value.split("\n"))})
+		return res

@@ -101,11 +101,11 @@ class ViewFormAdmin(BaseWidget):
 			elif isinstance(field, models.ForeignKey): 	
 				#Foreign key
 				pyforms_field = ControlCombo( field.verbose_name )
-				for instance in field.rel.to.objects.all(): pyforms_field.add_item( str(instance), instance.pk )			
+				for instance in field.related_model.objects.all(): pyforms_field.add_item( str(instance), instance.pk )			
 			elif isinstance(field, models.ManyToManyField):
 				#Many to Many field
 				pyforms_field = ControlMultipleSelection( field.verbose_name )
-				for instance in field.rel.to.objects.all():
+				for instance in field.related_model.objects.all():
 					pyforms_field.add_item( str(instance), instance.pk )
 
 			if pyforms_field is not None: 
@@ -185,7 +185,7 @@ class ViewFormAdmin(BaseWidget):
 
 		for field in self.model._meta.get_fields():
 			if isinstance(field, models.ForeignKey):
-				if parent_model == field.rel.to:
+				if parent_model == field.related_model:
 					self.parent_field = field
 					break
 
