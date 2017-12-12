@@ -24,30 +24,37 @@ import os
 
 class ViewFormAdmin(BaseWidget):
 
-	inlines 	 = []
-	fieldsets	 = None
-
-	def __init__(self, title, model, pk, parent=None):
+	MODEL 	  = None  #model to manage
+	TITLE 	  = None  #application title
+	INLINES   = []	  #sub models to show in the interface
+	FIELDSETS = None  #formset of the edit form
+	
+	def __init__(self, *args, **kwargs):
 		"""
 		Parameters:
       		title  - Title of the app.
       		model  - Model with the App will represent.
       		parent - Variable with the content [model, foreign key id]. It is used to transform the App in an inline App
 		"""
-		BaseWidget.__init__(self, title)
-		self.model 		 = model
-		self.edit_fields = []
-
-		self.parent_pk		= None
-		self.parent_field 	= None
-		self.parent_model 	= None
-		self.object_pk 		= None
+		BaseWidget.__init__(self, kwargs.get('title', self.TITLE))
+		self.model = kwargs.get('model',     	 self.MODEL)
+		self.inlines = kwargs.get('inlines',     self.INLINES)
+		self.fieldsets = kwargs.get('fieldsets', self.FIELDSETS)
 
 		# used to configure the interface to inline
 		# it will filter the dataset by the foreign key
-		if parent: self.set_parent(parent[0], parent[1])
+		self.parent_field = None
+		self.parent_pk	  = kwargs.get('parent_pk', None)
+		self.parent_model = kwargs.get('parent_model', None)
+		if self.parent_model and self.parent_pk:
+			self.set_parent(self.parent_model, self.parent_pk)
+		#######################################################
+
+		self.edit_fields = []
+		self.object_pk   = None
 		
 		self.create_model_formfields()
+		pk = kwargs.get('pk', None)
 		if pk:
 			self.object_pk = pk
 			self.show_form()

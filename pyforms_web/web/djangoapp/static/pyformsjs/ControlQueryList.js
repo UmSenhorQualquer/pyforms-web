@@ -70,6 +70,7 @@ ControlQueryList.prototype.init_control = function(){
 			if (keycode == '13') {
 				self.properties.search_field_key = $(this).val();
 				self.basewidget.fire_event( self.name, 'filter_changed_event' );
+				return false;
 			}
 		})
 

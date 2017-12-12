@@ -23,39 +23,53 @@ import os
 
 class EditFormAdmin(BaseWidget):
 
-	fieldsets	 = None
+	MODEL 	  = None  #model to manage
+	TITLE 	  = None  #title of the application
+	INLINES   = []	  #sub models to show in the interface
+	FIELDSETS = None  #formset of the edit form
+	
 	
 	SAVE_BTN_LABEL   = '<i class="save icon"></i> Save'
 	CREATE_BTN_LABEL = '<i class="plus icon"></i> Create'
 	CANCEL_BTN_LABEL = '<i class="hide icon"></i> Close'
 	REMOVE_BTN_LABEL = '<i class="trash outline icon"></i> Remove'
 
-	def __init__(self, title, model, pk, parent_model=None, parent_win=None, inlines=[], fieldsets=None):
+	def __init__(self, *args, **kwargs):
 		"""
 		Parameters:
-			title  - Title of the app.
-			model  - Model with the App will represent.
-			parent_model - Variable with the content [model, foreign key id]. It is used to transform the App in an inline App
+			title - Title of the app
+			model - Model to manage
+			inlines - Inlines apps
+			fieldsets - Organization of the fields
+			parent_pk - Parent model key
+			parent_model - Parent model class
+			pk - Model register to manage
 		"""
-		BaseWidget.__init__(self, title, parent_win=parent_win)
-		self.model 		 = model
-		self.edit_fields = []
-		self.inlines	 = inlines
+		BaseWidget.__init__(self, 
+			kwargs.get('title', self.TITLE), 
+			parent_win=kwargs.get('parent_win', None)
+		)
+		self.model 		 = kwargs.get('model',     self.MODEL)
+		self.inlines	 = kwargs.get('inlines',   self.INLINES)
+		self.fieldsets   = kwargs.get('fieldsets', self.FIELDSETS)
 		
-		if fieldsets is not None: self.fieldsets=fieldsets
+		if self.fieldsets is None: self.fieldsets = self.FIELDSETS
 		
+		self.edit_fields 			= []
 		self.inlines_apps			= []
 		self.inlines_controls_name 	= []
 		self.inlines_controls 		= []
 		
-		self.parent_pk		= None
-		self.parent_field 	= None
-		self.parent_model 	= None
-		self.object_pk 		= None
+		self.object_pk = None
 
 		# used to configure the interface to inline
 		# it will filter the dataset by the foreign key
-		if parent_model: self.set_parent(parent_model[0], parent_model[1])
+		self.parent_field = None
+		self.parent_pk	  = kwargs.get('parent_pk', None)
+		self.parent_model = kwargs.get('parent_model', None)
+		if self.parent_model and self.parent_pk:
+			self.set_parent(self.parent_model, self.parent_pk)
+		#######################################################
 
 		# buttons
 		self._save_btn 		= ControlButton(self.SAVE_BTN_LABEL)
@@ -88,6 +102,7 @@ class EditFormAdmin(BaseWidget):
 	
 		
 		self.create_model_formfields()
+		pk = kwargs.get('pk', None)
 		if pk:
 			self.object_pk = pk
 			self.show_edit_form()
@@ -96,6 +111,7 @@ class EditFormAdmin(BaseWidget):
 
 
 		self.formset = self.formset + self.get_buttons_row()
+
 		for inline in self.inlines:
 			self.formset.append(inline.__name__)
 
@@ -262,7 +278,7 @@ class EditFormAdmin(BaseWidget):
 
 
 	def show_edit_form(self, pk=None):
-		if pk: self.object_pk = pk
+		if  pk: self.object_pk = pk
 		for field in self.edit_fields: 		field.show()
 		for field in self.inlines_controls: field.show()
 		self._create_btn.hide()

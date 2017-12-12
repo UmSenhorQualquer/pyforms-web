@@ -30,6 +30,7 @@ class ApplicationsLoader:
 		constructor_data = data.get('constructor', {})
 		for name, param in inspect.signature(moduleclass).parameters.items():
 			parameters[name] = constructor_data.get(name, None)
+
 		app = moduleclass(**parameters)
 		###############################################################################
 
@@ -43,7 +44,7 @@ class ApplicationsLoader:
 			func(**parameters)
 		###############################################################################
 		
-		data = [{'uid': app.uid, 'layout_position': app.layout_position, 'title':app.title} for app in request.updated_apps.applications if app.is_new_app]
+		data = [{'uid': app.uid, 'layout_position': app.LAYOUT_POSITION, 'title':app.title} for app in request.updated_apps.applications if app.is_new_app]
 		for m in request.updated_apps.applications: m.commit()
 		
 		return data

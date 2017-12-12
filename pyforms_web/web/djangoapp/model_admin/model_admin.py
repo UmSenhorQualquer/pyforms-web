@@ -25,16 +25,21 @@ from pyforms_web.web.djangoapp.model_admin.editform_admin import EditFormAdmin
 
 class ModelAdmin(BaseWidget):
 
-	inlines 	 = []
-	list_filter  = None
-	list_display = None
-	search_fields= None
+	MODEL 	        = None 	#model to manage
+	TITLE 	   		= None	#title of the application
+	EDITFORM_CLASS  = EditFormAdmin #edit form class
+
+	INLINES 		= []	#sub models to show in the interface
+	LIST_FILTER 	= None	#list of filters fields
+	LIST_DISPLAY 	= None  #list of fields to display in the table
+	SEARCH_FIELDS 	= None  #fields to be used in the search
+
+	FIELDSETS 		= None  #formset of the edit form
+	CONTROL_LIST 	= ControlQueryList #Control to be used in to list the values
+
 	
-	fieldsets	 = None
 
-	list_control = ControlQueryList
-
-	def __init__(self, title, model, parent=None, editmodel_class=EditFormAdmin):
+	def __init__(self, *args, **kwargs):
 		"""
 		Parameters:
       		title  - Title of the app.
@@ -42,38 +47,43 @@ class ModelAdmin(BaseWidget):
       		parent - Variable with the content [model, foreign key id]. It is used to transform the App in an inline App
 		"""
 		# buttons
+		title = kwargs.get('title', self.TITLE)
+
 		BaseWidget.__init__(self, title)
-		self.model 		  = model
-		self.parent_pk	  = None
-		self.parent_field = None
-		self.parent_model = None
-		self.editmodel_class = editmodel_class
+		self.model 			 = kwargs.get('model', self.MODEL)
+		self.editmodel_class = kwargs.get('editform_class', self.EDITFORM_CLASS)
 		
-		if parent: self.set_parent(parent[0], parent[1])
+		# Set the class to behave as inline ModelAdmin ########
+		self.parent_field = None
+		self.parent_pk	  = kwargs.get('parent_pk', None)
+		self.parent_model = kwargs.get('parent_model', None)
+		if self.parent_model and self.parent_pk:
+			self.set_parent(self.parent_model, self.parent_pk)
+		#######################################################
 
 		self._add_btn 	= ControlButton('<i class="plus icon"></i> Add')
-		self._list 		= self.list_control('List')
+		self._list 		= self.CONTROL_LIST('List')
 		self._details   = ControlEmptyWidget('Details')
 		
-		self.formset = ['_add_btn', '_list', '_details']
+		self.formset    = ['_add_btn', '_list', '_details']
 	
 		# events
 		self._add_btn.include_label = False
 		self._add_btn.value 		= self.show_create_form
 		self._list.item_selection_changed_event = self.__list_item_selection_changed_event
 
-		self.populate_list()
-
 		self._details.hide()
 		
 		if self.parent_model:
-			self.formset = ['h2:'+title]+self.formset
+			self.formset = ['h2:'+str(title)]+self.formset
+
+		self.populate_list()
+
 		
 		
 
 	#################################################################################
 	#################################################################################
-
 
 	def get_queryset(self):
 		"""
@@ -89,11 +99,10 @@ class ModelAdmin(BaseWidget):
 		"""
 			configures the ControlQuerySet to display the data
 		"""
-		self._list.list_display  = self.list_display  if self.list_display  else []
-		self._list.list_filter 	 = self.list_filter   if self.list_filter   else []
-		self._list.search_fields = self.search_fields if self.search_fields else []
-		query					 = self.get_queryset()
-		self._list.value 		 = query
+		self._list.list_display  = self.LIST_DISPLAY  if self.LIST_DISPLAY  else []
+		self._list.list_filter 	 = self.LIST_FILTER   if self.LIST_FILTER   else []
+		self._list.search_fields = self.SEARCH_FIELDS if self.SEARCH_FIELDS else []
+		self._list.value 		 = self.get_queryset()
 
 		
 	def hide_form(self):
@@ -110,15 +119,17 @@ class ModelAdmin(BaseWidget):
 		self._details.show()
 
 		createform = self.editmodel_class(
-			'Create', 
-			self.model, 
-			None, 
-			inlines=self.inlines,
-			parent_model=((self.parent_model, self.parent_pk) if self.parent_model is not None else None),
-			fieldsets = self.fieldsets
+			title='Create', 
+			model=self.model, 
+			inlines=self.INLINES,
+			parent_model=self.parent_model,
+			parent_pk=self.parent_pk,
+			fieldsets=self.FIELDSETS
 		)
 		createform.hide_form = self.hide_form
 		self._details.value  = createform
+
+
 
 
 	def show_edit_form(self, pk=None):
@@ -131,13 +142,15 @@ class ModelAdmin(BaseWidget):
 		# create the edit form a add it to the empty widget details
 		# override the function hide_form to make sure the list is shown after the user close the edition form
 		editform = self.editmodel_class(
-			'Edit', 
-			self.model, 
-			pk, 
-			inlines=self.inlines, 
-			parent_model=((self.parent_model, self.parent_pk) if self.parent_model is not None else None),
-			fieldsets = self.fieldsets if hasattr(self, 'fieldsets') else None
+			title='Edit', 
+			model=self.model, 
+			pk=pk, 
+			inlines=self.INLINES,
+			parent_model=self.parent_model,
+			parent_pk=self.parent_pk,
+			fieldsets=self.FIELDSETS
 		)
+		
 		
 		editform.hide_form 	= self.hide_form
 		self._details.value = editform

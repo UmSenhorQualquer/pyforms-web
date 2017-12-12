@@ -52,5 +52,5 @@ class ControlEmptyWidget(ControlBase):
 	def value(self, value):
 		ControlBase.value.fset(self, value)
 		if value: 
-			value.layout_position = self.place_id
+			value.LAYOUT_POSITION = self.place_id
 			

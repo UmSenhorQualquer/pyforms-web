@@ -18,6 +18,8 @@ from django.template.loader import render_to_string
 
 class BaseWidget(object):
 	
+	LAYOUT_POSITION = None
+	
 	FORM_NO_ROW_ALIGNMENT = 0
 
 	refresh_timeout = None #time in milliseconds to refresh the application
@@ -287,7 +289,7 @@ class BaseWidget(object):
 		
 		res = {
 			'uid':				self.uid, 
-			'layout_position': 	self.layout_position if hasattr(self, 'layout_position') else 5,
+			'layout_position': 	self.LAYOUT_POSITION if hasattr(self, 'LAYOUT_POSITION') else 5,
 			'title': 			self.title,
 			'close_widget':		self._close_widget,
 			'js-code':			list(self._js_code2execute)
@@ -381,10 +383,10 @@ class BaseWidget(object):
 
 	@classmethod
 	def has_permissions(cls, user):
-		if hasattr(cls, 'groups'):
-			if user.is_superuser and 'superuser' in cls.groups: 
+		if hasattr(cls, 'AUTHORIZED_GROUPS'):
+			if user.is_superuser and 'superuser' in cls.AUTHORIZED_GROUPS: 
 				return True
-			if user.groups.filter(name__in=cls.groups).exists():
+			if user.groups.filter(name__in=cls.AUTHORIZED_GROUPS).exists():
 				return True
 		else:
 			return True
