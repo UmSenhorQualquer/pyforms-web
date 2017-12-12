@@ -9,6 +9,7 @@ ControlQueryList.prototype = Object.create(ControlBase.prototype);
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlQueryList.prototype.init_control = function(){
+
 	var html = "<div id='"+this.place_id()+"' class='field ControlQueryList'>";
 
 	var filters = this.properties.filters_list;
@@ -146,6 +147,7 @@ ControlQueryList.prototype.get_value = function(){
 ////////////////////////////////////////////////////////////////////////////////
 
 ControlQueryList.prototype.set_value = function(value){
+	
 	var titles = this.properties.horizontal_headers;
 	var data   = this.properties.values;
 
@@ -196,6 +198,15 @@ ControlQueryList.prototype.set_value = function(value){
 	else 
 		this.hide();
 };
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+ControlQueryList.prototype.set_label = function(value){
+	//The list has no label
+};
+
 
 ////////////////////////////////////////////////////////////////////////////////
 

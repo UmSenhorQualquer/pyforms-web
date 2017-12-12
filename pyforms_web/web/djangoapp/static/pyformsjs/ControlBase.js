@@ -58,6 +58,12 @@ ControlBase.prototype.set_value = function(value){
 
 ////////////////////////////////////////////////////////////////////////////////
 
+ControlBase.prototype.set_label = function(value){
+	$( "#"+this.place_id()+' label' ).html(value);
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
 ControlBase.prototype.hide = function(not_update_columns, init_form){
 	if(init_form==undefined)
 		if( !this.jquery_place().is(':visible') ) return;
@@ -133,8 +139,7 @@ ControlBase.prototype.show = function(not_update_columns){
 ControlBase.prototype.deserialize = function(data){
 	$.extend(this.properties, data);
 	this.set_value(this.properties.value);
-	
-	$( "#"+this.place_id()+' label' ).html(this.properties.label);
+	this.set_label(this.properties.label);
 	
 	if(this.properties.visible) 
 		this.show();
