@@ -140,6 +140,8 @@ class ControlQueryList(ControlBase):
 					search_filter = (search_filter | q) if search_filter else q
 				qs = qs.filter(search_filter)
 
+
+
 			return qs
 		else:
 			return None
@@ -185,11 +187,10 @@ class ControlQueryList(ControlBase):
 	
 			# if no order by exists add one, to avoid the values to be show randomly in the list
 			order_by = list(queryset.query.order_by)
-			if len(order_by)==0:
-				if 'pk' not in order_by or '-pk' not in order_by:
-					order_by.append('-pk')
-					queryset = queryset.order_by( *order_by )
-					
+			if 'pk' not in order_by or '-pk' not in order_by:
+				order_by.append('-pk')
+				queryset = queryset.order_by( *order_by )
+			
 			rows = self.queryset_to_list(queryset, self.list_display, row_start, row_end)
 
 			
