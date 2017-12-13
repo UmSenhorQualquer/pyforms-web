@@ -32,10 +32,11 @@ class EditFormAdmin(BaseWidget):
     FIELDSETS = None  #formset of the edit form
     
     
-    SAVE_BTN_LABEL   = '<i class="save icon"></i> Save'
-    CREATE_BTN_LABEL = '<i class="plus icon"></i> Create'
-    CANCEL_BTN_LABEL = '<i class="hide icon"></i> Close'
-    REMOVE_BTN_LABEL = '<i class="trash outline icon"></i> Remove'
+    SAVE_BTN_LABEL     = '<i class="save icon"></i> Save'
+    CREATE_BTN_LABEL   = '<i class="plus icon"></i> Create'
+    CANCEL_BTN_LABEL   = '<i class="hide icon"></i> Close'
+    REMOVE_BTN_LABEL   = '<i class="trash outline icon"></i> Remove'
+    POPUP_REMOVE_TITLE = 'The next objects are going to be affected or removed'
 
     def __init__(self, *args, **kwargs):
         """
@@ -630,7 +631,7 @@ class EditFormAdmin(BaseWidget):
             html = related_objects_html([objects])
 
             popup = self.warning_popup(html, 
-                'The next objects will be removed', 
+                self.POPUP_REMOVE_TITLE, 
                 buttons=[self.REMOVE_BTN_LABEL,self.CANCEL_BTN_LABEL], 
                 handler=self.popup_remove_handler
             )
