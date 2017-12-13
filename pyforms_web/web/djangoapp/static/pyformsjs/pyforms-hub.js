@@ -63,11 +63,15 @@ function pyforms_checkhash(){
 	if(query.length>=2) search = query[1];
 	search.replace(/([^=&]+)=([^&]*)/g, function(m, key, value) {
 		constructor_data[decodeURIComponent(key)] = decodeURIComponent(value);
-	}); 
-	console.log((''?(query.length>1):'?'));
+	});
 	
 	run_application(app, constructor_data, method_data);
-	window.location.hash = window.location.hash+((query.length>1)?'':'?')+'&';
+
+	//The character & is added to the end of the url hash, so the url
+	//can be called again and trigger the hashchange event.
+	//The character is only added if does not exists yet.
+	if(hash.charAt(hash.length-1)!='&')
+		window.location.hash = hash+((query.length>1)?'':'?')+'&';
 };
 
 var pyforms_checkhash_flag = true; //flag used to avoid multiple checks of the hashcode
@@ -75,7 +79,7 @@ function pyforms_checkhash_wrapper(){
 	if(!pyforms_checkhash_flag) return;
 	pyforms_checkhash_flag = false;
 	pyforms_checkhash();
-	setTimeout('pyforms_checkhash_flag=true;', 33);
+	setTimeout('pyforms_checkhash_flag=true;', 100);
 };
 
 $(pyforms_checkhash);
