@@ -79,7 +79,7 @@ function pyforms_checkhash_wrapper(){
 	if(!pyforms_checkhash_flag) return;
 	pyforms_checkhash_flag = false;
 	pyforms_checkhash();
-	setTimeout('pyforms_checkhash_flag=true;', 100);
+	setTimeout('pyforms_checkhash_flag=true;', 500);
 };
 
 $(pyforms_checkhash);
