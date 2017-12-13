@@ -32,14 +32,13 @@ function run_application(application, constructor_params, method_params){
 	});
 };
 
-
 function pyforms_checkhash(){
 	//example: #/<class_fullname>/?<parameter name for the constructor>=<parameter value>   pass the parameter for the constructor
 	//example call method: #/<class_fullname>/<method to call>/<name of the method to call>/<parameter name for the method>/<parameter value>/
-	
+
 	var hash = window.location.hash;
-	if(hash.length==0) return;
-	if(hash.slice(0,2)!='#/') return;
+	if(hash.length==0) 		  return; // no hash to process
+	if(hash.slice(0,2)!='#/') return; // if the hash does not have the right format does not process it
 	
 	var commands = hash.split("/");
 	var app 	 = commands[1];
@@ -65,10 +64,19 @@ function pyforms_checkhash(){
 	search.replace(/([^=&]+)=([^&]*)/g, function(m, key, value) {
 		constructor_data[decodeURIComponent(key)] = decodeURIComponent(value);
 	}); 
+	console.log((''?(query.length>1):'?'));
 	
 	run_application(app, constructor_data, method_data);
-	window.location.hash = '';
+	window.location.hash = window.location.hash+((query.length>1)?'':'?')+'&';
+};
+
+var pyforms_checkhash_flag = true; //flag used to avoid multiple checks of the hashcode
+function pyforms_checkhash_wrapper(){
+	if(!pyforms_checkhash_flag) return;
+	pyforms_checkhash_flag = false;
+	pyforms_checkhash();
+	setTimeout('pyforms_checkhash_flag=true;', 33);
 };
 
 $(pyforms_checkhash);
-$(window).bind('hashchange',pyforms_checkhash);
+$(window).bind('hashchange', pyforms_checkhash_wrapper);
