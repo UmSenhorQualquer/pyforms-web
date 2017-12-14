@@ -108,16 +108,16 @@ class BaseWidget(object):
     
 
     def generate_panel(self, formset, add_field_class=True):
-        """
-        Generate a panel for the module form with all the controls
-        formset format example: [('_video', '_arenas', '_run'), {"Player":['_threshold', "_player", "=", "_results", "_query"], "Background image":[(' ', '_selectBackground', '_paintBackground'), '_image']}, "_progress"]
-        tuple: will display the controls in the same horizontal line
-        list: will display the controls in the same vertical line
-        dict: will display the controls in a tab widget
-        '||': will plit the controls in a horizontal line
-        '=': will plit the controls in a vertical line
-        @param formset: Form configuration
-        @type formset: list
+        """  
+        Generate a panel for the module form with all the controls  
+        formset format example: [('_video', '_arenas', '_run'), {"Player":['_threshold', "_player", "=", "_results", "_query"], "Background image":[(' ', '_selectBackground', '_paintBackground'), '_image']}, "_progress"]  
+        tuple: will display the controls in the same horizontal line  
+        list: will display the controls in the same vertical line  
+        dict: will display the controls in a tab widget  
+        '||': will plit the controls in a horizontal line  
+        '=': will plit the controls in a vertical line  
+        @param formset: Form configuration    
+        @type formset: list  
         """
         control = ""
         if '=' in formset:
