@@ -9,9 +9,9 @@ from io import StringIO
 
 class ControlPlayer(ControlBase):
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
+	def __init__(self, *args, **kwargs):
 		self._filename = ''
-		ControlBase.__init__(self, label, defaultValue, helptext)
+		ControlBase.__init__(self, *args, **kwargs)
 
 	def init_form(self): 
 		return "new ControlPlayer('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )

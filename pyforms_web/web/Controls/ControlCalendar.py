@@ -4,8 +4,8 @@ import simplejson
 
 class ControlCalendar(ControlBase):
     
-    def __init__(self, label="", defaultValue="", helptext=''):
-        super(ControlCalendar, self).__init__(label, defaultValue, helptext)
+    def __init__(self, *args, **kwargs):
+        super(ControlCalendar, self).__init__(*args, **kwargs)
 
         today = date.today()
         self.month = today.month 

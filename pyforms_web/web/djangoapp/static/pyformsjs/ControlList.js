@@ -1,9 +1,9 @@
 class ControlList extends ControlBase{
 
-	contructor(name, properties){
-		super(name, properties)
+	constructor(name, properties){
+		super(name, properties);
 		this.being_edited = false;
-	};
+	}
 
 	////////////////////////////////////////////////////////////////////////////////
 

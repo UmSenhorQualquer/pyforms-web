@@ -3,7 +3,7 @@ class ControlText extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 	init_control(){
 		var html = "<div id='"+this.place_id()+"' class='field ControlText' >"
-		if(this.properties.include_label) html += "<label>"+this.properties.label+"</label>";
+		if(this.properties.label_visible) html += "<label>"+this.properties.label+"</label>";
 		html += "<input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value='' />";
 		html += "</div>";
 		this.jquery_place().replaceWith(html);

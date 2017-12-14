@@ -4,8 +4,8 @@ import simplejson, collections
 class ControlCombo(ControlBase):
 
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
-		super(ControlCombo, self).__init__(label, defaultValue,helptext)
+	def __init__(self, *args, **kwargs):
+		super(ControlCombo, self).__init__(*args, **kwargs)
 		self._items = collections.OrderedDict()
 
 	def init_form(self): return "new ControlCombo('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )

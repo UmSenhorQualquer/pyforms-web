@@ -10,9 +10,9 @@ import simplejson
 class ControlImage(ControlBase):
 
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
+	def __init__(self, *args, **kwargs):
 		self._filename
-		super(ControlImage, self).__init__(label, defaultValue,helptext)
+		super(ControlImage, self).__init__(*args, **kwargs)
 	 
 
 	def init_form(self):

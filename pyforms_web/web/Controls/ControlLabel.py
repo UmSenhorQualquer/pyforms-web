@@ -2,9 +2,9 @@ from pyforms_web.web.Controls.ControlBase import ControlBase
 import simplejson
 
 class ControlLabel(ControlBase):
-	def __init__(self, label="", defaultValue="", helptext=''):
+	def __init__(self, *args, **kwargs):
 		self._css = ''
-		super(ControlLabel, self).__init__(label, defaultValue, helptext)
+		super(ControlLabel, self).__init__(*args, **kwargs)
 
 	def init_form(self):
 		return """new ControlLabel('{0}', {1})""".format(

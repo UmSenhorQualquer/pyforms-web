@@ -1,6 +1,6 @@
 class ControlItemsList extends ControlBase{
 
-	construct(name, properties){
+	constructor(name, properties){
 		super(name, properties);
 		this.being_edited = false;
 	}

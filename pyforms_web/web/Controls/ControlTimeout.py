@@ -7,8 +7,8 @@ import simplejson
 
 class ControlTimeout(ControlBase):
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
-		super(ControlTimeout, self).__init__(label, defaultValue, helptext)
+	def __init__(self, *args, **kwargs):
+		super(ControlTimeout, self).__init__(*args, **kwargs)
 		self._last_trigger 	= timezone.now()
 		self._play = True
 		self._update_value = True

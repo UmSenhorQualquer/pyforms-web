@@ -6,11 +6,9 @@ from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
 
 class ControlEmptyWidget(ControlBase):
 
-	def __init__(self, label = "", defaultValue = "", helptext='', parent=None):
-		super(ControlEmptyWidget,self).__init__(label, defaultValue, helptext)
-		self._widget = None
-		self._css = ''
-		self._parent = parent
+	def __init__(self, *args, **kwargs):
+		super(ControlEmptyWidget,self).__init__(*args, **kwargs)
+		self._parent = kwargs.get('parent', None)
 
 	def init_form(self):
 		return """new ControlEmptyWidget('{0}', {1})""".format(
@@ -42,8 +40,9 @@ class ControlEmptyWidget(ControlBase):
 
 	def mark_to_update_client(self):
 		 self._update_client = True
-		 if self.parent is not None and self.http_request is not None and hasattr(self.http_request,'updated_apps'):
-		 	self.http_request.updated_apps.add_top(self.parent)
+		 request = PyFormsMiddleware.get_request()
+		 if self.parent is not None and request is not None and hasattr(request,'updated_apps'):
+		 	request.updated_apps.add_top(self.parent)
 
 	@property
 	def value(self): return ControlBase.value.fget(self)

@@ -6,13 +6,13 @@ class ControlSlider(ControlBase):
 	_min = 0
 	_max = 100
 
-	def __init__(self, label = "", defaultValue = 0, min = 0, max = 100):
+	def __init__(self, *args, **kwargs):
+		self._min 		 = kwargs.get('min', 0)
+		self._max 		 = kwargs.get('max', 100)
 		self._updateSlider = True
-		self._min = min
-		self._max = max
 		self._value = 0
 		
-		ControlBase.__init__(self, label, defaultValue)
+		ControlBase.__init__(self, *args, **kwargs)
 		
 	def init_form(self): return "new ControlSlider('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 

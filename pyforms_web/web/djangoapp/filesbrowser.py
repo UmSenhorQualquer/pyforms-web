@@ -45,8 +45,9 @@ class FilesBrowserApp(BaseWidget):
 		self._files_table.select_entire_row 	= True
 		self._files_table.readonly 			= True
 
-		self._control_id.value = self.http_request.GET.get('control-id','')
-		self._only_folders.value = self.http_request.GET.get('filter-folders','false')=='true'
+		request = PyFormsMiddleware.get_request()
+		self._control_id.value = request.GET.get('control-id','')
+		self._only_folders.value = request.GET.get('filter-folders','false')=='true'
 		
 		
 		self.populate_table()
@@ -67,7 +68,7 @@ class FilesBrowserApp(BaseWidget):
 			self.populate_table()
 
 	def populate_table(self):
-		request 	= self.http_request
+		request 	= PyFormsMiddleware.get_request()
 		self._directory.value = request.GET.get('p',self._directory.value)
 		storage 	= conf.MAESTRO_STORAGE_MANAGER.get(request.user)
 		path 		= self._directory.value

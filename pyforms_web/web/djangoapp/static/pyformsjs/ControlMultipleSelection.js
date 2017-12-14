@@ -24,7 +24,7 @@ class ControlMultipleSelection extends ControlBase{
 
 	init_control(){
 		var html = "<div class='field ControlMultipleSelection' id='"+this.place_id()+"' >";
-		if(this.properties.include_label) html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
+		if(this.properties.label_visible) html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
 		
 		switch(this.properties.mode) {
 		    case 'scrolling':

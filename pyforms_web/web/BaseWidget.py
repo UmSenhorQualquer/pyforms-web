@@ -48,11 +48,11 @@ class BaseWidget(object):
 
         PyFormsMiddleware.add(self)
 
-    def refresh_event(self):
-        print("x")
 
+
+    
     ############################################################################
-    ############ Module functions  #############################################
+    ############ FUNCTIONS #####################################################
     ############################################################################
 
     def init_form(self, parent=None):
@@ -74,10 +74,12 @@ class BaseWidget(object):
 
         extra_data = {'refresh_timeout': self.refresh_timeout, 'messages':self._messages}
 
+        modulename = inspect.getmodule(self).__name__ + '.' + self.__class__.__name__
+
         self._js = '[{0}]'.format(",".join(self._controls))
         self._html += """
         <script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1}, {3}, {4}) );</script>
-        """.format(self.modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data))
+        """.format(modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data))
         self._formLoaded = True
 
         self._messages = []
@@ -103,44 +105,7 @@ class BaseWidget(object):
 
         return """<div id='{0}' class='ui top attached tabular menu' >{1}</div>{2}<script type='text/javascript'>$('#{0}.menu .item').tab();</script>""".format(tab_id, tabs_head, tabs_body)
 
-    def generate_segments(self, formsetdict):
-        
-        html = ''
-        for key, item in sorted(formsetdict.items()):
-            if item==True: continue
-            
-            html += "<h2 class='ui header' >{0}</h2>".format(key[key.find(':')+1:])
-            html += "<div class='ui segment pyforms-segment' >"
-            html += self.generate_panel(item, add_field_class=False)
-            html += "</div>"
-        return html
-
-    def __get_fields_class(self, row):
-        
-        if len(row)>=1 and row[0]==self.FORM_NO_ROW_ALIGNMENT: return 'no-alignment'
-
-        if   len(row)==2: return 'two'
-        elif len(row)==3: return 'three'
-        elif len(row)==4: return 'four'
-        elif len(row)==5: return 'five'
-        elif len(row)==6: return 'six'
-        elif len(row)==7: return 'seven'
-        elif len(row)==8: return 'eight'
-        elif len(row)==9: return 'nine'
-        elif len(row)==10: return 'ten'
-        elif len(row)==11: return 'eleven'
-        elif len(row)==12: return 'twelve'
-        elif len(row)==13: return 'thirteen'
-        elif len(row)==14: return 'fourteen'
-        elif len(row)==15: return 'fiveteen'
-        elif len(row)==16: return 'sixteen'
-        elif len(row)==17: return 'seventeen'
-        elif len(row)==18: return 'eighteen'
-        elif len(row)==19: return 'nineteen'
-        elif len(row)==20: return 'twenty'
-        elif len(row)==21: return 'twentyone'
-        elif len(row)==22: return 'twentytwo'
-        else: return ''
+    
 
     def generate_panel(self, formset, add_field_class=True):
         """
@@ -246,25 +211,126 @@ class BaseWidget(object):
         return layout
 
 
+    
+    def save_form(self, data={}, path=None):
+        pass
+
+    def load_form(self, data, path=None):
+        pass
+    
+    def save_window(self):
+        pass
+
+    def load_window(self):
+        pass
+
+    def load_form_filename(self, filename):
+        pass
+
+    def close(self): 
+        self.mark_to_update_client()
+        self._close_widget = True
+
+    def message(self, msg, title=None, msg_type=None):
+        msg = { 'type': msg_type if msg_type else '', 'messages':msg if isinstance(msg, list) else [msg], 'title':title }
+        self._messages.append(msg)
+        self.mark_to_update_client()
+    def success(self,   msg, title=None):   self.message(msg, title, msg_type='success')
+    def info(self,      msg, title=None):   self.message(msg, title, msg_type='info')
+    def warning(self,   msg, title=None):   self.message(msg, title, msg_type='warning');
+    def alert(self,     msg, title=None):   self.message(msg, title, msg_type='error')
+
+    def message_popup(self, msg, title='', buttons=None, handler=None, msg_type='success'):
+        self._active_popup_msg = PopupWindow(title, msg, buttons, handler, msg_type='success', parent_win=self)
+        return self._active_popup_msg
+    def success_popup(self, msg, title='', buttons=None, handler=None):
+        return self.message_popup(msg, title, buttons, handler, msg_type='success')
+    def info_popup(self, msg, title='', buttons=None, handler=None):
+        return self.message_popup(msg, title, buttons, handler, msg_type='info')
+    def warning_popup(self, msg, title='', buttons=None, handler=None):
+        return self.message_popup(msg, title, buttons, handler, msg_type='warning')
+    def alert_popup(self, msg, title='', buttons=None, handler=None):
+        return self.message_popup(msg, title, buttons, handler, msg_type='alert')
+
+    
+    ##########################################################################
+    ############ WEB functions ###############################################
+    ##########################################################################
+
+    def generate_segments(self, formsetdict):
+        
+        html = ''
+        for key, item in sorted(formsetdict.items()):
+            if item==True: continue
+            
+            html += "<h2 class='ui header' >{0}</h2>".format(key[key.find(':')+1:])
+            html += "<div class='ui segment pyforms-segment' >"
+            html += self.generate_panel(item, add_field_class=False)
+            html += "</div>"
+        return html
+
+    def __get_fields_class(self, row):
+        
+        if len(row)>=1 and row[0]==self.FORM_NO_ROW_ALIGNMENT: return 'no-alignment'
+
+        if   len(row)==2: return 'two'
+        elif len(row)==3: return 'three'
+        elif len(row)==4: return 'four'
+        elif len(row)==5: return 'five'
+        elif len(row)==6: return 'six'
+        elif len(row)==7: return 'seven'
+        elif len(row)==8: return 'eight'
+        elif len(row)==9: return 'nine'
+        elif len(row)==10: return 'ten'
+        elif len(row)==11: return 'eleven'
+        elif len(row)==12: return 'twelve'
+        elif len(row)==13: return 'thirteen'
+        elif len(row)==14: return 'fourteen'
+        elif len(row)==15: return 'fiveteen'
+        elif len(row)==16: return 'sixteen'
+        elif len(row)==17: return 'seventeen'
+        elif len(row)==18: return 'eighteen'
+        elif len(row)==19: return 'nineteen'
+        elif len(row)==20: return 'twenty'
+        elif len(row)==21: return 'twentyone'
+        elif len(row)==22: return 'twentytwo'
+        else: return ''
+
+    def commit(self):
+        for key, item in self.controls.items(): item.commit()
+
+        user = PyFormsMiddleware.user()
+        # save the modifications
+        userpath = os.path.join(
+            conf.PYFORMS_WEB_APPS_CACHE_DIR,
+            '{0}-{1}'.format(user.pk, user.username) 
+        )
+        if not os.path.exists(userpath): os.makedirs(userpath)
+
+        app_path = os.path.join(userpath, "{0}.app".format(self.uid) )
+
+        lock = filelock.FileLock("lockfile.txt")
+        with lock.acquire(timeout=4):
+            with open(app_path, 'wb') as f: 
+                dill.dump(self, f)
+
+    def execute_js(self, code):
+        self._js_code2execute.append(code)
+
+    
+
     def mark_to_update_client(self):
-        if  self.http_request is not None and \
-            hasattr(self.http_request,'updated_apps'):
-            self.http_request.updated_apps.add_top(self)
+        request = PyFormsMiddleware.get_request()
+        if  request is not None and \
+            hasattr(request,'updated_apps'):
+            request.updated_apps.add_top(self)
 
     def load_serialized_form(self, params):
         widgets = []
 
         if hasattr(self, 'parent') and isinstance(self.parent, (str,str)):
             self.parent = PyFormsMiddleware.get_instance(self.parent)
-            
-        """
-        for var_name, base64data in params.get('children-windows', []):
-            serialized_win = base64.b64decode(base64data)
-            win = dill.loads(serialized_win)
-            win.parent_win = self
-            setattr(self, var_name, win)            
-        """
-
+    
 
         for key, value in params.items():
             control = self.controls.get(key, None)
@@ -316,86 +382,6 @@ class BaseWidget(object):
         
         return res
 
-    def commit(self):
-        for key, item in self.controls.items(): item.commit()
-
-        user = PyFormsMiddleware.user()
-        # save the modifications
-        userpath = os.path.join(
-            conf.PYFORMS_WEB_APPS_CACHE_DIR,
-            '{0}-{1}'.format(user.pk, user.username) 
-        )
-        if not os.path.exists(userpath): os.makedirs(userpath)
-
-        app_path = os.path.join(userpath, "{0}.app".format(self.uid) )
-
-        lock = filelock.FileLock("lockfile.txt")
-        with lock.acquire(timeout=4):
-            with open(app_path, 'wb') as f: 
-                dill.dump(self, f)
-
-    def execute_js(self, code):
-        self._js_code2execute.append(code)
-
-    ############################################################################
-    ############ Parent class functions reemplementation #######################
-    ############################################################################
-
-    def show(self): pass
-
-    ############################################################################
-    ############ Properties ####################################################
-    ############################################################################
-
-    @property
-    def children_windows(self):
-        """
-        Return all the form controls from the the module
-        """
-        result = {}
-        for name, var in vars(self).items():
-            if isinstance(var, BaseWidget):
-                var._name       = name
-                result[name]    = var
-        return result
-    
-    @property
-    def controls(self):
-        """
-        Return all the form controls from the the module
-        """
-        result = {}
-        for name, var in vars(self).items():
-            if isinstance(var, ControlBase):
-                var.parent  = self
-                var._name   = name
-                result[name]= var
-
-        return result
-
-    def message(self, msg, title=None, msg_type=None):
-        msg = { 'type': msg_type if msg_type else '', 'messages':msg if isinstance(msg, list) else [msg], 'title':title }
-        self._messages.append(msg)
-        self.mark_to_update_client()
-
-    def success(self,   msg, title=None):   self.message(msg, title, msg_type='success')
-    def info(self,      msg, title=None):   self.message(msg, title, msg_type='info')
-    def warning(self,   msg, title=None):   self.message(msg, title, msg_type='warning');
-    def alert(self,     msg, title=None):   self.message(msg, title, msg_type='error')
-
-    
-    def success_popup(self, msg, title='', buttons=None, handler=None):
-        self._active_popup_msg = PopupWindow(title, msg, buttons, handler, msg_type='success', parent_win=self)
-        return self._active_popup_msg
-    def info_popup(self, msg, title='', buttons=None, handler=None):
-        self._active_popup_msg = PopupWindow(title, msg, buttons, handler, msg_type='info', parent_win=self)
-        return self._active_popup_msg
-    def warning_popup(self, msg, title='', buttons=None, handler=None):
-        self._active_popup_msg = PopupWindow(title, msg, buttons, handler, msg_type='warning', parent_win=self)
-        return self._active_popup_msg
-    def alert_popup(self, msg, title='', buttons=None, handler=None):
-        self._active_popup_msg = PopupWindow(title, msg, buttons, handler, msg_type='error', parent_win=self)
-        return self._active_popup_msg
 
     @classmethod
     def has_permissions(cls, user):
@@ -413,26 +399,39 @@ class BaseWidget(object):
         return True
 
 
-    #### Variable connected to the Storage manager of the corrent user
+
+    ##########################################################################
+    ############ EVENTS ######################################################
+    ##########################################################################
+
+    def before_close_event(self): pass
+
+    ##########################################################################
+    ############ WEB events ##################################################
+    ##########################################################################
+
+    def refresh_event(self): pass
+
+
+
+    ############################################################################
+    ############ Properties ####################################################
+    ############################################################################
+
+    
     @property
-    def storage(self):
-        if hasattr(self, '_storage'):
-            return self._storage
-        else:
-            return conf.MAESTRO_STORAGE_MANAGER.get(self.http_request.user)
-    @storage.setter 
-    def storage(self, value): self._storage = value
+    def controls(self):
+        """
+        Return all the form controls from the the module
+        """
+        result = {}
+        for name, var in vars(self).items():
+            if isinstance(var, ControlBase):
+                var.parent  = self
+                var._name   = name
+                result[name]= var
 
-    #######################################################
-
-
-
-    #### This variable has the current http request #######
-    @property
-    def http_request(self): return PyFormsMiddleware.get_request()
-
-    #######################################################
-
+        return result
 
     @property
     def form(self): 
@@ -440,15 +439,7 @@ class BaseWidget(object):
             os.path.join('pyforms', 'basewidget-template.html'), 
             {'application_html': self._html, 'application_id': self.uid}
         )
-        
-    @property
-    def js(self): return self._js
-    
-    @property
-    def uid(self): return self._uid
-    @uid.setter
-    def uid(self, value): self._uid = value
-    
+
     @property
     def title(self): return self._title
 
@@ -456,9 +447,14 @@ class BaseWidget(object):
     def title(self, value): self._title = value
 
     @property
-    def modulename(self):
-        return inspect.getmodule(self).__name__ + '.' + self.__class__.__name__
-    
+    def mainmenu(self):
+        return None
+
+    @mainmenu.setter
+    def mainmenu(self, value):
+        pass
+
+
     @property
     def formset(self): return self._formset
 
@@ -466,9 +462,33 @@ class BaseWidget(object):
     def formset(self, value): self._formset = value
 
 
-    def close(self): 
-        self.mark_to_update_client()
-        self._close_widget = True
+    @property
+    def uid(self): return self._uid
+    @uid.setter
+    def uid(self, value): self._uid = value
+
+    @property
+    def visible(self):
+        return True
+
+    @visible.setter
+    def visible(self, value):
+        pass
+
+    ############################################################################
+    ############ WEB Properties ################################################
+    ############################################################################
+    
+        
+    @property
+    def js(self): return self._js
+    
+    
+    
+   
+    
+    
+    
 
 
 
@@ -486,8 +506,7 @@ class PopupWindow(BaseWidget):
     def __init__(self, title, msg, buttons, handler, msg_type, parent_win=None):
         BaseWidget.__init__(self, title, parent_win=parent_win)
         
-        self._label = ControlLabel('')
-        self._label.value = msg
+        self._label = ControlLabel(default=msg)
         #self._label.css = msg_type
        
         if buttons:
@@ -497,7 +516,6 @@ class PopupWindow(BaseWidget):
                 setattr(self, name, ControlButton(b))
                 getattr(self, name ).value = make_lambda_func(handler, popup=self, button=b)
                 buttons_formset.append(name)
-        
-
+    
         self.formset = ['_label'] + [tuple(buttons_formset)]
        

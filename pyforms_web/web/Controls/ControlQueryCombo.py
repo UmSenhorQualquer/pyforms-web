@@ -4,8 +4,8 @@ import simplejson, collections
 class ControlQueryCombo(ControlBase):
 
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
-		super(ControlQueryCombo, self).__init__(label, defaultValue,helptext)
+	def __init__(self, *args, **kwargs):
+		super(ControlQueryCombo, self).__init__(*args, **kwargs)
 
 		# these informations is needed to serialize the control to the drive
 		self._app 	= None

@@ -3,14 +3,14 @@ import simplejson
 
 class ControlFeed(ControlBase):
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
+	def __init__(self, *args, **kwargs):
 		self._read_only         = False
 		self.has_more		    = False
 		self._selected_index    = -1
 		self.item_selection_changed_event = None
 		self.mode = 'feed'
 		
-		super(ControlFeed, self).__init__(label, defaultValue, helptext)
+		super(ControlFeed, self).__init__(*args, **kwargs)
 		self._value 	= []
 		self.action_param = None
 		self._clear   = False

@@ -3,12 +3,12 @@ import simplejson
 
 class ControlItemsList(ControlBase):
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
+	def __init__(self, *args, **kwargs):
 		self._read_only         = False
 		self._selected_index    = -1
 		self.item_selection_changed_event = None
 		self.select_btn_label 	= 'More <i class="right chevron icon"></i>'
-		super(ControlItemsList, self).__init__(label, defaultValue, helptext)
+		super(ControlItemsList, self).__init__(*args, **kwargs)
 
 
 	def init_form(self): return "new ControlItemsList('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )

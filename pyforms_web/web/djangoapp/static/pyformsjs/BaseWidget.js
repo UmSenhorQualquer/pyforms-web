@@ -125,8 +125,6 @@ class BaseWidget{
 			var name 		= this.controls[index].name;
 			if(data[name])  this.controls[index].deserialize( data[name] );
 		};
-		this.children_windows = data['children-windows']
-		
 		
 		if(data.messages!=undefined)
 			for (var i=0; i<data.messages.length; i++){
@@ -181,7 +179,6 @@ class BaseWidget{
 			};
 		};
 		data['uid'] 			 = this.widget_id;
-		data['children-windows'] = this.children_windows;	
 		return data;
 	}
 

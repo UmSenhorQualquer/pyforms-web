@@ -4,9 +4,9 @@ import simplejson
 
 class ControlVisVis(ControlBase):
 
-	def __init__(self, label = "", defaultValue = "", helptext=None):
+	def __init__(self, *args, **kwargs):
 		self._legend = []
-		super(ControlVisVis, self).__init__(label, defaultValue, helptext)
+		super(ControlVisVis, self).__init__(*args, **kwargs)
 
 	def init_form(self): return "new ControlVisVis('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 

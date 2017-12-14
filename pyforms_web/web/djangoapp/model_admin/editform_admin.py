@@ -98,10 +98,10 @@ class EditFormAdmin(BaseWidget):
         self._save_btn.value    = self.__save_btn_event
         self._cancel_btn.value  = self.cancel_btn_event
         
-        self._create_btn.include_label  = False
-        self._remove_btn.include_label  = False
-        self._save_btn.include_label    = False
-        self._cancel_btn.include_label  = False
+        self._create_btn.label_visible  = False
+        self._remove_btn.label_visible  = False
+        self._save_btn.label_visible    = False
+        self._cancel_btn.label_visible  = False
         
     
         

@@ -5,9 +5,9 @@ import simplejson, base64
 class ControlTemplate(ControlBase):
 
 
-	def __init__(self, label = "", defaultValue = None, helptext=''):
-		super(ControlTemplate, self).__init__(label, None, helptext)
-		self._template = defaultValue
+	def __init__(self, *args, **kwargs):
+		super(ControlTemplate, self).__init__(*args, **kwargs)
+		self._template = kwargs.get('template', None)
 		self.action_param = None
 
 	def init_form(self):

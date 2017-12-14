@@ -3,11 +3,11 @@ import simplejson
 
 class ControlBoundingSlider(ControlBase):
 
-	def __init__(self, label = "", defaultValue=(0,100) , min = 0, max = 100, horizontal=False, helpText=''):
-		self._min = min
-		self._max = max
-		self._horizontal = horizontal
-		super(ControlBoundingSlider, self).__init__(label, defaultValue, helpText)
+	def __init__(self, *args, **kwargs):
+		self._min 		 = kwargs.get('min', 0)
+		self._max 		 = kwargs.get('max', 100)
+		self._horizontal = kwargs.get('horizontal', False)
+		super(ControlBoundingSlider, self).__init__(*args, **kwargs)
 		
 		
 	def init_form(self):

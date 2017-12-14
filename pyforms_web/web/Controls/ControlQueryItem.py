@@ -64,7 +64,7 @@ def get_verbose_name(model, lookup):
 
 class ControlQueryItem(ControlBase):
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
+	def __init__(self, *args, **kwargs):
 		self.rows_per_page 		= 10
 		self._current_page 		= 1
 
@@ -83,7 +83,7 @@ class ControlQueryItem(ControlBase):
 		self._query = None
 		####################################################################
 
-		super(ControlQueryList, self).__init__(label, defaultValue, helptext)
+		super(ControlQueryList, self).__init__(*args, **kwargs)
 
 
 	def init_form(self): return "new ControlQueryList('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )

@@ -3,10 +3,10 @@ import simplejson
 
 class ControlButton(ControlBase):
 
-    def __init__(self, label = "", defaultValue = "", helptext=''):
-        super(ControlButton, self).__init__(label, defaultValue, helptext)
-        self._css = 'blue'
-
+    def __init__(self, *args, **kwargs):
+        if 'css' not in kwargs: kwargs['css']='blue'
+        super(ControlButton, self).__init__(*args, **kwargs)
+        
     def init_form(self): return "new ControlButton('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
     def pressed(self): 
@@ -18,12 +18,9 @@ class ControlButton(ControlBase):
 
     def serialize(self):
         res = super(ControlButton, self).serialize()
-        if self._css: res.update({'css':self._css})
-        if isinstance(self.value, (str, str)) and len(self.value)>0: 
-            res.update({'value':self.value})
-        else:
-            res.update({'value':''})
-
+        res.update({
+            'value': self.value if (isinstance(self.value, str) and len(self.value)>0) else None
+        })
         return res
 
     def deserialize(self, properties):

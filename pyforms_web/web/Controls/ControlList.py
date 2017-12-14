@@ -2,12 +2,12 @@ from pyforms_web.web.Controls.ControlBase import ControlBase
 import simplejson
 class ControlList(ControlBase):
 
-	def __init__(self, label = "", defaultValue = "", helptext=''):
+	def __init__(self, *args, **kwargs):
 		self._titles 			= []
 		self._select_entire_row 	= False
 		self._read_only 		= False
 		self._selected_index 	= -1
-		super(ControlList, self).__init__(label, defaultValue, helptext)
+		super(ControlList, self).__init__(*args, **kwargs)
 
 
 	def init_form(self): return "new ControlList('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )

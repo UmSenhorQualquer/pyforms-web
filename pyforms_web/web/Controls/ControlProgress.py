@@ -6,11 +6,11 @@ class ControlProgress(ControlBase):
     _min = 0
     _max = 100
 
-    def __init__(self, label = "%p%", defaultValue = 0, min = 0, max = 100):
+    def __init__(self, *args, **kwargs):
         self._updateSlider = True
-        self._min = min
-        self._max = max
-        ControlBase.__init__(self, label, defaultValue)
+        self._min = kwargs.get('min', 0)
+        self._max = kwargs.get('max', 100)
+        ControlBase.__init__(self, *args, **kwargs)
                 
     def init_form(self): return "new ControlProgress('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 

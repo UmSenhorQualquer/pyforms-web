@@ -5,7 +5,7 @@ class ControlButton extends ControlBase{
 
 	init_control(){
 		var html = "<div class='field ControlButton' id='"+this.place_id()+"' >";
-		if(this.properties.include_label) html += '<label>&nbsp;</label>';
+		if(this.properties.label_visible) html += '<label>&nbsp;</label>';
 		html +="<button type='button' title='"+this.properties.help+"' id='"+this.control_id()+"' class='ui button' >";
 		html += this.properties.label;
 		html += '</button>';
@@ -15,12 +15,10 @@ class ControlButton extends ControlBase{
 
 		var self = this;
 		this.jquery().click(function(){
-			if( self.properties.value.length>0 )
+			if( self.properties.value )
 				eval(self.properties.value);
-			else{
-				
+			else
 				self.basewidget.fire_event( self.name, 'pressed' );
-			};
 		});
 
 		//console.log(!this.properties.visible, this.jquery_place().html(), '-');
