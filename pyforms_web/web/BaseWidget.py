@@ -20,6 +20,9 @@ from django.template.loader import render_to_string
 from pyforms_web.web.utils import make_lambda_func
 
 class BaseWidget(object):
+    """
+    The class implements a application window
+    """
     
     LAYOUT_POSITION = None
     
@@ -59,15 +62,13 @@ class BaseWidget(object):
         """
         Generate the module Form
         """
-        #for c in self.controls.values(): c.parent = parent
-
+        
         self._html = ''
         self._js = ''
         self._controls = [c.init_form() for c in self.controls.values()]
         if self._formset != None: 
             self._html += self.generate_panel(self._formset, add_field_class=False)
-            #self._js = '[{0}]'.format(",".join(self._controls))
-
+            
 
         parent_code = 'undefined'
         if parent: parent_code = "'{0}'".format(parent.uid)
@@ -109,15 +110,38 @@ class BaseWidget(object):
 
     def generate_panel(self, formset, add_field_class=True):
         """  
-        Generate a panel for the module form with all the controls  
-        formset format example: [('_video', '_arenas', '_run'), {"Player":['_threshold', "_player", "=", "_results", "_query"], "Background image":[(' ', '_selectBackground', '_paintBackground'), '_image']}, "_progress"]  
-        tuple: will display the controls in the same horizontal line  
-        list: will display the controls in the same vertical line  
-        dict: will display the controls in a tab widget  
-        '||': will plit the controls in a horizontal line  
-        '=': will plit the controls in a vertical line  
-        @param formset: Form configuration    
-        @type formset: list  
+        Generate a panel for the module form with all the controls formset format example: 
+        
+        .. code-block:: python
+
+            [
+                ('_video', '_arenas', '_run'), 
+                {
+                    "Player": [
+                        '_threshold',
+                        "_player",
+                        "=",
+                        "_results",
+                        "_query"
+                    ], 
+                    "Background image":[
+                        (' ', '_selectBackground', '_paintBackground'),
+                        '_image'
+                    ]
+                }, 
+                "_progress"
+            ]  
+        
+        **tuple**: displays the controls horizontally.  
+
+        **list**: displays the controls vertically.   
+
+        **dict**: displays the controls in Tabs.   
+
+        **'||'**: splits the controls with a horizontal line.   
+
+        **'='**: splits the controls with a vertical line.   
+        
         """
         control = ""
         if '=' in formset:
@@ -213,9 +237,19 @@ class BaseWidget(object):
 
     
     def save_form(self, data={}, path=None):
+        """
+        Called to save the form  
+
+        TODO
+        """
         pass
 
     def load_form(self, data, path=None):
+        """
+        Called to load a form  
+        
+        TODO
+        """
         pass
     
     def save_window(self):
@@ -225,31 +259,73 @@ class BaseWidget(object):
         pass
 
     def load_form_filename(self, filename):
+        """
+        Load the forms from a file  
+        
+        TODO
+        """
         pass
 
-    def close(self): 
+    def close(self):
+        """
+        Close the application
+        """
         self.mark_to_update_client()
         self._close_widget = True
 
     def message(self, msg, title=None, msg_type=None):
+        """
+        Write a simple message
+        """
         msg = { 'type': msg_type if msg_type else '', 'messages':msg if isinstance(msg, list) else [msg], 'title':title }
         self._messages.append(msg)
         self.mark_to_update_client()
-    def success(self,   msg, title=None):   self.message(msg, title, msg_type='success')
-    def info(self,      msg, title=None):   self.message(msg, title, msg_type='info')
-    def warning(self,   msg, title=None):   self.message(msg, title, msg_type='warning');
-    def alert(self,     msg, title=None):   self.message(msg, title, msg_type='error')
+    def success(self,   msg, title=None):
+        """
+        Write a success message
+        """
+        self.message(msg, title, msg_type='success')
+    def info(self,      msg, title=None):
+        """
+        Write a info message
+        """
+        self.message(msg, title, msg_type='info')
+    def warning(self,   msg, title=None):
+        """
+        Write a warning message
+        """
+        self.message(msg, title, msg_type='warning');
+    def alert(self,     msg, title=None):
+        """
+        Write a alert message
+        """
+        self.message(msg, title, msg_type='error')
 
     def message_popup(self, msg, title='', buttons=None, handler=None, msg_type='success'):
+        """
+        Show a popup message window
+        """
         self._active_popup_msg = PopupWindow(title, msg, buttons, handler, msg_type='success', parent_win=self)
         return self._active_popup_msg
     def success_popup(self, msg, title='', buttons=None, handler=None):
+        """
+        Show a popup success message window
+        """
         return self.message_popup(msg, title, buttons, handler, msg_type='success')
     def info_popup(self, msg, title='', buttons=None, handler=None):
+        """
+        Show a popup info message window
+        """
         return self.message_popup(msg, title, buttons, handler, msg_type='info')
     def warning_popup(self, msg, title='', buttons=None, handler=None):
+        """
+        Show a popup warning message window
+        """
         return self.message_popup(msg, title, buttons, handler, msg_type='warning')
     def alert_popup(self, msg, title='', buttons=None, handler=None):
+        """
+        Show a popup alert message window
+        """
         return self.message_popup(msg, title, buttons, handler, msg_type='alert')
 
     
@@ -258,7 +334,9 @@ class BaseWidget(object):
     ##########################################################################
 
     def generate_segments(self, formsetdict):
-        
+        """
+        Generate the html to organize the formset in segments
+        """
         html = ''
         for key, item in sorted(formsetdict.items()):
             if item==True: continue
@@ -270,7 +348,9 @@ class BaseWidget(object):
         return html
 
     def __get_fields_class(self, row):
-        
+        """
+        Get the css class to be used on the Controls organization
+        """
         if len(row)>=1 and row[0]==self.FORM_NO_ROW_ALIGNMENT: return 'no-alignment'
 
         if   len(row)==2: return 'two'
@@ -297,6 +377,9 @@ class BaseWidget(object):
         else: return ''
 
     def commit(self):
+        """
+        Save all the application updates to a file, so it can be used in the next session. 
+        """
         for key, item in self.controls.items(): item.commit()
 
         user = PyFormsMiddleware.user()
@@ -315,17 +398,26 @@ class BaseWidget(object):
                 dill.dump(self, f)
 
     def execute_js(self, code):
+        """
+        This function executs a javascript on the client side
+        """
         self._js_code2execute.append(code)
 
     
 
     def mark_to_update_client(self):
+        """
+        Used to flag pyforms that the application was updated and the updates should be sent to the client side
+        """
         request = PyFormsMiddleware.get_request()
         if  request is not None and \
             hasattr(request,'updated_apps'):
             request.updated_apps.add_top(self)
 
     def load_serialized_form(self, params):
+        """
+        Load the json parameters sent by the client side
+        """
         widgets = []
 
         if hasattr(self, 'parent') and isinstance(self.parent, (str,str)):
@@ -355,7 +447,9 @@ class BaseWidget(object):
                     
 
     def serialize_form(self):
-        
+        """
+        Serialize the Form to a control
+        """
         res = {
             'uid':              self.uid, 
             'layout_position':  self.LAYOUT_POSITION if hasattr(self, 'LAYOUT_POSITION') else 5,
@@ -385,6 +479,9 @@ class BaseWidget(object):
 
     @classmethod
     def has_permissions(cls, user):
+        """
+        This class method, verifies if a user has permissions to execute the application
+        """
         if hasattr(cls, 'AUTHORIZED_GROUPS'):
             if user.is_superuser and 'superuser' in cls.AUTHORIZED_GROUPS: 
                 return True
@@ -396,6 +493,9 @@ class BaseWidget(object):
         return False
         
     def has_session_permissions(self, user):
+        """
+        It verifies if a user has permissions to execute the application during the runtime.
+        """
         return True
 
 
@@ -404,13 +504,23 @@ class BaseWidget(object):
     ############ EVENTS ######################################################
     ##########################################################################
 
-    def before_close_event(self): pass
+    def before_close_event(self):
+        """
+        Function called before the Form is closed.  
+        
+        TODO
+        """
+        pass
 
     ##########################################################################
     ############ WEB events ##################################################
     ##########################################################################
 
-    def refresh_event(self): pass
+    def refresh_event(self):
+        """
+        Event called every X time defined by refresh_timeout variable.
+        """
+        pass
 
 
 
@@ -435,19 +545,31 @@ class BaseWidget(object):
 
     @property
     def form(self): 
+        """
+        Return the basewidget html. The html is based on the 'basewidget-template.html' template
+        """
         return render_to_string( 
             os.path.join('pyforms', 'basewidget-template.html'), 
             {'application_html': self._html, 'application_id': self.uid}
         )
 
     @property
-    def title(self): return self._title
+    def title(self):
+        """
+        Return and set the title of the application
+        """
+        return self._title
 
     @title.setter
     def title(self, value): self._title = value
 
     @property
     def mainmenu(self):
+        """
+        Return and set the mainmenu  
+        
+        TODO
+        """
         return None
 
     @mainmenu.setter
@@ -456,24 +578,33 @@ class BaseWidget(object):
 
 
     @property
-    def formset(self): return self._formset
+    def formset(self):
+        """
+        Return and set the Controls organization in the form
+        """
+        return self._formset
 
     @formset.setter
     def formset(self, value): self._formset = value
 
 
     @property
-    def uid(self): return self._uid
+    def uid(self):
+        """
+        Return and set the application unique identifier
+        """
+        return self._uid
+
     @uid.setter
     def uid(self, value): self._uid = value
 
     @property
     def visible(self):
+        """
+        Return a boolean indicating if the form is visible or not 
+        """
         return True
 
-    @visible.setter
-    def visible(self, value):
-        pass
 
     ############################################################################
     ############ WEB Properties ################################################
@@ -481,7 +612,11 @@ class BaseWidget(object):
     
         
     @property
-    def js(self): return self._js
+    def js(self):
+        """
+        Return the form javascript
+        """
+        return self._js
     
     
     

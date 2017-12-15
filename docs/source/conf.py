@@ -217,4 +217,4 @@ inheritance_node_attrs = dict(fontsize=18, height=1.25, style='filled')
 
 
 autoclass_content = 'both'
-autodoc_member_order = 'groupwise'
+autodoc_member_order = 'bysource'

@@ -9,3 +9,5 @@
    :titlesonly:
 
    pyforms/basewidget
+   pyforms/controls
+   pyforms/admin

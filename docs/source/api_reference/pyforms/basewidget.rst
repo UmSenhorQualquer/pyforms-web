@@ -15,12 +15,11 @@ Enumerates Bpod board supported operations.
 Implementation
 --------------
 
-.. autoclass:: pyforms_web.web.BaseWidget.BaseWidget
-	:inherited-members:
-	:members:
-	
+
 
 .. autoclass:: pyforms_web.web.BaseWidget.BaseWidget
-	
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-	
+
