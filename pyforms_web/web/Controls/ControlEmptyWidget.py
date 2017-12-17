@@ -2,7 +2,7 @@ from pyforms_web.web.Controls.ControlBase import ControlBase
 from pyforms_web.web.BaseWidget import BaseWidget
 import base64, dill
 import simplejson
-from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
+from pyforms_web.web.django_pyforms.middleware import PyFormsMiddleware
 
 class ControlEmptyWidget(ControlBase):
 

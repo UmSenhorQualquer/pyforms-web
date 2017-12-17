@@ -1,5 +1,5 @@
 from django.conf.urls 				import url
-from pyforms_web.web.djangoapp.views 	import update_app, remove_app, filesbrowser_browse, register_app, open_app, upload_files
+from pyforms_web.web.django_pyforms.views 	import update_app, remove_app, filesbrowser_browse, register_app, open_app, upload_files
 
 urlpatterns = [
 	url(r'^app/register/(?P<app_module>[a-zA-Z._\- 0-9]+)/', register_app	),

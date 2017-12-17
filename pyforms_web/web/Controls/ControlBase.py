@@ -1,6 +1,6 @@
 import uuid
 from pysettings import conf
-from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
+from pyforms_web.web.django_pyforms.middleware import PyFormsMiddleware
 
 class ControlBase(object):
 

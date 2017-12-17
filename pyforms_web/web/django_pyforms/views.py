@@ -4,7 +4,7 @@ from django.template 				import RequestContext
 from django.views.decorators.cache	import never_cache
 from django.views.decorators.csrf 	import csrf_exempt
 from django.middleware.csrf 		import get_token
-from pyforms_web.web.djangoapp 		import ApplicationsLoader
+from pyforms_web.web.django_pyforms 		import ApplicationsLoader
 from pysettings 					import conf
 import json, simplejson, os, re
 from django.conf import settings
@@ -50,7 +50,7 @@ def upload_files(request):
 
 
 def filesbrowser_browse(request):
-	application = 'pyforms_web.web.djangoapp.filesbrowser.FilesBrowserApp'
+	application = 'pyforms_web.web.django_pyforms.filesbrowser.FilesBrowserApp'
 	
 	app = ApplicationsLoader.create_instance(request, application)
 	params = { 'application': application, 'appInstance': app, 'csrf_token': get_token(request)}

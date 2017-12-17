@@ -25,29 +25,35 @@ def find_files(package_name,directory, pattern):
 
 setup(
 
-	name				='PyForms-Web',
-	version 			='0.1.5',
-	description 		="""Pyforms is a Python 2.7 and 3.0 framework to develop GUI application,
-		which promotes modular software design and code reusability with minimal effort.""",
-	author  			='Ricardo Ribeiro',
-	author_email		='ricardojvr@gmail.com',
-	license 			='MIT',
-
-	url 				='https://github.com/UmSenhorQualquer/pyforms',
-	include_package_data=True,
+	name				= 'PyForms-Web',
+	version 			= '0.1.5',
+	description 		= """
+		Pyforms is a Python 2.7 and 3.0 framework to develop GUI application,
+		which promotes modular software design and code reusability with minimal effort.
+	""",
+	author  			 = 'Ricardo Ribeiro',
+	author_email		 = 'ricardojvr@gmail.com',
+	license 			 = 'MIT',
+	url 				 = 'https://github.com/UmSenhorQualquer/pyforms',
+	include_package_data = True,
 	packages=[
 		'pyforms_web',
 		'pyforms_web.web',
 		'pyforms_web.web.storage',
 		'pyforms_web.web.Controls',
-		'pyforms_web.web.djangoapp',		
-		'pyforms_web.web.djangoapp.model_admin',
-		'pyforms_web.web.djangoapp.middleware',
-		'pyforms_web.web.djangoapp.templatetags',
-		],
-	package_data={'pyforms_web':
-		list(find_files('pyforms_web','web/djangoapp/static/', '*.*'))+list(find_files('pyforms_web','web/djangoapp/templates/', '*.*'))
-		},
+		'pyforms_web.web.django_pyforms',		
+		'pyforms_web.web.django_pyforms.model_admin',
+		'pyforms_web.web.django_pyforms.middleware',
+		'pyforms_web.web.django_pyforms.templatetags',
+	],
+	package_data={
+		'pyforms_web':
+		list(
+			find_files('pyforms_web','web/django_pyforms/static/', '*.*')
+		)+list(
+			find_files('pyforms_web','web/django_pyforms/templates/', '*.*')
+		)
+	},
 
 	install_requires=[
 		#"numpy >= 1.6.1",

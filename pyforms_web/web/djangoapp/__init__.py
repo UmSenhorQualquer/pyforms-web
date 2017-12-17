@@ -1,1 +1,0 @@
-from pyforms_web.web.djangoapp.Applications import ApplicationsLoader

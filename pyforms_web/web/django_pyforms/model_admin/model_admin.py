@@ -14,14 +14,14 @@ from pyforms_web.web.Controls.ControlFileUpload 		import ControlFileUpload
 from pyforms_web.web.Controls.ControlCheckBox 			import ControlCheckBox
 
 from django.core.exceptions import ValidationError, FieldDoesNotExist
-from pyforms_web.web.djangoapp.model_admin.utils import get_fieldsets_strings
+from pyforms_web.web.django_pyforms.model_admin.utils import get_fieldsets_strings
 import traceback
 from django.conf import settings
 from django.db import models
 import os
 
 
-from pyforms_web.web.djangoapp.model_admin.editform_admin import EditFormAdmin
+from pyforms_web.web.django_pyforms.model_admin.editform_admin import EditFormAdmin
 
 class ModelAdmin(BaseWidget):
 

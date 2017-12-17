@@ -1,4 +1,4 @@
-from pyforms_web.web.djangoapp.middleware.apps_2_update import Apps2Update
+from pyforms_web.web.django_pyforms.middleware.apps_2_update import Apps2Update
 from pysettings import conf
 import threading, os, dill, filelock
 

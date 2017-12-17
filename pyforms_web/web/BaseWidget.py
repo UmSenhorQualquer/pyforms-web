@@ -10,8 +10,8 @@ try:
 except:
     print("ControlPlayer is not available")
 from pyforms_web.web.Controls.ControlButton import ControlButton
-from pyforms_web.web.djangoapp.Applications import ApplicationsLoader
-from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
+from pyforms_web.web.django_pyforms.Applications import ApplicationsLoader
+from pyforms_web.web.django_pyforms.middleware import PyFormsMiddleware
 import uuid, os, shutil, base64, inspect
 import base64, dill, simplejson, filelock
 from pysettings import conf

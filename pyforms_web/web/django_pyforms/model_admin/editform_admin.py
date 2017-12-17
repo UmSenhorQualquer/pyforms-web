@@ -13,9 +13,9 @@ from pyforms_web.web.Controls.ControlEmptyWidget        import ControlEmptyWidge
 from pyforms_web.web.Controls.ControlFileUpload         import ControlFileUpload
 from pyforms_web.web.Controls.ControlCheckBox           import ControlCheckBox
 
-from pyforms_web.web.djangoapp.middleware import PyFormsMiddleware
+from pyforms_web.web.django_pyforms.middleware import PyFormsMiddleware
 from django.core.exceptions import ValidationError, FieldDoesNotExist
-from pyforms_web.web.djangoapp.model_admin.utils import get_fieldsets_strings
+from pyforms_web.web.django_pyforms.model_admin.utils import get_fieldsets_strings
 import traceback
 from django.conf import settings
 from django.db import models

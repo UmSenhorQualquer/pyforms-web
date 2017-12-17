@@ -25,6 +25,7 @@ Indices and tables
    :hidden:
    :maxdepth: 4
    :includehidden:
-   :caption: API reference
+   :caption: Pyforms Web
 
-   api_reference/index
+   get-started/index
+   api-reference/index

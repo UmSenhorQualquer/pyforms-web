@@ -2,7 +2,7 @@
 :mod:`admin`
 ***************************
 
-.. module:: pyforms_web.web.djangoapp.model_admin
+.. module:: pyforms_web.web.django_pyforms.model_admin
    :synopsis: Bpod board
 
 --------
@@ -17,21 +17,21 @@ Implementation
 
 
 
-.. autoclass:: pyforms_web.web.djangoapp.model_admin.model_admin.ModelAdmin
+.. autoclass:: pyforms_web.web.django_pyforms.model_admin.model_admin.ModelAdmin
     :members:
     :undoc-members:
     :show-inheritance:
 
 
 
-.. autoclass:: pyforms_web.web.djangoapp.model_admin.editform_admin.EditFormAdmin
+.. autoclass:: pyforms_web.web.django_pyforms.model_admin.editform_admin.EditFormAdmin
     :members:
     :undoc-members:
     :show-inheritance:
 
 
 
-.. autoclass:: pyforms_web.web.djangoapp.model_admin.viewform_admin.ViewFormAdmin
+.. autoclass:: pyforms_web.web.django_pyforms.model_admin.viewform_admin.ViewFormAdmin
     :members:
     :undoc-members:
     :show-inheritance:
