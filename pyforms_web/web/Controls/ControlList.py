@@ -4,7 +4,7 @@ class ControlList(ControlBase):
 
 	def __init__(self, *args, **kwargs):
 		self._titles 			= []
-		self._select_entire_row 	= False
+		self._select_entire_row = False
 		self._read_only 		= False
 		self._selected_index 	= -1
 		super(ControlList, self).__init__(*args, **kwargs)
@@ -58,7 +58,7 @@ class ControlList(ControlBase):
 		ControlBase.value.fset(self, value)
 
 	def serialize(self):
-		data 	= ControlBase.serialize(self)
+		data = ControlBase.serialize(self)
 
 		data.update({
 			'horizontal_headers': 	self.horizontal_headers,
@@ -71,7 +71,7 @@ class ControlList(ControlBase):
 	def deserialize(self, properties):
 		ControlBase.deserialize(self,properties)
 
-		self.horizontal_headers 	= properties['horizontal_headers']
+		self.horizontal_headers = properties['horizontal_headers']
 		self._read_only 		= properties['read_only']==1
 		self._selected_index 	= properties['selected_index']
-		self._select_entire_row 	= properties['select_entire_row']==1
+		self._select_entire_row = properties['select_entire_row']==1

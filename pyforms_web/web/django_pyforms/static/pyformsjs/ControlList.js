@@ -51,19 +51,20 @@ class ControlList extends ControlBase{
 		html += "<tbody>";
 		var data = this.properties.value;
 		
-		for(var i=0; i<data.length; i++){
-			var selected = this.properties.selected_index==i;
+		if(data!=undefined)
+			for(var i=0; i<data.length; i++){
+				var selected = this.properties.selected_index==i;
 
-			html += selected?"<tr>":"<tr>";
-			var length = 0;
-			if(data[i]) length = data[i].length;
-			for(var j=0; j<length; j++) 
-				html += selected?"<td class='active' >"+data[i][j]+"</td>":"<td>"+data[i][j]+"</td>";
-			if(length<titles.length) 
-				for(var j=length; j<titles.length; j++) 
-					html += selected?"<td class='active' ></td>":"<td></td>";
-			html += "</tr>";
-		};
+				html += selected?"<tr>":"<tr>";
+				var length = 0;
+				if(data[i]) length = data[i].length;
+				for(var j=0; j<length; j++) 
+					html += selected?"<td class='active' >"+data[i][j]+"</td>":"<td>"+data[i][j]+"</td>";
+				if(length<titles.length) 
+					for(var j=length; j<titles.length; j++) 
+						html += selected?"<td class='active' ></td>":"<td></td>";
+				html += "</tr>";
+			};
 		html += "</tbody>";
 		html += "</table>";
 		html += "</div>";

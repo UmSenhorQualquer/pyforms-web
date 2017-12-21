@@ -17,9 +17,12 @@ class ControlTemplate(ControlBase):
 		)
 
 	def serialize(self):
-		data = super(ControlTemplate,self).serialize()		
-		html = render_to_string(self._template, self.value)
-
+		data = super(ControlTemplate,self).serialize()
+		try:
+			html = render_to_string(self._template, self.value)
+		except Exception as e:
+			html = str(e)
+		
 		html = base64.b64encode(html.encode('utf-8'))
 
 		data.update({'value':html})

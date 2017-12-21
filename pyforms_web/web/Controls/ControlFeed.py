@@ -8,7 +8,7 @@ class ControlFeed(ControlBase):
 		self.has_more		    = False
 		self._selected_index    = -1
 		self.item_selection_changed_event = None
-		self.mode = 'feed'
+		self.mode = kwargs.get('mode','feed')
 		
 		super(ControlFeed, self).__init__(*args, **kwargs)
 		self._value 	= []

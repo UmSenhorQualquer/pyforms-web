@@ -56,6 +56,8 @@ class EditFormAdmin(BaseWidget):
         self.model       = kwargs.get('model',     self.MODEL)
         self.inlines     = kwargs.get('inlines',   self.INLINES)
         self.fieldsets   = kwargs.get('fieldsets', self.FIELDSETS)
+
+        if 'parent_listapp' in kwargs: self.parent_listapp = kwargs.get('parent_listapp')
         
         if self.fieldsets is None: self.fieldsets = self.FIELDSETS
         
@@ -127,9 +129,12 @@ class EditFormAdmin(BaseWidget):
         return [(BaseWidget.FORM_NO_ROW_ALIGNMENT, '_save_btn', '_create_btn', '_cancel_btn', ' ' ,'_remove_btn')]
     
     def hide_form(self):
-        for field in self.edit_fields:      field.hide()
-        for field in self.inlines_controls: field.hide()
-    
+        if hasattr(self, 'parent_listapp'):
+            self.parent_listapp.hide_form()
+        else:
+            for field in self.edit_fields:      field.hide()
+            for field in self.inlines_controls: field.hide()
+        
     def show_form(self):
         for field in self.edit_fields:      field.show()
         for field in self.inlines_controls: field.show()
@@ -361,13 +366,17 @@ class EditFormAdmin(BaseWidget):
             else:
                 popup.warning('The object was not deleted!','Warning!')
 
+    def get_object4save(self, pk):
+        return self.model.objects.get(pk=self.object_pk)
 
+    def create_object4save(self):
+        return self.model()
 
     def save_event(self):
         fields2show = self.get_visible_fields_names()
 
         try:
-            obj = self.model.objects.get(pk=self.object_pk) if self.object_pk else self.model()
+            obj =  self.get_object4save(self.object_pk) if self.object_pk else self.create_object4save()
             
             if self.parent_field:
                 setattr(obj, self.parent_field.name, self.parent_model.objects.get(pk=self.parent_pk))

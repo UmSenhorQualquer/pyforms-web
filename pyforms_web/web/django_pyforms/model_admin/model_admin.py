@@ -124,9 +124,10 @@ class ModelAdmin(BaseWidget):
 			inlines=self.INLINES,
 			parent_model=self.parent_model,
 			parent_pk=self.parent_pk,
-			fieldsets=self.FIELDSETS
+			fieldsets=self.FIELDSETS,
+			parent_listapp=self
 		)
-		createform.hide_form = self.hide_form
+
 		self._details.value  = createform
 
 
@@ -148,11 +149,9 @@ class ModelAdmin(BaseWidget):
 			inlines=self.INLINES,
 			parent_model=self.parent_model,
 			parent_pk=self.parent_pk,
-			fieldsets=self.FIELDSETS
+			fieldsets=self.FIELDSETS,
+			parent_listapp=self
 		)
-		
-		
-		editform.hide_form 	= self.hide_form
 		self._details.value = editform
 		
 	def set_parent(self, parent_model, parent_pk):

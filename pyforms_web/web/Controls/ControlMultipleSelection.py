@@ -5,7 +5,7 @@ class ControlMultipleSelection(ControlBase):
 
 	def __init__(self, *args, **kwargs):
 		super(ControlMultipleSelection, self).__init__(*args, **kwargs)
-		self.mode   		= 'selection'
+		self.mode   		= kwargs.get('mode', 'selection')
 		self._update_items	= True
 		self._items			= collections.OrderedDict()
 		if self.value is None: self.value = []
