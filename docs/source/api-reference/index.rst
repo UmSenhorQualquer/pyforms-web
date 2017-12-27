@@ -1,5 +1,5 @@
 *******************************
-:mod:`models`
+API
 *******************************
 
 .. module:: pybpod_web.web.BaseWidget
