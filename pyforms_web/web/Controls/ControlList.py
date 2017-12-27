@@ -3,10 +3,16 @@ import simplejson
 class ControlList(ControlBase):
 
 	def __init__(self, *args, **kwargs):
-		self._titles 			= []
-		self._select_entire_row = False
-		self._read_only 		= False
-		self._selected_index 	= -1
+		self._titles 			= kwargs.get('horizontal_headers',[])
+		self._select_entire_row = kwargs.get('select_entire_row',False)
+		self._read_only 		= kwargs.get('readonly',False)
+		self._selected_index 	= kwargs.get('selected_row_index',-1)
+
+		if 'row_double_click_event' in kwargs:
+			self.row_double_click_event = kwargs['row_double_click_event']
+		if 'item_selection_changed_event' in kwargs:
+			self.item_selection_changed_event = kwargs['item_selection_changed_event']
+
 		super(ControlList, self).__init__(*args, **kwargs)
 
 
@@ -14,7 +20,7 @@ class ControlList(ControlBase):
 
 	def item_selection_changed_event(self): pass
 
-	def dbl_click(self): pass
+	def row_double_click_event(self): pass
 
 	@property
 	def horizontal_headers(self): return self._titles

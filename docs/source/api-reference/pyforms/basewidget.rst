@@ -1,5 +1,5 @@
 ***************************
-:mod:`basewidget`
+:mod:`BaseWidget`
 ***************************
 
 .. module:: pyforms_web.web.BaseWidget

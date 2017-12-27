@@ -1,5 +1,5 @@
 ***************************
-:mod:`controls`
+:mod:`Controls`
 ***************************
 
 .. module:: pyforms_web.web.Controls
