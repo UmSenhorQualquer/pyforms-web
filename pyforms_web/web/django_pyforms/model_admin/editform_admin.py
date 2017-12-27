@@ -170,6 +170,8 @@ class EditFormAdmin(BaseWidget):
                 #Foreign key
                 pyforms_field = getattr(self, field.name)
                 pyforms_field.clear_items()
+                if field.null:
+                    pyforms_field.add_item( '', -1 )           
                 for instance in self.related_field_queryset(field, field.related_model.objects.all()):
                     pyforms_field.add_item( str(instance), instance.pk )            
             elif isinstance(field, models.ManyToManyField):
@@ -505,7 +507,10 @@ class EditFormAdmin(BaseWidget):
                 elif isinstance(field, models.ForeignKey):
                     getattr(self, field.name).error = False
                     value = getattr(self, field.name).value
-                    value = field.related_model.objects.get(pk=value)
+                    if value is not None and value!=-1: 
+                        value = field.related_model.objects.get(pk=value)
+                    else:
+                        value = None
                     setattr(obj, field.name, value)
 
             try:
