@@ -23,17 +23,17 @@ class BaseWidget(object):
     """
     The class implements a application window
     """
-    
+    TITLE           = None
     LAYOUT_POSITION = None
     
     FORM_NO_ROW_ALIGNMENT = 0
 
-    refresh_timeout = None #time in milliseconds to refresh the application
+    REFRESH_TIMEOUT = None #time in milliseconds to refresh the application
 
-    def __init__(self, title, parent_win=None):
+    def __init__(self, *args, **kwargs):
         self._formset       = None
         self._splitters     = []
-        self._title         = title
+        self._title         = kwargs.get('title', args[0] if len(args)>0 else self.TITLE)
         self._formLoaded    = False
         self._controls      = []
         self._html          = ''
@@ -41,12 +41,13 @@ class BaseWidget(object):
         self._close_widget  = False
 
         self.init_form_result = None
-        if not hasattr(self, '_uid'): self._uid = str(uuid.uuid4())
+         
+        self._uid =  self.UID if hasattr(self, 'UID') else str(uuid.uuid4())
 
         self._messages        = []
         self._js_code2execute = [];
 
-        self.parent = parent_win
+        self.parent = kwargs.get('parent_win', None)
         self.is_new_app = True
 
         PyFormsMiddleware.add(self)
@@ -73,7 +74,7 @@ class BaseWidget(object):
         parent_code = 'undefined'
         if parent: parent_code = "'{0}'".format(parent.uid)
 
-        extra_data = {'refresh_timeout': self.refresh_timeout, 'messages':self._messages}
+        extra_data = {'refresh_timeout': self.REFRESH_TIMEOUT, 'messages':self._messages}
 
         modulename = inspect.getmodule(self).__name__ + '.' + self.__class__.__name__
 
@@ -86,7 +87,7 @@ class BaseWidget(object):
         self._messages = []
         self.mark_to_update_client()
 
-        return {'code': self._html, 'title': self._title, 'app_id':self.uid, 'refresh_timeout':  self.refresh_timeout }
+        return {'code': self._html, 'title': self._title, 'app_id':self.uid, 'refresh_timeout':  self.REFRESH_TIMEOUT }
         
 
     def generate_tabs(self, formsetdict):

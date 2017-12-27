@@ -90,7 +90,7 @@ class ControlList extends ControlBase{
 			});
 		}else{
 			$("#"+this.control_id()+" tbody td" ).dblclick(function(){
-				self.basewidget.fire_event( self.name, 'dbl_click' );
+				self.basewidget.fire_event( self.name, 'row_double_click_event' );
 			});
 		};
 
