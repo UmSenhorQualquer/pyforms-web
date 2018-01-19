@@ -5,6 +5,7 @@ class ControlButton(ControlBase):
 
     def __init__(self, *args, **kwargs):
         if 'css' not in kwargs: kwargs['css']='blue'
+        self._labeled = kwargs.get('labeled', False)
         super(ControlButton, self).__init__(*args, **kwargs)
         
     def init_form(self): return "new ControlButton('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
@@ -19,7 +20,8 @@ class ControlButton(ControlBase):
     def serialize(self):
         res = super(ControlButton, self).serialize()
         res.update({
-            'value': self.value if (isinstance(self.value, str) and len(self.value)>0) else None
+            'value': self.value if (isinstance(self.value, str) and len(self.value)>0) else None,
+            'labeled': self._labeled
         })
         return res
 
@@ -30,3 +32,5 @@ class ControlButton(ControlBase):
             self.value = properties.get('value',None)
         self._visible = properties.get('visible',True)
 
+
+   
