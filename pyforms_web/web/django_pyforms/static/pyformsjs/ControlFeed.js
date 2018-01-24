@@ -7,7 +7,12 @@ class ControlFeed extends ControlBase{
 		html += '</div>';
 		html += "</div>";
 		this.jquery_place().replaceWith(html);
+
 		this.set_value(this.properties.value);
+
+		if(this.properties.value==undefined || this.properties.value.length==0){
+			this.jquery().html('<div class="ui basic center  very padded segment"><i class="icon ban" ></i></div>');
+		}
 		
 		if(!this.properties.visible) this.hide();
 	};
