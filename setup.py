@@ -9,9 +9,6 @@ __maintainer__  = "Ricardo Ribeiro"
 __email__       = "ricardojvr@gmail.com"
 __status__      = "Production"
 
-
-
-
 from setuptools import setup
 import os, fnmatch
 
@@ -54,9 +51,5 @@ setup(
 			find_files('pyforms_web','web/django_pyforms/templates/', '*.*')
 		)
 	},
-
-	install_requires=[
-		#"numpy >= 1.6.1",
-		#"matplotlib"
-	],
+	install_requires=[],
 )

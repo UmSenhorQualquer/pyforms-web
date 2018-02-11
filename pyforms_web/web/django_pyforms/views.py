@@ -34,7 +34,7 @@ def upload_files(request):
 
 			files_data.append(url)
 			files_metadata.append({
-				'date':fs.created_time(filename).strftime("%Y-%m-%d %H:%M:%S"),
+				'date':fs.get_created_time(filename).strftime("%Y-%m-%d %H:%M:%S"),
 				'extension':os.path.splitext(filename)[1],
 				'file':url,
 				'name':myfile.name,
