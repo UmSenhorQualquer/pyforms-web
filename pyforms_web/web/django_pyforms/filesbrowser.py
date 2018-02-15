@@ -7,7 +7,7 @@ from pyforms.Controls import ControlCheckBox
 from pyforms.Controls import ControlButton
 from django.utils import timezone
 
-from pysettings import conf
+from pyforms import conf
 
 import uuid, time, os
 

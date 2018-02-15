@@ -194,6 +194,11 @@ class EditFormAdmin(BaseWidget):
             pyforms_field = None
 
             if isinstance(field, models.AutoField): continue
+            elif isinstance(field, models.Field) and field.choices:
+                pyforms_field = ControlCombo( 
+                    field.verbose_name.capitalize(), 
+                    items=[ (c[1],c[0]) for c in field.choices]
+                )
             elif isinstance(field, models.BigAutoField):                pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( field.verbose_name.capitalize() )
             elif isinstance(field, models.BinaryField):                 pyforms_field = ControlText( field.verbose_name.capitalize() )
@@ -211,7 +216,11 @@ class EditFormAdmin(BaseWidget):
             elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( field.verbose_name.capitalize() )
             elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( field.verbose_name.capitalize() )
             elif isinstance(field, models.GenericIPAddressField):       pyforms_field = ControlText( field.verbose_name.capitalize() )
-            elif isinstance(field, models.NullBooleanField):            pyforms_field = ControlText( field.verbose_name.capitalize() )
+            elif isinstance(field, models.NullBooleanField):            
+                pyforms_field = ControlCombo( 
+                    field.verbose_name.capitalize(), 
+                    items=[('Unknown', None), ('Yes', True), ('No', False)]
+                )
             elif isinstance(field, models.PositiveIntegerField):        pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.PositiveSmallIntegerField):   pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.SlugField):                   pyforms_field = ControlText( field.verbose_name.capitalize() )

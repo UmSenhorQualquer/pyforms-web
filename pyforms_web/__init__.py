@@ -1,1 +1,1 @@
-from pysettings import conf; conf += 'pyforms_web.settings'
+from pyforms import conf; conf += 'pyforms_web.settings'

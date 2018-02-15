@@ -2,7 +2,7 @@ import os, shutil, subprocess
 from django.utils 					import timezone
 from pyforms_web.web.storage.remotefile import RemoteFile
 
-from pysettings import conf
+from pyforms import conf
 
 def get_thumb(fileinfo, size=32):
 	if fileinfo.type=='dir': return "/static/icons/folder{0}.png".format(size)

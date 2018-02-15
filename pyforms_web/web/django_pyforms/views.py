@@ -5,7 +5,7 @@ from django.views.decorators.cache	import never_cache
 from django.views.decorators.csrf 	import csrf_exempt
 from django.middleware.csrf 		import get_token
 from pyforms_web.web.django_pyforms 		import ApplicationsLoader
-from pysettings 					import conf
+from pyforms 					import conf
 import json, simplejson, os, re
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage

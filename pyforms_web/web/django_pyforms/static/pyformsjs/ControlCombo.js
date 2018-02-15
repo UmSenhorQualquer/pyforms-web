@@ -39,8 +39,12 @@ class ControlCombo extends ControlBase{
 
 	////////////////////////////////////////////////////////////////////////////////
 
-	get_value(){ 
-		return this.jquery().dropdown('get value');
+	get_value(){
+		var value = this.jquery().dropdown('get value');
+		if(value=='true')  return true;
+		if(value=='false') return false;
+		if(value=='null')  return null;
+		return value;
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

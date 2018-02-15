@@ -1,5 +1,5 @@
 """
-from pysettings import conf
+from pyforms import conf
 from crequest.middleware import CrequestMiddleware
 
 class open(object):

@@ -1,12 +1,18 @@
 from pyforms_web.web.Controls.ControlBase import ControlBase
 import simplejson, collections
 
+class ValueNotSet: pass
+
 class ControlCombo(ControlBase):
 
 
 	def __init__(self, *args, **kwargs):
 		super(ControlCombo, self).__init__(*args, **kwargs)
 		self._items = collections.OrderedDict()
+
+		items = kwargs.get('items', [])
+		for item in items:
+			self.add_item(*item)
 
 	def init_form(self): return "new ControlCombo('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
@@ -15,14 +21,15 @@ class ControlCombo(ControlBase):
 			if len(item)>=1: 
 				OTControlBase.value.fset(self, self._items[str(item)])
 			
-	def add_item(self, label, value = None):
+	def add_item(self, label, value=ValueNotSet):
 		if self._items==None: self._items=collections.OrderedDict()
 		self._addingItem = True
 		
 		firstValue = False
 		if len(self._items)==0: firstValue = True
 
-		if value==None:
+		# The value for the item was not set, so it will use the label as a value 
+		if isinstance(value, ValueNotSet):
 			self._items[label] = label
 		else:
 			self._items[label] = value
@@ -59,10 +66,12 @@ class ControlCombo(ControlBase):
 	@value.setter
 	def value(self, value):
 		for key, val in self._items.items():
-			self.mark_to_update_client()
-			if str(value) == str(val):
-				if str(self._value)!=str(value): self.changed_event()
+			if value==val:
+				if self._value!=value: 
+					self.mark_to_update_client()
+					self.changed_event()
 				self._value = val
+		
 
 	@property
 	def text(self): return ""
@@ -82,7 +91,12 @@ class ControlCombo(ControlBase):
 		for key, value in self._items.items():
 			items.append({'text': key, 'value': value, 'name': key }) 
 		
-		data.update({ 'items': items, 'value': self._value })
+		value = self._value
+		if value==True:  value = 'true'
+		if value==False: value = 'false'
+		if value==None:  value = 'null'
+		
+		data.update({ 'items': items, 'value': value })
 		return data
 		
 

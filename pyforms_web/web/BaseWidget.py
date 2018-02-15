@@ -14,7 +14,7 @@ from pyforms_web.web.django_pyforms.Applications import ApplicationsLoader
 from pyforms_web.web.django_pyforms.middleware import PyFormsMiddleware
 import uuid, os, shutil, base64, inspect
 import base64, dill, simplejson, filelock
-from pysettings import conf
+from pyforms import conf
 from django.template.loader import render_to_string
 
 from pyforms_web.web.utils import make_lambda_func

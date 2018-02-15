@@ -1,5 +1,5 @@
 from pyforms_web.web.django_pyforms.middleware.apps_2_update import Apps2Update
-from pysettings import conf
+from pyforms import conf
 import threading, os, dill, filelock
 
 class PyFormsMiddleware(object):
