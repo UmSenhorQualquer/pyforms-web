@@ -30,7 +30,7 @@ class EditFormAdmin(BaseWidget):
     TITLE     = None  #title of the application
     INLINES   = []    #sub models to show in the interface
     FIELDSETS = None  #formset of the edit form
-    
+    READ_ONLY = []
     
     SAVE_BTN_LABEL     = '<i class="save icon"></i> Save'
     CREATE_BTN_LABEL   = '<i class="plus icon"></i> Create'
@@ -38,7 +38,7 @@ class EditFormAdmin(BaseWidget):
     REMOVE_BTN_LABEL   = '<i class="trash outline icon"></i> Remove'
     POPUP_REMOVE_TITLE = 'The next objects are going to be affected or removed'
 
-    HAS_CANCEL_BTN = True
+    HAS_CANCEL_BTN     = True
 
     def __init__(self, *args, **kwargs):
         """
@@ -58,6 +58,7 @@ class EditFormAdmin(BaseWidget):
         self.model       = kwargs.get('model',     self.MODEL)
         self.inlines     = kwargs.get('inlines',   self.INLINES)
         self.fieldsets   = kwargs.get('fieldsets', self.FIELDSETS)
+        self.readonly    = kwargs.get('readonly',  self.READ_ONLY)
 
         if 'parent_listapp' in kwargs: self.parent_listapp = kwargs.get('parent_listapp')
         
@@ -109,7 +110,7 @@ class EditFormAdmin(BaseWidget):
         self._create_btn.label_visible  = False
         self._remove_btn.label_visible  = False
         self._save_btn.label_visible    = False
-        if self.CANCEL_BTN_LABEL:
+        if self.HAS_CANCEL_BTN:
             self._cancel_btn.label_visible  = False
         
     
@@ -125,8 +126,8 @@ class EditFormAdmin(BaseWidget):
 
         self.formset = self.formset + self.get_buttons_row()
 
-        for inline in self.inlines:
-            self.formset.append(inline.__name__)
+        #for inline in self.inlines:
+        #    self.formset.append(inline.__name__)
 
         
     #################################################################################
@@ -175,6 +176,7 @@ class EditFormAdmin(BaseWidget):
 
         for field in self.model._meta.get_fields():
             if field.name not in fields2show: continue #only update this field if is visible
+            if field.name in self.readonly:  continue
             pyforms_field = None
 
             if isinstance(field, models.ForeignKey):
@@ -205,6 +207,8 @@ class EditFormAdmin(BaseWidget):
             pyforms_field = None
 
             if isinstance(field, models.AutoField): continue
+            elif field.name in self.readonly:
+                pyforms_field = ControlText( field.verbose_name.capitalize(), readonly=True )
             elif isinstance(field, models.Field) and field.choices:
                 pyforms_field = ControlCombo( 
                     field.verbose_name.capitalize(), 
@@ -330,6 +334,7 @@ class EditFormAdmin(BaseWidget):
             if field.name not in fields2show: continue
 
             if isinstance(field, models.AutoField):                 continue
+            elif field.name in self.readonly:                       getattr(self, field.name).value = str(getattr(obj, field.name))
             elif isinstance(field, models.BigAutoField):            continue
             elif isinstance(field, models.OneToOneField) and field.name.endswith('_ptr'):   continue
             elif isinstance(field, models.BigIntegerField):           getattr(self, field.name).value = getattr(obj, field.name)
@@ -366,7 +371,7 @@ class EditFormAdmin(BaseWidget):
         self.inlines_apps = []
         for inline in self.inlines:
             getattr(self, inline.__name__)._name = inline.__name__
-            app =  inline( (self.model, self.object_pk) )
+            app =  inline(parent_model=self.model, parent_pk=self.object_pk)
             self.inlines_apps.append(app)
             getattr(self, inline.__name__).value = app
 

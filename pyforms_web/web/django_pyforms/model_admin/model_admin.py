@@ -36,6 +36,7 @@ class ModelAdmin(BaseWidget):
 
 	FIELDSETS 		= None  #formset of the edit form
 	CONTROL_LIST 	= ControlQueryList #Control to be used in to list the values
+	READ_ONLY 		= []
 
 	def __init__(self, *args, **kwargs):
 		"""
@@ -64,7 +65,8 @@ class ModelAdmin(BaseWidget):
 	
 		if self.has_add_permission():
 			self._add_btn = ControlButton('<i class="plus icon"></i> Add', label_visible=False, default=self.show_create_form)
-		
+			if self.parent_model:
+				self._add_btn.css = 'tiny basic blue'
 
 		self.formset  =  (['_add_btn'] if self.has_add_permission() else []) + ['_list', '_details']
 	
@@ -152,6 +154,7 @@ class ModelAdmin(BaseWidget):
 			parent_model=self.parent_model,
 			parent_pk=self.parent_pk,
 			fieldsets=self.FIELDSETS,
+			readonly=self.READ_ONLY,
 			parent_listapp=self
 		)
 		self._details.value = editform
