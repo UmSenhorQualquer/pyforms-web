@@ -1,5 +1,5 @@
 from datetime import date
-from pyforms_web.web.Controls.ControlBase import ControlBase
+from pyforms_web.web.controls.ControlBase import ControlBase
 import simplejson
 
 class ControlCalendar(ControlBase):
@@ -31,3 +31,4 @@ class ControlCalendar(ControlBase):
     def year(self, value):
         self.mark_to_update_client()
         self._year = value
+

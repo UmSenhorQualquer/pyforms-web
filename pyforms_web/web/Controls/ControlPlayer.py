@@ -3,7 +3,7 @@ try:
 	from PIL import Image
 except:
 	print( "control player will not work. Libraries missing")
-from pyforms_web.web.Controls.ControlBase import ControlBase
+from pyforms_web.web.controls.ControlBase import ControlBase
 import simplejson
 from io import StringIO
 

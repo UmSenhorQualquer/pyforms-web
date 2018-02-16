@@ -45,7 +45,7 @@ Create the file **my_module_name/apps/site_crawl.py** and add the next code to i
 .. code:: python
 
     from orquestra.plugins import LayoutPositions
-    from pyforms_web.web.BaseWidget import BaseWidget
+    from pyforms_web.web.basewidget import BaseWidget
 
     class SiteCrawlApp(BaseWidget):
         
@@ -69,7 +69,7 @@ Now update the **SiteCrawlApp** application with the next code.
 .. code:: python
 
     from orquestra.plugins import LayoutPositions
-    from pyforms_web.web.BaseWidget import BaseWidget
+    from pyforms_web.web.basewidget import BaseWidget
 
     from pyforms_web.web.Controls.ControlButton import ControlButton
     from pyforms_web.web.Controls.ControlText   import ControlText

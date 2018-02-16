@@ -54,6 +54,7 @@ class PyformsManager{
 		$.getScript("/static/pyformsjs/ControlInteger.js");
 		$.getScript("/static/pyformsjs/ControlFloat.js");
 		$.getScript("/static/pyformsjs/ControlCalendar.js");
+		$.getScript("/static/pyformsjs/ControlPieChart.js");
 		$.getScript("/static/pyformsjs/ControlDate.js");
 		$.getScript("/static/pyformsjs/ControlDateTime.js");
 		$.getScript("/static/pyformsjs/ControlImage.js");
@@ -86,18 +87,19 @@ class PyformsManager{
 		$.getScript("/static/datetimepicker/jquery.datetimepicker.full.min.js");
 		$.getStylesheet("/static/datetimepicker/jquery.datetimepicker.min.css");
 
-		$.getScript("/static/jqplot/jquery.jqplot.min.js");
+		$.getScript("/static/jqplot/jquery.jqplot.js");
 		$.getScript("/static/jqplot/plugins/jqplot.cursor.js");
-		$.getScript("/static/jqplot/plugins/jqplot.logAxisRenderer.min.js");
-		$.getScript("/static/jqplot/plugins/jqplot.canvasTextRenderer.min.js");
-		$.getScript("/static/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js");
-		$.getScript("/static/jqplot/plugins/jqplot.blockRenderer.min.js");
-		$.getScript("/static/jqplot/plugins/jqplot.enhancedLegendRenderer.min.js");
-		$.getScript("/static/jqplot/plugins/jqplot.logAxisRenderer.min.js");
-		$.getScript("/static/jqplot/plugins/jqplot.dateAxisRenderer.min.js");
-		$.getScript("/static/jqplot/plugins/jqplot.categoryAxisRenderer.min.js");
-		$.getScript("/static/jqplot/plugins/jqplot.barRenderer.min.js");
-		$.getScript("/static/jqplot/plugins/jqplot.pointLabels.min.js");
+		$.getScript("/static/jqplot/plugins/jqplot.logAxisRenderer.js");
+		$.getScript("/static/jqplot/plugins/jqplot.canvasTextRenderer.js");
+		$.getScript("/static/jqplot/plugins/jqplot.canvasAxisLabelRenderer.js");
+		$.getScript("/static/jqplot/plugins/jqplot.blockRenderer.js");
+		$.getScript("/static/jqplot/plugins/jqplot.enhancedLegendRenderer.js");
+		$.getScript("/static/jqplot/plugins/jqplot.logAxisRenderer.js");
+		$.getScript("/static/jqplot/plugins/jqplot.dateAxisRenderer.js");
+		$.getScript("/static/jqplot/plugins/jqplot.categoryAxisRenderer.js");
+		$.getScript("/static/jqplot/plugins/jqplot.barRenderer.js");
+		$.getScript("/static/jqplot/plugins/jqplot.pointLabels.js");
+		$.getScript("/static/jqplot/plugins/jqplot.pieRenderer.js");
 		$.getStylesheet("/static/jqplot/jquery.jqplot.css");
 
 		$.getScript("/static/filer/js/jquery.filer.min.js");

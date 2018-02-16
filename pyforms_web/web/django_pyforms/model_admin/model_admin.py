@@ -1,17 +1,17 @@
-from pyforms_web.web.BaseWidget 						import BaseWidget
-from pyforms_web.web.Controls.ControlTextArea 			import ControlTextArea
-from pyforms_web.web.Controls.ControlText 				import ControlText
-from pyforms_web.web.Controls.ControlInteger 			import ControlInteger
-from pyforms_web.web.Controls.ControlFloat 				import ControlFloat
-from pyforms_web.web.Controls.ControlCombo 				import ControlCombo
-from pyforms_web.web.Controls.ControlDate 				import ControlDate
-from pyforms_web.web.Controls.ControlDateTime 			import ControlDateTime
-from pyforms_web.web.Controls.ControlButton 			import ControlButton
-from pyforms_web.web.Controls.ControlQueryList 			import ControlQueryList
-from pyforms_web.web.Controls.ControlMultipleSelection 	import ControlMultipleSelection
-from pyforms_web.web.Controls.ControlEmptyWidget 		import ControlEmptyWidget
-from pyforms_web.web.Controls.ControlFileUpload 		import ControlFileUpload
-from pyforms_web.web.Controls.ControlCheckBox 			import ControlCheckBox
+from pyforms_web.web.basewidget 						import BaseWidget
+from pyforms_web.web.controls.ControlTextArea 			import ControlTextArea
+from pyforms_web.web.controls.ControlText 				import ControlText
+from pyforms_web.web.controls.ControlInteger 			import ControlInteger
+from pyforms_web.web.controls.ControlFloat 				import ControlFloat
+from pyforms_web.web.controls.ControlCombo 				import ControlCombo
+from pyforms_web.web.controls.ControlDate 				import ControlDate
+from pyforms_web.web.controls.ControlDateTime 			import ControlDateTime
+from pyforms_web.web.controls.ControlButton 			import ControlButton
+from pyforms_web.web.controls.ControlQueryList 			import ControlQueryList
+from pyforms_web.web.controls.ControlMultipleSelection 	import ControlMultipleSelection
+from pyforms_web.web.controls.ControlEmptyWidget 		import ControlEmptyWidget
+from pyforms_web.web.controls.ControlFileUpload 		import ControlFileUpload
+from pyforms_web.web.controls.ControlCheckBox 			import ControlCheckBox
 
 from django.core.exceptions import ValidationError, FieldDoesNotExist
 from pyforms_web.web.django_pyforms.model_admin.utils import get_fieldsets_strings
@@ -37,8 +37,6 @@ class ModelAdmin(BaseWidget):
 	FIELDSETS 		= None  #formset of the edit form
 	CONTROL_LIST 	= ControlQueryList #Control to be used in to list the values
 
-	
-
 	def __init__(self, *args, **kwargs):
 		"""
 		Parameters:
@@ -61,15 +59,16 @@ class ModelAdmin(BaseWidget):
 			self.set_parent(self.parent_model, self.parent_pk)
 		#######################################################
 
-		self._add_btn 	= ControlButton('<i class="plus icon"></i> Add')
 		self._list 		= self.CONTROL_LIST('List')
 		self._details   = ControlEmptyWidget('Details')
+	
+		if self.has_add_permission():
+			self._add_btn = ControlButton('<i class="plus icon"></i> Add', label_visible=False, default=self.show_create_form)
 		
-		self.formset    = ['_add_btn', '_list', '_details']
+
+		self.formset  =  (['_add_btn'] if self.has_add_permission() else []) + ['_list', '_details']
 	
 		# events
-		self._add_btn.label_visible = False
-		self._add_btn.value 		= self.show_create_form
 		self._list.item_selection_changed_event = self.__list_item_selection_changed_event
 
 		self._details.hide()
@@ -106,13 +105,15 @@ class ModelAdmin(BaseWidget):
 
 		
 	def hide_form(self):
-		self._add_btn.show()
+		if self.has_add_permission():
+			self._add_btn.show()
 		self._list.show()
 		self._list.selected_row_id = -1
 		self.populate_list()
 		self._details.hide()
 
 	def show_create_form(self):
+		if not self.has_add_permission(): return
 		
 		self._add_btn.hide()
 		self._list.hide()
@@ -135,7 +136,8 @@ class ModelAdmin(BaseWidget):
 
 	def show_edit_form(self, pk=None):
 		
-		self._add_btn.hide()
+		if self.has_add_permission():
+			self._add_btn.hide()
 		self._list.hide()		
 		self._details.show()
 		
@@ -169,7 +171,8 @@ class ModelAdmin(BaseWidget):
 		if int(self._list.selected_row_id)<0: return None
 		return self._list.value.get(pk=self._list.selected_row_id)
 
-
+	def has_add_permission(self):
+		return True
 	#################################################################################
 	#### PRIVATE FUNCTIONS ##########################################################
 	#################################################################################

@@ -1,6 +1,6 @@
 import os
 from django.conf import settings
-from pyforms_web.web.Controls.ControlBase import ControlBase
+from pyforms_web.web.controls.ControlBase import ControlBase
 import simplejson
 
 class ControlFileUpload(ControlBase):

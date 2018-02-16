@@ -1,15 +1,15 @@
 
-from pyforms_web.web.Controls.ControlBase import ControlBase
-from pyforms_web.web.Controls.ControlFile import ControlFile
-from pyforms_web.web.Controls.ControlSlider import ControlSlider
-from pyforms_web.web.Controls.ControlText import ControlText
-from pyforms_web.web.Controls.ControlCheckBox import ControlCheckBox
-from pyforms_web.web.Controls.ControlLabel import ControlLabel
+from pyforms_web.web.controls.ControlBase import ControlBase
+from pyforms_web.web.controls.ControlFile import ControlFile
+from pyforms_web.web.controls.ControlSlider import ControlSlider
+from pyforms_web.web.controls.ControlText import ControlText
+from pyforms_web.web.controls.ControlCheckBox import ControlCheckBox
+from pyforms_web.web.controls.ControlLabel import ControlLabel
 try:
-    from pyforms_web.web.Controls.ControlPlayer import ControlPlayer
+    from pyforms_web.web.controls.ControlPlayer import ControlPlayer
 except:
     print("ControlPlayer is not available")
-from pyforms_web.web.Controls.ControlButton import ControlButton
+from pyforms_web.web.controls.ControlButton import ControlButton
 from pyforms_web.web.django_pyforms.Applications import ApplicationsLoader
 from pyforms_web.web.django_pyforms.middleware import PyFormsMiddleware
 import uuid, os, shutil, base64, inspect
@@ -19,6 +19,34 @@ from django.template.loader import render_to_string
 
 from pyforms_web.web.utils import make_lambda_func
 
+class no_columns(object):
+    def __init__(self, *args):  self.items = args
+    def __getitem__(self,index): return self.items[index]
+    def __setitem__(self,index,value): self.items[index] = value
+    def __len__(self):  return len(self.items)
+    def __iter__(self): 
+        self._index = -1; return self
+    def __next__(self): 
+        self._index += 1
+        if self._index>=len(self.items): raise StopIteration
+        return self.items[self._index]
+
+
+class segment(object):
+    def __init__(self, *args, **kwargs): 
+        self.css = kwargs.get('css', '')
+        self.items = args
+    def __getitem__(self,index): return self.items[index]
+    def __setitem__(self,index,value): self.items[index] = value
+    def __len__(self):  return len(self.items)
+    def __iter__(self): 
+        self._index = -1; return self
+    def __next__(self): 
+        self._index += 1
+        if self._index>=len(self.items): raise StopIteration
+        return self.items[self._index]
+
+   
 class BaseWidget(object):
     """
     The class implements a application window
@@ -90,6 +118,38 @@ class BaseWidget(object):
         return {'code': self._html, 'title': self._title, 'app_id':self.uid, 'refresh_timeout':  self.REFRESH_TIMEOUT }
         
 
+
+
+
+
+
+
+    def generate_segment(self, row):
+        """
+        Generate the html to organize the formset in segments
+        """
+        html  = "<div class='ui segment pyforms-segment {0}' >".format(row.css)
+        html += self.generate_panel(list(row), add_field_class=False)
+        html += "</div>"
+        return html
+
+    def generate_segments(self, formsetdict):
+        """
+        Generate the html to organize the formset in segments
+        """
+        html = ''
+        for key, item in sorted(formsetdict.items()):
+            if item==True: continue
+            
+            html += "<h2 class='ui header' >{0}</h2>".format(key[key.find(':')+1:])
+            html += "<div class='ui segment pyforms-segment' >"
+            html += self.generate_panel(item, add_field_class=False)
+            html += "</div>"
+        return html
+
+
+
+
     def generate_tabs(self, formsetdict):
         """
         Generate QTabWidget for the module form
@@ -107,7 +167,25 @@ class BaseWidget(object):
 
         return """<div id='{0}' class='ui top attached tabular menu' >{1}</div>{2}<script type='text/javascript'>$('#{0}.menu .item').tab();</script>""".format(tab_id, tabs_head, tabs_body)
 
-    
+    def generate_control(self, row):
+        control = self.controls.get(row, None)
+        if control==None:
+            if   row==' ':                   return "<div class='field' ></div>"
+            elif row.startswith('info:'):    return "<span class='info' >{0}</span>".format(row[5:])
+            elif row.startswith('h1:'):      return "<h1>{0}</h1>".format(row[3:])
+            elif row.startswith('h1-right:'):return "<h1 class='ui right aligned header' >{0}</h1>".format(row[9:])
+            elif row.startswith('h2:'):      return "<h2>{0}</h2>".format(row[3:])
+            elif row.startswith('h2-right:'):return "<h2 class='ui right aligned header' >{0}</h2>".format(row[9:])
+            elif row.startswith('h3:'):      return "<h3>{0}</h3>".format(row[3:])
+            elif row.startswith('h4:'):      return "<h4>{0}</h4>".format(row[3:])
+            elif row.startswith('h5:'):      return "<h5>{0}</h5>".format(row[3:])
+            elif row.startswith('warning:'): return "<div class='ui warning visible message'>{0}</div>".format(row[8:])
+            elif row.startswith('alert:'):   return "<div class='ui alert message'>{0}</div>".format(row[6:])
+            elif row == '-':                 return "<div class='ui clearing divider'></div>"
+            else:                            return "<div class='ui message'>{0}</div>".format(row)
+        else:
+            return str(control)
+
 
     def generate_panel(self, formset, add_field_class=True):
         """  
@@ -144,96 +222,44 @@ class BaseWidget(object):
         **'='**: splits the controls with a vertical line.   
         
         """
-        control = ""
         if '=' in formset:
-            tmp = list( formset )
-            index = tmp.index('=')
-            firstPanel = self.generate_panel(formset[0:index])
-            secondPanel = self.generate_panel(formset[index+1:])
-            splitter_id =uuid.uuid4()
-            self._splitters.append( splitter_id )
-            control = ("<div id='%s' class='horizontalSplitter' ><div>" + firstPanel + "</div><div>" + secondPanel + "</div></div>") % ( splitter_id, )
-            return control
+            index = list( formset ).index('=')
+            return "<div id='{splitter_id}' class='horizontalSplitter' ><div>{top}</div><div>{bottom}</div></div>".format(
+                splitter_id = uuid.uuid4(),
+                top         = self.generate_panel(formset[0:index]),
+                bottom      = self.generate_panel(formset[index+1:])
+            )
         elif '||' in formset:
-            tmp = list( formset )
-            index = tmp.index('||')
-            firstPanel = self.generate_panel(formset[0:index])
-            secondPanel = self.generate_panel(formset[index+1:])
-            splitter_id = uuid.uuid4()
-            self._splitters.append( splitter_id )
-            control = ("<div id='%s' class='verticalSplitter' ><div>" + firstPanel + "</div><div>" + secondPanel + "</div></div>") % ( splitter_id, )
-            return control
+            index = list( formset ).index('||')
+            return "<div id='{splitter_id}' class='verticalSplitter' ><div>{left}</div><div>{right}</div></div>".format(
+                splitter_id = uuid.uuid4(),
+                left        = self.generate_panel(formset[0:index]),
+                right       = self.generate_panel(formset[index+1:])
+            )
+            
         
-        layout = ""
-        if type(formset) is tuple:
+        if isinstance(formset, (tuple,no_columns) ):
+            layout  = "<div class='row fields {0}' >".format(self.__get_fields_class(formset))
             for row in formset:
-                if isinstance(row, (list, tuple)):
-                    panel = self.generate_panel( row )
-                    layout += "<div class='rows %s' >%s</div>" % ('field' if add_field_class else '', panel)
-                elif row == " ":
-                    layout += "<div class='field' ></div>"
-                elif type(row) is dict and row.get('is-segment', False):
-                    seg = self.generate_segments(row)
-                    layout += seg
-                elif type(row) is dict:
-                    tabs = self.generate_tabs(row)
-                    layout += tabs
-                else:
-                    control = self.controls.get(row, None)
-                    if control==None:
-                        if not isinstance(row, str): continue
-                    
-                        if row.startswith('info:'): layout += "<span class='info' >%s</span>" % row[5:]
-                        elif row.startswith('h1:'): layout += "<h1>%s</h1>" % row[3:]
-                        elif row.startswith('h2:'): layout += "<h2>%s</h2>" % row[3:]
-                        elif row.startswith('h3:'): layout += "<h3>%s</h3>" % row[3:]
-                        elif row.startswith('h4:'): layout += "<h4>%s</h4>" % row[3:]
-                        elif row.startswith('h5:'): layout += "<h5>%s</h5>" % row[3:]
-                        elif row.startswith('warning:'): layout += "<div class='ui warning visible  message'>%s</div>" % row[8:]
-                        elif row.startswith('alert:'):   layout += "<div class='ui alert message'>%s</div>" % row[6:]
-                        else: layout += "<div class='ui message'>%s</div>" % row
-                    else:
-                        #self._controls.append( control.init_form() )
-                        layout += "%s" % control
-        elif type(formset) is list:
+                layout += self.generate_panel( row, add_field_class )
+            return layout+"</div>"
+
+        elif isinstance(formset, segment):
+            return self.generate_segment(formset)
+
+        elif isinstance(formset, list):
+            layout  = ""
             for row in formset:
-                if isinstance(row, tuple):
-                    panel   = self.generate_panel( row )
-                    layout += "<div class='row fields {1}' >{0}</div>".format(panel, self.__get_fields_class(row))
-                elif isinstance(row, list):
-                    panel   = self.generate_panel( row )
-                    layout += "<div class='row fields' >{0}</div>".format(panel)
-                elif row == " ":
-                    layout += "<div class='field-empty-space' ></div>"
-                elif type(row) is dict and row.get('is-segment', False):
-                    seg = self.generate_segments(row)
-                    layout += seg
-                elif type(row) is dict:
-                    tabs    = self.generate_tabs(row)
-                    layout += tabs
-                else:
-                    control = self.controls.get(row, None)
-                    if control==None:
-                        
-                        if not isinstance(row, str): continue
-                    
-                        if row.startswith('info:'): layout += "<span class='info' >%s</span>" % row[5:]
-                        elif row.startswith('h1:'): layout += "<h1>%s</h1>" % row[3:]
-                        elif row.startswith('h1-right:'): layout += "<h1 class='ui right floated header' >%s</h1>" % row[9:]
-                        elif row.startswith('h2:'): layout += "<h2>%s</h2>" % row[3:]
-                        elif row.startswith('h2-right:'): layout += "<h2 class='ui right floated header' >%s</h2>" % row[9:]
-                        elif row.startswith('h3:'): layout += "<h3>%s</h3>" % row[3:]
-                        elif row.startswith('h4:'): layout += "<h4>%s</h4>" % row[3:]
-                        elif row.startswith('h5:'): layout += "<h5>%s</h5>" % row[3:]
-                        elif row.startswith('warning:'):    layout += "<div class='ui warning visible  message'>%s</div>" % row[8:]
-                        elif row.startswith('alert:'):      layout += "<div class='ui alert error message'>%s</div>" % row[6:]
-                        elif row == '-': layout += '<div class="ui clearing divider"></div>'
-                        else: layout += "<div class='ui message'>%s</div>" % row
-                    else:
-                        #self._controls.append( control.init_form() )
-                        layout += str(control)
-        
-        return layout
+                if row == ' ': layout += "<div class='field-empty-space' ></div>"
+                layout += self.generate_panel( row, add_field_class )
+            return layout
+
+        elif isinstance(formset, dict ):
+            return self.generate_tabs(formset)
+
+        else:
+            return self.generate_control(formset)
+  
 
 
     
@@ -333,26 +359,14 @@ class BaseWidget(object):
     ##########################################################################
     ############ WEB functions ###############################################
     ##########################################################################
-
-    def generate_segments(self, formsetdict):
-        """
-        Generate the html to organize the formset in segments
-        """
-        html = ''
-        for key, item in sorted(formsetdict.items()):
-            if item==True: continue
-            
-            html += "<h2 class='ui header' >{0}</h2>".format(key[key.find(':')+1:])
-            html += "<div class='ui segment pyforms-segment' >"
-            html += self.generate_panel(item, add_field_class=False)
-            html += "</div>"
-        return html
+    
 
     def __get_fields_class(self, row):
         """
-        Get the css class to be used on the Controls organization
+        Get the css class to be used on the controls organization
         """
         if len(row)>=1 and row[0]==self.FORM_NO_ROW_ALIGNMENT: return 'no-alignment'
+        if isinstance(row, no_columns): return 'no-alignment'
 
         if   len(row)==2: return 'two'
         elif len(row)==3: return 'three'
@@ -581,7 +595,7 @@ class BaseWidget(object):
     @property
     def formset(self):
         """
-        Return and set the Controls organization in the form
+        Return and set the controls organization in the form
         """
         return self._formset
 
@@ -646,12 +660,12 @@ class PopupWindow(BaseWidget):
         #self._label.css = msg_type
        
         if buttons:
-            buttons_formset = [0]
+            buttons_formset = []
             for i, b in enumerate(buttons):
                 name = 'button_{0}'.format(i)
                 setattr(self, name, ControlButton(b))
                 getattr(self, name ).value = make_lambda_func(handler, popup=self, button=b)
                 buttons_formset.append(name)
     
-        self.formset = ['_label'] + [tuple(buttons_formset)]
+        self.formset = ['_label'] + [no_columns(buttons_formset)]
        

@@ -1,4 +1,4 @@
-from pyforms_web.web.Controls.ControlBase import ControlBase
+from pyforms_web.web.controls.ControlBase import ControlBase
 from django.utils 	import timezone
 from datetime 		import datetime, timedelta
 import time

@@ -1,4 +1,4 @@
-from pyforms_web.web.Controls.ControlQueryList import ControlQueryList
+from pyforms_web.web.controls.ControlQueryList import ControlQueryList
 from django.apps import apps
 from django.db.models.constants import LOOKUP_SEP
 from django.core.exceptions import FieldDoesNotExist

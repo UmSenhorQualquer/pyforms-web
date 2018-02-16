@@ -16,10 +16,10 @@ class ControlQueryList extends ControlBase{
 
 		// render the filters
 		if(filters.length>0){
-			for(var j=0; j<filters.length; j+=5){
-				html += "<div class='fields five'>";
+			for(var j=0; j<filters.length; j+=4){
+				html += "<div class='fields four'>";
 				
-				for(var i=0; i<5; i++){
+				for(var i=0; i<4; i++){
 					if( (j+i)>=filters.length ) break; 
 
 					html += "<div class='field'>";

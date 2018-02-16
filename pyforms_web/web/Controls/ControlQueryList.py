@@ -1,4 +1,4 @@
-from pyforms_web.web.Controls.ControlBase import ControlBase
+from pyforms_web.web.controls.ControlBase import ControlBase
 from django.apps import apps
 from django.db.models.constants import LOOKUP_SEP
 from django.core.exceptions import FieldDoesNotExist
@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.db import models
 from datetime import timedelta
-
+from calendar import monthrange
 import locale
 
 def get_field(model, lookup):
@@ -142,7 +142,7 @@ class ControlQueryList(ControlBase):
 
 
 
-			return qs
+			return qs.distinct()
 		else:
 			return None
 
@@ -267,6 +267,7 @@ class ControlQueryList(ControlBase):
 			rows = []
 
 			queryset_list = queryset.values_list(*(['pk']+list_display) )
+			queryset_list = queryset_list.distinct()
 			queryset_list = queryset_list.order_by(*queryset.query.order_by)
 					
 			for row_values in queryset_list[first_row:last_row]:
@@ -315,7 +316,6 @@ class ControlQueryList(ControlBase):
 		self.filter_by 			= properties.get('filter_by',[])
 		self._current_page	    = int(properties['pages']['current_page'])
 		self._selected_row_id 	= properties.get('selected_row_id', -1)
-
 
 	def serialize_filters(self, list_filter, queryset):
 		filters_list = []

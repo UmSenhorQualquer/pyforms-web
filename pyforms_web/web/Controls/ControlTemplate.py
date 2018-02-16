@@ -1,4 +1,4 @@
-from pyforms_web.web.Controls.ControlBase import ControlBase
+from pyforms_web.web.controls.ControlBase import ControlBase
 from django.template.loader import render_to_string
 import simplejson, base64
 

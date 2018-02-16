@@ -1,4 +1,4 @@
-from pyforms_web.web.Controls.ControlBase import ControlBase
+from pyforms_web.web.controls.ControlBase import ControlBase
 from django.apps import apps
 from django.db.models.constants import LOOKUP_SEP
 from django.core.exceptions import FieldDoesNotExist

@@ -3,7 +3,7 @@ class ControlDate extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field ControlDate' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value=\""+this.properties.value+"\" /></div>";
+		var html = "<div id='"+this.place_id()+"' class='field ControlDate' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' /></div>";
 		this.jquery_place().replaceWith(html);
 		this.jquery().datepicker({
 			dateFormat: "yy-mm-dd", 
@@ -11,6 +11,8 @@ class ControlDate extends ControlBase{
 			changeYear: true,
 			yearRange: "1940:2020"
 		});
+
+		this.set_value(this.properties.value);
 
 		var self = this;
 		this.jquery().change(function(){

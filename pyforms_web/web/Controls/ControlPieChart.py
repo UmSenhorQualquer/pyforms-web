@@ -2,13 +2,13 @@ import datetime
 from pyforms_web.web.controls.ControlBase import ControlBase
 import simplejson
 
-class ControlVisVis(ControlBase):
+class ControlPieChart(ControlBase):
 
 	def __init__(self, *args, **kwargs):
 		self._legend = []
-		super(ControlVisVis, self).__init__(*args, **kwargs)
+		super(ControlPieChart, self).__init__(*args, **kwargs)
 
-	def init_form(self): return "new ControlVisVis('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+	def init_form(self): return "new ControlPieChart('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 
 

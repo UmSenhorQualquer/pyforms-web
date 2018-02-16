@@ -1,17 +1,17 @@
-from pyforms_web.web.BaseWidget                         import BaseWidget
-from pyforms_web.web.Controls.ControlTextArea           import ControlTextArea
-from pyforms_web.web.Controls.ControlText               import ControlText
-from pyforms_web.web.Controls.ControlInteger            import ControlInteger
-from pyforms_web.web.Controls.ControlFloat              import ControlFloat
-from pyforms_web.web.Controls.ControlCombo              import ControlCombo
-from pyforms_web.web.Controls.ControlDate               import ControlDate
-from pyforms_web.web.Controls.ControlDateTime           import ControlDateTime
-from pyforms_web.web.Controls.ControlButton             import ControlButton
-from pyforms_web.web.Controls.ControlQueryList          import ControlQueryList
-from pyforms_web.web.Controls.ControlMultipleSelection  import ControlMultipleSelection
-from pyforms_web.web.Controls.ControlEmptyWidget        import ControlEmptyWidget
-from pyforms_web.web.Controls.ControlFileUpload         import ControlFileUpload
-from pyforms_web.web.Controls.ControlCheckBox           import ControlCheckBox
+from pyforms_web.web.basewidget                         import BaseWidget, no_columns
+from pyforms_web.web.controls.ControlTextArea           import ControlTextArea
+from pyforms_web.web.controls.ControlText               import ControlText
+from pyforms_web.web.controls.ControlInteger            import ControlInteger
+from pyforms_web.web.controls.ControlFloat              import ControlFloat
+from pyforms_web.web.controls.ControlCombo              import ControlCombo
+from pyforms_web.web.controls.ControlDate               import ControlDate
+from pyforms_web.web.controls.ControlDateTime           import ControlDateTime
+from pyforms_web.web.controls.ControlButton             import ControlButton
+from pyforms_web.web.controls.ControlQueryList          import ControlQueryList
+from pyforms_web.web.controls.ControlMultipleSelection  import ControlMultipleSelection
+from pyforms_web.web.controls.ControlEmptyWidget        import ControlEmptyWidget
+from pyforms_web.web.controls.ControlFileUpload         import ControlFileUpload
+from pyforms_web.web.controls.ControlCheckBox           import ControlCheckBox
 
 from pyforms_web.web.django_pyforms.middleware import PyFormsMiddleware
 from django.core.exceptions import ValidationError, FieldDoesNotExist
@@ -37,6 +37,8 @@ class EditFormAdmin(BaseWidget):
     CANCEL_BTN_LABEL   = '<i class="hide icon"></i> Close'
     REMOVE_BTN_LABEL   = '<i class="trash outline icon"></i> Remove'
     POPUP_REMOVE_TITLE = 'The next objects are going to be affected or removed'
+
+    HAS_CANCEL_BTN = True
 
     def __init__(self, *args, **kwargs):
         """
@@ -81,16 +83,19 @@ class EditFormAdmin(BaseWidget):
         self._save_btn      = ControlButton(self.SAVE_BTN_LABEL)
         self._create_btn    = ControlButton(self.CREATE_BTN_LABEL)
         self._remove_btn    = ControlButton(self.REMOVE_BTN_LABEL)  
-        self._cancel_btn    = ControlButton(self.CANCEL_BTN_LABEL)
+        if self.HAS_CANCEL_BTN:
+            self._cancel_btn    = ControlButton(self.CANCEL_BTN_LABEL)
         
         self._remove_btn.css = 'red basic'
-        self._cancel_btn.css = 'gray basic'
+        if self.HAS_CANCEL_BTN:
+            self._cancel_btn.css = 'gray basic'
         
         
         self.edit_fields.append( self._save_btn )
         self.edit_fields.append( self._create_btn )
         self.edit_fields.append( self._remove_btn )
-        self.edit_fields.append( self._cancel_btn )
+        if self.HAS_CANCEL_BTN:
+            self.edit_fields.append( self._cancel_btn )
 
         for field in self.edit_fields: field.hide()
                 
@@ -98,12 +103,14 @@ class EditFormAdmin(BaseWidget):
         self._create_btn.value  = self.__create_btn_event
         self._remove_btn.value  = self.__remove_btn_event
         self._save_btn.value    = self.__save_btn_event
-        self._cancel_btn.value  = self.cancel_btn_event
+        if self.HAS_CANCEL_BTN:
+            self._cancel_btn.value  = self.cancel_btn_event
         
         self._create_btn.label_visible  = False
         self._remove_btn.label_visible  = False
         self._save_btn.label_visible    = False
-        self._cancel_btn.label_visible  = False
+        if self.CANCEL_BTN_LABEL:
+            self._cancel_btn.label_visible  = False
         
     
         
@@ -126,7 +133,11 @@ class EditFormAdmin(BaseWidget):
     #################################################################################
 
     def get_buttons_row(self):
-        return [(BaseWidget.FORM_NO_ROW_ALIGNMENT, '_save_btn', '_create_btn', '_cancel_btn', ' ' ,'_remove_btn')]
+        buttons = ['_save_btn', '_create_btn']
+        if self.HAS_CANCEL_BTN:
+            buttons = buttons + ['_cancel_btn', ' ']
+        buttons = buttons + ['_remove_btn']
+        return [no_columns(*buttons)]
     
     def hide_form(self):
         if hasattr(self, 'parent_listapp'):
@@ -254,6 +265,14 @@ class EditFormAdmin(BaseWidget):
 
     
     def show_create_form(self):
+
+        #check if it has permissions to add new registers
+        if hasattr(self, 'parent_listapp') and \
+           not self.parent_listapp.has_add_permission():
+           raise Exception('Your user does not have permissions to add')
+            
+            
+        
         fields2show = self.get_visible_fields_names()
 
         self.update_related_fields()
@@ -305,7 +324,7 @@ class EditFormAdmin(BaseWidget):
 
         self.update_related_fields()
 
-        obj = self.model.objects.get(pk=self.object_pk)
+        obj = self.model_object
         fields2show = self.get_visible_fields_names()
         for field in self.model._meta.get_fields():
             if field.name not in fields2show: continue
@@ -377,9 +396,6 @@ class EditFormAdmin(BaseWidget):
             else:
                 popup.warning('The object was not deleted!','Warning!')
 
-    def get_object4save(self, pk):
-        return self.model.objects.get(pk=self.object_pk)
-
     def create_object4save(self):
         return self.model()
 
@@ -387,7 +403,14 @@ class EditFormAdmin(BaseWidget):
         fields2show = self.get_visible_fields_names()
 
         try:
-            obj =  self.get_object4save(self.object_pk) if self.object_pk else self.create_object4save()
+            obj = self.model_object
+            if obj is None: 
+                #check if it has permissions to add new registers
+                if hasattr(self, 'parent_listapp') and \
+                   not self.parent_listapp.has_add_permission():
+                   raise Exception('Your user does not have permissions to add')
+                
+                obj=self.create_object4save()
             
             if self.parent_field:
                 setattr(obj, self.parent_field.name, self.parent_model.objects.get(pk=self.parent_pk))
@@ -415,12 +438,10 @@ class EditFormAdmin(BaseWidget):
                     setattr(obj, field.name, getattr(self, field.name).value)
                 elif isinstance(field, models.DateTimeField):
                     getattr(self, field.name).error = False
-                    value = getattr(self, field.name).value
-                    setattr(obj, field.name, (value if value is not None and len(value) else None) )
+                    setattr(obj, field.name, getattr(self, field.name).value )
                 elif isinstance(field, models.DateField):
                     getattr(self, field.name).error = False
-                    value = getattr(self, field.name).value
-                    setattr(obj, field.name, (value if value is not None and len(value) else None) )
+                    setattr(obj, field.name, getattr(self, field.name).value )
                 elif isinstance(field, models.DecimalField):
                     getattr(self, field.name).error = False
                     setattr(obj, field.name, getattr(self, field.name).value)
@@ -595,7 +616,10 @@ class EditFormAdmin(BaseWidget):
         #return the names of the visible fields
         fields = get_fieldsets_strings(self.fieldsets) if self.fieldsets else [field.name for field in self.model._meta.get_fields() if not(isinstance(field, models.OneToOneField) and field.name.endswith('_ptr'))]
         
-        if self.parent_field: fields.remove(self.parent_field.name)
+        if self.parent_field: 
+            try:
+                fields.remove(self.parent_field.name)
+            except ValueError: pass
         return fields
 
 

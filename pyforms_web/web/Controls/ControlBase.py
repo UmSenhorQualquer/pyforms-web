@@ -18,7 +18,7 @@ class ControlBase(object):
         self._error         = kwargs.get('error', False)
         self._css           = kwargs.get('css', None)
         self._enabled       = kwargs.get('enabled', True)
-        self._readonly      = kwargs.get('readonly', False)
+        self._enabled       = not kwargs.get('readonly', False)
         self._label_visible = kwargs.get('label_visible', True)
         
         if 'changed_event' in kwargs:
@@ -151,7 +151,7 @@ class ControlBase(object):
     def enabled(self): return self._enabled
 
     @enabled.setter
-    def enabled(self, value):       
+    def enabled(self, value):
         if self._enabled!=value:
             self._enabled = value
             self.mark_to_update_client()
@@ -225,11 +225,10 @@ class ControlBase(object):
         self._label_visible = value
 
     @property
-    def readonly(self): return None
+    def readonly(self): return not self.enabled
 
     @readonly.setter
-    def readonly(self, value):
-        pass
+    def readonly(self, value): self.enabled = not value
 
     @property
     def css(self): return self._css

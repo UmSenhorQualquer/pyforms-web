@@ -1,5 +1,9 @@
-from pyforms_web.web.Controls.ControlBase import ControlBase
-import cv2
+from pyforms_web.web.controls.ControlBase import ControlBase
+
+try:
+	import cv2
+except:
+	print('no cv2 installed')
 import base64
 import numpy as np 
 from io import StringIO

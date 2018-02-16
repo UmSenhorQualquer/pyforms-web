@@ -9,7 +9,7 @@ __maintainer__  = "Ricardo Ribeiro"
 __email__       = "ricardojvr@gmail.com"
 __status__      = "Production"
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import os, fnmatch
 
 
@@ -23,7 +23,7 @@ def find_files(package_name,directory, pattern):
 setup(
 
 	name				= 'PyForms-Web',
-	version 			= '0.1.5',
+	version 			= '0.1.6',
 	description 		= """
 		Pyforms is a Python 2.7 and 3.0 framework to develop GUI application,
 		which promotes modular software design and code reusability with minimal effort.
@@ -33,16 +33,7 @@ setup(
 	license 			 = 'MIT',
 	url 				 = 'https://github.com/UmSenhorQualquer/pyforms',
 	include_package_data = True,
-	packages=[
-		'pyforms_web',
-		'pyforms_web.web',
-		'pyforms_web.web.storage',
-		'pyforms_web.web.Controls',
-		'pyforms_web.web.django_pyforms',		
-		'pyforms_web.web.django_pyforms.model_admin',
-		'pyforms_web.web.django_pyforms.middleware',
-		'pyforms_web.web.django_pyforms.templatetags',
-	],
+	packages=find_packages(),
 	package_data={
 		'pyforms_web':
 		list(

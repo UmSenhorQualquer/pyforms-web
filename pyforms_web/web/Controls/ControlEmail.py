@@ -1,4 +1,4 @@
-from pyforms_web.web.Controls.ControlText import ControlText
+from pyforms_web.web.controls.ControlText import ControlText
 import simplejson
 
 class ControlEmail(ControlText):
