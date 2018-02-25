@@ -2,7 +2,7 @@
 :mod:`BaseWidget`
 ***************************
 
-.. module:: pyforms_web.web.BaseWidget
+.. module:: pyforms_web.web.basewidget
    :synopsis: Bpod board
 
 --------
@@ -17,7 +17,7 @@ Implementation
 
 
 
-.. autoclass:: pyforms_web.web.BaseWidget.BaseWidget
+.. autoclass:: pyforms_web.web.basewidget.BaseWidget
     :members:
     :undoc-members:
     :show-inheritance:

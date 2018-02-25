@@ -71,9 +71,9 @@ Now update the **SiteCrawlApp** application with the next code.
     from orquestra.plugins import LayoutPositions
     from pyforms_web.web.basewidget import BaseWidget
 
-    from pyforms_web.web.Controls.ControlButton import ControlButton
-    from pyforms_web.web.Controls.ControlText   import ControlText
-    from pyforms_web.web.Controls.ControlList   import ControlList
+    from pyforms_web.web.controls.ControlButton import ControlButton
+    from pyforms_web.web.controls.ControlText   import ControlText
+    from pyforms_web.web.controls.ControlList   import ControlList
 
     class SiteCrawlApp(BaseWidget):
         
