@@ -4,8 +4,8 @@ class ControlList(ControlBase):
 
     def __init__(self, *args, **kwargs):
         self._titles            = kwargs.get('horizontal_headers',[])
-        self._select_entire_row = kwargs.get('select_entire_row',False)
-        self._read_only         = kwargs.get('readonly',False)
+        self._select_entire_row = kwargs.get('select_entire_row',True)
+        self._read_only         = kwargs.get('readonly',True)
         self._selected_index    = kwargs.get('selected_row_index',-1)
 
         if 'row_double_click_event' in kwargs:
@@ -29,6 +29,12 @@ class ControlList(ControlBase):
     def horizontal_headers(self, value):
         self.mark_to_update_client()
         self._titles = value
+
+    @property
+    def rows_count(self):
+        if not isinstance(self._value, list): return 0
+        return len(self._value)
+
 
     @property
     def select_entire_row(self): return self._select_entire_row

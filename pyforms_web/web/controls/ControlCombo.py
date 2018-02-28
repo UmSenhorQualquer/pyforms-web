@@ -32,7 +32,7 @@ class ControlCombo(ControlBase):
 		if isinstance(value, ValueNotSet):
 			self._items[label] = label
 		else:
-			self._items[label] = value
+			self._items[label] = str(value)
 		self._addingItem = False
 
 		if firstValue: self.value = self._items[label]

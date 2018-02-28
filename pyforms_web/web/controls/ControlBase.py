@@ -111,6 +111,7 @@ class ControlBase(object):
         self._label   = properties.get('label','')
         self._help    = properties.get('help','')
         self._visible = properties.get('visible',True)
+
     
     def clean_field(self):
         """

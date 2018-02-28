@@ -33,4 +33,11 @@ class ControlDateTime extends ControlBase{
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
+
+	get_value(){ 
+		if(this.jquery().length==0) return this.properties.value;
+		return this.jquery().datetimepicker('getValue');
+	}
+
+
 }

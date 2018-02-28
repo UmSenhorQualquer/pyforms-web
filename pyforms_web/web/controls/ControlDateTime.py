@@ -2,7 +2,7 @@ import datetime
 from pyforms_web.web.controls.ControlBase import ControlBase
 import simplejson
 
-from dateutil.parser import parse as date_parser
+from django.utils.dateparse import parse_datetime
 
 class ControlDateTime(ControlBase):
 
@@ -22,7 +22,7 @@ class ControlDateTime(ControlBase):
 
             if value is not None and not isinstance(value, datetime.date):
                 try:
-                    value = date_parser(value)
+                    value = parse_datetime(value)
                 except:
                     raise Exception('The value is not a valid date time')
 
