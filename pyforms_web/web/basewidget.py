@@ -53,7 +53,8 @@ class BaseWidget(object):
     """
     TITLE           = None
     LAYOUT_POSITION = None
-    
+    CSS             = ''
+
     FORM_NO_ROW_ALIGNMENT = 0
 
     REFRESH_TIMEOUT = None #time in milliseconds to refresh the application
@@ -115,7 +116,18 @@ class BaseWidget(object):
         self._messages = []
         self.mark_to_update_client()
 
-        return {'code': self._html, 'title': self._title, 'app_id':self.uid, 'refresh_timeout':  self.REFRESH_TIMEOUT }
+
+        res =  {
+            'code': self._html, 
+            'css': self.CSS, 
+            'title': self._title, 
+            'app_id':self.uid, 
+            'refresh_timeout':  
+            self.REFRESH_TIMEOUT
+        }
+
+       
+        return res
         
 
 

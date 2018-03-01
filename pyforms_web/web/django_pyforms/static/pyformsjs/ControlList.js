@@ -9,7 +9,7 @@ class ControlList extends ControlBase{
 
 	init_control(){
 		this.set_value(this.properties.value);
-		if(!this.properties.visible) this.hide();
+		if(!this.properties.visible) this.hide(undefined, true);
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

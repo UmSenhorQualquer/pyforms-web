@@ -20,13 +20,17 @@ class ControlCombo extends ControlBase{
 				self.basewidget.fire_event( self.name, 'changed_event' );
 		});
 		
-		if(!this.properties.visible) this.hide();
 		if(!this.properties.enabled){
 			$('#'+this.place_id()+' .ui.dropdown').addClass("disabled")
 		}else{
 			$('#'+this.place_id()+' .ui.dropdown').removeClass("disabled")
 		};	
-		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
+		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
+
+		if(!this.properties.visible){
+			//console.log(this.properties.name, this.properties.visible);
+			this.hide(undefined, true);
+		};
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
