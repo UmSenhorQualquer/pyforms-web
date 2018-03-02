@@ -582,19 +582,41 @@ class EditFormAdmin(BaseWidget):
                 if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
                     values = getattr(self, field.name).value
                     field_instance = getattr(obj, field.name)
-                    field_instance.clear()
+                    allvalues = field_instance.all()
 
                     if field_instance.through is None:
                         for value in values:
                             o = field.related_model.objects.get(pk=value)
-                            field_instance.add(o)
+                            if o not in allvalues:
+                                field_instance.add(o)
+
+                            allvalues = allvalues.exclude(pk=value)
+
+                        for o in allvalues: o.delete()
                     else:
                         for value in values:
+                            
                             o = field.related_model.objects.get(pk=value)
-                            rel_obj = field_instance.through()
-                            setattr(rel_obj,obj.__class__.__name__.lower(), obj)
-                            setattr(rel_obj,o.__class__.__name__.lower(), o)
-                            rel_obj.save()
+                            if o not in allvalues:
+                                rel_obj = field_instance.through()
+                                setattr(rel_obj,obj.__class__.__name__.lower(), obj)
+                                setattr(rel_obj,o.__class__.__name__.lower(),   o)
+                                rel_obj.save()
+
+                            print(o)
+                            allvalues = allvalues.exclude(pk=value)
+                            print(allvalues)
+                            for o in allvalues:
+                                rel_obj = field_instance.through.objects.get(
+                                    **{
+                                        obj.__class__.__name__.lower():obj,
+                                        o.__class__.__name__.lower():o
+                                    }
+                                )
+                                print('delete', rel_obj)
+                                rel_obj.delete()
+
+
 
             self.object_pk = obj.pk
 
