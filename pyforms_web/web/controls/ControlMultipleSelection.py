@@ -4,11 +4,11 @@ import simplejson, collections
 class ControlMultipleSelection(ControlBase):
 
 	def __init__(self, *args, **kwargs):
+		if kwargs.get('default', None) is None: kwargs['default'] = []
 		super(ControlMultipleSelection, self).__init__(*args, **kwargs)
 		self.mode   		= kwargs.get('mode', 'selection')
 		self._update_items	= True
 		self._items			= collections.OrderedDict()
-		if self.value is None: self.value = []
 
 
 	def init_form(self): return "new ControlMultipleSelection('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
