@@ -11,7 +11,7 @@ class ControlFeed(ControlBase):
 		self.mode = kwargs.get('mode','feed')
 		
 		super(ControlFeed, self).__init__(*args, **kwargs)
-		self._value 	= []
+		self._value = []
 		self.action_param = None
 		self._clear   = False
 		

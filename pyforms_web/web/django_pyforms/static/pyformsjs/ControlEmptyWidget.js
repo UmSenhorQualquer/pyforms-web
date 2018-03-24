@@ -18,6 +18,11 @@ class ControlEmptyWidget extends ControlBase{
 		
 		this.set_value(this.properties.value);
 
+		if(!this.properties.enabled){
+			this.jquery().attr('disabled', '');
+		}else{
+			this.jquery().removeAttr('disabled');
+		};
 
 		if(!this.properties.visible) this.hide();
 	};
@@ -51,6 +56,12 @@ class ControlEmptyWidget extends ControlBase{
 			this.show();
 		else 
 			this.hide();
+
+		if(!this.properties.enabled){
+			this.jquery().attr('disabled', '');
+		}else{
+			this.jquery().removeAttr('disabled');
+		};
 
 
 		if( data.html!==undefined ){

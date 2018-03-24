@@ -5,6 +5,8 @@ import threading, os, dill, filelock
 class PyFormsMiddleware(object):
 	_request = {}
 
+	USER = None
+
 	def __init__(self, get_response):
 		self.get_response = get_response
 		# One-time configuration and initialization.
