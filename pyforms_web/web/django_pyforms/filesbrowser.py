@@ -1,10 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
 from pyforms import BaseWidget
-from pyforms.Controls import ControlText
-from pyforms.Controls import ControlCombo
-from pyforms.Controls import ControlList
-from pyforms.Controls import ControlCheckBox
-from pyforms.Controls import ControlButton
+from pyforms.controls import ControlText
+from pyforms.controls import ControlCombo
+from pyforms.controls import ControlList
+from pyforms.controls import ControlCheckBox
+from pyforms.controls import ControlButton
 from django.utils import timezone
 
 from pyforms import conf
