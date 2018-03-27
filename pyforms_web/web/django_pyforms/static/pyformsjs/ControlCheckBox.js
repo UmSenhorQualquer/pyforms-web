@@ -1,7 +1,5 @@
 class ControlCheckBox extends ControlBase{
 
-	
-
 	set_value(value){
 		if(value)
 			this.jquery().prop('checked', true);

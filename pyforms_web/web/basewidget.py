@@ -183,7 +183,7 @@ class BaseWidget(object):
         control = self.controls.get(row, None)
         if control==None:
             if   row==' ':                   return "<div class='field' ></div>"
-            elif row.startswith('info:'):    return "<span class='info' >{0}</span>".format(row[5:])
+            elif row.startswith('info:'):    return "<div class='ui info visible message'>{0}</div>".format(row[5:])
             elif row.startswith('h1:'):      return "<h1>{0}</h1>".format(row[3:])
             elif row.startswith('h1-right:'):return "<h1 class='ui right aligned header' >{0}</h1>".format(row[9:])
             elif row.startswith('h2:'):      return "<h2>{0}</h2>".format(row[3:])

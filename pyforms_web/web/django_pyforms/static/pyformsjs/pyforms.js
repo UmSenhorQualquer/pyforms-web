@@ -46,6 +46,7 @@ class PyformsManager{
 		$.getScript("/static/pyformsjs/ControlFile.js");
 		$.getScript("/static/pyformsjs/ControlFileUpload.js");
 		$.getScript("/static/pyformsjs/ControlDir.js");
+		$.getScript("/static/pyformsjs/ControlMultipleChecks.js");
 		$.getScript("/static/pyformsjs/ControlMultipleSelection.js");
 		$.getScript("/static/pyformsjs/ControlSlider.js");
 		$.getScript("/static/pyformsjs/ControlCheckBox.js");
