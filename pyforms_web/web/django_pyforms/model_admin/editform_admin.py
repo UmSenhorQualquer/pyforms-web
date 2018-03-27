@@ -364,9 +364,9 @@ class EditFormAdmin(BaseWidget):
             elif isinstance(field, models.UUIDField):                 getattr(self, field.name).value = getattr(obj, field.name)
             elif isinstance(field, models.ForeignKey):
                 v = getattr(obj, field.name)
-                getattr(self, field.name).value = v.pk if v else None
+                getattr(self, field.name).value = str(v.pk) if v else None
             elif isinstance(field, models.ManyToManyField):                 
-                getattr(self, field.name).value = [o.pk for o in getattr(obj, field.name).all()]
+                getattr(self, field.name).value = [str(o.pk) for o in getattr(obj, field.name).all()]
             
         self.inlines_apps = []
         for inline in self.inlines:

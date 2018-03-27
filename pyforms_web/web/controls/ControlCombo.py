@@ -14,7 +14,11 @@ class ControlCombo(ControlBase):
 		for item in items:
 			self.add_item(*item)
 
-	def init_form(self): return "new ControlCombo('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+		self._init_form_called = False
+
+	def init_form(self): 
+		self._init_form_called = True
+		return "new ControlCombo('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	def currentIndexChanged(self, index):
 		if not self._addingItem:
@@ -69,7 +73,8 @@ class ControlCombo(ControlBase):
 			if value==val:
 				if self._value!=value: 
 					self.mark_to_update_client()
-					self.changed_event()
+					if self._init_form_called:
+						self.changed_event()
 				self._value = val
 		
 

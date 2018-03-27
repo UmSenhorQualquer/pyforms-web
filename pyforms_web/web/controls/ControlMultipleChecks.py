@@ -54,7 +54,6 @@ class ControlMultipleChecks(ControlBase):
 	def deserialize(self, properties):
 		properties.update({'value':properties.get('value', [])})
 		
-		print(properties)
 		ControlBase.deserialize(self, properties)
 		
 	
