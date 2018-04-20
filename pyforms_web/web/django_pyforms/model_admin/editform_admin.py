@@ -603,9 +603,7 @@ class EditFormAdmin(BaseWidget):
                                 setattr(rel_obj,o.__class__.__name__.lower(),   o)
                                 rel_obj.save()
 
-                            print(o)
                             allvalues = allvalues.exclude(pk=value)
-                            print(allvalues)
                             for o in allvalues:
                                 rel_obj = field_instance.through.objects.get(
                                     **{
@@ -613,7 +611,6 @@ class EditFormAdmin(BaseWidget):
                                         o.__class__.__name__.lower():o
                                     }
                                 )
-                                print('delete', rel_obj)
                                 rel_obj.delete()
 
 
