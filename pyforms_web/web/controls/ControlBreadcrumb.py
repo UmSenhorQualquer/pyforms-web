@@ -36,7 +36,6 @@ class ControlBreadcrumb(ControlBase):
             value.append(v)
 
         data.update({'value':value, 'action_param': None})
-        print(data)
         return data
 
     def deserialize(self, properties):
