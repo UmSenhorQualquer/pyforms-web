@@ -78,7 +78,7 @@ class ViewFormAdmin(BaseWidget):
             if field.name not in fields2show: continue #only create this field if is visible
             pyforms_field = None
 
-            if isinstance(field, models.AutoField): continue
+            if   isinstance(field, models.AutoField): continue
             elif isinstance(field, models.Field) and field.choices:
                 pyforms_field = ControlCombo( 
                     field.verbose_name.capitalize(), 
@@ -184,7 +184,7 @@ class ViewFormAdmin(BaseWidget):
             elif isinstance(field, models.UUIDField):               getattr(self, field.name).value = getattr(obj, field.name)
             elif isinstance(field, models.ForeignKey):
                 v = getattr(obj, field.name)
-                getattr(self, field.name).value = v.pk if v else None
+                getattr(self, field.name).value = str(v.pk) if v else None
             elif isinstance(field, models.ManyToManyField):                 
                 getattr(self, field.name).value = [str(o.pk) for o in getattr(obj, field.name).all()]
             
