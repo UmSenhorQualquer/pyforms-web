@@ -1,44 +1,59 @@
 class ControlDateTime extends ControlBase{
 
+    get_value(){ 
+        //if(this.jquery().length==0) return this.properties.value;
+        return this.jquery().datetimepicker('getValue');
+    }
 
-	////////////////////////////////////////////////////////////////////////////////
+    pad(number, size){
+        var s = String(number);
+        while (s.length < (size || 2)) {s = "0" + s;}
+        return s;
+    }
 
-	init_control(){
+    formatdate(date){
+        return date.getFullYear()+'-'+this.pad(date.getMonth()+1,2)+'-'+this.pad(date.getDate(),2)+' '+this.pad(date.getHours(),2) + ":" + this.pad(date.getMinutes(),2);
+    }
 
-		var value = this.properties.value;
-		if(value==null) value = '';
+    set_value(value){
+        if(value!=null)
+            this.jquery().val(this.formatdate(new Date(value)));
+        else
+            this.jquery().val('');
+    }
 
-		var html = "<div id='"+this.place_id()+"' class='field ControlDateTime' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value=\""+value+"\" /></div>";
-		this.jquery_place().replaceWith(html);
+    ////////////////////////////////////////////////////////////////////////////////
 
-		this.jquery().datetimepicker({
-			format:'Y-m-d H:i',
-			formatTime:'H:i',
-			formatDate:'Y-m-d'
-		});
+    init_control(){
 
-		var self = this;
-		
-		this.jquery().change(function(){
-			self.basewidget.fire_event( self.name, 'changed_event' );
-		});
+        var html = "<div id='"+this.place_id()+"' class='field ControlDateTime' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value='' /></div>";
+        this.jquery_place().replaceWith(html);
+        this.set_value(this.properties.value);
+        
+        this.jquery().datetimepicker({
+            format:'Y-m-d H:i',
+            formatTime:'H:i',
+            formatDate:'Y-m-d'
+        });
 
-		if(!this.properties.enabled){
-			this.jquery().attr('disabled', '');
-		}else{
-			this.jquery().removeAttr('disabled');
-		};
+        var self = this;
+        
+        this.jquery().change(function(){
+            self.basewidget.fire_event( self.name, 'changed_event' );
+        });
 
-		if(!this.properties.visible) this.hide(undefined, true);
-		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
-	};
+        if(!this.properties.enabled){
+            this.jquery().attr('disabled', '');
+        }else{
+            this.jquery().removeAttr('disabled');
+        };
 
-	////////////////////////////////////////////////////////////////////////////////
+        if(!this.properties.visible) this.hide(undefined, true);
+        if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
+    };
 
-	get_value(){ 
-		//if(this.jquery().length==0) return this.properties.value;
-		return this.jquery().datetimepicker('getValue');
-	}
+    ////////////////////////////////////////////////////////////////////////////////
+
 
 
 }

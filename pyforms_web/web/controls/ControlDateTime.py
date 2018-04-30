@@ -7,7 +7,6 @@ from django.utils.dateparse import parse_datetime
 class ControlDateTime(ControlBase):
 
     PYTHON_FORMAT = "%Y-%m-%d %H:%M"
-    JS_FORMAT = "Y-m-d"
 
     def init_form(self): return "new ControlDateTime('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
@@ -35,7 +34,7 @@ class ControlDateTime(ControlBase):
 
     def serialize(self):
         data = ControlBase.serialize(self)
-        data.update({'format':self.JS_FORMAT})
+
         if self.value:
-            data.update({'value': self.value.strftime(self.PYTHON_FORMAT) })
+            data.update({'value': self.value.isoformat() })#self.value.strftime(self.PYTHON_FORMAT) })
         return data
