@@ -18,7 +18,8 @@ class ControlDateTime extends ControlBase{
 		});
 
 		var self = this;
-		this.jquery().on("change", function(){
+		
+		this.jquery().change(function(){
 			self.basewidget.fire_event( self.name, 'changed_event' );
 		});
 
@@ -35,7 +36,7 @@ class ControlDateTime extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	get_value(){ 
-		if(this.jquery().length==0) return this.properties.value;
+		//if(this.jquery().length==0) return this.properties.value;
 		return this.jquery().datetimepicker('getValue');
 	}
 

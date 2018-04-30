@@ -9,7 +9,7 @@ class ControlDate extends ControlBase{
 			dateFormat: "yy-mm-dd", 
 			changeMonth: true,
 			changeYear: true,
-			yearRange: "1940:2020"
+			yearRange: "1900:3000"
 		});
 
 		this.set_value(this.properties.value);
@@ -30,5 +30,10 @@ class ControlDate extends ControlBase{
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
+
+	get_value(){ 
+		//if(this.jquery().length==0) return this.properties.value;
+		return this.jquery().datetimepicker('getValue');
+	}
 }
 	
