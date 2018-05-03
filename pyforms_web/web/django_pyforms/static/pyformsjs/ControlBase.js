@@ -68,7 +68,7 @@ class ControlBase{
 
 	hide(not_update_columns, init_form){
 
-		console.log(this.jquery_place().is(':visible'), this.name);
+		//console.log(this.jquery_place().is(':visible'), this.name);
 
 		if(init_form==undefined)
 			if( !this.jquery_place().is(':visible') ) return;
