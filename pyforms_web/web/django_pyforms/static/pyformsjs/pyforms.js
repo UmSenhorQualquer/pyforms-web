@@ -37,7 +37,6 @@ class PyformsManager{
 		$.getScript("/static/jquery.json-2.4.min.js");
 		$.getScript("/static/base64.js");
 		$.getScript("/static/gmaps.min.js");
-
 		$.getScript("/static/pyformsjs/ControlBase.js");
 		$.getScript("/static/pyformsjs/ControlText.js");
 		$.getScript("/static/pyformsjs/ControlTextArea.js");
@@ -50,6 +49,8 @@ class PyformsManager{
 		$.getScript("/static/pyformsjs/ControlMultipleSelection.js");
 		$.getScript("/static/pyformsjs/ControlSlider.js");
 		$.getScript("/static/pyformsjs/ControlCheckBox.js");
+		$.getScript("/static/pyformsjs/ControlCheckBoxList.js");
+		$.getScript("/static/pyformsjs/ControlCheckBoxListQuery.js");
 		$.getScript("/static/pyformsjs/ControlTemplate.js");
 		$.getScript("/static/pyformsjs/ControlCombo.js");
 		$.getScript("/static/pyformsjs/ControlInteger.js");

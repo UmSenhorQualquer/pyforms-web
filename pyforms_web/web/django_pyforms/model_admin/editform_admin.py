@@ -8,10 +8,10 @@ from pyforms_web.web.controls.ControlDate               import ControlDate
 from pyforms_web.web.controls.ControlDateTime           import ControlDateTime
 from pyforms_web.web.controls.ControlButton             import ControlButton
 from pyforms_web.web.controls.ControlQueryList          import ControlQueryList
-from pyforms_web.web.controls.ControlMultipleSelection  import ControlMultipleSelection
 from pyforms_web.web.controls.ControlEmptyWidget        import ControlEmptyWidget
 from pyforms_web.web.controls.ControlFileUpload         import ControlFileUpload
 from pyforms_web.web.controls.ControlCheckBox           import ControlCheckBox
+from pyforms_web.web.controls.ControlMultipleSelectionQuery  import ControlMultipleSelectionQuery
 
 from pyforms_web.web.django_pyforms.middleware import PyFormsMiddleware
 from django.core.exceptions import ValidationError, FieldDoesNotExist
@@ -83,14 +83,16 @@ class EditFormAdmin(BaseWidget):
         # buttons
         self._save_btn      = ControlButton(self.SAVE_BTN_LABEL)
         self._create_btn    = ControlButton(self.CREATE_BTN_LABEL)
-        self._remove_btn    = ControlButton(self.REMOVE_BTN_LABEL)  
+        self._remove_btn    = ControlButton(self.REMOVE_BTN_LABEL,  css='red basic')  
         if self.HAS_CANCEL_BTN:
-            self._cancel_btn    = ControlButton(self.CANCEL_BTN_LABEL)
-        
-        self._remove_btn.css = 'red basic'
-        if self.HAS_CANCEL_BTN:
-            self._cancel_btn.css = 'gray basic'
-        
+            self._cancel_btn = ControlButton(self.CANCEL_BTN_LABEL, css='gray basic')
+
+        if self.parent_model:
+            self._save_btn.css       += ' tiny'
+            self._create_btn.css     += ' tiny'
+            self._remove_btn.css     += ' tiny'
+            if self.HAS_CANCEL_BTN:
+                self._cancel_btn.css += ' tiny'
         
         self.edit_fields.append( self._save_btn )
         self.edit_fields.append( self._create_btn )
@@ -113,8 +115,7 @@ class EditFormAdmin(BaseWidget):
         if self.HAS_CANCEL_BTN:
             self._cancel_btn.label_visible  = False
         
-    
-        
+
         self.create_model_formfields()
         pk = kwargs.get('pk', None)
         if pk:
@@ -126,8 +127,8 @@ class EditFormAdmin(BaseWidget):
 
         self.formset = self.formset + self.get_buttons_row()
 
-        #for inline in self.inlines:
-        #    self.formset.append(inline.__name__)
+        for inline in self.inlines:
+            self.formset.append(inline.__name__)
 
         
     #################################################################################
@@ -169,40 +170,48 @@ class EditFormAdmin(BaseWidget):
     def related_field_queryset(self, field, query):
         return query
 
+    def update_related_field(self, field, pyforms_field, query):
+
+        if isinstance(field, models.ForeignKey):
+            #Foreign key
+            pyforms_field.clear_items()
+            if field.null:
+                pyforms_field.add_item( '', '-1' )           
+            for instance in query:
+                pyforms_field.add_item( str(instance), instance.pk )
+
+        elif isinstance(field, models.ManyToManyField):
+            #Many to Many field
+            pyforms_field.queryset = query
+
     def update_related_fields(self):
-        
         fields2show = self.get_visible_fields_names()       
         formset     = []
 
         for field in self.model._meta.get_fields():
-            if field.name not in fields2show: continue #only update this field if is visible
-            if field.name in self.readonly:  continue
-            pyforms_field = None
 
-            if isinstance(field, models.ForeignKey):
-                #Foreign key
-                pyforms_field = getattr(self, field.name)
-                pyforms_field.clear_items()
-                if field.null:
-                    pyforms_field.add_item( '', '-1' )           
-                for instance in self.related_field_queryset(field, field.related_model.objects.all()):
-                    pyforms_field.add_item( str(instance), instance.pk )            
-            elif isinstance(field, models.ManyToManyField):
-                #Many to Many field
-                pyforms_field = getattr(self, field.name)
-                pyforms_field.clear_items()
-                for instance in self.related_field_queryset(field, field.related_model.objects.all()):
-                    pyforms_field.add_item( str(instance), instance.pk )
-        
+            if not isinstance(
+                field, 
+                (models.ForeignKey,models.ManyToManyField)
+            ): continue
+    
+            if field.name not in fields2show: continue #only update this field if is visible
+            if field.name in self.readonly:   continue
+            
+            pyforms_field = getattr(self, field.name)
+            query         = self.related_field_queryset(field, field.related_model.objects.all())
+
+            self.update_related_field(field, pyforms_field, query)
+            
     def create_model_formfields(self):
         """
             Create the model edition form
         """
-        
         fields2show = self.get_visible_fields_names()       
         formset     = []
 
         for field in self.model._meta.get_fields():
+            if hasattr(self, field.name):     continue
             if field.name not in fields2show: continue #only create this field if is visible
             pyforms_field = None
 
@@ -245,8 +254,8 @@ class EditFormAdmin(BaseWidget):
             elif isinstance(field, models.URLField):                    pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.UUIDField):                   pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.ForeignKey):                  pyforms_field = ControlCombo( field.verbose_name.capitalize() )
-            elif isinstance(field, models.ManyToManyField):             pyforms_field = ControlMultipleSelection( field.verbose_name.capitalize() )
-                
+            elif isinstance(field, models.ManyToManyField):             pyforms_field = ControlMultipleSelectionQuery( field.verbose_name.capitalize() )
+            
             if pyforms_field is not None: 
                 setattr(self, field.name, pyforms_field)
                 formset.append(field.name)
@@ -366,7 +375,7 @@ class EditFormAdmin(BaseWidget):
                 v = getattr(obj, field.name)
                 getattr(self, field.name).value = str(v.pk) if v else None
             elif isinstance(field, models.ManyToManyField):                 
-                getattr(self, field.name).value = [str(o.pk) for o in getattr(obj, field.name).all()]
+                getattr(self, field.name).value = getattr(obj, field.name).all()
             
         self.inlines_apps = []
         for inline in self.inlines:
@@ -580,9 +589,9 @@ class EditFormAdmin(BaseWidget):
             
             for field in self.model._meta.get_fields():
                 if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
-                    values = getattr(self, field.name).value
-                    field_instance = getattr(obj, field.name)
-                    allvalues = field_instance.all()
+                    values          = getattr(self, field.name).value
+                    field_instance  = getattr(obj, field.name)
+                    allvalues       = field_instance.all()
 
                     if field_instance.through is None:
                         for value in values:
@@ -594,25 +603,19 @@ class EditFormAdmin(BaseWidget):
 
                         for o in allvalues: o.delete()
                     else:
-                        for value in values:
-                            
-                            o = field.related_model.objects.get(pk=value)
-                            if o not in allvalues:
-                                rel_obj = field_instance.through()
-                                setattr(rel_obj,obj.__class__.__name__.lower(), obj)
-                                setattr(rel_obj,o.__class__.__name__.lower(),   o)
-                                rel_obj.save()
-
-                            allvalues = allvalues.exclude(pk=value)
-                            for o in allvalues:
-                                rel_obj = field_instance.through.objects.get(
-                                    **{
-                                        obj.__class__.__name__.lower():obj,
-                                        o.__class__.__name__.lower():o
-                                    }
-                                )
-                                rel_obj.delete()
-
+                        added_values = []
+                        
+                        # add the values
+                        for value in values:    
+                            if value not in allvalues:
+                                added_values.append(value)
+                                field_instance.add(value)
+                        
+                        # remove the non selected values
+                        for value in allvalues:
+                            if value not in added_values:
+                                field_instance.remove(value)
+                        
 
 
             self.object_pk = obj.pk

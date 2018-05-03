@@ -99,14 +99,13 @@ class ControlBase{
 		this.jquery_place().hide();
 		this.properties.visible = false;
 		
-		/*
-		var pyforms_segment = this.jquery_place().parents('.pyforms-segment');
-		if( pyforms_segment  && pyforms_segment.find('.field:visible').length == 0 ){
-			pyforms_segment.hide();
-			pyforms_segment.prev().hide();
-		};*/
 		
-	}
+		var pyforms_segment = this.jquery_place().parents('.pyforms-segment');
+		if( pyforms_segment && pyforms_segment.find('.field:visible').length == 0 ){
+			pyforms_segment.hide();
+			//pyforms_segment.prev().hide();
+		};
+	};
 
 	////////////////////////////////////////////////////////////////////////////////
 
@@ -135,9 +134,9 @@ class ControlBase{
 		var pyforms_segment = this.jquery_place().parents('.pyforms-segment');
 		if( pyforms_segment ){
 			pyforms_segment.show();
-			pyforms_segment.prev().show();
+			//pyforms_segment.prev().show();
 		};
-	}
+	};
 
 	////////////////////////////////////////////////////////////////////////////////
 

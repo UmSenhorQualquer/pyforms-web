@@ -1,4 +1,4 @@
-from pyforms_web.web.basewidget 						import BaseWidget
+from pyforms_web.web.basewidget 						import BaseWidget, segment
 from pyforms_web.web.controls.ControlTextArea 			import ControlTextArea
 from pyforms_web.web.controls.ControlText 				import ControlText
 from pyforms_web.web.controls.ControlInteger 			import ControlInteger
@@ -68,15 +68,20 @@ class ModelAdmin(BaseWidget):
 			if self.parent_model:
 				self._add_btn.css = 'tiny basic blue'
 
-		self.formset  =  (['_add_btn'] if self.has_add_permission() else []) + ['_list', '_details']
-	
+		if self.parent_model:
+			self.formset = [('_add_btn' if self.has_add_permission() else None), '_list', '_details']
+		else:
+			self.formset = [segment( ('_add_btn' if self.has_add_permission() else None), '_list' ), '_details']
+		
 		# events
 		self._list.item_selection_changed_event = self.__list_item_selection_changed_event
 
 		self._details.hide()
 		
+		#if it is a inline app, add the title to the header
+		
 		if self.parent_model:
-			self.formset = ['h2:'+str(title)]+self.formset
+			self.formset = ['h3:'+str(title)]+self.formset
 
 		self.populate_list()
 

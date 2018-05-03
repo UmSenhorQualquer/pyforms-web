@@ -59,11 +59,10 @@ class ControlButton extends ControlBase{
 		else 
 			this.hide();
 
-		if(!this.properties.enabled){
+		if(!this.properties.enabled)
 			this.jquery().attr('disabled', '');
-		}else{
+		else
 			this.jquery().removeAttr('disabled');
-		};
 
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 	};

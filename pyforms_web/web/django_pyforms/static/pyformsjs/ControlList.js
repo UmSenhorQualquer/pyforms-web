@@ -42,7 +42,9 @@ class ControlList extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	load_table(){
-		var html = "<div id='"+this.place_id()+"' class='field'><table class='ui selectable celled table "+this.properties.css+" ControlList' id='"+this.control_id()+"' >";
+		var html = "<div id='"+this.place_id()+"' class='field'>";
+		if(this.properties.label_visible) html += '<label>&nbsp;</label>';
+		html += "<table class='ui selectable celled table "+this.properties.css+" ControlList' id='"+this.control_id()+"' >";
 		html += "<thead>";
 		html += "<tr>";
 		var titles = this.properties.horizontal_headers;
