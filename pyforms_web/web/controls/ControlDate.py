@@ -2,12 +2,10 @@ import datetime
 from pyforms_web.web.controls.ControlBase import ControlBase
 import simplejson
 
-from django.utils.dateparse import parse_date
+from django.utils.dateparse import parse_datetime
+from django.utils.timezone  import is_aware, make_aware
 
 class ControlDate(ControlBase):
-
-    PYTHON_FORMAT = "%Y-%m-%d"
-    JS_FORMAT = "Y-m-d"
 
     def init_form(self): return "new ControlDate('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
@@ -22,7 +20,8 @@ class ControlDate(ControlBase):
 
             if value is not None and not isinstance(value, datetime.date):
                 try:
-                    value = parse_date(value)
+                    value = parse_datetime(value)
+                    if not is_aware(value): value = make_aware(value)
                 except:
                     raise Exception('The value is not a valid date')
 
@@ -35,7 +34,7 @@ class ControlDate(ControlBase):
 
     def serialize(self):
         data = ControlBase.serialize(self)
-        data.update({'format':self.JS_FORMAT})
+        
         if self.value:
-            data.update({'value': self.value.strftime(self.PYTHON_FORMAT) })
+            data.update({'value': self.value.isoformat()}  )
         return data

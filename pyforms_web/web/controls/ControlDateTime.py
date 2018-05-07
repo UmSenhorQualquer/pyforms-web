@@ -6,7 +6,6 @@ from django.utils.dateparse import parse_datetime
 
 class ControlDateTime(ControlBase):
 
-    PYTHON_FORMAT = "%Y-%m-%d %H:%M"
 
     def init_form(self): return "new ControlDateTime('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
@@ -22,6 +21,7 @@ class ControlDateTime(ControlBase):
             if value is not None and not isinstance(value, datetime.date):
                 try:
                     value = parse_datetime(value)
+                    if not is_aware(value): value = make_aware(value)
                 except:
                     raise Exception('The value is not a valid date time')
 
@@ -36,5 +36,5 @@ class ControlDateTime(ControlBase):
         data = ControlBase.serialize(self)
 
         if self.value:
-            data.update({'value': self.value.isoformat() })#self.value.strftime(self.PYTHON_FORMAT) })
+            data.update({'value': self.value.isoformat() })
         return data

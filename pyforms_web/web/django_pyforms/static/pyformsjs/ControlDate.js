@@ -2,7 +2,7 @@ class ControlDate extends ControlBase{
 
 	get_value(){ 
 		//if(this.jquery().length==0) return this.properties.value;
-		return this.jquery().datetimepicker('getValue');
+		return this.jquery().datepicker('getDate');
 	};
 
 	pad(number, size){
