@@ -11,7 +11,7 @@ from pyforms_web.web.controls.ControlQueryList          import ControlQueryList
 from pyforms_web.web.controls.ControlEmptyWidget        import ControlEmptyWidget
 from pyforms_web.web.controls.ControlFileUpload         import ControlFileUpload
 from pyforms_web.web.controls.ControlCheckBox           import ControlCheckBox
-from pyforms_web.web.controls.ControlMultipleSelectionQuery  import ControlMultipleSelectionQuery
+from pyforms_web.web.controls.ControlMultipleSelection  import ControlMultipleSelection
 
 from pyforms_web.web.django_pyforms.middleware import PyFormsMiddleware
 from django.core.exceptions import ValidationError, FieldDoesNotExist
@@ -182,7 +182,10 @@ class EditFormAdmin(BaseWidget):
 
         elif isinstance(field, models.ManyToManyField):
             #Many to Many field
-            pyforms_field.queryset = query
+            pyforms_field = getattr(self, field.name)
+            pyforms_field.clear_items()
+            for instance in self.related_field_queryset(field, field.related_model.objects.all()):
+                pyforms_field.add_item( str(instance), instance.pk )
 
     def update_related_fields(self):
         fields2show = self.get_visible_fields_names()       
@@ -254,7 +257,7 @@ class EditFormAdmin(BaseWidget):
             elif isinstance(field, models.URLField):                    pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.UUIDField):                   pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.ForeignKey):                  pyforms_field = ControlCombo( field.verbose_name.capitalize() )
-            elif isinstance(field, models.ManyToManyField):             pyforms_field = ControlMultipleSelectionQuery( field.verbose_name.capitalize() )
+            elif isinstance(field, models.ManyToManyField):             pyforms_field = ControlMultipleSelection( field.verbose_name.capitalize() )
             
             if pyforms_field is not None: 
                 setattr(self, field.name, pyforms_field)
@@ -375,7 +378,7 @@ class EditFormAdmin(BaseWidget):
                 v = getattr(obj, field.name)
                 getattr(self, field.name).value = str(v.pk) if v else None
             elif isinstance(field, models.ManyToManyField):                 
-                getattr(self, field.name).value = getattr(obj, field.name).all()
+                getattr(self, field.name).value = [str(o.pk) for o in getattr(obj, field.name).all()]
             
         self.inlines_apps = []
         for inline in self.inlines:
