@@ -35,7 +35,7 @@ Edit the django project **settings.py** file to include the next configurations.
         'jfu',
         'sorl.thumbnail',
         'orquestra',
-        'pyforms_web.web.django_pyforms',
+        'django_pyforms',
         'allauth',
         'allauth.account',
         'allauth.socialaccount',
@@ -46,7 +46,7 @@ Edit the django project **settings.py** file to include the next configurations.
 
     MIDDLEWARE = [
         ...
-        'pyforms_web.web.django_pyforms.middleware.PyFormsMiddleware'
+        'django_pyforms.middleware.PyFormsMiddleware'
     ]
 
     AUTHENTICATION_BACKENDS = [
@@ -89,7 +89,7 @@ Edit the django project **urls.py** file to include the next urls configurations
     urlpatterns = [
         url(r'', include('orquestra.urls')),
         url(r'^accounts/', include('allauth.urls')),
-        url(r'^pyforms/', include('pyforms_web.web.django_pyforms.urls') ),
+        url(r'^pyforms/', include('django_pyforms.urls') ),
     ]
 
     if settings.DEBUG:

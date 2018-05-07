@@ -37,9 +37,7 @@ setup(
 	package_data={
 		'pyforms_web':
 		list(
-			find_files('pyforms_web','web/django_pyforms/static/', '*.*')
-		)+list(
-			find_files('pyforms_web','web/django_pyforms/templates/', '*.*')
+			find_files('pyforms_web','web/static/', '*.*')
 		)
 	},
 	install_requires=[],

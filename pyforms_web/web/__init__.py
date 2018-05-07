@@ -1,0 +1,1 @@
+from pyforms_web.web.applications import ApplicationsLoader

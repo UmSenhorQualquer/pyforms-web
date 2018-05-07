@@ -5,9 +5,4 @@ sorl-thumbnail
 dill
 filelock
 django-allauth
-mysqlclient
 Pillow
-git+https://github.com/UmSenhorQualquer/pyforms.git
-git+https://github.com/UmSenhorQualquer/django-jfu.git
-git+https://UmSenhorQualquer@bitbucket.org/UmSenhorQualquer/pyforms-web.git
-git+https://UmSenhorQualquer@bitbucket.org/UmSenhorQualquer/orquestra.git
