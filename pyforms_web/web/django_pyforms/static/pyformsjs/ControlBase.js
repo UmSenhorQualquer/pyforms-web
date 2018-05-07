@@ -68,8 +68,6 @@ class ControlBase{
 
 	hide(not_update_columns, init_form){
 
-		//console.log(this.jquery_place().is(':visible'), this.name);
-
 		if(init_form==undefined)
 			if( !this.jquery_place().is(':visible') ) return;
 		var parent = this.jquery_place().parent();
@@ -99,12 +97,13 @@ class ControlBase{
 		this.jquery_place().hide();
 		this.properties.visible = false;
 		
-		
 		var pyforms_segment = this.jquery_place().parents('.pyforms-segment');
-		if( pyforms_segment && pyforms_segment.find('.field:visible').length == 0 ){
-			pyforms_segment.hide();
-			//pyforms_segment.prev().hide();
-		};
+		var visible_children = false;
+		pyforms_segment.find('.field').each(function(i,e){
+			if( $(e).css('display')!='none') visible_children = true;
+		});
+		if( !visible_children ) pyforms_segment.hide();
+			
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
