@@ -3,7 +3,7 @@ from pyforms_web.web.controls.ControlBase import ControlBase
 import simplejson
 
 from django.utils.dateparse import parse_datetime
-from django.utils.timezone  import is_aware, make_aware
+from django.utils import timezone
 
 class ControlDate(ControlBase):
 
@@ -21,7 +21,7 @@ class ControlDate(ControlBase):
             if value is not None and not isinstance(value, datetime.date):
                 try:
                     value = parse_datetime(value)
-                    if not is_aware(value): value = make_aware(value)
+                    value = timezone.localtime(value)
                 except:
                     raise Exception('The value is not a valid date')
 
