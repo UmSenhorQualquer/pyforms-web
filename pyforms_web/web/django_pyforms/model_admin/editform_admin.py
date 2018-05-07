@@ -592,33 +592,22 @@ class EditFormAdmin(BaseWidget):
             
             for field in self.model._meta.get_fields():
                 if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
-                    values          = getattr(self, field.name).value
-                    field_instance  = getattr(obj, field.name)
-                    allvalues       = field_instance.all()
-
+                    values = getattr(self, field.name).value
+                    field_instance = getattr(obj, field.name)
+                    field_instance.clear()
+ 
                     if field_instance.through is None:
                         for value in values:
                             o = field.related_model.objects.get(pk=value)
-                            if o not in allvalues:
-                                field_instance.add(o)
-
-                            allvalues = allvalues.exclude(pk=value)
-
-                        for o in allvalues: o.delete()
+                            field_instance.add(o)
                     else:
-                        added_values = []
-                        
-                        # add the values
-                        for value in values:    
-                            if value not in allvalues:
-                                added_values.append(value)
-                                field_instance.add(value)
-                        
-                        # remove the non selected values
-                        for value in allvalues:
-                            if value not in added_values:
-                                field_instance.remove(value)
-                        
+                        for value in values:
+                            o = field.related_model.objects.get(pk=value)
+                            rel_obj = field_instance.through()
+                            setattr(rel_obj,obj.__class__.__name__.lower(), obj)
+                            setattr(rel_obj,o.__class__.__name__.lower(), o)
+                            rel_obj.save()
+
 
 
             self.object_pk = obj.pk
