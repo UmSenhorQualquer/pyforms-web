@@ -11,6 +11,7 @@ from django.conf import settings
 from django.db import models
 from datetime import timedelta
 from calendar import monthrange
+from django.utils.timezone  import is_aware, make_aware
 import locale
 
 def get_field(model, lookup):
@@ -246,9 +247,13 @@ class ControlQueryList(ControlBase):
 	def format_list_column(self, col_value):		
 
 		if isinstance(col_value, datetime.datetime ):
-			return col_value.strftime('%Y-%m-%d %H:%M') if col_value else ''
+			if not col_value: return ''
+			if not is_aware(col_value): col_value = make_aware(col_value)
+			return col_value.strftime('%Y-%m-%d %H:%M')
 		elif isinstance(col_value, datetime.date ):
-			return col_value.strftime('%Y-%m-%d') if col_value else ''
+			if not col_value: return ''
+			if not is_aware(col_value): col_value = make_aware(col_value)
+			return col_value.strftime('%Y-%m-%d')
 		elif isinstance(col_value, bool ):
 			return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
 		elif isinstance(col_value, int ):
