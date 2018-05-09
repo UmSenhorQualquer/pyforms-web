@@ -4,13 +4,13 @@ class ControlCalendar extends ControlBase{
 
 	init_control(){
 		
-		var html = "<div id='"+this.place_id()+"' class='field ControlCalendar' ><label>"+this.properties.label+"</label>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlCalendar' ><label>"+this.properties.label+"</label>";
 		html += this.create_calendar();
 		html += "</div>";
 		
 		this.jquery_place().replaceWith(html);
 		
-		if(!this.properties.visible) this.hide();
+		
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
 		
 	};

@@ -13,7 +13,7 @@ class ControlBase(object):
 
         self._help          = kwargs.get('helptext', None)
         self._value         = kwargs.get('default',  None)
-        self._label         = kwargs.get('label', args[0] if len(args)>0 else '')
+        self._label         = kwargs.get('label', args[0] if len(args)>0 else '&nbps;')
         self._visible       = kwargs.get('visible', True)
         self._error         = kwargs.get('error', False)
         self._css           = kwargs.get('css', None)

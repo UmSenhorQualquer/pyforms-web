@@ -8,12 +8,12 @@ class ControlTimeout extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field ControlTimeout' ><label>"+this.properties.label+"</label>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlTimeout' ><label>"+this.properties.label+"</label>";
 		html 	+= "<div id='"+this.control_id()+"' data-percent='0' class='ui tiny progress'><div class='bar'></div></div>";
 		html 	+= '</div>'
 		this.jquery_place().replaceWith(html);
 
-		if(!this.properties.visible) this.hide();
+		
 
 		this.set_value(this.properties.value);
 		if (this.properties.play=='True') this.update_progress_bar(true);

@@ -3,18 +3,10 @@ class ControlTemplate extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field ControlTemplate' ><div id='"+this.control_id()+"' ></div></div>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlTemplate' ><div id='"+this.control_id()+"' ></div></div>";
 		this.jquery_place().replaceWith(html);
 
 		this.set_value(this.properties.value);
-		
-		if(!this.properties.visible) this.hide(undefined, true);
-
-		if(!this.properties.enabled){
-			this.jquery().attr('disabled', '');
-		}else{
-			this.jquery().removeAttr('disabled');
-		};
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

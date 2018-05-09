@@ -1,7 +1,7 @@
 class ControlFileUpload extends ControlBase{
 
 	init_control(){
-		var html = "<div class='field ControlFileUpload' id='"+this.place_id()+"' ><label>"+this.properties.label+"</label>";
+		var html = "<div class='field control ControlFileUpload' id='"+this.place_id()+"' ><label>"+this.properties.label+"</label>";
 		html += '<input type="file" name="'+this.name+'" id="'+this.control_id()+'" placeholder="'+this.properties.label+'" >';
 		html += "</div>";
 		
@@ -43,7 +43,6 @@ class ControlFileUpload extends ControlBase{
 		
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
 
-		if(!this.properties.visible) this.hide(undefined, true);
 	};
 
 
@@ -60,7 +59,7 @@ class ControlFileUpload extends ControlBase{
 		if(this.properties.file_data){
 			filerKit.append(this.properties.file_data);
 		};
-		if(!this.properties.visible) this.hide();
+		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

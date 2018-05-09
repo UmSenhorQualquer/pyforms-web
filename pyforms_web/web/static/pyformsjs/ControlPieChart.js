@@ -4,7 +4,7 @@ class ControlPieChart extends ControlBase{
     ////////////////////////////////////////////////////////////////////////////////
 
     init_control(){
-        var html =  "<div id='"+this.place_id()+"' class='field ControlPieChart' >";
+        var html =  "<div id='"+this.place_id()+"' class='field control ControlPieChart' >";
         html +=     "<div id='chart-container-"+this.control_id()+"' title='"+this.properties.help+"'   >";
         html +=     "<div id='"+this.control_id()+"' ></div>";
         html +=     "</div>";
@@ -65,7 +65,7 @@ class ControlPieChart extends ControlBase{
         chart.themeEngine.newTheme('simple', temp);
         chart.activateTheme('simple');
 
-        if(!this.properties.visible) this.hide();
+        
     };
 
 

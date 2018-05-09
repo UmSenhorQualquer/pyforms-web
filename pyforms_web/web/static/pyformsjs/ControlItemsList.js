@@ -8,14 +8,14 @@ class ControlItemsList extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field'>";
+		var html = "<div id='"+this.place_id()+"' class='field control'>";
 		html += '<div class="ui divided items ControlItemsList"  id="'+this.control_id()+'">';
 		html += '</div>';
 		html += "</div>";
 		this.jquery_place().replaceWith(html);
 		this.set_value(this.properties.value);
 		
-		if(!this.properties.visible) this.hide();
+		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

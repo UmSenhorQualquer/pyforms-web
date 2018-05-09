@@ -33,11 +33,6 @@
 	height: 400px;
 }
 
-.control{
-	padding: 10px;
-}
-
-
 .columns .control, .columns .rows{
 	display: inline-block;
 }

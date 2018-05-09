@@ -2,7 +2,7 @@ class ControlFeed extends ControlBase{
 
 	
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field'>";
+		var html = "<div id='"+this.place_id()+"' class='field control'>";
 		html += '<div class="ui '+this.properties.mode+' ControlFeed"  id="'+this.control_id()+'">';
 		html += '</div>';
 		html += "</div>";
@@ -14,7 +14,7 @@ class ControlFeed extends ControlBase{
 			this.jquery().html('<div class="ui basic center  very padded segment"><i class="icon ban" ></i></div>');
 		}
 		
-		if(!this.properties.visible) this.hide();
+		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -94,11 +94,6 @@ class ControlFeed extends ControlBase{
 		
 		if(this.properties.visible)  this.show();
 		else this.hide();
-
-		if(!this.properties.enabled)
-			this.jquery().attr('disabled', '');
-		else
-			this.jquery().removeAttr('disabled');
 
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 	};

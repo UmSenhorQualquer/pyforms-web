@@ -4,7 +4,7 @@ class ControlBreadcrumb extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div class='field ControlBreadcrumb' id='"+this.place_id()+"' >";
+		var html = "<div class='field control ControlBreadcrumb' id='"+this.place_id()+"' >";
 		html += '<div class="ui breadcrumb">';
 		if(this.properties.value)
 			for( var i=0; i<this.properties.value.length; i++){
@@ -36,8 +36,6 @@ class ControlBreadcrumb extends ControlBase{
 			self.basewidget.fire_event( self.name, 'pressed' );
 		});
 
-		if(!this.properties.visible) this.hide(undefined, true);
-		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

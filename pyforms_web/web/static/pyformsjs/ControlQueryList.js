@@ -4,7 +4,7 @@ class ControlQueryList extends ControlBase{
 
 	init_control(){
 
-		var html = "<div id='"+this.place_id()+"' class='field ControlQueryList'>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlQueryList'>";
 
 		var filters = this.properties.filters_list;
 		
@@ -72,7 +72,10 @@ class ControlQueryList extends ControlBase{
 			self.properties.filter_by = [];
 
 			$( "#"+self.place_id()+" .queryset-filter" ).each(function(){
+
 				var filter_value = $(this).dropdown('get value');
+
+				console.log(filter_value);
 				if( filter_value!='' && filter_value!='000000000000' ){
 					//var key = $(this).find('select').attr('column');
 					var filters = filter_value.split('&');
@@ -128,7 +131,7 @@ class ControlQueryList extends ControlBase{
 		});
 
 
-		if(!this.properties.visible) this.hide();
+		
 
 	};
 

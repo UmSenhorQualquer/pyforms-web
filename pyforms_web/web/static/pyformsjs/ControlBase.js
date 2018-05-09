@@ -66,77 +66,89 @@ class ControlBase{
 
 	////////////////////////////////////////////////////////////////////////////////
 
+	count_visible( selector ){
+		var visible = 0;  
+		selector.each(function(i,e){  
+			if( $(e).css('display')!='none') visible += 1;  
+		});  
+		return visible
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	
+	enable(){
+		this.jquery().removeAttr('disabled');
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	
+	disable(){
+		this.jquery().attr('disabled', 'true');
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+
 	hide(not_update_columns, init_form){
-
-		//console.log(this.jquery_place().is(':visible'), this.name);
-
+		
+		// if the control is already hidden leave the function
 		if(init_form==undefined)
 			if( !this.jquery_place().is(':visible') ) return;
-		var parent = this.jquery_place().parent();
-
-		if( parent.hasClass('row') )
-			if( parent.hasClass('fields') ){
-				var found = false;
-				
-				if( !parent.hasClass( 'no-alignment') ){
-					
-					for(var i=2; i<COLUMNS_CSS_CLASSES.length; i++)
-						if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
-							parent.removeClass( COLUMNS_CSS_CLASSES[i] );
-							parent.addClass( COLUMNS_CSS_CLASSES[i-1] );
-							found = true;
-							break;
-						};
-				}else
-					found = parent.find('.control:visible').length==0;
-
-				if(!found){
-					parent.removeClass( 'fields' );
-					parent.hide();
-				}
-			}
 
 		this.jquery_place().hide();
 		this.properties.visible = false;
-		
-		
+
+		// check if the parent is fields
+		var parent = this.jquery_place().parent();
+
+		if( parent.hasClass('row') && parent.hasClass('fields') )
+		{	
+			// if the row has more than one element, reduce the number
+			if( !parent.hasClass( 'no-alignment') )
+				for(var i=2; i<COLUMNS_CSS_CLASSES.length; i++){
+					if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
+						parent.removeClass( COLUMNS_CSS_CLASSES[i] );
+						parent.addClass( COLUMNS_CSS_CLASSES[i-1] );
+						break;
+					};
+				}
+			
+			// no visible element inside the row, then hide it
+			if( this.count_visible( parent.find('.control') )==0 )
+				parent.hide();	
+		}
+
 		var pyforms_segment = this.jquery_place().parents('.pyforms-segment');
-	    var visible_children = false; 
-	    pyforms_segment.find('.field').each(function(i,e){ 
-	      if( $(e).css('display')!='none') visible_children = true; 
-	    }); 
-	    if( !visible_children ) pyforms_segment.hide(); 
+	    if( this.count_visible( pyforms_segment.find('.control') )==0 ) 
+	    	pyforms_segment.hide(); 
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
 
-	show(not_update_columns){
-		//console.log(this.name, 'show');
-		if( this.jquery_place().is(':visible') ) return;
+	show(init_form){
+		//if( this.jquery_place().is(':visible') ) return;
+		
+		this.jquery_place().show();
+		this.properties.visible = true;
+
 		var parent = this.jquery_place().parent();
 		
 		if( parent.hasClass('row') )
-			if( parent.hasClass('fields') ){
-				for(var i=0; i<COLUMNS_CSS_CLASSES.length-1; i++)
-					if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
-						parent.removeClass( COLUMNS_CSS_CLASSES[i] );
-						parent.addClass( COLUMNS_CSS_CLASSES[i+1] );
-						break;
-					};
+		
+			if( parent.hasClass('fields') && !parent.hasClass( 'no-alignment') ){
+				if(init_form!=true)
+					for(var i=0; i<COLUMNS_CSS_CLASSES.length-1; i++)
+						if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
+							parent.removeClass( COLUMNS_CSS_CLASSES[i] );
+							parent.addClass( COLUMNS_CSS_CLASSES[i+1] );
+							break;
+						};
 			}else 
-			 	if( !parent.hasClass('form') && !parent.hasClass('tab') && !parent.hasClass('ControlEmptyWidget') && !parent.hasClass('field') ){
-			 		parent.addClass( 'fields' );
-					parent.addClass( 'two' );
-					parent.css('display', '');
-			 	}
-		this.jquery_place().show();
-		this.properties.visible = 1;
+			 	parent.css('display', '');
+					
+		
 
 		var pyforms_segment = this.jquery_place().parents('.pyforms-segment');
-		if( pyforms_segment ){
-			pyforms_segment.show();
-			//pyforms_segment.prev().show();
-		};
+		if( pyforms_segment ) pyforms_segment.show();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -145,17 +157,6 @@ class ControlBase{
 		$.extend(this.properties, data);
 		this.set_value(this.properties.value);
 		this.set_label(this.properties.label);
-		
-		if(this.properties.visible) 
-			this.show();
-		else 
-			this.hide();
-
-		if(!this.properties.enabled){
-			this.jquery().attr('disabled', '');
-		}else{
-			this.jquery().removeAttr('disabled');
-		};
 
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 	}
@@ -170,12 +171,7 @@ class ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		if(!this.properties.enabled){
-			this.jquery().attr('disabled', '');
-		}else{
-			this.jquery().removeAttr('disabled');
-		};
-		if(!this.properties.visible) this.hide();
+		
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 		if(this.properties.css) this.jquery().addClass(this.properties.css);
 	}

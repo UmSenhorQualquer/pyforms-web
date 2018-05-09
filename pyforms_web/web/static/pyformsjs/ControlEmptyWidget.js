@@ -8,7 +8,7 @@ class ControlEmptyWidget extends ControlBase{
 		if( this.properties.html!==undefined ) widget_html = Base64.decode(this.properties.html);
 
 		
-		var html = "<div id='"+this.place_id()+"' class='field ControlEmptyWidget "+this.properties.css+"' >"+widget_html+"</div>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlEmptyWidget "+this.properties.css+"' >"+widget_html+"</div>";
 		this.jquery_place().replaceWith(html);
 		
 		if(this.properties.child_widget_id!==undefined){
@@ -18,13 +18,7 @@ class ControlEmptyWidget extends ControlBase{
 		
 		this.set_value(this.properties.value);
 
-		if(!this.properties.enabled){
-			this.jquery().attr('disabled', '');
-		}else{
-			this.jquery().removeAttr('disabled');
-		};
-
-		if(!this.properties.visible) this.hide();
+		
 	};
 
 	////////////////////////////////////////////////////////////
@@ -56,12 +50,6 @@ class ControlEmptyWidget extends ControlBase{
 			this.show();
 		else 
 			this.hide();
-
-		if(!this.properties.enabled){
-			this.jquery().attr('disabled', '');
-		}else{
-			this.jquery().removeAttr('disabled');
-		};
 
 
 		if( data.html!==undefined ){

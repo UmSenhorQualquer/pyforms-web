@@ -17,7 +17,7 @@ class ControlBoundingSlider extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html =	"<div class='ControlSlider' id='"+this.place_id()+"' title='"+this.properties.help+"'   >";
+		var html =	"<div class='ControlSlider control' id='"+this.place_id()+"' title='"+this.properties.help+"'   >";
 		html +=		"<label style='margin-right: 20px;' for='"+this.control_id()+"'>"+this.properties.label+": <small id='value-"+this.control_id()+"' style='color:red' >"+this.properties.value+"</small></label>";
 		html += 	"<div class='slider' name='"+this.name+"' id='"+this.control_id()+"' ></div>";
 		html += 	"</div>";
@@ -31,7 +31,7 @@ class ControlBoundingSlider extends ControlBase{
 			min: this.properties.min, max: this.properties.max, values: this.properties.value 
 		});
 
-		if(!this.properties.visible) this.hide();
+		
 		
 	};
 

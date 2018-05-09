@@ -200,6 +200,7 @@ class ModelAdmin(BaseWidget):
             parent_model=self.parent_model,
             parent_pk=self.parent_pk,
             fieldsets=self.FIELDSETS,
+            readonly=self.READ_ONLY,
             parent_win=self
         )
 

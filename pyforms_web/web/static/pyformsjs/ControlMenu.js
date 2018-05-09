@@ -7,7 +7,7 @@ class ControlMenu extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = '<div id="'+this.place_id()+'" class="field ControlMenu">';
+		var html = '<div id="'+this.place_id()+'" class="field control ControlMenu">';
 		if(this.properties.label) html += '<label>'+this.properties.label+'</label>';
 		html += '<div id="'+this.control_id()+'" class="ui vertical accordion menu">';
 
@@ -31,7 +31,7 @@ class ControlMenu extends ControlBase{
 		this.jquery_place().replaceWith(html);
 		this.jquery_place().accordion({exclusive: false});
 
-		if(!this.properties.visible) this.hide();
+		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

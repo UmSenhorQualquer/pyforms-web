@@ -67,6 +67,7 @@ class EditFormAdmin(BaseWidget):
 
         if self.fieldsets is None: self.fieldsets = self.FIELDSETS
         
+        self._callable_fields       = []
         self.edit_fields            = []
         self.inlines_apps           = []
         self.inlines_controls_name  = []
@@ -127,11 +128,10 @@ class EditFormAdmin(BaseWidget):
         else:
             self.show_create_form()
 
-
-        self.formset = self.formset + self.get_buttons_row()
-
         for inline in self.inlines:
             self.formset.append(inline.__name__)
+
+
 
     #################################################################################
     #### PROPERTIES #################################################################
@@ -287,44 +287,26 @@ class EditFormAdmin(BaseWidget):
         fields2show = self.__get_visible_fields_names()
 
         self.__update_related_fields()
-        
-        for field in self.model._meta.get_fields():
-            if field.name not in fields2show:                       continue
-            if isinstance(field, models.AutoField):                 continue
-            elif isinstance(field, models.BigAutoField):            continue
-            elif isinstance(field, models.OneToOneField) and field.name.endswith('_ptr'):   continue
-            elif isinstance(field, models.BigIntegerField):         getattr(self, field.name).value = None
-            elif isinstance(field, models.BinaryField):             getattr(self, field.name).value = None
-            elif isinstance(field, models.BooleanField):            getattr(self, field.name).value = None
-            elif isinstance(field, models.CharField):               getattr(self, field.name).value = None
-            elif isinstance(field, models.CommaSeparatedIntegerField):getattr(self, field.name).value = None
-            elif isinstance(field, models.DateField):               getattr(self, field.name).value = None
-            elif isinstance(field, models.DateTimeField):           getattr(self, field.name).value = None
-            elif isinstance(field, models.DecimalField):            getattr(self, field.name).value = None
-            elif isinstance(field, models.DurationField):           getattr(self, field.name).value = None
-            elif isinstance(field, models.EmailField):              getattr(self, field.name).value = None
-            elif isinstance(field, models.FileField):               getattr(self, field.name).value = None
-            elif isinstance(field, models.FilePathField):           getattr(self, field.name).value = None
-            elif isinstance(field, models.FloatField):              getattr(self, field.name).value = None
-            elif isinstance(field, models.ImageField):              getattr(self, field.name).value = None
-            elif isinstance(field, models.IntegerField):            getattr(self, field.name).value = None
-            elif isinstance(field, models.GenericIPAddressField):   getattr(self, field.name).value = None
-            elif isinstance(field, models.NullBooleanField):        getattr(self, field.name).value = None
-            elif isinstance(field, models.PositiveIntegerField):    getattr(self, field.name).value = None
-            elif isinstance(field, models.PositiveSmallIntegerField): getattr(self, field.name).value = None
-            elif isinstance(field, models.SlugField):               getattr(self, field.name).value = None
-            elif isinstance(field, models.SmallIntegerField):       getattr(self, field.name).value = None
-            elif isinstance(field, models.TextField):               getattr(self, field.name).value = None
-            elif isinstance(field, models.TimeField):               getattr(self, field.name).value = None
-            elif isinstance(field, models.URLField):                getattr(self, field.name).value = None
-            elif isinstance(field, models.UUIDField):               getattr(self, field.name).value = None
-            elif isinstance(field, models.ForeignKey):              getattr(self, field.name).value = None
+
+        # clear all the fields
+        for field_name in fields2show:
+            if hasattr(self, field_name):
+                pyforms_field = getattr(self, field_name)
+                pyforms_field.value = None
 
         for field in self.edit_fields: field.show()
         self._save_btn.hide()
         self._remove_btn.hide()
 
+    def update_callable_fields(self):
+        if not self._callable_fields: return 
 
+        obj = self.model_object
+        for field_name in self._callable_fields:
+            pyforms_field   = getattr(self, field_name)
+            value           = getattr(obj,  field_name)
+
+            pyforms_field.value = str(value)
 
 
     def show_edit_form(self, pk=None):
@@ -346,43 +328,46 @@ class EditFormAdmin(BaseWidget):
 
         obj = self.model_object
         fields2show = self.__get_visible_fields_names()
-        for field in self.model._meta.get_fields():
-            if field.name not in fields2show: continue
+        
+        for field_name in fields2show:
 
-            if isinstance(field, models.AutoField):                 continue
-            elif field.name in self.readonly:                       getattr(self, field.name).value = str(getattr(obj, field.name))
-            elif isinstance(field, models.BigAutoField):            continue
-            elif isinstance(field, models.OneToOneField) and field.name.endswith('_ptr'):   continue
-            elif isinstance(field, models.BigIntegerField):           getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.BinaryField):               getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.BooleanField):              getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.CharField):                 getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.CommaSeparatedIntegerField):getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.DateField):                 getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.DateTimeField):             getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.DecimalField):              getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.DurationField):             getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.EmailField):                getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.FileField):                 getattr(self, field.name).value = getattr(obj, field.name).url if getattr(obj, field.name) else None
-            elif isinstance(field, models.FilePathField):             getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.FloatField):                getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.ImageField):                getattr(self, field.name).value = getattr(obj, field.name).url if getattr(obj, field.name) else None
-            elif isinstance(field, models.IntegerField):              getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.GenericIPAddressField):     getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.NullBooleanField):          getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.PositiveIntegerField):      getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.PositiveSmallIntegerField): getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.SlugField):                 getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.SmallIntegerField):         getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.TextField):                 getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.TimeField):                 getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.URLField):                  getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.UUIDField):                 getattr(self, field.name).value = getattr(obj, field.name)
-            elif isinstance(field, models.ForeignKey):
-                v = getattr(obj, field.name)
-                getattr(self, field.name).value = str(v.pk) if v else None
-            elif isinstance(field, models.ManyToManyField):                 
-                getattr(self, field.name).value = [str(o.pk) for o in getattr(obj, field.name).all()]
+            if hasattr(self, field_name):
+                pyforms_field   = getattr(self, field_name)
+                value           = getattr(obj,  field_name)
+
+                try:
+                    field = self.model._meta.get_field(field_name)
+                except FieldDoesNotExist:
+                    try:
+                        field = getattr(self.model, field_name)
+                    except AttributeError:
+                        continue
+
+                if callable(value):
+                    pyforms_field.value = str(value())
+
+                elif field_name in self.readonly:
+                    pyforms_field.value = str(value)
+
+                elif isinstance(field, models.AutoField):
+                    pyforms_field.value = str(value)
+
+                elif isinstance(field, models.FileField):                 
+                    pyforms_field.value = value.url if value else None
+
+                elif isinstance(field, models.ImageField):
+                    pyforms_field.value = value.url if value else None
+
+                elif isinstance(field, models.ForeignKey):
+                    pyforms_field.value = str(value.pk) if value else None
+                   
+                elif isinstance(field, models.ManyToManyField):                 
+                    pyforms_field.value = [str(o.pk) for o in value.all()]
+                    
+                else:
+                    pyforms_field.value = value
+                
+                
             
         self.inlines_apps = []
         for inline in self.inlines:
@@ -449,81 +434,35 @@ class EditFormAdmin(BaseWidget):
 
         try:
             obj = self.model_object
+
+            ## create an object if does not exists ####
             if obj is None: 
                 #check if it has permissions to add new registers
                 if ( self.parent and hasattr(self.parent, 'has_add_permission') ) and \
                    not self.parent.has_add_permission():
                    raise Exception('Your user does not have permissions to add')
                 
-                obj=self.create_newobject()
+                obj = self.create_newobject()
+            ###########################################
             
+            # if it is working as an inline edition form #
             if self.parent_field:
-                setattr(obj, self.parent_field.name, self.parent_model.objects.get(pk=self.parent_pk))
-            
+                setattr(obj, 
+                    self.parent_field.name, 
+                    self.parent_model.objects.get(pk=self.parent_pk)
+                )
+            ##############################################
+
             for field in self.model._meta.get_fields():
                 if field.name not in fields2show: continue
-            
-                if isinstance(field, models.AutoField):             continue
-                elif isinstance(field, models.BigAutoField):        continue
-                elif isinstance(field, models.OneToOneField) and field.name.endswith('_ptr'):   continue
-                elif isinstance(field, models.BigIntegerField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.BinaryField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.BooleanField):
-                    getattr(self, field.name).error = False                 
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.CharField):
-                    getattr(self, field.name).error = False                     
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.CommaSeparatedIntegerField):
-                    getattr(self, field.name).error = False 
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.DateTimeField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value )
-                elif isinstance(field, models.DateField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value )
-                elif isinstance(field, models.DecimalField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.DurationField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.EmailField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.FilePathField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.FloatField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.ImageField):
-                    getattr(self, field.name).error = False
-                    value = getattr(self, field.name).value
-                    if value:
-                        try:
-                            os.makedirs(os.path.join(settings.MEDIA_ROOT, field.upload_to))
-                        except os.error as e:
-                            pass
+                if field.name in self.readonly:   continue
+                
+                pyforms_field = getattr(self, field.name)
+                value         = pyforms_field.value
 
-                        paths = [p for p in value.split('/') if len(p)>0][1:]
-                        from_path   = os.path.join(settings.MEDIA_ROOT,*paths)
-                        if os.path.exists(from_path):
-                            to_path     = os.path.join(settings.MEDIA_ROOT, field.upload_to, os.path.basename(value) )
-                            os.rename(from_path, to_path)
-    
-                            url = '/'.join([field.upload_to]+[os.path.basename(value) ])
-                            if url[0]=='/': url = url[1:]
-                            setattr(obj, field.name, url)
-                    elif field.null:
-                        setattr(obj, field.name, None)
-                    else:
-                        setattr(obj, field.name, '')
+                if   isinstance(field, models.AutoField):
+                    continue
+                
                 elif isinstance(field, models.FileField):
                     getattr(self, field.name).error = False
                     value = getattr(self, field.name).value
@@ -546,47 +485,24 @@ class EditFormAdmin(BaseWidget):
                         setattr(obj, field.name, None)
                     else:
                         setattr(obj, field.name, '')
-                elif isinstance(field, models.IntegerField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.GenericIPAddressField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.NullBooleanField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.PositiveIntegerField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.PositiveSmallIntegerField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.SlugField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.SmallIntegerField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.TextField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.TimeField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.URLField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
-                elif isinstance(field, models.UUIDField):
-                    getattr(self, field.name).error = False
-                    setattr(obj, field.name, getattr(self, field.name).value)
+                
                 elif isinstance(field, models.ForeignKey):
-                    getattr(self, field.name).error = False
-                    value = getattr(self, field.name).value
-                    if value is not None and value!='-1': 
-                        value = field.related_model.objects.get(pk=value)
+                    if value is not None and value!='-1':
+                        try:
+                            value = field.related_model.objects.get(pk=value)
+                        except:
+                            self.alert(
+                                'The field [{0}] has an error.'.format(field.verbose_name)
+                            )
+                            pyforms_field.error = True
                     else:
                         value = None
                     setattr(obj, field.name, value)
+
+                else:
+                    pyforms_field.error = False
+                    setattr(obj, field.name, value)
+                
 
             try:
                 obj.full_clean()
@@ -648,6 +564,7 @@ class EditFormAdmin(BaseWidget):
                                 field_instance.remove(value)
                         
 
+            self.update_callable_fields()
 
             self.object_pk = obj.pk
 
@@ -695,7 +612,7 @@ class EditFormAdmin(BaseWidget):
             try:
                 fields.remove(self.parent_field.name)
             except ValueError: pass
-        return fields
+        return [field for field in fields if field is not None]
 
 
     def __update_related_fields(self):
@@ -720,6 +637,7 @@ class EditFormAdmin(BaseWidget):
 
             self.update_related_field(field, pyforms_field, queryset)
 
+
             
     def __create_model_formfields(self):
         """
@@ -728,51 +646,55 @@ class EditFormAdmin(BaseWidget):
         fields2show = self.__get_visible_fields_names()       
         formset     = []
 
-        for field in self.model._meta.get_fields():
-            if hasattr(self, field.name):     continue
-            if field.name not in fields2show: continue #only create this field if is visible
+        for field_name in fields2show:
+
+            # if the field already exists then ignore the creation
+            if hasattr(self, field_name): continue
+            
+            try:
+                field = self.model._meta.get_field(field_name)
+            except FieldDoesNotExist:
+                try:
+                    field = getattr(self.model, field_name)
+                except AttributeError:
+                    continue
+
             pyforms_field = None
 
-            if isinstance(field, models.AutoField): continue
+            if callable(field):
+                label = getattr(field, 'short_description') if hasattr(field, 'short_description') else field_name
+                pyforms_field = ControlText( label.capitalize(), readonly=True )
+
+                self._callable_fields.append( field_name )
+
+            
             elif field.name in self.readonly:
                 pyforms_field = ControlText( field.verbose_name.capitalize(), readonly=True )
+            
+            elif isinstance(field, models.AutoField):
+                pyforms_field = ControlText( field.verbose_name.capitalize(), readonly=True )
+        
             elif isinstance(field, models.Field) and field.choices:
                 pyforms_field = ControlCombo( 
                     field.verbose_name.capitalize(), 
                     items=[ (c[1],c[0]) for c in field.choices]
                 )
-            elif isinstance(field, models.BigAutoField):                pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( field.verbose_name.capitalize() )
-            elif isinstance(field, models.BinaryField):                 pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.BooleanField):                pyforms_field = ControlCheckBox( field.verbose_name.capitalize() )
-            elif isinstance(field, models.CharField):                   pyforms_field = ControlText( field.verbose_name.capitalize() )
-            elif isinstance(field, models.CommaSeparatedIntegerField):  pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.DateTimeField):               pyforms_field = ControlDateTime( field.verbose_name.capitalize() )
             elif isinstance(field, models.DateField):                   pyforms_field = ControlDate( field.verbose_name.capitalize() )
             elif isinstance(field, models.DecimalField):                pyforms_field = ControlFloat( field.verbose_name.capitalize() )
-            elif isinstance(field, models.DurationField):               pyforms_field = ControlText( field.verbose_name.capitalize() )
-            elif isinstance(field, models.EmailField):                  pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.FileField):                   pyforms_field = ControlFileUpload( field.verbose_name.capitalize() )
-            elif isinstance(field, models.FilePathField):               pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.FloatField):                  pyforms_field = ControlFloat( field.verbose_name.capitalize() )
             elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( field.verbose_name.capitalize() )
             elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( field.verbose_name.capitalize() )
-            elif isinstance(field, models.GenericIPAddressField):       pyforms_field = ControlText( field.verbose_name.capitalize() )
+            elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( field.verbose_name.capitalize() )
             elif isinstance(field, models.NullBooleanField):            
                 pyforms_field = ControlCombo( 
                     field.verbose_name.capitalize(), 
                     items=[('Unknown', None), ('Yes', True), ('No', False)]
                 )
-            elif isinstance(field, models.PositiveIntegerField):        pyforms_field = ControlText( field.verbose_name.capitalize() )
-            elif isinstance(field, models.PositiveSmallIntegerField):   pyforms_field = ControlText( field.verbose_name.capitalize() )
-            elif isinstance(field, models.SlugField):                   pyforms_field = ControlText( field.verbose_name.capitalize() )
-            elif isinstance(field, models.SmallIntegerField):           pyforms_field = ControlText( field.verbose_name.capitalize() )
-            elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( field.verbose_name.capitalize() )
-            elif isinstance(field, models.TimeField):                   pyforms_field = ControlText( field.verbose_name.capitalize() )
-            elif isinstance(field, models.URLField):                    pyforms_field = ControlText( field.verbose_name.capitalize() )
-            elif isinstance(field, models.UUIDField):                   pyforms_field = ControlText( field.verbose_name.capitalize() )
             elif isinstance(field, models.ForeignKey):
-
                 url = "/pyforms/autocomplete/{app_id}/{field_name}/{{query}}/".format(app_id=self.uid, field_name=field.name)
                 pyforms_field = ControlAutoComplete( 
                     field.verbose_name.capitalize(), 
@@ -781,7 +703,6 @@ class EditFormAdmin(BaseWidget):
                 )
 
             elif isinstance(field, models.ManyToManyField):
-
                 url = "/pyforms/autocomplete/{app_id}/{field_name}/{{query}}/".format(app_id=self.uid, field_name=field.name)
                 pyforms_field = ControlAutoComplete( 
                     field.verbose_name.capitalize(), 
@@ -789,10 +710,13 @@ class EditFormAdmin(BaseWidget):
                     model=field.related_model,
                     multiple=True
                 )
-
+            else:
+                pyforms_field = ControlText( field.verbose_name.capitalize() )
+            
+            # add the field to the application
             if pyforms_field is not None: 
-                setattr(self, field.name, pyforms_field)
-                formset.append(field.name)
+                setattr(self, field_name, pyforms_field)
+                formset.append(field_name)
                 self.edit_fields.append( pyforms_field )
 
         #Create the inlines edition forms.
@@ -808,7 +732,7 @@ class EditFormAdmin(BaseWidget):
             
             
         self.formset = self.fieldsets if self.fieldsets else formset
-
+        self.formset = self.formset + self.get_buttons_row()
 
 
     def __create_btn_event(self):

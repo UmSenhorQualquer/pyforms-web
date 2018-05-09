@@ -23,7 +23,7 @@ class ControlMultipleSelection extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div class='field ControlMultipleSelection' id='"+this.place_id()+"' >";
+		var html = "<div class='field control ControlMultipleSelection' id='"+this.place_id()+"' >";
 		if(this.properties.label_visible) html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
 		
 		switch(this.properties.mode) {
@@ -54,13 +54,7 @@ class ControlMultipleSelection extends ControlBase{
 				self.basewidget.fire_event( self.name, 'changed_event' );
 		});
 
-		if(!this.properties.enabled){
-			$("#"+this.place_id()+' .ui.dropdown').addClass('disabled');
-		}else{
-			$("#"+this.place_id()+' .ui.dropdown').removeClass('disabled');
-		};
-
-		if(!this.properties.visible) this.hide();
+		
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
 	};
 
@@ -80,14 +74,7 @@ class ControlMultipleSelection extends ControlBase{
 				this.set_value(this.properties.value);
 			}
 
-		if(!this.properties.enabled){
-			$('#'+this.place_id()+' .ui.dropdown').addClass("disabled")
-		}else{
-			$('#'+this.place_id()+' .ui.dropdown').removeClass("disabled")
-		};
-
-		if(!this.properties.visible) this.hide();
-		else this.show();
+		;
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
 	};
 

@@ -4,7 +4,7 @@ class ControlVisVis extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html =  "<div id='"+this.place_id()+"' class='field ControlVisVis' >";
+		var html =  "<div id='"+this.place_id()+"' class='field control ControlVisVis' >";
 		html += 	"<div id='chart-container-"+this.control_id()+"' title='"+this.properties.help+"'   >";
 		html += 	"<div id='"+this.control_id()+"' ></div>";
 		html += 	"</div>";
@@ -46,7 +46,7 @@ class ControlVisVis extends ControlBase{
 
 		this.chart = chart;
 
-		if(!this.properties.visible) this.hide();
+		
 	};
 
 

@@ -12,8 +12,22 @@ class BaseWidget{
 		this.loading_counter = 0;
 
 		for(var index = 0; index < controls.length; index++){
-			controls[index].basewidget = this;
-			controls[index].init_control();
+
+			var control = controls[index];
+			
+			control.basewidget = this;
+			control.init_control();
+
+			if(control.properties.visible)	
+				control.show(true);
+			else
+				control.hide(undefined, true);
+
+			if(control.properties.enabled)
+				control.enable();
+			else
+				control.disable();
+
 		};
 
 		if(data.messages!=undefined)
@@ -122,8 +136,20 @@ class BaseWidget{
 
 		
 		for (var index = 0; index < this.controls.length; index++) {
-			var name 		= this.controls[index].name;
-			if(data[name])  this.controls[index].deserialize( data[name] );
+			var control = this.controls[index];
+			if(data[control.name]){
+				control.deserialize( data[control.name] );
+
+				if(control.properties.visible)	
+					control.show(true);
+				else
+					control.hide(undefined, true);
+
+				if(control.properties.enabled)
+					control.enable();
+				else
+					control.disable();
+			};
 		};
 		
 		if(data.messages!=undefined)

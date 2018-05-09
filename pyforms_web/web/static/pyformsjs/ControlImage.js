@@ -21,7 +21,7 @@ class ControlImage extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field ControlImage' >";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlImage' >";
 		html += "<div class='ui card' id='card"+this.control_id()+"' >";
 		html += "<div class='image'>";
 		html += "<img style='width:100%;' class='image' src='' id='"+this.control_id()+"' />";
@@ -30,7 +30,7 @@ class ControlImage extends ControlBase{
 		html += "</div>";
 		this.jquery_place().replaceWith(html);
 
-		if(!this.properties.visible) this.hide();
+		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

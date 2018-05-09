@@ -10,7 +10,6 @@ class ControlCheckBoxList extends ControlBase{
     init_control(){
         this.set_value(this.properties.value);
         
-        if(!this.properties.visible) this.hide(undefined, true);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +39,7 @@ class ControlCheckBoxList extends ControlBase{
     ////////////////////////////////////////////////////////////////////////////////
 
     load_table(){
-        var html = "<div id='"+this.place_id()+"' class='field'>";
+        var html = "<div id='"+this.place_id()+"' class='field control'>";
         if(this.properties.label_visible) html += '<label>'+this.properties.label+'</label>';
         html += "<table class='ui selectable celled table "+this.properties.css+" ControlCheckBoxList' id='"+this.control_id()+"' >";
         html += "<thead>";

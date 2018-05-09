@@ -9,7 +9,7 @@ class ControlLabel extends ControlBase{
     ////////////////////////////////////////////////////////////////////////////////
 
     init_control(){
-        var html = '<div class="ui field '+this.properties.css+' message ControlLabel" id="'+this.place_id()+'"  >';
+        var html = '<div class="ui field '+this.properties.css+' message control ControlLabel" id="'+this.place_id()+'"  >';
         html += '<div class="header">';
         html += this.properties.label;
         html += '</div>';
@@ -20,7 +20,7 @@ class ControlLabel extends ControlBase{
         html += '</div>';
         this.jquery_place().replaceWith(html);
 
-        if(!this.properties.visible) this.hide(undefined, true);
+       
     };
 
     ////////////////////////////////////////////////////////////////////////////////

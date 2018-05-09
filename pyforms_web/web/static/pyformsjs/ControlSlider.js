@@ -17,7 +17,7 @@ class ControlSlider extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = 	"<div id='"+this.place_id()+"' class='field ControlSlider' title='"+this.properties.help+"' >";
+		var html = 	"<div id='"+this.place_id()+"' class='field control ControlSlider' title='"+this.properties.help+"' >";
 		html += 	"<label>"+this.properties.label;
 		html += 	" <div id='value"+this.control_id()+"' class='ui basic label'>"+this.properties.value+"</div>";
 		html += 	"</label>";
@@ -32,7 +32,7 @@ class ControlSlider extends ControlBase{
 			self.basewidget.fire_event( self.name, 'changed_event' );
 		});
 
-		if(!this.properties.visible) this.hide();
+		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

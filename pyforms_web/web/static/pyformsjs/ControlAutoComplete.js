@@ -3,7 +3,7 @@ class ControlAutoComplete extends ControlBase{
     
 
     init_control(){
-        var html = "<div id='"+this.place_id()+"' class='field ControlAutoComplete' ><label>"+this.properties.label+"</label>";
+        var html = "<div id='"+this.place_id()+"' class='field control ControlAutoComplete' ><label>"+this.properties.label+"</label>";
         
         html += "<div class='ui search dropdown "+(this.properties.multiple?'multiple':'')+" selection' id='"+this.control_id()+"' >"
         html += '<i class="dropdown icon"></i>';
@@ -30,14 +30,7 @@ class ControlAutoComplete extends ControlBase{
                 self.basewidget.fire_event( self.name, 'changed_event' );
         });
         
-        if(!this.properties.enabled)
-            $('#'+this.place_id()+' .ui.dropdown').addClass("disabled")
-        else
-            $('#'+this.place_id()+' .ui.dropdown').removeClass("disabled")
-        
         if(this.properties.error)    this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
-        if(!this.properties.visible) this.hide(undefined, true);
-       
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -63,15 +56,7 @@ class ControlAutoComplete extends ControlBase{
         this.jquery().dropdown('setup menu', { values: this.properties.items });
         this.set_value(this.properties.value);
 
-        if(!this.properties.enabled){
-            $('#'+this.place_id()+' .ui.dropdown').addClass("disabled")
-        }else{
-            $('#'+this.place_id()+' .ui.dropdown').removeClass("disabled")
-        };
-
-
-        if(!this.properties.visible) this.hide();
-        else this.show();
+        
         if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
     };
 

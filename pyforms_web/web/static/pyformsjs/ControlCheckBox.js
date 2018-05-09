@@ -18,7 +18,7 @@ class ControlCheckBox extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div class='field ControlCheckBox' id='"+this.place_id()+"' >";
+		var html = "<div class='field control ControlCheckBox' id='"+this.place_id()+"' >";
 		if(this.properties.label_visible)
 			html += "<div style='height: 31px' ></div>";
 		else
@@ -34,12 +34,7 @@ class ControlCheckBox extends ControlBase{
 		else
 			this.jquery().prop('checked', false);
 
-		if(!this.properties.enabled){
-			this.jquery().attr('disabled', '');
-		}else{
-			this.jquery().removeAttr('disabled');
-		};
-
+		
 		var self = this;
 		this.jquery().click(function(){ self.basewidget.fire_event( self.name, 'changed_event' ); });
 

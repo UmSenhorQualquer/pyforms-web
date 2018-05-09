@@ -38,7 +38,7 @@ class ControlMultipleChecks extends ControlBase{
     ////////////////////////////////////////////////////////////////////////////////
 
     init_control(){
-        var html = "<div class='field ControlMultipleChecks' id='"+this.place_id()+"' >";
+        var html = "<div class='field control ControlMultipleChecks' id='"+this.place_id()+"' >";
         if(this.properties.label_visible) html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
            
         html += '<div class="ui grid">';
@@ -67,15 +67,6 @@ class ControlMultipleChecks extends ControlBase{
             }
         });
 
-        
-        var self = this;
-        if(!this.properties.enabled){
-            $("#"+self.place_id()+' .ui.checkbox').checkbox('set disabled');
-        }else{
-            $("#"+self.place_id()+' .ui.checkbox').checkbox('set enabled');
-        };
-
-        if(!this.properties.visible) this.hide();
         if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
         
     };
@@ -102,8 +93,8 @@ class ControlMultipleChecks extends ControlBase{
             $('#'+this.place_id()+' .ui.dropdown').removeClass("disabled")
         };
 
-        if(!this.properties.visible) this.hide();
-        else this.show();
+        
+        ;
         if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
     };*/
 

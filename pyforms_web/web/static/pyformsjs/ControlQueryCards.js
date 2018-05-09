@@ -4,7 +4,7 @@ class ControlQueryCards extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field'>";
+		var html = "<div id='"+this.place_id()+"' class='field control'>";
 
 		var filters = this.properties.filters_list;
 		
@@ -83,7 +83,7 @@ class ControlQueryCards extends ControlBase{
 		});
 
 
-		if(!this.properties.visible) this.hide();
+		
 
 	};
 

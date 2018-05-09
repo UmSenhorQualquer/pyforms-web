@@ -25,7 +25,7 @@ class ControlPlayer extends ControlBase{
 
 	init_control(){
 
-		var html = "<div id='"+this.place_id()+"' class='field ControlPlayer' >";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlPlayer' >";
 		html += "<div class='ui card' id='card"+this.control_id()+"' >";
 		html += "<div class='image'>";
 		html += "<img style='width:100%;' class='image' src='' id='display"+this.control_id()+"' />";
@@ -44,7 +44,7 @@ class ControlPlayer extends ControlBase{
 			function(){ self.basewidget.fire_event( self.name, 'refresh' ); }
 		);
 
-		if(!this.properties.visible) this.hide();
+		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

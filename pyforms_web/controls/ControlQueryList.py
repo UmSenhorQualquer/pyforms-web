@@ -21,8 +21,9 @@ def get_field(model, lookup):
         try:
             f = model._meta.get_field(part)
         except FieldDoesNotExist:
+            f = None
             # check if field is related
-            for f in model._meta.related_objects:
+            """for f in model._meta.related_objects:
                 if f.get_accessor_name() == part:
                     break
             else:
@@ -34,34 +35,54 @@ def get_field(model, lookup):
                 return model
             else:
                 continue
+            """
 
         return f
+
+
+def get_lookup_value(o, lookup):
+    """
+    Return the value of a lookup over an object
+    """
+    val = o
+    for fieldname in lookup.split(LOOKUP_SEP):
+        val = getattr(val, fieldname)
+    return val
+
         
 
-def get_verbose_name(model, lookup):
+def get_lookup_verbose_name(model, lookup):
     # will return first non relational field's verbose_name in lookup
     parts = lookup.split(LOOKUP_SEP)
+    field = None
     for i, part in enumerate(parts):
         try:
-            f = model._meta.get_field(part)
+            field = model._meta.get_field(part)
         except FieldDoesNotExist:
-            # check if field is related
-            for f in model._meta.related_objects:
-                if f.get_accessor_name() == part:
-                    break
-            else:
-                raise ValueError("Invalid lookup string")
 
+            f = getattr(model, part)
+            if callable(f):
+                if hasattr(f, 'short_description'):
+                    return f.short_description.title()
+                else:
+                    return part.title()
+            else:
+                # check if field is related
+                for f in model._meta.related_objects:
+                    if f.get_accessor_name() == part:
+                        field = f
+                        break
+
+        """
         if f.is_relation:
             model = f.related_model
             if (len(parts)-1)==i:
                 return force_text(model._meta.verbose_name)
             else:
                 continue
-
-        return force_text(f.verbose_name)
+        """
+        return force_text(field.verbose_name).title()
         
-
 
 class ControlQueryList(ControlBase):
 
@@ -89,7 +110,7 @@ class ControlQueryList(ControlBase):
         super(ControlQueryList, self).__init__(*args, **kwargs)
 
 
-    def init_form(self): return "new ControlQueryList('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+    def init_form(self): return "new ControlQueryList('{0}', {1})".format( self._name, simplejson.dumps(self.serialize(init_form=True)) )
 
     def item_selection_changed_client_event(self):
         self.mark_to_update_client()
@@ -163,19 +184,16 @@ class ControlQueryList(ControlBase):
 
         
 
-    def serialize(self):
+    def serialize(self, init_form=False):
         data            = ControlBase.serialize(self)
         queryset        = self.value
     
         rows            = []
-        filters_list    = []
-        headers         = []
-
+        
         if self._update_list and queryset:
             row_start = self.rows_per_page*(self._current_page-1)
             row_end   = self.rows_per_page*(self._current_page)
-
-            model = queryset.model
+            model     = queryset.model
 
             if len(self.sort_by)>0:
                 for sort in self.sort_by:
@@ -190,34 +208,32 @@ class ControlQueryList(ControlBase):
             
             rows = self.queryset_to_list(queryset, self.list_display, row_start, row_end)
 
-            
-            filters_list = self.serialize_filters(self.list_filter, queryset)
-            
-        if self.list_display:
+            if init_form:
+                filters_list = self.serialize_filters(self.list_filter, queryset)
+                data.update({ 'filters_list': filters_list });
+                
+        if init_form and self.list_display:
             #configure the headers titles
+            headers         = []
             for column_name in self.list_display:
-                try:
-                    label = get_verbose_name(queryset.model, column_name)
-                except ValueError:
-                    label = column_name
+                label = get_lookup_verbose_name(queryset.model, column_name)
                 
                 headers.append({
                     'label':  label,
                     'column': column_name
                 })
+            data.update({ 'horizontal_headers':   headers, });
                 
         
         if len(self.search_fields)>0:
             data.update({'search_field_key': self.search_field_key if self.search_field_key is not None else ''})
     
         data.update({
-            'filters_list':         filters_list,
             'filter_by':            self.filter_by,
             'sort_by':              self.sort_by,
             'pages':                {'current_page': self._current_page, 'pages_list':self.__get_pages_2_show(queryset) },
             'value':                '',
             'values':               rows,
-            'horizontal_headers':   headers,
             'selected_row_id':      self._selected_row_id
         })
         
@@ -240,7 +256,9 @@ class ControlQueryList(ControlBase):
     #####################################################################
     #####################################################################
 
-    def format_list_column(self, col_value):        
+    def format_list_column(self, col_value): 
+
+        if col_value is None: return ''       
 
         if isinstance(col_value, datetime.datetime ):
             if not col_value: return ''
@@ -248,7 +266,6 @@ class ControlQueryList(ControlBase):
             return col_value.strftime('%Y-%m-%d %H:%M')
         elif isinstance(col_value, datetime.date ):
             if not col_value: return ''
-            col_value = timezone.localtime(col_value)
             return col_value.strftime('%Y-%m-%d')
         elif isinstance(col_value, bool ):
             return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
@@ -258,20 +275,30 @@ class ControlQueryList(ControlBase):
             return locale.format("%f", col_value, grouping=True)
         elif isinstance(col_value, int ):
             return locale.format("%d", col_value, grouping=True)
+        elif isinstance(col_value, models.Model ):
+            return col_value.__str__()
+        elif callable(col_value):
+            col_value = col_value()
+            return '' if col_value is None else str(col_value)
         else:
             return col_value
 
     def format_filter_column(self, col_value):
+        
+
         if isinstance(col_value, datetime.datetime ):
             if not col_value: return ''
             col_value = timezone.localtime(col_value)
             return col_value.strftime('%Y-%m-%d %H:%M')
         elif isinstance(col_value, datetime.date ):
             if not col_value: return ''
-            col_value = timezone.localtime(col_value)
             return col_value.strftime('%Y-%m-%d')
         elif isinstance(col_value, bool ):
             return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
+        elif isinstance(col_value, models.Model ):
+            return col_value.__str__()
+        elif callable(col_value):
+            return str(col_value())
         else:
             return col_value
 
@@ -294,19 +321,19 @@ class ControlQueryList(ControlBase):
             return rows
 
     
+    
     def queryset_to_list(self, queryset, list_display, first_row, last_row):
         if not list_display:
             return [ [m.pk, str(m)] for m in queryset[first_row:last_row] ]
         else:
-            rows = []
+            queryset = queryset.distinct()
+            queryset = queryset.order_by(*queryset.query.order_by)
 
-            queryset_list = queryset.values_list(*(['pk']+list_display) )
-            queryset_list = queryset_list.distinct()
-            queryset_list = queryset_list.order_by(*queryset.query.order_by)
-                    
-            for row_values in queryset_list[first_row:last_row]:
-                row = [self.format_list_column(c) for c in row_values]
+            rows = []
+            for o in queryset[first_row:last_row]:
+                row = [o.pk] + [self.format_list_column(get_lookup_value(o, col)) for col in list_display] 
                 rows.append(row)
+            
             return rows
 
 
@@ -344,21 +371,19 @@ class ControlQueryList(ControlBase):
 
     def serialize_filters(self, list_filter, queryset):
         filters_list = []
+        model = queryset.model
 
         #configure the filters
         for column_name in list_filter:
-            field         = get_field(model, column_name)
-            column_values = queryset.values_list(column_name, flat=True).distinct().order_by(column_name)
+            field = get_field(model, column_name)
+            
+            if field is None: continue
 
-        #configure the filters
-        for column_name in list_filter:
-            field           = get_field(model, column_name)
-            column_values   = queryset.values_list(column_name, flat=True).distinct().order_by(column_name)
-
+        
             field_type       = 'combo'
             field_properties = {
                 'field_type': 'combo',
-                'label':    get_verbose_name(model, column_name),
+                'label':    get_lookup_verbose_name(model, column_name),
                 'column':   column_name
             }
 
@@ -366,9 +391,16 @@ class ControlQueryList(ControlBase):
                 field_properties.update({
                     'items': [ ("{0}=true".format(column_name), 'True'), ("{0}=false".format(column_name), 'False')]
                 })
-            if isinstance(field, (models.DateField, models.DateTimeField) ):
+            
+            elif isinstance(field, (models.DateField, models.DateTimeField) ):
                 field_properties.update(self.get_datetimefield_options(column_name))
+            
+            elif field.is_relation:
+                objects = field.related_model.objects.all()
+                filter_values = [(column_name+'='+str(o.pk), o.__str__() ) for o in objects]
+                field_properties.update({'items': filter_values})
             else:
+                column_values = queryset.values_list(column_name, flat=True).distinct().order_by(column_name)
                 filter_values = [(column_name+'='+str(column_value), column_value) for column_value in column_values]
                 field_properties.update({'items': filter_values})
 
