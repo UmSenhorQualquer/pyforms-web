@@ -26,6 +26,10 @@ from django.db.models import Q
 
 from pyforms_web.utils import get_lookup_verbose_name
 
+import datetime
+from django.utils import timezone
+
+
 
 class EditFormAdmin(BaseWidget):
 
@@ -367,6 +371,21 @@ class EditFormAdmin(BaseWidget):
 
                     if isinstance(field, models.ManyToManyField):
                         pyforms_field.value = ';'.join([str(o) for o in value.all()])
+                    
+                    elif isinstance(value, datetime.datetime ):
+                        if not value: 
+                            pyforms_field.value = ''
+                        else:
+                            value = timezone.localtime(value)
+                            pyforms_field.value = value.strftime('%Y-%m-%d %H:%M')
+                    
+                    elif isinstance(value, datetime.date ):
+                        if not value: 
+                            pyforms_field.value = ''
+                        else:
+                            value = timezone.localtime(value)
+                            pyforms_field.value = value.strftime('%Y-%m-%d')
+    
                     else:
                         pyforms_field.value = value
 
