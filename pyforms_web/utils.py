@@ -1,5 +1,6 @@
 from django.db.models.constants import LOOKUP_SEP
 from django.utils.encoding import force_text
+from django.core.exceptions import FieldDoesNotExist
 
 def make_lambda_func(func, **kwargs):
     """ Auxiliar function for passing parameters to functions """

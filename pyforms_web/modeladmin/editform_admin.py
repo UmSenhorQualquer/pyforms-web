@@ -14,7 +14,7 @@ from pyforms_web.controls.ControlFileUpload         import ControlFileUpload
 from pyforms_web.controls.ControlCheckBox           import ControlCheckBox
 from pyforms_web.controls.ControlMultipleSelectionQuery  import ControlMultipleSelectionQuery
 
-import types
+import collections
 from pyforms_web.web.middleware import PyFormsMiddleware
 from django.core.exceptions import ValidationError, FieldDoesNotExist
 from .utils import get_fieldsets_strings
@@ -364,7 +364,8 @@ class EditFormAdmin(BaseWidget):
                     except AttributeError:
                         continue
 
-                if isinstance(value, types.FunctionType):
+                
+                if callable(field) and not isinstance(field, models.Model):
                     pyforms_field.value = value()
 
                 elif field_name in self.readonly:
@@ -383,7 +384,6 @@ class EditFormAdmin(BaseWidget):
                         if not value: 
                             pyforms_field.value = ''
                         else:
-                            value = timezone.localtime(value)
                             pyforms_field.value = value.strftime('%Y-%m-%d')
     
                     else:
@@ -701,10 +701,10 @@ class EditFormAdmin(BaseWidget):
 
             pyforms_field = None
 
-            if not isinstance(field, types.FunctionType):
+            if not (callable(field) and not isinstance(field, models.Model)):
                 label = get_lookup_verbose_name(self.model, field_name)
 
-            if isinstance(field, types.FunctionType):
+            if callable(field) and not isinstance(field, models.Model):
                 label = getattr(field, 'short_description') if hasattr(field, 'short_description') else field_name
                 pyforms_field = ControlText( label.capitalize(), readonly=True )
                 self._callable_fields.append( field_name )
