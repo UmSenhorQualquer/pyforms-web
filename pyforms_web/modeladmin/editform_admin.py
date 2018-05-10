@@ -68,6 +68,7 @@ class EditFormAdmin(BaseWidget):
         self.inlines     = kwargs.get('inlines',   self.INLINES)
         self.fieldsets   = kwargs.get('fieldsets', self.FIELDSETS)
         self.readonly    = kwargs.get('readonly',  self.READ_ONLY)
+        self.has_cancel_btn = kwargs.get('has_cancel_btn',  self.HAS_CANCEL_BTN)
 
         if self.fieldsets is None: self.fieldsets = self.FIELDSETS
         
@@ -94,20 +95,20 @@ class EditFormAdmin(BaseWidget):
         self._save_btn      = ControlButton(self.SAVE_BTN_LABEL)
         self._create_btn    = ControlButton(self.CREATE_BTN_LABEL)
         self._remove_btn    = ControlButton(self.REMOVE_BTN_LABEL,  css='red basic')  
-        if self.HAS_CANCEL_BTN:
+        if self.has_cancel_btn:
             self._cancel_btn = ControlButton(self.CANCEL_BTN_LABEL, css='gray basic')
 
         if self.parent_model:
             self._save_btn.css       += ' tiny'
             self._create_btn.css     += ' tiny'
             self._remove_btn.css     += ' tiny'
-            if self.HAS_CANCEL_BTN:
+            if self.has_cancel_btn:
                 self._cancel_btn.css += ' tiny'
         
         self.edit_buttons.append( self._save_btn )
         self.edit_buttons.append( self._create_btn )
         self.edit_buttons.append( self._remove_btn )
-        if self.HAS_CANCEL_BTN:
+        if self.has_cancel_btn:
             self.edit_buttons.append( self._cancel_btn )
 
         self.edit_fields += self.edit_buttons
@@ -117,13 +118,13 @@ class EditFormAdmin(BaseWidget):
         self._create_btn.value  = self.__create_btn_event
         self._remove_btn.value  = self.__remove_btn_event
         self._save_btn.value    = self.__save_btn_event
-        if self.HAS_CANCEL_BTN:
+        if self.has_cancel_btn:
             self._cancel_btn.value  = self.cancel_btn_event
         
         self._create_btn.label_visible  = False
         self._remove_btn.label_visible  = False
         self._save_btn.label_visible    = False
-        if self.HAS_CANCEL_BTN:
+        if self.has_cancel_btn:
             self._cancel_btn.label_visible  = False
         
 
@@ -178,7 +179,7 @@ class EditFormAdmin(BaseWidget):
             the end of the fieldsets.
         """
         buttons = ['_save_btn', '_create_btn']
-        if self.HAS_CANCEL_BTN:
+        if self.has_cancel_btn:
             buttons = buttons + ['_cancel_btn', ' ']
         buttons = buttons + ['_remove_btn']
         return [no_columns(*buttons)]
