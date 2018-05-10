@@ -41,7 +41,7 @@ class ControlQueryList extends ControlBase{
 		html += "<table class='ui selectable celled striped table ControlQueryList "+this.properties.css+" sortable' id='"+this.control_id()+"' >";
 		// render the table titles
 		var titles = this.properties.horizontal_headers;
-		if(titles.length>0){
+		if(titles && titles.length>0){
 			html += "<thead>";
 			html += "<tr>";
 			for(var i=0; i<titles.length; i++) html += "<th column='"+titles[i].column+"' >"+titles[i].label+"</th>";
@@ -164,12 +164,14 @@ class ControlQueryList extends ControlBase{
 		$( "#"+this.control_id()+" tbody" ).html(rows_html);
 		$( "#"+this.control_id()+" tfoot" ).remove();
 
+		var titles = this.properties.horizontal_headers;
+		
 		var html 		= '';
 		var pages_list 	= this.properties.pages.pages_list;
 		if(pages_list.length>1){
 			html += '<tfoot>';
 			html += '<tr>';
-			html += '<th colspan="'+this.properties.horizontal_headers.length+'">';
+			html += '<th colspan="'+(titles?titles.length:1)+'">';
 			html += '<div class="ui right floated pagination menu small">';
 			var start_page = 0;
 			var end_page = (pages_list.length-1)>5?(pages_list.length-1):pages_list.length;

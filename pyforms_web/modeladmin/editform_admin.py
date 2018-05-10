@@ -306,6 +306,9 @@ class EditFormAdmin(BaseWidget):
 
         for field in self.edit_fields: field.show()
         
+        for inline in self.inlines_controls:
+            inline.hide()
+
         self._save_btn.hide()
         self._remove_btn.hide()
 
@@ -411,10 +414,12 @@ class EditFormAdmin(BaseWidget):
             
         self.inlines_apps = []
         for inline in self.inlines:
-            getattr(self, inline.__name__)._name = inline.__name__
+            pyforms_field = getattr(self, inline.__name__)
+            pyforms_field._name = inline.__name__
             app =  inline(parent_model=self.model, parent_pk=self.object_pk)
             self.inlines_apps.append(app)
-            getattr(self, inline.__name__).value = app
+            pyforms_field.value = app
+            pyforms_field.show()
 
         return obj
 

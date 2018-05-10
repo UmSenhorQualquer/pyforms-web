@@ -1,4 +1,5 @@
 from django.db.models.constants import LOOKUP_SEP
+from django.db import models
 from django.utils.encoding import force_text
 from django.core.exceptions import FieldDoesNotExist
 
@@ -38,41 +39,54 @@ def get_lookup_value(o, lookup):
     Return the value of a lookup over an object
     """
     if o is None: return None
-    val = o
+
     for fieldname in lookup.split(LOOKUP_SEP):
-        if val is None: break
-        val = getattr(val, fieldname)
-    return val
+        o = getattr(o, fieldname)
+
+        if o is None: return None
+
+    #if isinstance(o.__class__, models.Field) and hasattr(o, 'choices'):
+    #    values = dict(getattr(o, 'choices'))
+    #    return values[o]
+    return o
 
         
 
 def get_lookup_verbose_name(model, lookup):
     # will return first non relational field's verbose_name in lookup
+
     parts = lookup.split(LOOKUP_SEP)
     field = None
     for i, part in enumerate(parts):
+        last_loop = i==(len(parts)-1)
         try:
             field = model._meta.get_field(part)
+            
+            if field.is_relation:
+
+                if last_loop:
+                    if not hasattr(field, 'verbose_name'):
+                        return force_text(field.related_model._meta.verbose_name).title()
+                    else:
+                        return force_text(field.verbose_name).title()
+            
+                else:
+                    model = field.related_model
+                    continue 
+
         except FieldDoesNotExist:
 
-            f = getattr(model, part)
-            if callable(f):
-                if hasattr(f, 'short_description'):
-                    return f.short_description.title()
+            field = getattr(model, part)
+
+            # check if is a function
+            if callable(field) and not isinstance(field, models.Model):
+                
+                if hasattr(field, 'short_description'):
+                    return field.short_description.title()
                 else:
                     return part.title()
+            
             else:
-                # check if field is related
-                for f in model._meta.related_objects:
-                    if f.get_accessor_name() == part:
-                        field = f
-                        break
-
-        if not hasattr(field, 'verbose_name'):
-            if field.is_relation:
-                if (len(parts)-1)==i:
-                    return force_text(field.related_model._meta.verbose_name)
-                else:
-                    continue
-        
+                return part.title()
+  
         return force_text(field.verbose_name).title()
