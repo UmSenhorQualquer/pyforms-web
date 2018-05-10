@@ -160,8 +160,8 @@ class EditFormAdmin(BaseWidget):
             # if so use it to get the data for visualization
             if hasattr(self.model, 'get_queryset'):
                 request  = PyFormsMiddleware.get_request()
-                queryset = self.model.get_queryset(queryset, request)
-           
+                queryset = self.model.get_queryset(request, queryset)
+
             return queryset.get(pk=self.object_pk)
 
     #################################################################################

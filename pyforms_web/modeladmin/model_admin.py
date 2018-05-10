@@ -151,7 +151,7 @@ class ModelAdmin(BaseWidget):
         self._list.value = self.__get_queryset()
 
 
-    def get_queryset(self, queryset):
+    def get_queryset(self, request, queryset):
         """
             The function retrives the queryset used to polulate the list.
             
@@ -305,11 +305,12 @@ class ModelAdmin(BaseWidget):
 
         # check if the model has a query_set function
         # if so use it to get the data for visualization
+        request  = PyFormsMiddleware.get_request()
+
         if hasattr(self.model, 'get_queryset'):
-            request  = PyFormsMiddleware.get_request()
             queryset = self.model.get_queryset(request, queryset)
         
-        return self.get_queryset(queryset)
+        return self.get_queryset(request, queryset)
 
 
     
