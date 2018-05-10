@@ -17,18 +17,17 @@ class BaseWidget{
 			
 			control.basewidget = this;
 			control.init_control();
-
-			if(control.properties.visible)	
-				control.show(true);
-			else
-				control.hide(undefined, true);
-
-			if(control.properties.enabled)
-				control.enable();
-			else
+			
+			if(!control.properties.enabled)
 				control.disable();
 
 		};
+
+		for(var index = 0; index < controls.length; index++){
+			var control = controls[index];
+			if(!control.properties.visible)	
+				control.hide();
+		}
 
 		if(data.messages!=undefined)
 			for (var i=0; i<data.messages.length; i++){
@@ -141,9 +140,9 @@ class BaseWidget{
 				control.deserialize( data[control.name] );
 
 				if(control.properties.visible)	
-					control.show(true);
+					control.show();
 				else
-					control.hide(undefined, true);
+					control.hide();
 
 				if(control.properties.enabled)
 					control.enable();

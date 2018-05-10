@@ -69,10 +69,7 @@ class ControlFileUpload extends ControlBase{
 		this.properties.new_value = undefined;
 		this.properties = $.extend(this.properties, data);	
 		this.set_value(this.properties.value);
-		if(this.properties.visible) 
-			this.show();
-		else 
-			this.hide();
+		
 
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
 	};

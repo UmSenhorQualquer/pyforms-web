@@ -14,7 +14,7 @@ from pyforms_web.controls.ControlFileUpload         import ControlFileUpload
 from pyforms_web.controls.ControlCheckBox           import ControlCheckBox
 from pyforms_web.controls.ControlMultipleSelectionQuery  import ControlMultipleSelectionQuery
 
-
+import types
 from pyforms_web.web.middleware import PyFormsMiddleware
 from django.core.exceptions import ValidationError, FieldDoesNotExist
 from .utils import get_fieldsets_strings
@@ -207,7 +207,7 @@ class EditFormAdmin(BaseWidget):
         """
         Function used by a combobox to get the items dynamically
 
-        :param str keywork: Keyword for filter the results
+        :param str keyword: Keyword for filter the results
         :param django.db.models.fields.Field field: Django field where the autocomplete will be applied
         
         Returns:
@@ -221,12 +221,15 @@ class EditFormAdmin(BaseWidget):
         query = field.related_model.objects.all()
         query = self.related_field_queryset(field, query)
 
-        if hasattr(field.related_model, 'autocomplete_search_fields'):
-            or_filter = Q()
-            for search_field in field.related_model.autocomplete_search_fields():
-                or_filter.add( Q(**{search_field:keyword}), Q.OR)
+        if keyword:
+            if hasattr(field.related_model, 'autocomplete_search_fields'):
+                or_filter = Q()
+                for search_field in field.related_model.autocomplete_search_fields():
+                    or_filter.add( Q(**{search_field:keyword}), Q.OR)
+            else:
+                or_filter = Q(pk=keyword)
         else:
-            or_filter = Q(pk=keyword)
+            or_filter = Q()
 
         try:
             return [{'name':str(o), 'value':o.pk, 'text':str(o)} for o in query.filter(or_filter)]
@@ -295,6 +298,7 @@ class EditFormAdmin(BaseWidget):
                 pyforms_field.value = None
 
         for field in self.edit_fields: field.show()
+        
         self._save_btn.hide()
         self._remove_btn.hide()
 
@@ -331,7 +335,7 @@ class EditFormAdmin(BaseWidget):
         
         for field_name in fields2show:
 
-            if hasattr(self, field_name):
+            if hasattr(self, field_name) and hasattr(obj,  field_name):
                 pyforms_field   = getattr(self, field_name)
                 value           = getattr(obj,  field_name)
 
@@ -343,7 +347,7 @@ class EditFormAdmin(BaseWidget):
                     except AttributeError:
                         continue
 
-                if callable(value):
+                if isinstance(value, types.FunctionType):
                     pyforms_field.value = str(value())
 
                 elif field_name in self.readonly:
@@ -487,7 +491,7 @@ class EditFormAdmin(BaseWidget):
                         setattr(obj, field.name, '')
                 
                 elif isinstance(field, models.ForeignKey):
-                    if value is not None and value!='-1':
+                    if value is not None:
                         try:
                             value = field.related_model.objects.get(pk=value)
                         except:
@@ -499,7 +503,7 @@ class EditFormAdmin(BaseWidget):
                         value = None
                     setattr(obj, field.name, value)
 
-                else:
+                elif not isinstance(field, models.ManyToManyField):
                     pyforms_field.error = False
                     setattr(obj, field.name, value)
                 
@@ -535,34 +539,25 @@ class EditFormAdmin(BaseWidget):
             obj.save()
             
             for field in self.model._meta.get_fields():
+
                 if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
                     values          = getattr(self, field.name).value
                     field_instance  = getattr(obj, field.name)
-                    allvalues       = field_instance.all()
+                   
+                    if field_instance.through is not None:
+                        continue
 
-                    if field_instance.through is None:
-                        for value in values:
-                            o = field.related_model.objects.get(pk=value)
-                            if o not in allvalues:
-                                field_instance.add(o)
+                    objs            = field.related_model.objects.filter(pk__in=values)
+                    values_2_remove = field_instance.all().exclude(pk__in=[o.pk for o in objs])
 
-                            allvalues = allvalues.exclude(pk=value)
+                    for o in values_2_remove: 
+                        field_instance.remove(o)
 
-                        for o in allvalues: o.delete()
-                    else:
-                        added_values = []
-                        
-                        # add the values
-                        for value in values:    
-                            if value not in allvalues:
-                                added_values.append(value)
-                                field_instance.add(value)
-                        
-                        # remove the non selected values
-                        for value in allvalues:
-                            if value not in added_values:
-                                field_instance.remove(value)
-                        
+                    values_2_add    = objs.exclude(pk__in=[o.pk for o in field_instance.all()])
+                    for o in values_2_add:
+                        field_instance.add(o)
+
+                   
 
             self.update_callable_fields()
 
@@ -661,7 +656,7 @@ class EditFormAdmin(BaseWidget):
 
             pyforms_field = None
 
-            if callable(field):
+            if isinstance(field, types.FunctionType):
                 label = getattr(field, 'short_description') if hasattr(field, 'short_description') else field_name
                 pyforms_field = ControlText( label.capitalize(), readonly=True )
 

@@ -44,8 +44,10 @@ def get_lookup_value(o, lookup):
     """
     Return the value of a lookup over an object
     """
+    if o is None: return None
     val = o
     for fieldname in lookup.split(LOOKUP_SEP):
+        if val is None: break
         val = getattr(val, fieldname)
     return val
 

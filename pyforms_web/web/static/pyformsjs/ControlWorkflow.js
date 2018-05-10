@@ -125,11 +125,6 @@ class ControlWorkflow extends ControlBase{
 	deserialize(data){
 		$.extend(this.properties, data);
 
-		if(this.properties.visible) 
-			this.show();
-		else 
-			this.hide();
-
 
 		this.set_value(this.properties.value);
 

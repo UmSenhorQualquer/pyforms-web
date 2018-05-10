@@ -48,10 +48,6 @@ class ControlCalendar extends ControlBase{
 		var html = this.create_calendar()
 		$("#"+this.control_id()).replaceWith(html);
 		
-		if(this.properties.visible) 
-			this.show();
-		else 
-			this.hide();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

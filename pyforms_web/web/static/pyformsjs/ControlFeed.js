@@ -52,7 +52,6 @@ class ControlFeed extends ControlBase{
 			self.set_actions(e);
 		};
 		
-		if(this.properties.visible) this.show(); else this.hide();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -91,9 +90,7 @@ class ControlFeed extends ControlBase{
 		if(this.properties.clear) this.jquery().empty();
 		
 		this.set_value(this.properties.value);
-		
-		if(this.properties.visible)  this.show();
-		else this.hide();
+	
 
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 	};

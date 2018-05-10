@@ -130,10 +130,6 @@ class ControlQueryCards extends ControlBase{
 		
 		this.set_click_events();
 
-		if(this.properties.visible) 
-			this.show();
-		else 
-			this.hide();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

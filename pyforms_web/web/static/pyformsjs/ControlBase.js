@@ -88,12 +88,11 @@ class ControlBase{
 
 	////////////////////////////////////////////////////////////////////////////////
 
-	hide(not_update_columns, init_form){
-		
-		// if the control is already hidden leave the function
-		if(init_form==undefined)
-			if( !this.jquery_place().is(':visible') ) return;
+	hide(){
+		console.log('hide: '+this.properties.name);
 
+		if( !this.jquery_place().is(':visible') ) return;
+		
 		this.jquery_place().hide();
 		this.properties.visible = false;
 
@@ -104,17 +103,21 @@ class ControlBase{
 		{	
 			// if the row has more than one element, reduce the number
 			if( !parent.hasClass( 'no-alignment') )
-				for(var i=2; i<COLUMNS_CSS_CLASSES.length; i++){
+				for(var i=COLUMNS_CSS_CLASSES.length; i>1; i--){
 					if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
 						parent.removeClass( COLUMNS_CSS_CLASSES[i] );
 						parent.addClass( COLUMNS_CSS_CLASSES[i-1] );
+						//parent.removeClass('fields');
 						break;
 					};
 				}
 			
 			// no visible element inside the row, then hide it
-			if( this.count_visible( parent.find('.control') )==0 )
+			if( this.count_visible( parent.find('.control') )==0 ){
 				parent.hide();	
+				for(var i=0; i<COLUMNS_CSS_CLASSES.length-1; i++)
+					parent.removeClass( COLUMNS_CSS_CLASSES[i] );
+			}
 		}
 
 		var pyforms_segment = this.jquery_place().parents('.pyforms-segment');
@@ -124,27 +127,43 @@ class ControlBase{
 
 	////////////////////////////////////////////////////////////////////////////////
 
-	show(init_form){
-		//if( this.jquery_place().is(':visible') ) return;
+	show(){
+		console.log('show: '+this.properties.name);
+
+		if( this.jquery_place().is(':visible') ) return;
 		
 		this.jquery_place().show();
 		this.properties.visible = true;
 
 		var parent = this.jquery_place().parent();
 		
-		if( parent.hasClass('row') )
-		
-			if( parent.hasClass('fields') && !parent.hasClass( 'no-alignment') ){
-				if(init_form!=true)
-					for(var i=0; i<COLUMNS_CSS_CLASSES.length-1; i++)
+		if( parent.hasClass('row') ){
+
+			if( parent.hasClass( 'no-alignment') ){
+				//parent.addClass('fields');
+				parent.show();
+
+			}else{
+
+				//if( parent.hasClass('fields') ){
+					console.log( parent.find('.control:visible') ,'visible');
+					
+					for(var i=1; i<(COLUMNS_CSS_CLASSES.length-1); i++)
 						if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
 							parent.removeClass( COLUMNS_CSS_CLASSES[i] );
 							parent.addClass( COLUMNS_CSS_CLASSES[i+1] );
+							//parent.addClass('fields');
 							break;
 						};
-			}else 
-			 	parent.css('display', '');
 					
+				/*}else{ 
+
+				 	parent.addClass('fields');
+					parent.addClass('one');
+				 	parent.show()
+				}*/
+			}
+		}
 		
 
 		var pyforms_segment = this.jquery_place().parents('.pyforms-segment');

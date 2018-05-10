@@ -65,10 +65,6 @@ class ControlTimeout extends ControlBase{
 		if (last_play_value==false && this.properties.play)
 			this.update_progress_bar(false);
 
-		if(this.properties.visible) 
-			this.show();
-		else 
-			this.hide();
 	};
 
 }

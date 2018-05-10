@@ -121,24 +121,24 @@ def remove_app(request, app_id):
 
 @never_cache
 @csrf_exempt
-def autocomplete_search(request, app_id, fieldname, keywork=None):
-    
-    if keywork is not None:
-        app   = ApplicationsLoader.get_instance(request, app_id)
+def autocomplete_search(request, app_id, fieldname, keyword=None):
+    app   = ApplicationsLoader.get_instance(request, app_id)
+    field = getattr(app,fieldname)
         
-        if isinstance(app, EditFormAdmin):
-            modelfield = app.model._meta.get_field(fieldname)
-            if modelfield is not None:
-                items = app.autocomplete_search(keywork, modelfield)
-            else:
-                field = getattr(app,fieldname)
-                items = field.items_query(keywork)
+    if isinstance(app, EditFormAdmin):
+        modelfield = app.model._meta.get_field(fieldname)
+        if modelfield is not None:
+            items = app.autocomplete_search(keyword, modelfield)
         else:
             field = getattr(app,fieldname)
-            items = field.items_query(keywork)
+            items = field.items_query(keyword)
     else:
-        items = []
+        items = field.items_query(keyword)
+
     
+    if not field.multiple:
+        items = [{'name':'---', 'value': None, 'text':'---'}] + items
+   
     data  = {'success': len(items)>0, 'results': items}
 
     return HttpResponse(simplejson.dumps(data), "application/json")

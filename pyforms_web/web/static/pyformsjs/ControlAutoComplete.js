@@ -4,7 +4,6 @@ class ControlAutoComplete extends ControlBase{
 
     init_control(){
         var html = "<div id='"+this.place_id()+"' class='field control ControlAutoComplete' ><label>"+this.properties.label+"</label>";
-        
         html += "<div class='ui search dropdown "+(this.properties.multiple?'multiple':'')+" selection' id='"+this.control_id()+"' >"
         html += '<i class="dropdown icon"></i>';
         html += '<div class="default text">'+this.properties.label+'</div>';
@@ -16,7 +15,8 @@ class ControlAutoComplete extends ControlBase{
         this.jquery().dropdown({
             apiSettings: { url: this.properties.items_url },
             saveRemoteData:   false,
-            filterRemoteData: false
+            filterRemoteData: false,
+            placeholder: false
         });
 
         console.long
@@ -45,7 +45,9 @@ class ControlAutoComplete extends ControlBase{
     ////////////////////////////////////////////////////////////////////////////////
 
     get_value(){
-        return this.jquery().dropdown('get value');
+        var v = this.jquery().dropdown('get value')
+        console.log(v);
+        return v==''?null:v
     };
 
     ////////////////////////////////////////////////////////////////////////////////

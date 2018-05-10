@@ -30,10 +30,6 @@ class ControlCheckBoxList extends ControlBase{
     set_value(value){
         this.load_table();
 
-        if(this.properties.visible) 
-            this.show();
-        else 
-            this.hide();
     };
 
     ////////////////////////////////////////////////////////////////////////////////

@@ -9,7 +9,7 @@ urlpatterns = [
 	url(r'^app/open/(?P<app_id>[a-zA-Z._\- 0-9]+)/', 		 open_app		),
 	url(r'^app/update/(?P<app_id>[a-zA-Z._\- 0-9]+)/',		 update_app		),
 	url(r'^app/remove/(?P<app_id>[a-zA-Z._\- 0-9]+)/', 		 remove_app		),
-	url(r'^autocomplete/(?P<app_id>[a-zA-Z._\- 0-9]+)/(?P<fieldname>[a-zA-Z._\- 0-9]+)/(?P<keywork>[a-zA-Z._\- 0-9]+)/',     autocomplete_search	),
+	url(r'^autocomplete/(?P<app_id>[a-zA-Z._\- 0-9]+)/(?P<fieldname>[a-zA-Z._\- 0-9]+)/(?P<keyword>[a-zA-Z._\- 0-9]+)/',     autocomplete_search	),
 	url(r'^autocomplete/(?P<app_id>[a-zA-Z._\- 0-9]+)/(?P<fieldname>[a-zA-Z._\- 0-9]+)/',     autocomplete_search	),
 	url(r'^upload-files/', upload_files	),	
 	url(r'^filesbrowser/', filesbrowser_browse),

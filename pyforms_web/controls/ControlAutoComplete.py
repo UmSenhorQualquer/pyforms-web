@@ -38,21 +38,28 @@ class ControlAutoComplete(ControlBase):
     def deserialize(self, data):
         super(ControlAutoComplete,self).deserialize(data)
 
+        value = data.get('value')
         if self.multiple:
-            self.value = data.get('value').split(',')
+            self.value = [(int(v) if v.isdigit() else None) for v in value.split(',')]
+        else:
+            self.value = int(value) if value.isdigit() else None
 
     def serialize(self):
         data = super(ControlAutoComplete,self).serialize()
 
         if self.model:
             value = self._value if isinstance(self._value, list) else [self._value]
-            value = [v for v in value if v]
+            value = [v for v in value if v if v is not None]
 
+            print(value)
             if value:
                 query = self.model.objects.filter(pk__in=value)
                 items = [{'name':str(o), 'value':o.pk, 'text':str(o)} for o in query]
             else:
                 items = []
+
+            if not self.multiple:
+                items = [{'name':'---', 'value':None, 'text':'---'}] + items
 
         data.update({'items_url': self.items_url, 'items':items, 'multiple':self.multiple})
 

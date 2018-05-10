@@ -75,7 +75,6 @@ class ControlItemsList extends ControlBase{
 			self.basewidget.fire_event( self.name, 'item_selection_changed_event' );
 		});
 
-		if(this.properties.visible) this.show(); else this.hide();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

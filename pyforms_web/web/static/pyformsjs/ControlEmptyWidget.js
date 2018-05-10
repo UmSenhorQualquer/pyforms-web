@@ -46,12 +46,6 @@ class ControlEmptyWidget extends ControlBase{
 			delete data.clear_widget;
 		}
 
-		if(data.visible) 
-			this.show();
-		else 
-			this.hide();
-
-
 		if( data.html!==undefined ){
 			this.jquery_place().html( Base64.decode(data.html) );
 			delete data.html;
