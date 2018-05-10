@@ -89,9 +89,7 @@ class ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	hide(){
-		console.log('hide: '+this.properties.name);
-
-		if( !this.jquery_place().is(':visible') ) return;
+		if( this.count_visible( this.jquery_place() )==0 ) return;
 		
 		this.jquery_place().hide();
 		this.properties.visible = false;
@@ -128,8 +126,6 @@ class ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	show(){
-		console.log('show: '+this.properties.name);
-
 		if( this.jquery_place().is(':visible') ) return;
 		
 		this.jquery_place().show();
@@ -146,7 +142,6 @@ class ControlBase{
 			}else{
 
 				//if( parent.hasClass('fields') ){
-					console.log( parent.find('.control:visible') ,'visible');
 					
 					for(var i=1; i<(COLUMNS_CSS_CLASSES.length-1); i++)
 						if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){

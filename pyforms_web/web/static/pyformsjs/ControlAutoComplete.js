@@ -15,7 +15,7 @@ class ControlAutoComplete extends ControlBase{
         this.jquery().dropdown({
             apiSettings: { url: this.properties.items_url },
             saveRemoteData:   false,
-            filterRemoteData: false,
+            filterRemoteData: true,
             placeholder: false
         });
 
@@ -46,7 +46,7 @@ class ControlAutoComplete extends ControlBase{
 
     get_value(){
         var v = this.jquery().dropdown('get value')
-        console.log(v);
+        
         return v==''?null:v
     };
 

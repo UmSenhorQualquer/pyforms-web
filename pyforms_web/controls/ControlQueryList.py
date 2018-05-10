@@ -1,8 +1,8 @@
 from pyforms_web.controls.ControlBase import ControlBase
 from django.apps import apps
-from django.db.models.constants import LOOKUP_SEP
+
 from django.core.exceptions import FieldDoesNotExist
-from django.utils.encoding import force_text
+
 from django.utils.dateparse import parse_datetime
 from django.db.models import Q
 import simplejson, datetime
@@ -14,76 +14,7 @@ from calendar import monthrange
 from django.utils import timezone
 import locale
 
-def get_field(model, lookup):
-    # will return first non relational field's verbose_name in lookup
-    parts = lookup.split(LOOKUP_SEP)
-    for i, part in enumerate(parts):
-        try:
-            f = model._meta.get_field(part)
-        except FieldDoesNotExist:
-            f = None
-            # check if field is related
-            """for f in model._meta.related_objects:
-                if f.get_accessor_name() == part:
-                    break
-            else:
-                raise ValueError("Invalid lookup string")
-
-        if f.is_relation:
-            model = f.related_model
-            if (len(parts)-1)==i:
-                return model
-            else:
-                continue
-            """
-
-        return f
-
-
-def get_lookup_value(o, lookup):
-    """
-    Return the value of a lookup over an object
-    """
-    if o is None: return None
-    val = o
-    for fieldname in lookup.split(LOOKUP_SEP):
-        if val is None: break
-        val = getattr(val, fieldname)
-    return val
-
-        
-
-def get_lookup_verbose_name(model, lookup):
-    # will return first non relational field's verbose_name in lookup
-    parts = lookup.split(LOOKUP_SEP)
-    field = None
-    for i, part in enumerate(parts):
-        try:
-            field = model._meta.get_field(part)
-        except FieldDoesNotExist:
-
-            f = getattr(model, part)
-            if callable(f):
-                if hasattr(f, 'short_description'):
-                    return f.short_description.title()
-                else:
-                    return part.title()
-            else:
-                # check if field is related
-                for f in model._meta.related_objects:
-                    if f.get_accessor_name() == part:
-                        field = f
-                        break
-
-        """
-        if f.is_relation:
-            model = f.related_model
-            if (len(parts)-1)==i:
-                return force_text(model._meta.verbose_name)
-            else:
-                continue
-        """
-        return force_text(field.verbose_name).title()
+from pyforms_web.utils import get_lookup_verbose_name, get_lookup_value, get_lookup_field
         
 
 class ControlQueryList(ControlBase):
@@ -377,7 +308,7 @@ class ControlQueryList(ControlBase):
 
         #configure the filters
         for column_name in list_filter:
-            field = get_field(model, column_name)
+            field = get_lookup_field(model, column_name)
             
             if field is None: continue
 
@@ -399,8 +330,9 @@ class ControlQueryList(ControlBase):
             
             elif field.is_relation:
                 objects = field.related_model.objects.all()
-                filter_values = [(column_name+'='+str(o.pk), o.__str__() ) for o in objects]
+                filter_values = [(field.name+'='+str(o.pk), o.__str__() ) for o in objects]
                 field_properties.update({'items': filter_values})
+                
             else:
                 column_values = queryset.values_list(column_name, flat=True).distinct().order_by(column_name)
                 filter_values = [(column_name+'='+str(column_value), column_value) for column_value in column_values]

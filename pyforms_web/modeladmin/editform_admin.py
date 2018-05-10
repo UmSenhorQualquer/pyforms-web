@@ -24,7 +24,7 @@ from django.db import models
 import os
 from django.db.models import Q
 
-
+from pyforms_web.utils import get_lookup_verbose_name
 
 
 class EditFormAdmin(BaseWidget):
@@ -67,8 +67,10 @@ class EditFormAdmin(BaseWidget):
 
         if self.fieldsets is None: self.fieldsets = self.FIELDSETS
         
+        self._auto_fields           = []
         self._callable_fields       = []
         self.edit_fields            = []
+        self.edit_buttons           = []
         self.inlines_apps           = []
         self.inlines_controls_name  = []
         self.inlines_controls       = []
@@ -98,12 +100,13 @@ class EditFormAdmin(BaseWidget):
             if self.HAS_CANCEL_BTN:
                 self._cancel_btn.css += ' tiny'
         
-        self.edit_fields.append( self._save_btn )
-        self.edit_fields.append( self._create_btn )
-        self.edit_fields.append( self._remove_btn )
+        self.edit_buttons.append( self._save_btn )
+        self.edit_buttons.append( self._create_btn )
+        self.edit_buttons.append( self._remove_btn )
         if self.HAS_CANCEL_BTN:
-            self.edit_fields.append( self._cancel_btn )
+            self.edit_buttons.append( self._cancel_btn )
 
+        self.edit_fields += self.edit_buttons
         for field in self.edit_fields: field.hide()
                 
         # events
@@ -120,7 +123,7 @@ class EditFormAdmin(BaseWidget):
             self._cancel_btn.label_visible  = False
         
 
-        self.__create_model_formfields()
+        self.create_model_formfields()
         pk = kwargs.get('pk', None)
         if pk:
             self.object_pk = pk
@@ -287,7 +290,7 @@ class EditFormAdmin(BaseWidget):
            not self.parent.has_add_permission():
            raise Exception('Your user does not have permissions to add')
             
-        fields2show = self.__get_visible_fields_names()
+        fields2show = self.get_visible_fields_names()
 
         self.__update_related_fields()
 
@@ -306,11 +309,21 @@ class EditFormAdmin(BaseWidget):
         if not self._callable_fields: return 
 
         obj = self.model_object
+        if obj is None: return
         for field_name in self._callable_fields:
-            pyforms_field   = getattr(self, field_name)
-            value           = getattr(obj,  field_name)
+            pyforms_field       = getattr(self, field_name)
+            value               = getattr(obj,  field_name)()
+            pyforms_field.value = value
 
-            pyforms_field.value = str(value)
+    def update_autonumber_fields(self):
+        if not self._auto_fields: return 
+
+        obj = self.model_object
+        if obj is None: return
+        for field_name in self._auto_fields:
+            pyforms_field       = getattr(self, field_name)
+            value               = getattr(obj,  field_name)
+            pyforms_field.value = value
 
 
     def show_edit_form(self, pk=None):
@@ -331,7 +344,7 @@ class EditFormAdmin(BaseWidget):
         self.__update_related_fields()
 
         obj = self.model_object
-        fields2show = self.__get_visible_fields_names()
+        fields2show = self.get_visible_fields_names()
         
         for field_name in fields2show:
 
@@ -348,13 +361,17 @@ class EditFormAdmin(BaseWidget):
                         continue
 
                 if isinstance(value, types.FunctionType):
-                    pyforms_field.value = str(value())
+                    pyforms_field.value = value()
 
                 elif field_name in self.readonly:
-                    pyforms_field.value = str(value)
+
+                    if isinstance(field, models.ManyToManyField):
+                        pyforms_field.value = ';'.join([str(o) for o in value.all()])
+                    else:
+                        pyforms_field.value = value
 
                 elif isinstance(field, models.AutoField):
-                    pyforms_field.value = str(value)
+                    pyforms_field.value = value
 
                 elif isinstance(field, models.FileField):                 
                     pyforms_field.value = value.url if value else None
@@ -363,7 +380,7 @@ class EditFormAdmin(BaseWidget):
                     pyforms_field.value = value.url if value else None
 
                 elif isinstance(field, models.ForeignKey):
-                    pyforms_field.value = str(value.pk) if value else None
+                    pyforms_field.value = value.pk if value else None
                    
                 elif isinstance(field, models.ManyToManyField):                 
                     pyforms_field.value = [str(o.pk) for o in value.all()]
@@ -434,7 +451,7 @@ class EditFormAdmin(BaseWidget):
         Returns:
             :django.db.models.Model object: Created object or None if the object was not saved with success.
         """
-        fields2show = self.__get_visible_fields_names()
+        fields2show = self.get_visible_fields_names()
 
         try:
             obj = self.model_object
@@ -512,13 +529,13 @@ class EditFormAdmin(BaseWidget):
                 obj.full_clean()
             except ValidationError as e:
                 html = '<ul class="list">'
-                for key, messages in e.message_dict.items():
+                for field_name, messages in e.message_dict.items():
                     
                     try:
-                        field = self.model._meta.get_field(key)
-                        getattr(self, field.name).error = True
+                        getattr(self, field_name).error = True
 
-                        html += '<li><b>{0}</b>'.format(field.verbose_name)
+                        label = get_lookup_verbose_name(self.model, field_name)
+                        html += '<li><b>{0}</b>'.format(label.capitalize())
 
                         field_error = True
                 
@@ -543,9 +560,6 @@ class EditFormAdmin(BaseWidget):
                 if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
                     values          = getattr(self, field.name).value
                     field_instance  = getattr(obj, field.name)
-                   
-                    if field_instance.through is not None:
-                        continue
 
                     objs            = field.related_model.objects.filter(pk__in=values)
                     values_2_remove = field_instance.all().exclude(pk__in=[o.pk for o in objs])
@@ -556,12 +570,14 @@ class EditFormAdmin(BaseWidget):
                     values_2_add    = objs.exclude(pk__in=[o.pk for o in field_instance.all()])
                     for o in values_2_add:
                         field_instance.add(o)
-
+                    
                    
+            self.object_pk = obj.pk
 
             self.update_callable_fields()
+            self.update_autonumber_fields()
 
-            self.object_pk = obj.pk
+            
 
             return obj
 
@@ -594,19 +610,29 @@ class EditFormAdmin(BaseWidget):
                     break
 
 
-    def __get_visible_fields_names(self):
+    def get_visible_fields_names(self):
         """
         Function called to get names of the visible fields.
 
         Returns:
             :list(str): List names of the visible fields.
         """
-        fields = get_fieldsets_strings(self.fieldsets) if self.fieldsets else [field.name for field in self.model._meta.get_fields() if not(isinstance(field, models.OneToOneField) and field.name.endswith('_ptr'))]
-        
+        if self.fieldsets:
+            fields = get_fieldsets_strings(self.fieldsets)
+        else:
+            fields = []
+            for field in self.model._meta.get_fields():
+                
+                if field.one_to_many: continue
+                if field.one_to_one and field.name.endswith('_ptr'): continue
+
+                fields.append(field.name)
+           
         if self.parent_field: 
             try:
                 fields.remove(self.parent_field.name)
             except ValueError: pass
+
         return [field for field in fields if field is not None]
 
 
@@ -614,7 +640,7 @@ class EditFormAdmin(BaseWidget):
         """
         Update all related fields 
         """
-        fields2show = self.__get_visible_fields_names()       
+        fields2show = self.get_visible_fields_names()       
         formset     = []
 
         for field in self.model._meta.get_fields():
@@ -634,11 +660,11 @@ class EditFormAdmin(BaseWidget):
 
 
             
-    def __create_model_formfields(self):
+    def create_model_formfields(self):
         """
         Create the model edition form.
         """
-        fields2show = self.__get_visible_fields_names()       
+        fields2show = self.get_visible_fields_names()       
         formset     = []
 
         for field_name in fields2show:
@@ -656,43 +682,50 @@ class EditFormAdmin(BaseWidget):
 
             pyforms_field = None
 
+            if not isinstance(field, types.FunctionType):
+                label = get_lookup_verbose_name(self.model, field_name)
+
             if isinstance(field, types.FunctionType):
                 label = getattr(field, 'short_description') if hasattr(field, 'short_description') else field_name
                 pyforms_field = ControlText( label.capitalize(), readonly=True )
-
                 self._callable_fields.append( field_name )
 
             
             elif field.name in self.readonly:
-                pyforms_field = ControlText( field.verbose_name.capitalize(), readonly=True )
+
+                if isinstance(field, models.TextField):
+                    pyforms_field = ControlTextArea( label.capitalize(), readonly=True )
+                else:
+                    pyforms_field = ControlText( label.capitalize(), readonly=True )
             
             elif isinstance(field, models.AutoField):
-                pyforms_field = ControlText( field.verbose_name.capitalize(), readonly=True )
+                pyforms_field = ControlText( label.capitalize(), readonly=True )
+                self._auto_fields.append( field_name )
         
             elif isinstance(field, models.Field) and field.choices:
                 pyforms_field = ControlCombo( 
-                    field.verbose_name.capitalize(), 
+                    label.capitalize(), 
                     items=[ (c[1],c[0]) for c in field.choices]
                 )
-            elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( field.verbose_name.capitalize() )
-            elif isinstance(field, models.BooleanField):                pyforms_field = ControlCheckBox( field.verbose_name.capitalize() )
-            elif isinstance(field, models.DateTimeField):               pyforms_field = ControlDateTime( field.verbose_name.capitalize() )
-            elif isinstance(field, models.DateField):                   pyforms_field = ControlDate( field.verbose_name.capitalize() )
-            elif isinstance(field, models.DecimalField):                pyforms_field = ControlFloat( field.verbose_name.capitalize() )
-            elif isinstance(field, models.FileField):                   pyforms_field = ControlFileUpload( field.verbose_name.capitalize() )
-            elif isinstance(field, models.FloatField):                  pyforms_field = ControlFloat( field.verbose_name.capitalize() )
-            elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( field.verbose_name.capitalize() )
-            elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( field.verbose_name.capitalize() )
-            elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( field.verbose_name.capitalize() )
+            elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( label.capitalize() )
+            elif isinstance(field, models.BooleanField):                pyforms_field = ControlCheckBox( label.capitalize() )
+            elif isinstance(field, models.DateTimeField):               pyforms_field = ControlDateTime( label.capitalize() )
+            elif isinstance(field, models.DateField):                   pyforms_field = ControlDate( label.capitalize() )
+            elif isinstance(field, models.DecimalField):                pyforms_field = ControlFloat( label.capitalize() )
+            elif isinstance(field, models.FileField):                   pyforms_field = ControlFileUpload( label.capitalize() )
+            elif isinstance(field, models.FloatField):                  pyforms_field = ControlFloat( label.capitalize() )
+            elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( label.capitalize() )
+            elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( label.capitalize() )
+            elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( label.capitalize() )
             elif isinstance(field, models.NullBooleanField):            
                 pyforms_field = ControlCombo( 
-                    field.verbose_name.capitalize(), 
+                    label.capitalize(), 
                     items=[('Unknown', None), ('Yes', True), ('No', False)]
                 )
             elif isinstance(field, models.ForeignKey):
                 url = "/pyforms/autocomplete/{app_id}/{field_name}/{{query}}/".format(app_id=self.uid, field_name=field.name)
                 pyforms_field = ControlAutoComplete( 
-                    field.verbose_name.capitalize(), 
+                    label.capitalize(), 
                     items_url=url,
                     model=field.related_model
                 )
@@ -700,13 +733,13 @@ class EditFormAdmin(BaseWidget):
             elif isinstance(field, models.ManyToManyField):
                 url = "/pyforms/autocomplete/{app_id}/{field_name}/{{query}}/".format(app_id=self.uid, field_name=field.name)
                 pyforms_field = ControlAutoComplete( 
-                    field.verbose_name.capitalize(), 
+                    label.capitalize(), 
                     items_url=url,
                     model=field.related_model,
                     multiple=True
                 )
             else:
-                pyforms_field = ControlText( field.verbose_name.capitalize() )
+                pyforms_field = ControlText( label.capitalize() )
             
             # add the field to the application
             if pyforms_field is not None: 
@@ -728,7 +761,6 @@ class EditFormAdmin(BaseWidget):
             
         self.formset = self.fieldsets if self.fieldsets else formset
         self.formset = self.formset + self.get_buttons_row()
-
 
     def __create_btn_event(self):
         """
@@ -776,7 +808,9 @@ class EditFormAdmin(BaseWidget):
             html = "<ul>"
             for o, objs in objects:
                 html += "<li>"
-                html += "{1}: <b>{0}</b>".format( str(o), o.__class__._meta.verbose_name.title() )
+                html += "{1}: <b>{0}</b>".format( 
+                    str(o), o.__class__._meta.verbose_name.title()
+                )
                 if len(objs)>0:
                     html += related_objects_html(objs)
                 html += "</li>"

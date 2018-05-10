@@ -1,7 +1,7 @@
-from pyforms_web.controls.ControlBase import ControlBase
+from .ControlText import ControlText
 import simplejson
 
-class ControlTextArea(ControlBase):
+class ControlTextArea(ControlText):
 
 	def init_form(self):
 		return """new ControlTextArea('{0}', {1})""".format(

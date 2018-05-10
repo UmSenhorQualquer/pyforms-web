@@ -15,7 +15,7 @@ class ControlQueryList extends ControlBase{
 		};
 
 		// render the filters
-		if(filters.length>0){
+		if(filters && filters.length>0){
 			for(var j=0; j<filters.length; j+=4){
 				html += "<div class='fields four'>";
 				
@@ -75,7 +75,6 @@ class ControlQueryList extends ControlBase{
 
 				var filter_value = $(this).dropdown('get value');
 
-				console.log(filter_value);
 				if( filter_value!='' && filter_value!='000000000000' ){
 					//var key = $(this).find('select').attr('column');
 					var filters = filter_value.split('&');
