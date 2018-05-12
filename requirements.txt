@@ -6,3 +6,6 @@ dill
 filelock
 django-allauth
 Pillow
+mysqlclient
+python-dateutil
+git+https://github.com/UmSenhorQualquer/django-jfu.git
