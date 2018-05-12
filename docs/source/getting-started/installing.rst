@@ -9,12 +9,12 @@ On this page is explained how to configure your environment and your django app 
 Configure the environment
 =================================
 
-* First clone the git project at `bitbucket <https://UmSenhorQualquer@bitbucket.org/UmSenhorQualquer/pyforms-web/>`_.
+* First clone the git project at `bitbucket <https://bitbucket.org/UmSenhorQualquer/pyforms-web.git>`_.
 * Then open the terminal and install the **requirements.txt** in the pyforms-web directory to configure your environment.
 
 .. code:: bash
 
-    pip install -r requirements.txt --upgrade
+    pip install -r requirements.txt
         
 
 
@@ -35,7 +35,7 @@ Edit the django project **settings.py** file to include the next configurations.
         'jfu',
         'sorl.thumbnail',
         'orquestra',
-        'pyforms_web.web.django_pyforms',
+        'pyforms_web.web',
         'allauth',
         'allauth.account',
         'allauth.socialaccount',
@@ -46,7 +46,7 @@ Edit the django project **settings.py** file to include the next configurations.
 
     MIDDLEWARE = [
         ...
-        'pyforms_web.web.django_pyforms.middleware.PyFormsMiddleware'
+        'pyforms_web.web.middleware.PyFormsMiddleware'
     ]
 
     AUTHENTICATION_BACKENDS = [
@@ -54,10 +54,16 @@ Edit the django project **settings.py** file to include the next configurations.
         'allauth.account.auth_backends.AuthenticationBackend',
     ]
 
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "static", 'semantic-ui'),
+        os.path.join(BASE_DIR, "static", 'jquery-ui'),
+        os.path.join(BASE_DIR, "static", 'js'),
+        os.path.join(BASE_DIR, "static", 'css'),
+    ]
 
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
+            'ENGINE': 'django.db.backends.mysql', # You can use any other database type
             'NAME': <database>,
             'USER': <user>,
             'PASSWORD': <password>,
@@ -89,7 +95,7 @@ Edit the django project **urls.py** file to include the next urls configurations
     urlpatterns = [
         url(r'', include('orquestra.urls')),
         url(r'^accounts/', include('allauth.urls')),
-        url(r'^pyforms/', include('pyforms_web.web.django_pyforms.urls') ),
+        url(r'^pyforms/', include('pyforms_web.web.urls') ),
     ]
 
     if settings.DEBUG:

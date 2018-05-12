@@ -10,4 +10,4 @@ API
 
    pyforms/basewidget
    pyforms/controls
-   pyforms/admin
+   modeladmin/admin
