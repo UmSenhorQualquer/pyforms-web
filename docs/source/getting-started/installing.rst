@@ -9,7 +9,12 @@ On this page is explained how to configure your environment and your django app 
 Configure the environment
 =================================
 
-* First clone the git project at `bitbucket <https://bitbucket.org/UmSenhorQualquer/pyforms-web.git>`_.
+* First clone the `Pyforms <https://bitbucket.org/UmSenhorQualquer/pyforms-web/>`_ git project at bitbucket.
+
+.. code:: bash
+
+    git clone https://bitbucket.org/UmSenhorQualquer/pyforms-web.git
+
 * Then open the terminal and install the **requirements.txt** in the pyforms-web directory to configure your environment.
 
 .. code:: bash
@@ -51,17 +56,6 @@ Edit the django project **settings.py** file to include the next configurations.
         os.path.join(BASE_DIR, "static", 'css'),
     ]
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql', # You can use any other database type
-            'NAME': <database>,
-            'USER': <user>,
-            'PASSWORD': <password>,
-            'HOST': 'localhost',
-            'PORT': '3306',
-        }
-    }
-
     TEMPLATES = [
         {
             ...
@@ -70,8 +64,6 @@ Edit the django project **settings.py** file to include the next configurations.
         },
     ]
 
-    SITE_ID = 1
-
 
 
 Edit the django project **urls.py** file to include the next urls configurations.
@@ -79,12 +71,13 @@ Edit the django project **urls.py** file to include the next urls configurations
 
 .. code:: python
 
-    from django.conf.urls import url, include
-    from django.conf import settings
+    from django.conf    import settings
+    from django.contrib import admin
+    from django.urls    import include, path
 
     urlpatterns = [
-        url(r'', include('orquestra.urls')),
-        url(r'^pyforms/', include('pyforms_web.web.urls') ),
+        path('',          include('orquestra.urls')       ),
+        path('pyforms/',  include('pyforms_web.web.urls') ),
     ]
 
     if settings.DEBUG:
@@ -95,5 +88,6 @@ Run the project
 
 .. code:: bash
 
-    python3 <project-name>/manage.py migrate
-    python3 <project-name>/manage.py runserver
+    cd <project-name>
+    python3 manage.py migrate
+    python3 manage.py runserver
