@@ -1,0 +1,27 @@
+name: pyforms-web-environment
+channels:
+  - defaults
+dependencies:
+  - ca-certificates=2018.03.07=0
+  - certifi=2018.4.16=py36_0
+  - expat=2.2.5=hb8e80ba_0
+  - git=2.17.0=pl526h028e6c8_0
+  - libcurl=7.59.0=hf30b1f0_0
+  - libcxx=4.0.1=h579ed51_0
+  - libcxxabi=4.0.1=hebd6815_0
+  - libedit=3.1.20170329=hb402a30_2
+  - libffi=3.2.1=h475c297_4
+  - libiconv=1.15=hdd342a3_7
+  - libssh2=1.8.0=h322a93b_4
+  - ncurses=6.1=h0a44026_0
+  - openssl=1.0.2o=h26aff7b_0
+  - perl=5.26.0=h5b8ca18_0
+  - pip=10.0.1=py36_0
+  - python=3.6.5=hc167b69_1
+  - readline=7.0=hc1231fa_4
+  - setuptools=39.1.0=py36_0
+  - sqlite=3.23.1=hf1716c9_0
+  - tk=8.6.7=h35a86e2_3
+  - wheel=0.31.0=py36_0
+  - xz=5.2.3=h727817e_4
+  - zlib=1.2.11=hf3cbc9b_2
