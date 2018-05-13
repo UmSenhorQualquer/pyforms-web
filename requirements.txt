@@ -4,8 +4,7 @@ lockfile
 sorl-thumbnail
 dill
 filelock
-django-allauth
 Pillow
-mysqlclient
 python-dateutil
 git+https://github.com/UmSenhorQualquer/django-jfu.git
+git+https://bitbucket.org/UmSenhorQualquer/orquestra.git

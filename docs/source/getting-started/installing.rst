@@ -14,8 +14,8 @@ Configure the environment
 
 .. code:: bash
 
-    pip install -r requirements.txt
-        
+    pip install -r pyforms-web/requirements.txt
+    pip install pyforms-web/. 
 
 
 Configure a django project
@@ -35,23 +35,13 @@ Edit the django project **settings.py** file to include the next configurations.
         'jfu',
         'sorl.thumbnail',
         'orquestra',
-        'pyforms_web.web',
-        'allauth',
-        'allauth.account',
-        'allauth.socialaccount',
-        'allauth.socialaccount.providers.google',
-        'django.contrib.sites',
+        'pyforms_web.web'
         ...
     ]
 
     MIDDLEWARE = [
         ...
         'pyforms_web.web.middleware.PyFormsMiddleware'
-    ]
-
-    AUTHENTICATION_BACKENDS = [
-        ...,
-        'allauth.account.auth_backends.AuthenticationBackend',
     ]
 
     STATICFILES_DIRS = [
@@ -94,10 +84,16 @@ Edit the django project **urls.py** file to include the next urls configurations
 
     urlpatterns = [
         url(r'', include('orquestra.urls')),
-        url(r'^accounts/', include('allauth.urls')),
         url(r'^pyforms/', include('pyforms_web.web.urls') ),
     ]
 
     if settings.DEBUG:
         from django.conf.urls.static import static
         urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+Run the project
+
+.. code:: bash
+
+    python3 <project-name>/manage.py migrate
+    python3 <project-name>/manage.py runserver

@@ -183,18 +183,22 @@ class BaseWidget(object):
         control = self.controls.get(row, None)
         if control==None:
             if   row==' ':                   return "<div class='field' ></div>"
-            elif row.startswith('info:'):    return "<div class='ui info visible message'>{0}</div>".format(row[5:])
             elif row.startswith('h1:'):      return "<h1>{0}</h1>".format(row[3:])
             elif row.startswith('h1-right:'):return "<h1 class='ui right aligned header' >{0}</h1>".format(row[9:])
             elif row.startswith('h2:'):      return "<h2>{0}</h2>".format(row[3:])
             elif row.startswith('h2-right:'):return "<h2 class='ui right aligned header' >{0}</h2>".format(row[9:])
             elif row.startswith('h3:'):      return "<h3>{0}</h3>".format(row[3:])
+            elif row.startswith('h3-right:'):return "<h3 class='ui right aligned header' >{0}</h3>".format(row[9:])
             elif row.startswith('h4:'):      return "<h4>{0}</h4>".format(row[3:])
+            elif row.startswith('h4-right:'):return "<h4 class='ui right aligned header' >{0}</h4>".format(row[9:])
             elif row.startswith('h5:'):      return "<h5>{0}</h5>".format(row[3:])
+            elif row.startswith('h5-right:'):return "<h5 class='ui right aligned header' >{0}</h5>".format(row[9:])
+            elif row.startswith('info:'):    return "<div class='ui info visible message'>{0}</div>".format(row[5:])
             elif row.startswith('warning:'): return "<div class='ui warning visible message'>{0}</div>".format(row[8:])
-            elif row.startswith('alert:'):   return "<div class='ui alert message'>{0}</div>".format(row[6:])
+            elif row.startswith('alert:'):   return "<div class='ui error visible message'>{0}</div>".format(row[6:])
+            elif row.startswith('msg:'):     return "<div class='ui message'>{0}</div>".format(row[4:])
             elif row == '-':                 return "<div class='ui clearing divider'></div>"
-            else:                            return "<div class='ui message'>{0}</div>".format(row)
+            else:                            return row
         else:
             return str(control)
 

@@ -7,10 +7,11 @@ class ControlSlider(ControlBase):
 	_max = 100
 
 	def __init__(self, *args, **kwargs):
-		self._min 		 = kwargs.get('min', 0)
-		self._max 		 = kwargs.get('max', 100)
 		self._updateSlider = True
-		self._value = 0
+		self._min 	= kwargs.get('min', 0)
+		self._max 	= kwargs.get('max', 100)
+		if kwargs.get('default', None)==None:
+			kwargs['default']=0
 		
 		ControlBase.__init__(self, *args, **kwargs)
 		
