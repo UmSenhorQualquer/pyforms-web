@@ -2,7 +2,7 @@
 API
 *******************************
 
-.. module:: pybpod_web.web.BaseWidget
+.. module:: pybpod_web.basewidget.BaseWidget
    :synopsis: entities
 
 .. toctree::

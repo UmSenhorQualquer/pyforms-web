@@ -26,6 +26,8 @@ Indices and tables
    :maxdepth: 4
    :includehidden:
    :caption: PyForms web
-
-   getting-started/index
+   
+   getting-started/installing
+   getting-started/first-app
+   getting-started/first-db-app
    api-reference/index

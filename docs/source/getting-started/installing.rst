@@ -85,9 +85,17 @@ Edit the django project **urls.py** file to include the next urls configurations
         urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 Run the project
+=================================
 
 .. code:: bash
 
     cd <project-name>
     python3 manage.py migrate
     python3 manage.py runserver
+
+
+Access to `http://localhost:8000 <http://localhost:8000/>`_ 
+
+.. image:: /_static/imgs/demo-app.png
+    :width: 100%
+    :align: center

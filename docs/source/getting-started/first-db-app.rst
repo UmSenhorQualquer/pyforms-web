@@ -1,10 +1,19 @@
 ******************************
-First application
+First database application
 ******************************
 
-Here it is shown how to create the first pyforms app for a django project.
+This example shows how to build quick forms to manage Django models.
 
-.. note:: The instructions on this page assumes you know how the `Django framework <https://www.djangoproject.com/>`_ works.
+.. note::
+
+    The example is based on the functionalities next classes:
+
+        * :class:`pyforms_web.modeladmin.model_admin.ModelAdmin`
+
+        * :class:`pyforms_web.modeladmin.editform_admin.EditFormAdmin`
+
+        * :class:`pyforms_web.modeladmin.viewform_admin.ViewFormAdmin`
+
 
 Prepare the django app
 _______________________
@@ -14,42 +23,66 @@ Create a empty django app folder with the next directory structure inside:
 
 .. code:: bash
 
-    my_module_name
+    my_dbmodule_name
     ├── apps
     │   └── __init__.py
+    ├── models.py
     └── __init__.py
 
+
+Add the next code to the *models.py* file.
+
+.. code:: python
+
+    from django.db import models
+    
+    class Post(models.Model):
+        title = models.CharField('Title', max_length=200)
+        text  = models.TextField('Text')
+        created = models.DateTimeField('Created on')
+        published = models.DateTimeField('Published on', blank=True, null=True)
 
 Add the application to the settings.py
 
 .. code:: python
 
     INSTALLED_APPS = [
-        'my_module_name',
+        'my_dbmodule_name',
         ...
     ]
+
+Commit the new model to the database. 
+
+.. code:: python
+
+    python manage.py migrate
 
 
 Create the first app
 ____________________
 
-Create the file **my_module_name/apps/site_crawl.py** and add the next code to it.
+Create the file **my_dbmodule_name/apps/post_app.py** and add the next code to it.
 
 .. code:: python
 
-    from orquestra.plugins import LayoutPositions
-    from pyforms_web.basewidget import BaseWidget
+    from pyforms_web.modeladmin import ModelAdmin
+    from pyforms                import conf
 
-    class SiteCrawlApp(BaseWidget):
+    from my_dbmodule_name.models import Post
+
+    class PostApp(ModelAdmin):
+
+        UID   = 'post-app'
+        MODEL = Post
         
-        UID                  = 'site-crawl-app'
-        TITLE                = 'Site crawl'
+        TITLE = 'Posts app'
         
-        LAYOUT_POSITION      = LayoutPositions.HOME
+        LAYOUT_POSITION      = conf.ORQUESTRA_HOME
 
         ORQUESTRA_MENU       = 'left'
         ORQUESTRA_MENU_ICON  = 'browser'
         ORQUESTRA_MENU_ORDER = 0
+
 
 Run your django project to visualize the next screen.
 
@@ -57,7 +90,8 @@ Run your django project to visualize the next screen.
     :width: 100%
     :align: center
 
-Now update the **SiteCrawlApp** application with the next code.
+Override the Edit form application
+________________________________________
 
 .. code:: python
 
@@ -105,3 +139,7 @@ Restart your django project to visualize the updates.
 .. image:: /_static/imgs/first-app.png
     :width: 100%
     :align: center
+
+
+Create a View form application
+________________________________________
