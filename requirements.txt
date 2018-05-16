@@ -1,10 +1,3 @@
-simplejson
-django
-lockfile
-sorl-thumbnail
-dill
-filelock
-Pillow
-python-dateutil
+-e .
 git+https://github.com/UmSenhorQualquer/django-jfu.git
 git+https://bitbucket.org/UmSenhorQualquer/orquestra.git
