@@ -12,6 +12,8 @@ class ControlSlider extends ControlBase{
 	set_value(value){
 		this.jquery().val(value);
 		$( "#value"+this.name ).html( value );
+		this.jquery().attr('max', this.properties.max);
+		this.jquery().attr('min', this.properties.min);
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -30,9 +32,7 @@ class ControlSlider extends ControlBase{
 		this.jquery().change(function(){ 
 			$( "#value"+self.control_id() ).html( $(this).val() ); 
 			self.basewidget.fire_event( self.name, 'changed_event' );
-		});
-
-		
+		});		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

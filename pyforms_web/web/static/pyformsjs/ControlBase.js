@@ -78,12 +78,14 @@ class ControlBase{
 	
 	enable(){
 		this.jquery().removeAttr('disabled');
+		this.jquery().removeClass('disabled');
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	
 	disable(){
 		this.jquery().attr('disabled', 'true');
+		this.jquery().addClass('disabled');
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -141,22 +143,22 @@ class ControlBase{
 
 			}else{
 
-				//if( parent.hasClass('fields') ){
+				if( parent.hasClass('fields') ) parent.show();
 					
-					for(var i=1; i<(COLUMNS_CSS_CLASSES.length-1); i++)
-						if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
-							parent.removeClass( COLUMNS_CSS_CLASSES[i] );
-							parent.addClass( COLUMNS_CSS_CLASSES[i+1] );
-							//parent.addClass('fields');
-							break;
-						};
+				var found = false;
+				for(var i=1; i<(COLUMNS_CSS_CLASSES.length-1); i++)
+					if( parent.hasClass( COLUMNS_CSS_CLASSES[i] ) ){
+						parent.removeClass( COLUMNS_CSS_CLASSES[i] );
+						parent.addClass( COLUMNS_CSS_CLASSES[i+1] );
+						//parent.addClass('fields');
+						found = true;
+						break;
+					};
 					
-				/*}else{ 
-
+				if(!found){ 
 				 	parent.addClass('fields');
 					parent.addClass('one');
-				 	parent.show()
-				}*/
+				}
 			}
 		}
 		

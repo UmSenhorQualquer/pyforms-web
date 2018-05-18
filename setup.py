@@ -48,5 +48,6 @@ setup(
         'filelock',
         'Pillow',
         'python-dateutil',
+        'confapp'
     ],
 )

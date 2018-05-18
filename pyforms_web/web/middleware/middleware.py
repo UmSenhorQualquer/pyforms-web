@@ -1,5 +1,5 @@
 from .apps_2_update import Apps2Update
-from pyforms import conf
+from confapp import conf
 import threading, os, dill, filelock
 
 class PyFormsMiddleware(object):

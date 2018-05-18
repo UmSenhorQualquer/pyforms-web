@@ -21,11 +21,6 @@ class ControlCombo extends ControlBase{
 		});
 		
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
-
-		if(!this.properties.visible){
-			//console.log(this.properties.name, this.properties.visible);
-			this.hide(undefined, true);
-		};
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +49,10 @@ class ControlCombo extends ControlBase{
 		this.jquery().dropdown('setup menu', { values: this.properties.items });
 		this.set_value(this.properties.value);
 
-		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
+		if(this.properties.error)
+			this.jquery_place().addClass('error'); 
+		else
+			this.jquery_place().removeClass('error'); 
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

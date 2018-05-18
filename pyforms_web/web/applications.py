@@ -1,5 +1,5 @@
 import datetime, json, dill, os, traceback, inspect, simplejson
-from pyforms import conf
+from confapp import conf
 from pyforms_web.web.middleware import PyFormsMiddleware
 from django.core.exceptions import PermissionDenied
 

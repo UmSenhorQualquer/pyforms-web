@@ -1,18 +1,18 @@
 from pyforms_web.basewidget                         import BaseWidget, no_columns
-from pyforms_web.controls.ControlTextArea           import ControlTextArea
-from pyforms_web.controls.ControlText               import ControlText
-from pyforms_web.controls.ControlInteger            import ControlInteger
-from pyforms_web.controls.ControlFloat              import ControlFloat
-from pyforms_web.controls.ControlCombo              import ControlCombo
-from pyforms_web.controls.ControlAutoComplete       import ControlAutoComplete
-from pyforms_web.controls.ControlDate               import ControlDate
-from pyforms_web.controls.ControlDateTime           import ControlDateTime
-from pyforms_web.controls.ControlButton             import ControlButton
-from pyforms_web.controls.ControlQueryList          import ControlQueryList
-from pyforms_web.controls.ControlEmptyWidget        import ControlEmptyWidget
-from pyforms_web.controls.ControlFileUpload         import ControlFileUpload
-from pyforms_web.controls.ControlCheckBox           import ControlCheckBox
-from pyforms_web.controls.ControlMultipleSelectionQuery  import ControlMultipleSelectionQuery
+from pyforms_web.controls.control_textarea           import ControlTextArea
+from pyforms_web.controls.control_text               import ControlText
+from pyforms_web.controls.control_integer            import ControlInteger
+from pyforms_web.controls.control_float              import ControlFloat
+from pyforms_web.controls.control_combo              import ControlCombo
+from pyforms_web.controls.control_autocomplete       import ControlAutoComplete
+from pyforms_web.controls.control_date               import ControlDate
+from pyforms_web.controls.control_datetime           import ControlDateTime
+from pyforms_web.controls.control_button             import ControlButton
+from pyforms_web.controls.control_querylist          import ControlQueryList
+from pyforms_web.controls.control_emptywidget        import ControlEmptyWidget
+from pyforms_web.controls.control_fileupload         import ControlFileUpload
+from pyforms_web.controls.control_checkbox           import ControlCheckBox
+from pyforms_web.controls.control_multipleselectionquery  import ControlMultipleSelectionQuery
 
 import collections
 from pyforms_web.web.middleware import PyFormsMiddleware

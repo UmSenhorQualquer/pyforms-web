@@ -1,22 +1,21 @@
 
-from .controls.ControlBase import ControlBase
-from .controls.ControlFile import ControlFile
-from .controls.ControlSlider import ControlSlider
-from .controls.ControlText import ControlText
-from .controls.ControlCheckBox import ControlCheckBox
-from .controls.ControlLabel import ControlLabel
+from .controls.control_base     import ControlBase
+from .controls.control_file     import ControlFile
+from .controls.control_slider   import ControlSlider
+from .controls.control_text     import ControlText
+from .controls.control_checkbox import ControlCheckBox
+from .controls.control_label    import ControlLabel
+from .controls.control_button   import ControlButton
 try:
-    from .controls.ControlPlayer import ControlPlayer
+    from .controls.control_player import ControlPlayer
 except:
     print("ControlPlayer is not available")
-from .controls.ControlButton import ControlButton
 from .web.applications import ApplicationsLoader
-from .web.middleware import PyFormsMiddleware
+from .web.middleware   import PyFormsMiddleware
 import uuid, os, shutil, base64, inspect
 import base64, dill, simplejson, filelock
-from pyforms import conf
+from confapp import conf
 from django.template.loader import render_to_string
-
 from .utils import make_lambda_func
 
 class no_columns(object):
@@ -183,16 +182,16 @@ class BaseWidget(object):
         control = self.controls.get(row, None)
         if control==None:
             if   row==' ':                   return "<div class='field' ></div>"
-            elif row.startswith('h1:'):      return "<h1>{0}</h1>".format(row[3:])
-            elif row.startswith('h1-right:'):return "<h1 class='ui right aligned header' >{0}</h1>".format(row[9:])
-            elif row.startswith('h2:'):      return "<h2>{0}</h2>".format(row[3:])
-            elif row.startswith('h2-right:'):return "<h2 class='ui right aligned header' >{0}</h2>".format(row[9:])
-            elif row.startswith('h3:'):      return "<h3>{0}</h3>".format(row[3:])
-            elif row.startswith('h3-right:'):return "<h3 class='ui right aligned header' >{0}</h3>".format(row[9:])
-            elif row.startswith('h4:'):      return "<h4>{0}</h4>".format(row[3:])
-            elif row.startswith('h4-right:'):return "<h4 class='ui right aligned header' >{0}</h4>".format(row[9:])
-            elif row.startswith('h5:'):      return "<h5>{0}</h5>".format(row[3:])
-            elif row.startswith('h5-right:'):return "<h5 class='ui right aligned header' >{0}</h5>".format(row[9:])
+            elif row.startswith('h1:'):      return "<h1 class='field' >{0}</h1>".format(row[3:])
+            elif row.startswith('h1-right:'):return "<h1 class='ui right aligned header field' >{0}</h1>".format(row[9:])
+            elif row.startswith('h2:'):      return "<h2 class='field' >{0}</h2>".format(row[3:])
+            elif row.startswith('h2-right:'):return "<h2 class='ui right aligned header field' >{0}</h2>".format(row[9:])
+            elif row.startswith('h3:'):      return "<h3 class='field' >{0}</h3>".format(row[3:])
+            elif row.startswith('h3-right:'):return "<h3 class='ui right aligned header field' >{0}</h3>".format(row[9:])
+            elif row.startswith('h4:'):      return "<h4 class='field' >{0}</h4>".format(row[3:])
+            elif row.startswith('h4-right:'):return "<h4 class='ui right aligned header field' >{0}</h4>".format(row[9:])
+            elif row.startswith('h5:'):      return "<h5 class='field' >{0}</h5>".format(row[3:])
+            elif row.startswith('h5-right:'):return "<h5 class='ui right aligned header field' >{0}</h5>".format(row[9:])
             elif row.startswith('info:'):    return "<div class='ui info visible message'>{0}</div>".format(row[5:])
             elif row.startswith('warning:'): return "<div class='ui warning visible message'>{0}</div>".format(row[8:])
             elif row.startswith('alert:'):   return "<div class='ui error visible message'>{0}</div>".format(row[6:])
