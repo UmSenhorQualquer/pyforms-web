@@ -29,7 +29,7 @@ class FilesBrowserApp(BaseWidget):
         self._only_folders  = ControlCheckBox('Only folders')
         self._directory     = ControlText(
             'Current directory',
-            default='/home/ricardo/Desktop'
+            default='/'
         )
         self._files_table   = ControlList(
             'Files',
