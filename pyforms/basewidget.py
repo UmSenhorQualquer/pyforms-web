@@ -14,7 +14,7 @@ elif conf.PYFORMS_MODE in ['TERMINAL']:
     
 elif conf.PYFORMS_MODE in ['WEB']:
 
-	from pyforms_web.basewidget import BaseWidget
+    from pyforms_web.basewidget import BaseWidget
     from pyforms_web.organizers import no_columns, segment
     
     from pyforms_web.modeladmin import ModelAdmin
