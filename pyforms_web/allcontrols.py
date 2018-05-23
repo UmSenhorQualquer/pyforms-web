@@ -18,7 +18,6 @@ from .controls.control_file                   import ControlFile
 from .controls.control_fileupload             import ControlFileUpload
 from .controls.control_float                  import ControlFloat
 from .controls.control_html                   import ControlHtml
-from .controls.control_image                  import ControlImage
 from .controls.control_integer                import ControlInteger
 from .controls.control_itemslist              import ControlItemsList
 from .controls.control_label                  import ControlLabel
@@ -29,7 +28,6 @@ from .controls.control_multipleselection      import ControlMultipleSelection
 from .controls.control_multipleselectionquery import ControlMultipleSelectionQuery
 from .controls.control_password               import ControlPassword
 from .controls.control_piechart               import ControlPieChart
-from .controls.control_player                 import ControlPlayer
 from .controls.control_progress               import ControlProgress
 from .controls.control_querycards             import ControlQueryCards
 from .controls.control_querycombo             import ControlQueryCombo
@@ -42,3 +40,14 @@ from .controls.control_textarea               import ControlTextArea
 from .controls.control_timeout                import ControlTimeout
 from .controls.control_visvis                 import ControlVisVis
 from .controls.control_workflow               import ControlWorkflow 
+
+
+try:
+    from .controls.control_image              import ControlImage
+except:
+    pass
+
+try:
+    from .controls.control_player             import ControlPlayer
+except:
+    pass
