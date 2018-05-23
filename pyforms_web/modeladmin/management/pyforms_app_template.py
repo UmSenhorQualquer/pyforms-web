@@ -1,7 +1,7 @@
 #from django_pyforms.model_admin.editform_admin import EditFormAdmin
 #from pyforms_web.controls.ControlQueryList import ControlQueryList
 
-from pyforms_web.modeladmin import ModelAdmin
+from pyforms.basewidget import ModelAdmin
 from orquestra.plugins import LayoutPositions
 
 from {application_name}.models import {model_name}

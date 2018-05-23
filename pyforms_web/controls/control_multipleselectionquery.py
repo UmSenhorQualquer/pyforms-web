@@ -16,6 +16,8 @@ class ControlMultipleSelectionQuery(ControlMultipleSelection):
         self._queryset_model = None
         self._queryset_app   = None
 
+        self.queryset = kwargs.get('queryset', None)
+
     def init_form(self): return "new ControlMultipleSelection('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
     

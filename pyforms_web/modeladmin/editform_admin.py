@@ -409,6 +409,7 @@ class EditFormAdmin(BaseWidget):
                     pyforms_field.value = [str(o.pk) for o in value.all()]
                     
                 else:
+                    print(field.name, value)
                     pyforms_field.value = value
                 
                 

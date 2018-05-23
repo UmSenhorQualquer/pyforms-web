@@ -65,8 +65,8 @@ Create the file **my_dbmodule_name/apps/post_app.py** and add the next code to i
 
 .. code:: python
 
-    from pyforms_web.modeladmin import ModelAdmin
-    from pyforms                import conf
+    from pyforms.basewidget import ModelAdmin
+    from confapp                import conf                           
 
     from my_dbmodule_name.models import Post
 

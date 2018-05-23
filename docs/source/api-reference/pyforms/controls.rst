@@ -13,7 +13,7 @@ Enumerates Bpod board supported operations.
 ControlBase
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlBase.ControlBase
+.. autoclass:: pyforms_web.controls.control_base.ControlBase
     :members:
     :undoc-members:
     :show-inheritance:
@@ -21,7 +21,7 @@ ControlBase
 ControlBoundingSlider
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlBoundingSlider.ControlBoundingSlider
+.. autoclass:: pyforms_web.controls.control_boundingslider.ControlBoundingSlider
     :members:
     :undoc-members:
     :show-inheritance:
@@ -30,7 +30,7 @@ ControlBoundingSlider
 ControlButton
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlButton.ControlButton
+.. autoclass:: pyforms_web.controls.control_button.ControlButton
     :members:
     :undoc-members:
     :show-inheritance:
@@ -39,7 +39,7 @@ ControlButton
 ControlCalendar
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlCalendar.ControlCalendar
+.. autoclass:: pyforms_web.controls.control_calendar.ControlCalendar
     :members:
     :undoc-members:
     :show-inheritance:
@@ -48,7 +48,7 @@ ControlCalendar
 ControlCheckBox
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlCheckBox.ControlCheckBox
+.. autoclass:: pyforms_web.controls.control_checkbox.ControlCheckBox
     :members:
     :undoc-members:
     :show-inheritance:
@@ -57,7 +57,7 @@ ControlCheckBox
 ControlCombo
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlCombo.ControlCombo
+.. autoclass:: pyforms_web.controls.control_combo.ControlCombo
     :members:
     :undoc-members:
     :show-inheritance:
@@ -66,7 +66,7 @@ ControlCombo
 ControlDate
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlDate.ControlDate
+.. autoclass:: pyforms_web.controls.control_date.ControlDate
     :members:
     :undoc-members:
     :show-inheritance:
@@ -75,7 +75,7 @@ ControlDate
 ControlDateTime
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlDateTime.ControlDateTime
+.. autoclass:: pyforms_web.controls.control_datetime.ControlDateTime
     :members:
     :undoc-members:
     :show-inheritance:
@@ -84,7 +84,7 @@ ControlDateTime
 ControlDir
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlDir.ControlDir
+.. autoclass:: pyforms_web.controls.control_dir.ControlDir
     :members:
     :undoc-members:
     :show-inheritance:
@@ -93,7 +93,7 @@ ControlDir
 ControlEmail
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlEmail.ControlEmail
+.. autoclass:: pyforms_web.controls.control_email.ControlEmail
     :members:
     :undoc-members:
     :show-inheritance:
@@ -102,7 +102,7 @@ ControlEmail
 ControlEmptyWidget
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlEmptyWidget.ControlEmptyWidget
+.. autoclass:: pyforms_web.controls.control_emptywidget.ControlEmptyWidget
     :members:
     :undoc-members:
     :show-inheritance:
@@ -111,7 +111,7 @@ ControlEmptyWidget
 ControlFeed
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlFeed.ControlFeed
+.. autoclass:: pyforms_web.controls.control_feed.ControlFeed
     :members:
     :undoc-members:
     :show-inheritance:
@@ -120,7 +120,7 @@ ControlFeed
 ControlFile
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlFile.ControlFile
+.. autoclass:: pyforms_web.controls.control_file.ControlFile
     :members:
     :undoc-members:
     :show-inheritance:
@@ -129,7 +129,7 @@ ControlFile
 ControlFileUpload
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlFileUpload.ControlFileUpload
+.. autoclass:: pyforms_web.controls.control_fileupload.ControlFileUpload
     :members:
     :undoc-members:
     :show-inheritance:
@@ -138,7 +138,7 @@ ControlFileUpload
 ControlFloat
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlFloat.ControlFloat
+.. autoclass:: pyforms_web.controls.control_float.ControlFloat
     :members:
     :undoc-members:
     :show-inheritance:
@@ -147,7 +147,7 @@ ControlFloat
 ControlHtml
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlHtml.ControlHtml
+.. autoclass:: pyforms_web.controls.control_html.ControlHtml
     :members:
     :undoc-members:
     :show-inheritance:
@@ -156,7 +156,7 @@ ControlHtml
 ControlImage
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlImage.ControlImage
+.. autoclass:: pyforms_web.controls.control_image.ControlImage
     :members:
     :undoc-members:
     :show-inheritance:
@@ -165,7 +165,7 @@ ControlImage
 ControlInteger
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlInteger.ControlInteger
+.. autoclass:: pyforms_web.controls.control_integer.ControlInteger
     :members:
     :undoc-members:
     :show-inheritance:
@@ -174,7 +174,7 @@ ControlInteger
 ControlItemsList
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlItemsList.ControlItemsList
+.. autoclass:: pyforms_web.controls.control_itemslist.ControlItemsList
     :members:
     :undoc-members:
     :show-inheritance:
@@ -183,7 +183,7 @@ ControlItemsList
 ControlLabel
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlLabel.ControlLabel
+.. autoclass:: pyforms_web.controls.control_label.ControlLabel
     :members:
     :undoc-members:
     :show-inheritance:
@@ -192,7 +192,7 @@ ControlLabel
 ControlMenu
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlMenu.ControlMenu
+.. autoclass:: pyforms_web.controls.control_menu.ControlMenu
     :members:
     :undoc-members:
     :show-inheritance:
@@ -201,7 +201,7 @@ ControlMenu
 ControlMultipleSelection
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlMultipleSelection.ControlMultipleSelection
+.. autoclass:: pyforms_web.controls.control_multipleselection.ControlMultipleSelection
     :members:
     :undoc-members:
     :show-inheritance:
@@ -210,7 +210,7 @@ ControlMultipleSelection
 ControlPassword
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlPassword.ControlPassword
+.. autoclass:: pyforms_web.controls.control_password.ControlPassword
     :members:
     :undoc-members:
     :show-inheritance:
@@ -219,7 +219,7 @@ ControlPassword
 ControlPlayer
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlPlayer.ControlPlayer
+.. autoclass:: pyforms_web.controls.control_player.ControlPlayer
     :members:
     :undoc-members:
     :show-inheritance:
@@ -228,7 +228,7 @@ ControlPlayer
 ControlProgress
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlProgress.ControlProgress
+.. autoclass:: pyforms_web.controls.control_progress.ControlProgress
     :members:
     :undoc-members:
     :show-inheritance:
@@ -237,7 +237,7 @@ ControlProgress
 ControlQueryCards
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlQueryCards.ControlQueryCards
+.. autoclass:: pyforms_web.controls.control_querycards.ControlQueryCards
     :members:
     :undoc-members:
     :show-inheritance:
@@ -246,7 +246,7 @@ ControlQueryCards
 ControlQueryCombo
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlQueryCombo.ControlQueryCombo
+.. autoclass:: pyforms_web.controls.control_querycombo.ControlQueryCombo
     :members:
     :undoc-members:
     :show-inheritance:
@@ -255,7 +255,7 @@ ControlQueryCombo
 ControlQueryItem
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlQueryItem.ControlQueryItem
+.. autoclass:: pyforms_web.controls.control_queryitem.ControlQueryItem
     :members:
     :undoc-members:
     :show-inheritance:
@@ -264,7 +264,7 @@ ControlQueryItem
 ControlQueryList
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlQueryList.ControlQueryList
+.. autoclass:: pyforms_web.controls.control_querylist.ControlQueryList
     :members:
     :undoc-members:
     :show-inheritance:
@@ -273,7 +273,7 @@ ControlQueryList
 ControlSlider
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlSlider.ControlSlider
+.. autoclass:: pyforms_web.controls.control_slider.ControlSlider
     :members:
     :undoc-members:
     :show-inheritance:
@@ -282,7 +282,7 @@ ControlSlider
 ControlTemplate
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlTemplate.ControlTemplate
+.. autoclass:: pyforms_web.controls.control_template.ControlTemplate
     :members:
     :undoc-members:
     :show-inheritance:
@@ -291,7 +291,7 @@ ControlTemplate
 ControlText
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlText.ControlText
+.. autoclass:: pyforms_web.controls.control_text.ControlText
     :members:
     :undoc-members:
     :show-inheritance:
@@ -300,7 +300,7 @@ ControlText
 ControlTextArea
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlTextArea.ControlTextArea
+.. autoclass:: pyforms_web.controls.control_textarea.ControlTextArea
     :members:
     :undoc-members:
     :show-inheritance:
@@ -309,7 +309,7 @@ ControlTextArea
 ControlTimeout
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlTimeout.ControlTimeout
+.. autoclass:: pyforms_web.controls.control_timeout.ControlTimeout
     :members:
     :undoc-members:
     :show-inheritance:
@@ -318,7 +318,7 @@ ControlTimeout
 ControlVisVis
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlVisVis.ControlVisVis
+.. autoclass:: pyforms_web.controls.control_visvis.ControlVisVis
     :members:
     :undoc-members:
     :show-inheritance:
@@ -327,7 +327,7 @@ ControlVisVis
 ControlWorkflow
 ----------------------------
 
-.. autoclass:: pyforms_web.controls.ControlWorkflow.ControlWorkflow
+.. autoclass:: pyforms_web.controls.control_workflow.ControlWorkflow
     :members:
     :undoc-members:
     :show-inheritance:

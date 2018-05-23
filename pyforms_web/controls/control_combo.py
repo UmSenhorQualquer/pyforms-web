@@ -8,41 +8,33 @@ class ControlCombo(ControlBase):
 
 	def __init__(self, *args, **kwargs):
 		self._init_form_called = False
-		super(ControlCombo, self).__init__(*args, **kwargs)
-		self._items = collections.OrderedDict()
-
+		
+		self._items = None
 		items = kwargs.get('items', [])
 		for item in items:
 			self.add_item(*item)
+
+		super(ControlCombo, self).__init__(*args, **kwargs)
+		
+		
 
 		
 
 	def init_form(self): 
 		self._init_form_called = True
 		return "new ControlCombo('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
-
-	def currentIndexChanged(self, index):
-		if not self._addingItem:
-			if len(item)>=1: 
-				OTControlBase.value.fset(self, self._items[str(item)])
-			
+	
 	def add_item(self, label, value=ValueNotSet):
 		if self._items==None: self._items=collections.OrderedDict()
-		self._addingItem = True
 		
-		firstValue = False
-		if len(self._items)==0: firstValue = True
-
 		# The value for the item was not set, so it will use the label as a value 
 		if isinstance(value, ValueNotSet):
 			self._items[label] = label
 		else:
 			self._items[label] = str(value)
-		self._addingItem = False
 
-		if firstValue: self.value = self._items[label]
-
-		self.mark_to_update_client()
+		if hasattr(self, '_parent'):
+			self.mark_to_update_client()
 
 	def __add__(self, val):
 		if isinstance( val, tuple ):
@@ -71,14 +63,13 @@ class ControlCombo(ControlBase):
 	@value.setter
 	def value(self, value):
 		for key, val in self._items.items():
-			if value==val:
-				if self._value!=value: 
+			if str(value)==str(val):
+				if str(self._value)!=str(value): 
 					self.mark_to_update_client()
 					if self._init_form_called:
 						self.changed_event()
-				self._value = val
+				self._value = str(val)
 		
-
 	@property
 	def text(self): return ""
 

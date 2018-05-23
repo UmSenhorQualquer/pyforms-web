@@ -5,12 +5,12 @@ from django.views.decorators.cache  import never_cache
 from django.views.decorators.csrf   import csrf_exempt
 from django.middleware.csrf         import get_token
 from pyforms_web.web                import ApplicationsLoader
-from pyforms                        import conf
+from confapp                        import conf
 import json, simplejson, os, re
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
-from pyforms_web.modeladmin import EditFormAdmin
+from pyforms.basewidget import EditFormAdmin
 
 from django.core.exceptions import PermissionDenied
 from django.utils.text import slugify
