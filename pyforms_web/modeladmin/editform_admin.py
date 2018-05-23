@@ -65,10 +65,14 @@ class EditFormAdmin(BaseWidget):
         BaseWidget.__init__(self, *args, **kwargs )
 
         self.model       = kwargs.get('model',     self.MODEL)
-        self.inlines     = kwargs.get('inlines',   self.INLINES)
         self.fieldsets   = kwargs.get('fieldsets', self.FIELDSETS)
         self.readonly    = kwargs.get('readonly',  self.READ_ONLY)
         self.has_cancel_btn = kwargs.get('has_cancel_btn',  self.HAS_CANCEL_BTN)
+
+        if len(self.INLINES)>0:
+            self.inlines   = self.INLINES
+        else:
+            self.inlines   = kwargs.get('inlines', self.INLINES)
 
         if self.fieldsets is None: self.fieldsets = self.FIELDSETS
         
@@ -418,7 +422,7 @@ class EditFormAdmin(BaseWidget):
         for inline in self.inlines:
             pyforms_field = getattr(self, inline.__name__)
             pyforms_field._name = inline.__name__
-            app =  inline(parent_model=self.model, parent_pk=self.object_pk)
+            app = inline(parent_model=self.model, parent_pk=self.object_pk)
             self.inlines_apps.append(app)
             pyforms_field.value = app
             pyforms_field.show()
@@ -490,6 +494,7 @@ class EditFormAdmin(BaseWidget):
                    raise Exception('Your user does not have permissions to add')
                 
                 obj = self.create_newobject()
+
             ###########################################
             
             # if it is working as an inline edition form #
@@ -798,11 +803,19 @@ class EditFormAdmin(BaseWidget):
             self._create_btn.hide()
             self._save_btn.show()
             self._remove_btn.show()
-            for i, field in enumerate(self.inlines_controls):
-                app = self.inlines_apps[i]
-                app.populate_list()
-                app.parent_pk = obj.pk
-                field.show()
+
+            self.inlines_apps = []
+            for inline in self.inlines:
+                pyforms_field       = getattr(self, inline.__name__)
+                pyforms_field._name = inline.__name__
+                app = inline(
+                    parent_model=self.model,
+                    parent_pk=self.object_pk
+                )
+                self.inlines_apps.append(app)
+                pyforms_field.value = app
+                pyforms_field.show()
+
             self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
 
 
