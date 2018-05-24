@@ -64,9 +64,10 @@ class EditFormAdmin(BaseWidget):
         
         BaseWidget.__init__(self, *args, **kwargs )
 
-        self.model       = kwargs.get('model',     self.MODEL)
-        self.fieldsets   = kwargs.get('fieldsets', self.FIELDSETS)
-        self.readonly    = kwargs.get('readonly',  self.READ_ONLY)
+        self.object_pk = kwargs.get('pk', None)
+        self.model     = kwargs.get('model',     self.MODEL)
+        self.fieldsets = kwargs.get('fieldsets', self.FIELDSETS)
+        self.readonly  = kwargs.get('readonly',  self.READ_ONLY)
         self.has_cancel_btn = kwargs.get('has_cancel_btn',  self.HAS_CANCEL_BTN)
 
         if len(self.INLINES)>0:
@@ -76,16 +77,14 @@ class EditFormAdmin(BaseWidget):
 
         if self.fieldsets is None: self.fieldsets = self.FIELDSETS
         
-        self._auto_fields           = []
-        self._callable_fields       = []
-        self.edit_fields            = []
-        self.edit_buttons           = []
-        self.inlines_apps           = []
-        self.inlines_controls_name  = []
-        self.inlines_controls       = []
+        self._auto_fields          = []
+        self._callable_fields      = []
+        self.edit_fields           = []
+        self.edit_buttons          = []
+        self.inlines_apps          = []
+        self.inlines_controls_name = []
+        self.inlines_controls      = []
         
-        self.object_pk = None
-
         # used to configure the interface to inline
         # it will filter the dataset by the foreign key
         self.parent_field = None
@@ -95,55 +94,35 @@ class EditFormAdmin(BaseWidget):
             self.__set_parent(self.parent_model, self.parent_pk)
         #######################################################
 
-        # buttons
-        self._save_btn      = ControlButton(self.SAVE_BTN_LABEL)
-        self._create_btn    = ControlButton(self.CREATE_BTN_LABEL)
-        self._remove_btn    = ControlButton(self.REMOVE_BTN_LABEL,  css='red basic')  
-        if self.has_cancel_btn:
-            self._cancel_btn = ControlButton(self.CANCEL_BTN_LABEL, css='gray basic')
-
-        if self.parent_model:
-            self._save_btn.css       += ' tiny'
-            self._create_btn.css     += ' tiny'
-            self._remove_btn.css     += ' tiny'
-            if self.has_cancel_btn:
-                self._cancel_btn.css += ' tiny'
-        
+        # Create the edit buttons buttons #####################
+        self._save_btn   = ControlButton(self.SAVE_BTN_LABEL, label_visible=False, default=self.__save_btn_event)
         self.edit_buttons.append( self._save_btn )
+        
+        self._create_btn = ControlButton(self.CREATE_BTN_LABEL, label_visible=False, default=self.__create_btn_event)
         self.edit_buttons.append( self._create_btn )
+        
+        self._remove_btn = ControlButton(self.REMOVE_BTN_LABEL,  css='red basic', label_visible=False, default=self.__remove_btn_event)  
         self.edit_buttons.append( self._remove_btn )
+        
         if self.has_cancel_btn:
+            self._cancel_btn = ControlButton(self.CANCEL_BTN_LABEL, css='gray basic', label_visible=False, default=self.cancel_btn_event)
             self.edit_buttons.append( self._cancel_btn )
-
+            
         self.edit_fields += self.edit_buttons
-        for field in self.edit_fields: field.hide()
-                
-        # events
-        self._create_btn.value  = self.__create_btn_event
-        self._remove_btn.value  = self.__remove_btn_event
-        self._save_btn.value    = self.__save_btn_event
-        if self.has_cancel_btn:
-            self._cancel_btn.value  = self.cancel_btn_event
-        
-        self._create_btn.label_visible  = False
-        self._remove_btn.label_visible  = False
-        self._save_btn.label_visible    = False
-        if self.has_cancel_btn:
-            self._cancel_btn.label_visible  = False
-        
+        #######################################################
 
+        # In case the edition form is being used as inline ####
+        # set the buttons for tiny size #######################
+        if self.parent_model:
+            for btn in self.edit_buttons: btn.css +=' tiny'
+        #######################################################
+        
         self.create_model_formfields()
-        pk = kwargs.get('pk', None)
-        if pk:
-            self.object_pk = pk
+        
+        if self.object_pk:
             self.show_edit_form()
         else:
             self.show_create_form()
-
-        for inline in self.inlines:
-            self.formset.append(inline.__name__)
-
-
 
     #################################################################################
     #### PROPERTIES #################################################################
