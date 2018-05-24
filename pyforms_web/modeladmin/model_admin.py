@@ -71,8 +71,8 @@ class ModelAdmin(BaseWidget):
         if self.parent_model and self.parent_pk:
             self.set_parent(self.parent_model, self.parent_pk)
         
-        has_add_permission = self.has_add_permission()
-        has_edit_permission = self.has_edit_permission()
+        has_add_permission  = self.has_add_permission()  and self.EDITFORM_CLASS is not None
+        has_edit_permission = self.has_edit_permission() and self.EDITFORM_CLASS is not None
 
         BaseWidget.__init__(self, title)
         
