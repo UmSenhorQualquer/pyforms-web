@@ -69,11 +69,9 @@ class EditFormAdmin(BaseWidget):
         self.readonly    = kwargs.get('readonly',  self.READ_ONLY)
         self.has_cancel_btn = kwargs.get('has_cancel_btn',  self.HAS_CANCEL_BTN)
 
-        if len(self.INLINES)>0:
-            self.inlines   = self.INLINES
-        else:
-            self.inlines   = kwargs.get('inlines', self.INLINES)
-
+        
+        self.inlines = self.INLINES if len(self.INLINES)>0 else kwargs.get('inlines', self.INLINES)
+        
         if self.fieldsets is None: self.fieldsets = self.FIELDSETS
         
         self._auto_fields           = []
@@ -413,7 +411,6 @@ class EditFormAdmin(BaseWidget):
                     pyforms_field.value = [str(o.pk) for o in value.all()]
                     
                 else:
-                    print(field.name, value)
                     pyforms_field.value = value
                 
                 

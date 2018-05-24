@@ -179,6 +179,20 @@ class ControlBase{
 
 	////////////////////////////////////////////////////////////////////////////////
 
+	apply_deserialization(data){
+		if(this.properties.visible)	
+			this.show();
+		else
+			this.hide();
+
+		if(this.properties.enabled)
+			this.enable();
+		else
+			this.disable();
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+
 	serialize(){
 		this.properties.value = this.get_value();
 		return this.properties; 
@@ -190,6 +204,15 @@ class ControlBase{
 		
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 		if(this.properties.css) this.jquery().addClass(this.properties.css);
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+
+	after_init_control(){
+		if(!this.properties.visible)	
+			this.hide();
+		if(!this.properties.enabled)
+			this.disable();
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

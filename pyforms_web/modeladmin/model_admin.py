@@ -194,16 +194,19 @@ class ModelAdmin(BaseWidget):
         self._list.hide()
         self._details.show()
 
-        createform = self.editmodel_class(
-            title='Create', 
-            model=self.model, 
-            inlines=self.INLINES,
-            parent_model=self.parent_model,
-            parent_pk=self.parent_pk,
-            fieldsets=self.FIELDSETS,
-            readonly=self.READ_ONLY,
-            parent_win=self
-        )
+        params = {
+            'title':'Create', 
+            'model':self.model, 
+            'parent_model':self.parent_model,
+            'parent_pk':self.parent_pk,
+            'parent_win': self
+        }
+
+        if self.INLINES: params.update({'inlines':self.INLINES})
+        if self.FIELDSETS: params.update({'fieldsets':self.FIELDSETS})
+        if self.READ_ONLY: params.update({'readonly':self.READ_ONLY})
+
+        createform = self.editmodel_class(**params)
 
         self._details.value  = createform
 
@@ -229,17 +232,20 @@ class ModelAdmin(BaseWidget):
     
         # create the edit form a add it to the empty widget details
         # override the function hide_form to make sure the list is shown after the user close the edition form
-        editform = self.editmodel_class(
-            title='Edit', 
-            model=self.model, 
-            pk=pk, 
-            inlines=self.INLINES,
-            parent_model=self.parent_model,
-            parent_pk=self.parent_pk,
-            fieldsets=self.FIELDSETS,
-            readonly=self.READ_ONLY,
-            parent_listapp=self
-        )
+        params = {
+            'title':'Edit', 
+            'model':self.model, 
+            'pk':pk,
+            'parent_model':self.parent_model,
+            'parent_pk':self.parent_pk,
+            'parent_listapp':self
+        }
+
+        if self.INLINES: params.update({'inlines':self.INLINES})
+        if self.FIELDSETS: params.update({'fieldsets':self.FIELDSETS})
+        if self.READ_ONLY: params.update({'readonly':self.READ_ONLY})
+
+        editform = self.editmodel_class(**params)
         self._details.value = editform
         
 
