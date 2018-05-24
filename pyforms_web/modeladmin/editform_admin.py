@@ -450,6 +450,15 @@ class EditFormAdmin(BaseWidget):
         """
         return self.model()
 
+    def save_object(self, obj):
+        """
+        Function called to save the object
+
+        :param django.db.models.Model obj: Object to save.
+        
+        """
+        obj.save()
+
     def save_event(self):
         """
         Function called when the save is called.
@@ -560,7 +569,7 @@ class EditFormAdmin(BaseWidget):
                 self.alert(html)
                 return None
 
-            obj.save()
+            self.save_object(obj)
             
             for field in self.model._meta.get_fields():
 
