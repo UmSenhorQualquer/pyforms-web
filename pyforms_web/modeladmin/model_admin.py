@@ -27,8 +27,16 @@ from .editform_admin import EditFormAdmin
 
 class ModelAdmin(BaseWidget):
     """
-    Class used to generate automatically an admin interface for a specific model
+    The class is used to generate an admin interface for ModelAdmin.MODEL.
 
+    .. code:: python
+
+       from suppliers.models import Suplier
+
+       class SupplierAdminApp(ModelAdmin):
+
+            MODEL = Supplier
+            TITLE = 'Suppliers'
     """
 
     MODEL           = None  #: class: Model to manage

@@ -18,8 +18,14 @@ ControlBase
     :undoc-members:
     :show-inheritance:
 
+
+----------------------------
+
 ControlBoundingSlider
 ----------------------------
+
+.. image:: /_static/imgs/controls/boundingslider.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_boundingslider.ControlBoundingSlider
     :members:
@@ -27,8 +33,13 @@ ControlBoundingSlider
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlButton
 ----------------------------
+
+.. image:: /_static/imgs/controls/button.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_button.ControlButton
     :members:
@@ -36,8 +47,14 @@ ControlButton
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlCalendar
 ----------------------------
+
+.. image:: /_static/imgs/controls/calendar.png
+    :align: center
+
 
 .. autoclass:: pyforms_web.controls.control_calendar.ControlCalendar
     :members:
@@ -48,14 +65,22 @@ ControlCalendar
 ControlCheckBox
 ----------------------------
 
+.. image:: /_static/imgs/controls/checkbox.png
+    :align: center
+
 .. autoclass:: pyforms_web.controls.control_checkbox.ControlCheckBox
     :members:
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlCombo
 ----------------------------
+
+.. image:: /_static/imgs/controls/combobox.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_combo.ControlCombo
     :members:
@@ -63,8 +88,13 @@ ControlCombo
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlDate
 ----------------------------
+
+.. image:: /_static/imgs/controls/date.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_date.ControlDate
     :members:
@@ -72,14 +102,21 @@ ControlDate
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlDateTime
 ----------------------------
+
+.. image:: /_static/imgs/controls/datetime.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_datetime.ControlDateTime
     :members:
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+----------------------------
 
 ControlDir
 ----------------------------
@@ -90,6 +127,8 @@ ControlDir
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlEmail
 ----------------------------
 
@@ -98,6 +137,8 @@ ControlEmail
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+----------------------------
 
 ControlEmptyWidget
 ----------------------------
@@ -108,6 +149,8 @@ ControlEmptyWidget
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlFeed
 ----------------------------
 
@@ -117,8 +160,14 @@ ControlFeed
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlFile
 ----------------------------
+
+.. image:: /_static/imgs/controls/file.png
+    :align: center
+
 
 .. autoclass:: pyforms_web.controls.control_file.ControlFile
     :members:
@@ -126,14 +175,21 @@ ControlFile
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlFileUpload
 ----------------------------
+
+.. image:: /_static/imgs/controls/fileupload.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_fileupload.ControlFileUpload
     :members:
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+----------------------------
 
 ControlFloat
 ----------------------------
@@ -144,6 +200,8 @@ ControlFloat
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlHtml
 ----------------------------
 
@@ -153,8 +211,14 @@ ControlHtml
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlImage
 ----------------------------
+
+.. image:: /_static/imgs/controls/image.png
+    :align: center
+
 
 .. autoclass:: pyforms_web.controls.control_image.ControlImage
     :members:
@@ -162,14 +226,21 @@ ControlImage
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlInteger
 ----------------------------
+
+.. image:: /_static/imgs/controls/integer.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_integer.ControlInteger
     :members:
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+----------------------------
 
 ControlItemsList
 ----------------------------
@@ -180,14 +251,22 @@ ControlItemsList
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlLabel
 ----------------------------
+
+.. image:: /_static/imgs/controls/label.png
+    :align: center
+
 
 .. autoclass:: pyforms_web.controls.control_label.ControlLabel
     :members:
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+----------------------------
 
 ControlMenu
 ----------------------------
@@ -198,8 +277,13 @@ ControlMenu
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlMultipleSelection
 ----------------------------
+
+.. image:: /_static/imgs/controls/multiselection.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_multipleselection.ControlMultipleSelection
     :members:
@@ -207,8 +291,13 @@ ControlMultipleSelection
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlPassword
 ----------------------------
+
+.. image:: /_static/imgs/controls/password.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_password.ControlPassword
     :members:
@@ -216,14 +305,22 @@ ControlPassword
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlPlayer
 ----------------------------
+
+.. image:: /_static/imgs/controls/player.png
+    :align: center
+
 
 .. autoclass:: pyforms_web.controls.control_player.ControlPlayer
     :members:
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+----------------------------
 
 ControlProgress
 ----------------------------
@@ -234,6 +331,8 @@ ControlProgress
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlQueryCards
 ----------------------------
 
@@ -242,6 +341,8 @@ ControlQueryCards
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+----------------------------
 
 ControlQueryCombo
 ----------------------------
@@ -252,6 +353,8 @@ ControlQueryCombo
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlQueryItem
 ----------------------------
 
@@ -260,6 +363,8 @@ ControlQueryItem
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+----------------------------
 
 ControlQueryList
 ----------------------------
@@ -270,14 +375,21 @@ ControlQueryList
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlSlider
 ----------------------------
+
+.. image:: /_static/imgs/controls/slider.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_slider.ControlSlider
     :members:
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+----------------------------
 
 ControlTemplate
 ----------------------------
@@ -288,8 +400,13 @@ ControlTemplate
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlText
 ----------------------------
+
+.. image:: /_static/imgs/controls/text.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_text.ControlText
     :members:
@@ -297,14 +414,21 @@ ControlText
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlTextArea
 ----------------------------
+
+.. image:: /_static/imgs/controls/textarea.png
+    :align: center
 
 .. autoclass:: pyforms_web.controls.control_textarea.ControlTextArea
     :members:
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+----------------------------
 
 ControlTimeout
 ----------------------------
@@ -315,6 +439,8 @@ ControlTimeout
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlVisVis
 ----------------------------
 
@@ -323,6 +449,8 @@ ControlVisVis
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+----------------------------
 
 ControlWorkflow
 ----------------------------

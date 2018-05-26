@@ -32,6 +32,41 @@ from django.utils import timezone
 
 
 class EditFormAdmin(BaseWidget):
+    """
+    When a Pyforms application inherit from this class a form for the model EditFormAdmin.MODEL is created.
+
+    **Usage example:**
+
+    .. code:: python
+
+       from funding.models import FundingOpportunity
+
+       class EditFundingOpportunitiesApp(EditFormAdmin):
+            
+            TITLE = "Edit opportunities"
+            MODEL = FundingOpportunity
+            
+            FIELDSETS = [
+                'h2:Opportunity details',
+                segment([ 
+                    ('subject','fundingopportunity_published','fundingopportunity_rolling'),
+                    ('fundingopportunity_name','fundingopportunity_end'),
+                    ('_loi','fundingopportunity_loideadline', 'fundingopportunity_fullproposal'),
+                    ('fundingopportunity_link','topics'),
+                ]),
+                'h2:Financing info',
+                segment([
+                    ('financingAgency','currency','paymentfrequency'),
+                    ('fundingtype','fundingopportunity_value','fundingopportunity_duration'),
+                ]),
+                'h2:Description',
+                segment([
+                    'fundingopportunity_eligibility',
+                    'fundingopportunity_scope',
+                    'fundingopportunity_brifdesc',
+                ])
+            ]
+    """
 
     MODEL          = None  #: class: Model to manage
     TITLE          = None  #: str: Title of the application
@@ -295,6 +330,9 @@ class EditFormAdmin(BaseWidget):
         self._remove_btn.hide()
 
     def update_callable_fields(self):
+        """
+        Update the callable fields after the form is saved.
+        """
         if not self._callable_fields: return 
 
         obj = self.model_object
@@ -305,6 +343,9 @@ class EditFormAdmin(BaseWidget):
             pyforms_field.value = value
 
     def update_autonumber_fields(self):
+        """
+        Update the auto number fields after the form is saved.
+        """
         if not self._auto_fields: return 
 
         obj = self.model_object

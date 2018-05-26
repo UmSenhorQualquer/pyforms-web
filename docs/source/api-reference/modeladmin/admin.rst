@@ -29,11 +29,23 @@ EditFormAdmin
     :undoc-members:
     :show-inheritance:
 
+|
+|
+
+----------------------------
+
 ViewFormAdmin
 ----------------------------
+
+|
+
+.. image:: /_static/imgs/model-view.png
+    :width: 600px
+    :align: center
 
 .. autoclass:: pyforms_web.modeladmin.viewform_admin.ViewFormAdmin
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: create_model_formfields,create_newobject,save_event,delete_event,get_buttons_row
 

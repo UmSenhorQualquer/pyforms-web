@@ -24,13 +24,41 @@ import os
 from .editform_admin import EditFormAdmin
 
 class ViewFormAdmin(EditFormAdmin):
+    """
+    When a Pyforms application inherit from this class a form for the model ViewFormAdmin.MODEL is created with
+    all the fields in the fieldset in read only mode.
+
+    **Usage example:**
+
+    .. code:: python
+
+       from suppliers.models import Order
+
+       class OrderView(ViewFormAdmin):
+            MODEL =  Order
+            TITLE = 'Order in read-only'
+            
+            FIELDSETS = [
+                'h3:General Information',
+                ('responsible','order_req'),
+                'supplier',
+                {'a:Description':['order_desc'], 'b:Notes':['order_notes']},
+                ('order_amount', 'currency', 'order_paymethod'),
+                ('order_reqnum', 'order_reqdate'),
+                ('order_podate', 'order_deldate')
+            ]
+    """
 
     def __init__(self, *args, **kwargs):
         """
-        Parameters:
-            title  - Title of the app.
-            model  - Model with the App will represent.
-            parent - Variable with the content [model, foreign key id]. It is used to transform the App in an inline App
+
+        :param str title: Title of the app. By default will assume the value in the class variable TITLE.
+        :param django.db.models.Model model: Model with the App will represent. By default will assume the value in the class variable MODEL.
+        :param list(ModelAdmin) inlines: Sub models to show in the interface
+        :param list(str) fieldsets: Organization of the fields
+        :param int parent_pk: Parent model key
+        :param django.db.models.Model parent_model: Parent model class
+        :param int pk: Model register to manage
         """
 
         super(ViewFormAdmin, self).__init__(*args, **kwargs)

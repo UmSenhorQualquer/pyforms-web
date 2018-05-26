@@ -24,13 +24,14 @@ class BaseWidget(object):
     """
     The class implements a application window
     """
-    TITLE           = None
-    LAYOUT_POSITION = None
-    CSS             = ''
 
-    FORM_NO_ROW_ALIGNMENT = 0
+    TITLE = None #: str: Title of the application.
 
-    REFRESH_TIMEOUT = None #time in milliseconds to refresh the application
+    #: int or str: Id of the layout handler function registered in the javascript by the function [pyforms.register_layout_place] or Element DOM id in the HTML where the application should be shown.
+    LAYOUT_POSITION = None 
+    
+    #: str: Time in milliseconds to refresh the application.
+    REFRESH_TIMEOUT = None
 
     def __init__(self, *args, **kwargs):
         self._formset       = None
@@ -91,9 +92,9 @@ class BaseWidget(object):
 
 
         res =  {
-            'code': self._html, 
-            'css': self.CSS, 
-            'title': self._title, 
+            'code': self._html,
+            'title': self._title,
+            'css': '',
             'app_id':self.uid, 
             'refresh_timeout':  
             self.REFRESH_TIMEOUT
@@ -356,7 +357,6 @@ class BaseWidget(object):
         """
         Get the css class to be used on the controls organization
         """
-        if len(row)>=1 and row[0]==self.FORM_NO_ROW_ALIGNMENT: return 'no-alignment'
         if isinstance(row, no_columns): return 'no-alignment'
 
         if   len(row)==2: return 'two'
