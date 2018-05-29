@@ -40,7 +40,7 @@ class ControlDate extends ControlBase{
 
 		var self = this;
 		this.jquery().change(function(){
-			self.basewidget.fire_event( self.name, 'changed_event' );
+			self.basewidget.fire_event( self.name, 'update_control_event' );
 		});
 
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 

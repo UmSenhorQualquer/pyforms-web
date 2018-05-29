@@ -17,8 +17,18 @@ ControlBase
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: add_popup_submenu,add_popup_menu_option,clean_field,commit,about_to_show_contextmenu_event,load_form,save_form
 
+----------------------------
 
+ControlAutoComplete
+----------------------------
+
+.. autoclass:: pyforms_web.controls.control_autocomplete.ControlAutoComplete
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
 ----------------------------
 
 ControlBoundingSlider

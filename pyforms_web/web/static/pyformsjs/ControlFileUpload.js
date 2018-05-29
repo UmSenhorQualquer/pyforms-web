@@ -17,7 +17,7 @@ class ControlFileUpload extends ControlBase{
 				beforeSend: function(){self.basewidget.loading();}, //A pre-request callback function {Function}
 				success: function(data, itemEl, listEl, boxEl, newInputEl, inputEl, id){
 					self.properties.new_value = data.metas[0].file;
-					self.basewidget.fire_event( self.name, 'changed_event' );
+					self.basewidget.fire_event( self.name, 'update_control_event' );
 					self.basewidget.not_loading();
 				},
 				error: null, //A function to be called if the request fails {Function}
@@ -32,7 +32,7 @@ class ControlFileUpload extends ControlBase{
 			allowDuplicates: false,
 			onRemove: function(itemEl, file, id, listEl, boxEl, newInputEl, inputEl){
 				self.properties.new_value = '';
-				self.basewidget.fire_event( self.name, 'changed_event' );
+				self.basewidget.fire_event( self.name, 'update_control_event' );
 			},
 		});
 

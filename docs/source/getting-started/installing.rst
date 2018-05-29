@@ -1,13 +1,13 @@
-******************************
+********************
 Install & configure
-******************************
+********************
 
 On this page is explained how to configure your environment and your django app to start using pyforms.
 
 .. note:: The instructions on this page assumes you know how the `Django framework <https://www.djangoproject.com/>`_ works.
 
 Configure the environment
-=================================
+==========================
 
 * First clone the `Pyforms <https://bitbucket.org/UmSenhorQualquer/pyforms-web/>`_ git project at bitbucket.
 
@@ -24,7 +24,7 @@ Configure the environment
 
 
 Configure a django project
-=================================
+===========================
 
 Execute the next command in the terminal to start a Django project.
 
@@ -85,7 +85,7 @@ Edit the django project **urls.py** file to include the next urls configurations
         urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 Run the project
-=================================
+================
 
 .. code:: bash
 
@@ -99,3 +99,24 @@ Access to `http://localhost:8000 <http://localhost:8000/>`_
 .. image:: /_static/imgs/demo-app.png
     :width: 100%
     :align: center
+
+
+Configure django-allauth
+=========================
+
+django-allauth is a reusable Django app that allows for both local and social authentication, with flows that just work.
+
+To make it work with Orquestra follow the instructions described `@django-allauth documentation 
+<http://django-allauth.readthedocs.io/en/latest/installation.html>`_.
+
+Add the next configuration to your Django project setttings.
+
+.. code:: python
+
+    ...
+
+   LOGIN_URL = '/accounts/login/'
+   LOGIN_REDIRECT_URL = '/'
+
+
+Do not forget to apply the db migrations to your project.

@@ -7,7 +7,7 @@ class ControlFloat extends ControlBase{
 
 		var self = this;
 		this.jquery().change(function(){
-			self.basewidget.fire_event( this.name, 'changed_event' );
+			self.basewidget.fire_event( this.name, 'update_control_event' );
 		});
 
 		

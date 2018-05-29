@@ -27,7 +27,7 @@ class ControlBoundingSlider extends ControlBase{
 		this.jquery().slider({ 
 			range: true,
 			slide: function( event, ui ) { $( "#value-"+self.control_id() ).html( ui.value ); },
-			stop:  function(){ self.basewidget.fire_event( self.name, 'changed_event' )}, 
+			stop:  function(){ self.basewidget.fire_event( self.name, 'update_control_event' )}, 
 			min: this.properties.min, max: this.properties.max, values: this.properties.value 
 		});
 

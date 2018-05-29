@@ -63,7 +63,7 @@ class ControlMultipleChecks extends ControlBase{
         $("#"+this.place_id()+' .ui.checkbox').checkbox({
             onChange:function(){
                 if(self.flag_exec_on_change_event)
-                    self.basewidget.fire_event( this.name, 'changed_event' );
+                    self.basewidget.fire_event( this.name, 'update_control_event' );
             }
         });
 

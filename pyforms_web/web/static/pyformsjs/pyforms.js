@@ -22,9 +22,14 @@ if(typeof(not_loading)!="function") var not_loading = function(){};
 
 
 class PyformsManager{
+	/**
+	 * Test
+	 */
 
 	constructor(){
-
+		/*
+		Client side manager
+		*/
 		this.loop_checks  = [];
 		this.loop 		  = undefined;
 

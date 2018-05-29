@@ -1,3 +1,7 @@
+try:
+    from .controls.control_player import ControlPlayer
+except:
+    pass
 
 from .controls.control_base     import ControlBase
 from .controls.control_file     import ControlFile
@@ -6,23 +10,21 @@ from .controls.control_text     import ControlText
 from .controls.control_checkbox import ControlCheckBox
 from .controls.control_label    import ControlLabel
 from .controls.control_button   import ControlButton
-try:
-    from .controls.control_player import ControlPlayer
-except:
-    print("ControlPlayer is not available")
+
 from .web.applications import ApplicationsLoader
 from .web.middleware   import PyFormsMiddleware
-import uuid, os, shutil, base64, inspect
-import base64, dill, simplejson, filelock
-from confapp import conf
+
+from pyforms_web.organizers import no_columns, segment
 from django.template.loader import render_to_string
 from .utils import make_lambda_func
+from confapp import conf
 
-from .organizers import *
+import uuid, os, inspect, dill, simplejson, filelock
+
    
 class BaseWidget(object):
     """
-    The class implements a application window
+    The class implements a application form
     """
 
     TITLE = None #: str: Title of the application.
@@ -34,6 +36,25 @@ class BaseWidget(object):
     REFRESH_TIMEOUT = None
 
     def __init__(self, *args, **kwargs):
+        """
+        :param str title: Title of the app. By default will assume the value in the class variable TITLE.
+        :param BaseWidget parent_win: Parent BaseWidget
+
+        **Example:**
+
+        .. code:: python
+
+           class FeedViewerApp(BaseWidget):
+
+                TITLE = 'Feed viewer'
+                 
+                def __init__(self, *args, **kwargs):
+                    
+                    self._likebtn    = ControlButton(label_visible=False, labeled=True)
+                    self._htmlviewer = ControlTemplate('Html', template=self.VIEWER_TEMPLATE)
+                    
+                    self.formset = ['_likebtn', '_htmlviewer']
+        """
         self._formset       = None
         self._splitters     = []
         self._title         = kwargs.get('title', args[0] if len(args)>0 else self.TITLE)
@@ -64,14 +85,25 @@ class BaseWidget(object):
 
     def init_form(self, parent=None):
         """
-        Generate the module Form
+        Generate the application Form. Return the dict:
+
+        .. code:: python
+        
+           {
+                'code': ...,           # HTML code that will initialize the application.
+                'title': ...,          # Title of the application.
+                'css': ...,            # Application CSS.
+                'app_id': ...,         # Application id.
+                'refresh_timeout': ... # Application refresh time.
+           }
+
         """
         
         self._html = ''
         self._js = ''
         self._controls = [c.init_form() for c in self.controls.values()]
         if self._formset != None: 
-            self._html += self.generate_panel(self._formset, add_field_class=False)
+            self._html += self.generate_panel(self._formset)
             
 
         parent_code = 'undefined'
@@ -115,7 +147,7 @@ class BaseWidget(object):
         Generate the html to organize the formset in segments
         """
         html  = "<div class='ui segment pyforms-segment {0}' >".format(row.css)
-        html += self.generate_panel(list(row), add_field_class=False)
+        html += self.generate_panel( list(row) )
         html += "</div>"
         return html
 
@@ -129,7 +161,7 @@ class BaseWidget(object):
             
             html += "<h2 class='ui header' >{0}</h2>".format(key[key.find(':')+1:])
             html += "<div class='ui segment pyforms-segment' >"
-            html += self.generate_panel(item, add_field_class=False)
+            html += self.generate_panel(item)
             html += "</div>"
         return html
 
@@ -177,39 +209,74 @@ class BaseWidget(object):
             return str(control)
 
 
-    def generate_panel(self, formset, add_field_class=True):
+    def generate_panel(self, formset):
         """  
-        Generate a panel for the module form with all the controls formset format example: 
+        Generate a panel for the application form with all the controls: 
         
+        :param list formset: formset configuration, used to generate the panel.
+        
+        **Example:**
+
         .. code-block:: python
-
-            [
-                ('_video', '_arenas', '_run'), 
+            
+           [
+                no_columns('_toggle_btn','_copy_btn', '_css_btn'),
+                ' ',
+                '_input',
+                '_text',
                 {
-                    "Player": [
-                        '_threshold',
-                        "_player",
-                        "=",
-                        "_results",
-                        "_query"
-                    ], 
-                    "Background image":[
-                        (' ', '_selectBackground', '_paintBackground'),
-                        '_image'
+                    'a:Free text': [
+                        'h1:Header 1',
+                        'h2:Header 2',
+                        'h3:Header 3',
+                        'h4:Header 4',
+                        'h5:Header 5',
+                        'h1-right:Header 1',
+                        'h2-right:Header 2',
+                        'h3-right:Header 3',
+                        'h4-right:Header 4',
+                        'h5-right:Header 5',
+                        '-',
+                        'Free text here',
+                        'msg:Message text',
+                        'info:Info message',
+                        'warning:Warning message',
+                        'alert:Alert message'
+                    ],
+                    'b:Segments': [
+                        'The next example has a segment',
+                        segment(
+                            '_combo',
+                            '_check',
+                            css='secondary'
+                        ),
+                        '_list',
+                        '_label'
                     ]
-                }, 
-                "_progress"
-            ]  
-        
-        **tuple**: displays the controls horizontally.  
+                }
+           ]
 
-        **list**: displays the controls vertically.   
+        - **tuple**: displays the controls horizontally.
 
-        **dict**: displays the controls in Tabs.   
+        - **list**: displays the controls vertically.   
 
-        **'||'**: splits the controls with a horizontal line.   
+        - **dict**: displays the controls in Tabs.  
 
-        **'='**: splits the controls with a vertical line.   
+            - Use [a:,b:,c:] prefix to sort the tabs.
+
+        - **'-'**: Draw a vertical line.
+
+        - **segment**: Wraps the formset around a segment (Semantic UI segment).
+            
+            - Call the parameter **css**, to add extra classes to the segment.
+
+        - **no_columns**: Do not apply the fields columns alignments.
+
+        - **Free text**: Do not apply the fields columns alignments.
+
+        - **Message**: By using the prefixes [msg:,info:,warning:,alert:] you will wrap a free message on message box.
+
+        - **Headers**: Use the prefixes [h1:,h2:,h3:,h4:,h5:,h1-right:,h2-right:,h3-right:,h4-right:,h5-right:] on free text.
         
         """
         if formset is None:
@@ -233,7 +300,7 @@ class BaseWidget(object):
         if isinstance(formset, (tuple,no_columns) ):
             layout  = "<div class='row fields {0}' >".format(self.__get_fields_class(formset))
             for row in formset:
-                layout += self.generate_panel( row, add_field_class )
+                layout += self.generate_panel( row )
             return layout+"</div>"
 
         elif isinstance(formset, segment):
@@ -243,7 +310,7 @@ class BaseWidget(object):
             layout  = ""
             for row in formset:
                 if row == ' ': layout += "<div class='field-empty-space' ></div>"
-                layout += self.generate_panel( row, add_field_class )
+                layout += self.generate_panel( row )
             return layout
 
         elif isinstance(formset, dict ):
@@ -294,7 +361,11 @@ class BaseWidget(object):
 
     def message(self, msg, title=None, msg_type=None):
         """
-        Write a simple message
+        Write a simple message.
+
+        :param str msg: Message to show.
+        :param str title: Message title.
+        :param str msg_type: Message box css class.
         """
         msg = { 'type': msg_type if msg_type else '', 'messages':msg if isinstance(msg, list) else [msg], 'title':title }
         self._messages.append(msg)
@@ -302,48 +373,93 @@ class BaseWidget(object):
     def success(self,   msg, title=None):
         """
         Write a success message
+        
+        :param str msg: Message to show.
+        :param str title: Message title.
         """
         self.message(msg, title, msg_type='success')
     def info(self,      msg, title=None):
         """
         Write a info message
+        
+        :param str msg: Message to show.
+        :param str title: Message title.
         """
         self.message(msg, title, msg_type='info')
     def warning(self,   msg, title=None):
         """
         Write a warning message
+        
+        :param str msg: Message to show.
+        :param str title: Message title.
         """
         self.message(msg, title, msg_type='warning');
     def alert(self,     msg, title=None):
         """
         Write a alert message
+        
+        :param str msg: Message to show.
+        :param str title: Message title.
         """
         self.message(msg, title, msg_type='error')
 
     def message_popup(self, msg, title='', buttons=None, handler=None, msg_type='success'):
         """
         Show a popup message window
+        
+        :param str msg: Message to show.
+        :param str title: Message title.
+        :param list(str) buttons: List of buttons labels to create in the popup window.
+        :param str msg_type: Message box css class.
+        :param method handler: Method that will handle the press of the buttons.
+    
+        .. code:: python
+           
+           # Handler
+           def button_pressed_btn(popup=[Popup instance], button=[Label of the pressed button]):
+                ...
+
         """
         self._active_popup_msg = PopupWindow(title, msg, buttons, handler, msg_type='success', parent_win=self)
         return self._active_popup_msg
     def success_popup(self, msg, title='', buttons=None, handler=None):
         """
         Show a popup success message window
+        
+        :param str msg: Message to show.
+        :param str title: Message title.
+        :param list(str) buttons: List of buttons labels to create in the popup window.
+        :param method handler: Method that will handle the press of the buttons.
         """
         return self.message_popup(msg, title, buttons, handler, msg_type='success')
     def info_popup(self, msg, title='', buttons=None, handler=None):
         """
         Show a popup info message window
+        
+        :param str msg: Message to show.
+        :param str title: Message title.
+        :param list(str) buttons: List of buttons labels to create in the popup window.
+        :param method handler: Method that will handle the press of the buttons.
         """
         return self.message_popup(msg, title, buttons, handler, msg_type='info')
     def warning_popup(self, msg, title='', buttons=None, handler=None):
         """
         Show a popup warning message window
+        
+        :param str msg: Message to show.
+        :param str title: Message title.
+        :param list(str) buttons: List of buttons labels to create in the popup window.
+        :param method handler: Method that will handle the press of the buttons.
         """
         return self.message_popup(msg, title, buttons, handler, msg_type='warning')
     def alert_popup(self, msg, title='', buttons=None, handler=None):
         """
         Show a popup alert message window
+        
+        :param str msg: Message to show.
+        :param str title: Message title.
+        :param list(str) buttons: List of buttons labels to create in the popup window.
+        :param method handler: Method that will handle the press of the buttons.
         """
         return self.message_popup(msg, title, buttons, handler, msg_type='alert')
 
@@ -405,7 +521,9 @@ class BaseWidget(object):
 
     def execute_js(self, code):
         """
-        This function executs a javascript on the client side
+        This function executes a javascript remotely on the client side.
+        
+        :param str code: Javascript code to execute.
         """
         self._js_code2execute.append(code)
 
@@ -423,6 +541,8 @@ class BaseWidget(object):
     def load_serialized_form(self, params):
         """
         Load the json parameters sent by the client side
+        
+        :param dict params: Data to load.
         """
         widgets = []
 
@@ -454,7 +574,10 @@ class BaseWidget(object):
 
     def serialize_form(self):
         """
-        Serialize the Form to a control
+        Serialize the Form to a control.
+
+        Returns:
+            dict: Data representings the current state of the application.
         """
         res = {
             'uid':              self.uid, 
@@ -487,6 +610,8 @@ class BaseWidget(object):
     def has_permissions(cls, user):
         """
         This class method, verifies if a user has permissions to execute the application
+        
+        :param User params: User to availuate the permissions.
         """
         if hasattr(cls, 'AUTHORIZED_GROUPS'):
             if user.is_superuser and 'superuser' in cls.AUTHORIZED_GROUPS: 
@@ -501,6 +626,8 @@ class BaseWidget(object):
     def has_session_permissions(self, user):
         """
         It verifies if a user has permissions to execute the application during the runtime.
+        
+        :param User params: User to availuate the permissions.
         """
         return True
 
@@ -524,7 +651,7 @@ class BaseWidget(object):
 
     def refresh_event(self):
         """
-        Event called every X time defined by refresh_timeout variable.
+        Event called every X time defined by REFRESH_TIMEOUT variable.
         """
         pass
 
@@ -538,7 +665,7 @@ class BaseWidget(object):
     @property
     def controls(self):
         """
-        Return all the form controls from the the module
+        Returns all the form controls from the the module
         """
         result = {}
         for name, var in vars(self).items():

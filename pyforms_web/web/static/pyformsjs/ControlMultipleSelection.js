@@ -51,7 +51,7 @@ class ControlMultipleSelection extends ControlBase{
 
 		this.jquery().dropdown('setting', 'onChange', function(){
 			if(self.flag_exec_on_change_event)
-				self.basewidget.fire_event( self.name, 'changed_event' );
+				self.basewidget.fire_event( self.name, 'update_control_event' );
 		});
 
 		

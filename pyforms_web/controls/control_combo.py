@@ -9,7 +9,7 @@ class ControlCombo(ControlBase):
     def __init__(self, *args, **kwargs):
         self._init_form_called = False
         
-        self._items = None
+        self._items = collections.OrderedDict()
         items = kwargs.get('items', [])
         for item in items:
             self.add_item(*item)

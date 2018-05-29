@@ -83,7 +83,7 @@ class ControlList extends ControlBase{
 				cell.find('input').focusout(function(){
 					cell.html($(this).val());
 					self.being_edited = false;
-					self.basewidget.fire_event( self.name, 'changed_event' );
+					self.basewidget.fire_event( self.name, 'update_control_event' );
 				});
 			});
 		}else{

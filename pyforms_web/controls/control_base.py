@@ -3,9 +3,22 @@ from confapp import conf
 from pyforms_web.web.middleware import PyFormsMiddleware
 
 class ControlBase(object):
-
+    """
+    Basis class from where all the Controls inherit from.
+    """
 
     def __init__(self, *args, **kwargs):
+        """
+        :param str label: Control label.
+        :param str helptext: Set the help text. Default = None.
+        :param str default: Set the value. Default = None.
+        :param bool visible: Set the control visible or hidden. Default = True.
+        :param bool error: Mark the control as having and error. Default = False.
+        :param str css: Extra css classes to add to the control.
+        :param bool enabled: Set the control enabled or disabled. Default = True.
+        :param bool readonly: Set the control as read only. Default = False.
+        :param bool label_visible: Hide or show the label. Default = True.
+        """
         self.uid            = uuid.uuid4()
         self._name          = ""    # variable name. It is updated in runtime
         self._parent        = None  # parent basewidget. It is updated in runtime
@@ -36,8 +49,11 @@ class ControlBase(object):
 
 
     ##########################################################################
-    ############ Funcions ####################################################
+    ############ Functions ####################################################
     ##########################################################################
+
+    def update_control_event(self):
+        pass
 
     def init_form(self):
         """
@@ -91,6 +107,12 @@ class ControlBase(object):
     ##########################################################################
 
     def serialize(self):
+        """
+        Serialize the control data.
+
+        Returns:
+            dict: Serialized data.
+        """
         res = { 
             'name':     self.name, 
             'value':    self.value,
@@ -107,6 +129,11 @@ class ControlBase(object):
         return res
 
     def deserialize(self, properties):
+        """
+        Serialize the control data.
+        
+        :param dict properties: Serialized data to load.
+        """
         self.value    = properties.get('value',None)
         self._label   = properties.get('label','')
         self._help    = properties.get('help','')
@@ -115,7 +142,7 @@ class ControlBase(object):
     
     def clean_field(self):
         """
-        Validate the value of the Control
+        Validate the value of the Control.
         """
         pass
     
@@ -125,6 +152,9 @@ class ControlBase(object):
         self._update_client = False
 
     def mark_to_update_client(self):
+        """
+        Mark the control to update in the client side.
+        """
         self._update_client = True
         
         request = PyFormsMiddleware.get_request()
@@ -137,7 +167,11 @@ class ControlBase(object):
     ############ Events ######################################################
     ##########################################################################
 
-    def changed_event(self): pass
+    def changed_event(self):
+        """
+        Event called when the control value is changed.
+        """
+        pass
 
     def about_to_show_contextmenu_event(self): pass
 
@@ -149,7 +183,11 @@ class ControlBase(object):
     # Set the Control enabled or disabled
     
     @property
-    def enabled(self): return self._enabled
+    def enabled(self):
+        """
+        Set the control enabled or disabled.
+        """
+        return self._enabled
 
     @enabled.setter
     def enabled(self, value):
@@ -158,10 +196,14 @@ class ControlBase(object):
             self.mark_to_update_client()
 
     ##########################################################################
-    # Return or update the value of the Control
+    # Return or update the value of the control
 
     @property
-    def value(self): return self._value
+    def value(self):
+        """
+        Set or return de control value.
+        """
+        return self._value
 
     @value.setter
     def value(self, value):
@@ -172,7 +214,11 @@ class ControlBase(object):
             self.changed_event()
 
     @property
-    def name(self): return self._name
+    def name(self):
+        """
+        Set or return the name of the control.
+        """
+        return self._name
 
     @name.setter
     def name(self, value):
@@ -183,7 +229,11 @@ class ControlBase(object):
     # Return or update the label of the Control
 
     @property
-    def label(self): return self._label
+    def label(self):
+        """
+        Set or return the label of the control.
+        """
+        return self._label
 
     @label.setter
     def label(self, value): 
@@ -194,7 +244,11 @@ class ControlBase(object):
     # Parent window
 
     @property
-    def parent(self): return self._parent
+    def parent(self):
+        """
+        Set or return the control window.
+        """
+        return self._parent
 
     @parent.setter
     def parent(self, value): 
@@ -204,21 +258,36 @@ class ControlBase(object):
     ############################################################################
 
     @property
-    def visible(self): return self._visible
+    def visible(self):
+        """
+        Set if the control is visible.
+        """
+        return self._visible
     
     @property
     def help(self): 
+        """
+        Set or return the help text of the control.
+        """
         return self._help.replace('\n', '&#013;') if self._help else ''
 
     @property
-    def error(self): return self._error
+    def error(self):
+        """
+        Set or return the error of the control.
+        """
+        return self._error
     @error.setter
     def error(self, value): 
         if value!=self._error: self.mark_to_update_client()
         self._error = value
 
     @property
-    def label_visible(self): return self._label_visible
+    def label_visible(self):
+        """
+        Set or return the label visibility of the control.
+        """
+        return self._label_visible
 
     @label_visible.setter
     def label_visible(self, value):
@@ -226,13 +295,21 @@ class ControlBase(object):
         self._label_visible = value
 
     @property
-    def readonly(self): return not self.enabled
+    def readonly(self):
+        """
+        Set or return the control readonly mode.
+        """
+        return not self.enabled
 
     @readonly.setter
     def readonly(self, value): self.enabled = not value
 
     @property
-    def css(self): return self._css
+    def css(self):
+        """
+        Set or return the extra css of the control.
+        """
+        return self._css
     @css.setter
     def css(self, value): 
         if value: self.mark_to_update_client()
@@ -244,10 +321,22 @@ class ControlBase(object):
     ##########################################################################
 
     @property
-    def control_id(self):   return "{0}-{1}".format(self._parent.uid, self.name)
+    def control_id(self):
+        """
+        Return the control id.
+        """
+        return "{0}-{1}".format(self._parent.uid, self.name)
 
     @property
-    def place_id(self):     return 'place-'+self.control_id
+    def place_id(self):
+        """
+        Return the place control id.
+        """
+        return 'place-'+self.control_id
 
     @property
-    def was_updated(self):  return self._update_client
+    def was_updated(self):
+        """
+        Return the if the control is marked as updated.
+        """
+        return self._update_client
