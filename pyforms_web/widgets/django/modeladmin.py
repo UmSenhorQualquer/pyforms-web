@@ -23,9 +23,9 @@ from django.db import models
 import os
 
 
-from .editform_admin import EditFormAdmin
+from .modelform import ModelFormWidget
 
-class ModelAdmin(BaseWidget):
+class ModelAdminWidget(BaseWidget):
     """
     The class is used to generate an admin interface for ModelAdmin.MODEL.
 
@@ -41,7 +41,7 @@ class ModelAdmin(BaseWidget):
 
     MODEL           = None  #: class: Model to manage
     TITLE           = None  #: str: Title of the application
-    EDITFORM_CLASS  = EditFormAdmin #: class: Edit form class
+    EDITFORM_CLASS  = ModelFormWidget #: class: Edit form class
 
     INLINES         = []    #: list(class): Sub models to show in the interface
     LIST_FILTER     = None  #: list(str): List of filters fields

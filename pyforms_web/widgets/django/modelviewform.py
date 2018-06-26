@@ -21,11 +21,11 @@ from django.conf import settings
 from django.db import models
 import os
 
-from .editform_admin import EditFormAdmin
+from .modelform import ModelFormWidget
 
-class ViewFormAdmin(EditFormAdmin):
+class ModelViewFormWidget(ModelFormWidget):
     """
-    When a Pyforms application inherit from this class a form for the model ViewFormAdmin.MODEL is created with
+    When a Pyforms application inherit from this class a form for the model ModelViewFormWidget.MODEL is created with
     all the fields in the fieldset in read only mode.
 
     **Usage example:**
@@ -34,7 +34,7 @@ class ViewFormAdmin(EditFormAdmin):
 
        from suppliers.models import Order
 
-       class OrderView(ViewFormAdmin):
+       class OrderView(ModelViewFormWidget):
             MODEL =  Order
             TITLE = 'Order in read-only'
             
@@ -61,7 +61,7 @@ class ViewFormAdmin(EditFormAdmin):
         :param int pk: Model register to manage
         """
 
-        super(ViewFormAdmin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         
         for field in self.edit_buttons:
             field.hide()
@@ -69,7 +69,7 @@ class ViewFormAdmin(EditFormAdmin):
 
     def create_model_formfields(self):
         self.readonly = self.get_visible_fields_names()
-        super(ViewFormAdmin, self).create_model_formfields()
+        super().create_model_formfields()
 
     def create_newobject(self):
         pass

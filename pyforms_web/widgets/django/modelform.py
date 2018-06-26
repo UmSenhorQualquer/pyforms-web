@@ -31,7 +31,7 @@ from django.utils import timezone
 
 
 
-class EditFormAdmin(BaseWidget):
+class ModelFormWidget(BaseWidget):
     """
     When a Pyforms application inherit from this class a form for the model EditFormAdmin.MODEL is created.
 

@@ -8,3 +8,4 @@ Javascript
    :titlesonly:
 
    pyforms
+   basewidget
