@@ -10,7 +10,7 @@ import json, simplejson, os, re
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
-from pyforms.basewidget import EditFormAdmin
+from pyforms_web.widgets.django import ModelFormWidget
 
 from django.core.exceptions import PermissionDenied
 from django.utils.text import slugify
@@ -111,7 +111,7 @@ def autocomplete_search(request, app_id, fieldname, keyword=None):
     app   = ApplicationsLoader.get_instance(request, app_id)
     field = getattr(app,fieldname)
         
-    if isinstance(app, EditFormAdmin):
+    if isinstance(app, ModelFormWidget):
         modelfield = app.model._meta.get_field(fieldname)
         if modelfield is not None:
             items = app.autocomplete_search(keyword, modelfield)
