@@ -1,5 +1,6 @@
 from pyforms_web.controls.control_base import ControlBase
 import simplejson, collections
+from django.apps import apps
 
 class ControlQueryCombo(ControlBase):
 
@@ -11,16 +12,27 @@ class ControlQueryCombo(ControlBase):
         self._app   = None
         self._model = None
         self._query = None
-        self._column = None
+        self.allow_none = kwargs.get('allow_none', False)
+        self._column = kwargs.get('display_column', 'pk')
         ####################################################################
+
+        self.queryset = kwargs.get('queryset', None)
 
     def init_form(self): return "new ControlQueryCombo('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
     
     def serialize(self):
         data = ControlBase.serialize(self)
         items = []
-        for key, value in self.queryset:
-            items.append({'label': key, 'value': value }) 
+
+        if self.allow_none:
+             items.append({'label': ' ', 'value': None})
+
+        for obj in self.queryset:
+            if self._column:
+                items.append({'label': str(getattr(obj,self._column)), 'value': obj.pk })
+            else:
+                items.append({'label': str(obj), 'value': obj.pk })
+
         data.update({ 'items': items, 'value': self._value })
         return data
 
@@ -53,3 +65,14 @@ class ControlQueryCombo(ControlBase):
             self._model = None
             self._query = None
             self._app   = None
+
+
+    def deserialize(self, properties):
+        """
+        Serialize the control data.
+        
+        :param dict properties: Serialized data to load.
+        """
+        if properties.get('value','null')=='null':
+            properties['value'] = None
+        super().deserialize(properties)
