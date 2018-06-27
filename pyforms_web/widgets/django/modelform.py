@@ -575,6 +575,7 @@ class ModelFormWidget(BaseWidget):
                             pyforms_field.error = True
                     else:
                         value = None
+                        
                     setattr(obj, field.name, value)
 
                 elif not isinstance(field, models.ManyToManyField):
@@ -685,10 +686,10 @@ class ModelFormWidget(BaseWidget):
 
                 fields.append(field.name)
            
-        if self.parent_field: 
-            try:
-                fields.remove(self.parent_field.name)
-            except ValueError: pass
+            if self.parent_field: 
+                try:
+                    fields.remove(self.parent_field.name)
+                except ValueError: pass
 
         return [field for field in fields if field is not None]
 
@@ -818,6 +819,7 @@ class ModelFormWidget(BaseWidget):
             
         self.formset = self.fieldsets if self.fieldsets else formset
         self.formset = self.formset + self.get_buttons_row()
+        
 
     def __create_btn_event(self):
         """

@@ -42,6 +42,7 @@ class ModelAdminWidget(BaseWidget):
     MODEL           = None  #: class: Model to manage
     TITLE           = None  #: str: Title of the application
     EDITFORM_CLASS  = ModelFormWidget #: class: Edit form class
+    ADDFORM_CLASS   = None #: class: Create form class
 
     INLINES         = []    #: list(class): Sub models to show in the interface
     LIST_FILTER     = None  #: list(str): List of filters fields
@@ -70,6 +71,7 @@ class ModelAdminWidget(BaseWidget):
         title                = kwargs.get('title', self.TITLE)
         self.model           = kwargs.get('model', self.MODEL)
         self.editmodel_class = kwargs.get('editform_class', self.EDITFORM_CLASS)
+        self.addmodel_class  = kwargs.get('addform_class', self.ADDFORM_CLASS if self.ADDFORM_CLASS else self.editmodel_class)
         
         # Set the class to behave as inline ModelAdmin ########
         self.parent_field = None
@@ -79,8 +81,8 @@ class ModelAdminWidget(BaseWidget):
         if self.parent_model and self.parent_pk:
             self.set_parent(self.parent_model, self.parent_pk)
         
-        has_add_permission  = self.has_add_permission()  and self.EDITFORM_CLASS is not None
-        has_edit_permission = self.has_edit_permission() and self.EDITFORM_CLASS is not None
+        has_add_permission  = self.has_add_permission()  and self.addmodel_class  is not None
+        has_edit_permission = self.has_edit_permission() and self.editmodel_class is not None
 
         BaseWidget.__init__(self, title)
         
@@ -214,7 +216,7 @@ class ModelAdminWidget(BaseWidget):
         if self.FIELDSETS: params.update({'fieldsets':self.FIELDSETS})
         if self.READ_ONLY: params.update({'readonly':self.READ_ONLY})
 
-        createform = self.editmodel_class(**params)
+        createform = self.addmodel_class(**params)
 
         self._details.value  = createform
 

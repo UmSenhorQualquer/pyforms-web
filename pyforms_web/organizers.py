@@ -13,7 +13,8 @@ class no_columns(object):
 
 class segment(object):
     def __init__(self, *args, **kwargs): 
-        self.css = kwargs.get('css', '')
+        self.css   = kwargs.get('css', '')
+        self.style = kwargs.get('style', '')
         self.items = args
     def __getitem__(self,index): return self.items[index]
     def __setitem__(self,index,value): self.items[index] = value

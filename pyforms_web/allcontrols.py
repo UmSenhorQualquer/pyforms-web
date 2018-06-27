@@ -40,7 +40,7 @@ from .controls.control_textarea               import ControlTextArea
 from .controls.control_timeout                import ControlTimeout
 from .controls.control_visvis                 import ControlVisVis
 from .controls.control_workflow               import ControlWorkflow 
-
+from .controls.control_img                    import ControlImg
 
 try:
     from .controls.control_image              import ControlImage

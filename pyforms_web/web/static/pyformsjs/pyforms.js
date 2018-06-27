@@ -63,6 +63,7 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/ControlDate.js");
         $.getScript("/static/pyformsjs/ControlDateTime.js");
         $.getScript("/static/pyformsjs/ControlImage.js");
+        $.getScript("/static/pyformsjs/ControlImg.js");
         $.getScript("/static/pyformsjs/ControlHtml.js");
         $.getScript("/static/pyformsjs/ControlEmail.js");
         $.getScript("/static/pyformsjs/ControlItemsList.js");

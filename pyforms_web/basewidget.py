@@ -150,7 +150,7 @@ class BaseWidget(object):
         """
         Generate the html to organize the formset in segments
         """
-        html  = "<div class='ui segment pyforms-segment {0}' >".format(row.css)
+        html  = "<div class='ui segment pyforms-segment {0}' style='{1}' >".format(row.css, row.style)
         html += self.generate_panel( list(row) )
         html += "</div>"
         return html
