@@ -35,6 +35,9 @@ class BaseWidget(object):
     #: str: Time in milliseconds to refresh the application.
     REFRESH_TIMEOUT = None
 
+    #: str: Css classes to add to the form.
+    CSS = ''
+
     def __init__(self, *args, **kwargs):
         """
         :param str title: Title of the app. By default will assume the value in the class variable TITLE.
@@ -62,6 +65,7 @@ class BaseWidget(object):
         self._controls      = []
         self._html          = ''
         self._js            = ''
+        self._css         = kwargs.get('css', self.CSS)
         self._close_widget  = False
 
         self.init_form_result = None
@@ -126,7 +130,7 @@ class BaseWidget(object):
         res =  {
             'code': self._html,
             'title': self._title,
-            'css': '',
+            'css': self._css,
             'app_id':self.uid, 
             'refresh_timeout':  
             self.REFRESH_TIMEOUT

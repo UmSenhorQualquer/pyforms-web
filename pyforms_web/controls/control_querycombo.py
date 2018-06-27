@@ -25,7 +25,7 @@ class ControlQueryCombo(ControlBase):
         items = []
 
         if self.allow_none:
-             items.append({'label': ' ', 'value': None})
+             items.append({'label': '---', 'value': None})
 
         for obj in self.queryset:
             if self._column:
