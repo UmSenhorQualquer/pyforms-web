@@ -38,7 +38,8 @@ class ControlQueryCombo extends ControlBase{
 
 	get_value(){ 
 		var value = this.jquery().dropdown('get value');
-		return value;
+		if( value.length==0 ) return null;
+        return value;
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

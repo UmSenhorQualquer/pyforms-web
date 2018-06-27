@@ -35,7 +35,8 @@ class ControlCombo extends ControlBase{
 
 	get_value(){
 		var value = this.jquery().dropdown('get value');
-		if(value=='true')  return true;
+		if( value.length==0 ) return null;
+        if(value=='true')  return true;
 		if(value=='false') return false;
 		if(value=='null')  return null;
 		return value;

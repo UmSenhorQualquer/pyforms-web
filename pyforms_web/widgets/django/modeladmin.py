@@ -125,7 +125,7 @@ class ModelAdminWidget(BaseWidget):
             ]
         
         # if the user has edit permission then 
-        if has_add_permission:
+        if has_edit_permission:
             # events
             self._list.item_selection_changed_event = self.__list_item_selection_changed_event
 
