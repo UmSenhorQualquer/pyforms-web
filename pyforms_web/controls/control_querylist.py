@@ -111,6 +111,7 @@ class ControlQueryList(ControlBase):
                 self._query = value.query
                 self._app   = value.model._meta.app_label
                 self._selected_row_id = -1
+                self._current_page = 1
 
             self.mark_to_update_client()
             self.changed_event()
@@ -161,13 +162,18 @@ class ControlQueryList(ControlBase):
         if len(self.search_fields)>0:
             data.update({'search_field_key': self.search_field_key if self.search_field_key is not None else ''})
     
+        total_rows = queryset.count()
+        total_n_pages   = (total_rows / self.rows_per_page) + (0 if (total_rows % self.rows_per_page)==0 else 1)
+
         data.update({
-            'filter_by':            self.filter_by,
-            'sort_by':              self.sort_by,
-            'pages':                {'current_page': self._current_page, 'pages_list':self.__get_pages_2_show(queryset) },
-            'value':                '',
-            'values':               rows,
-            'selected_row_id':      self._selected_row_id
+            'filter_by':       self.filter_by,
+            'sort_by':         self.sort_by,
+            'pages':           {'current_page': self._current_page, 'pages_list':self.__get_pages_2_show(queryset) },
+            'pages_total':     total_n_pages,
+            'value':           '',
+            'values':          rows,
+            'values_total':    total_rows,
+            'selected_row_id': self._selected_row_id
         })
         
         return data

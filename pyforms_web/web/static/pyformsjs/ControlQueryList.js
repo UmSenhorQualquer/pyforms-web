@@ -172,7 +172,11 @@ class ControlQueryList extends ControlBase{
 			html += '<tfoot>';
 			html += '<tr>';
 			html += '<th colspan="'+(titles?titles.length:1)+'">';
-			html += '<div class="ui right floated pagination menu small">';
+			//html += '<div class="ui left floated pagination menu tiny">';
+
+			html += '<a class="ui pointing basic label">'+this.properties.values_total+' results</a> ';
+			//html += '</div>';
+			html += '<div class="ui right floated pagination menu tiny">';
 			var start_page = 0;
 			var end_page = (pages_list.length-1)>5?(pages_list.length-1):pages_list.length;
 				if( pages_list[0]>0 )
