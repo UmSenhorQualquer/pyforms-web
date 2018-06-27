@@ -46,7 +46,7 @@ class ControlAutoComplete extends ControlBase{
 
     get_value(){
         var v = this.jquery().dropdown('get value')
-        
+        if( v.length==0 ) return null;
         return v==''?null:v
     };
 
