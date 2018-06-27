@@ -43,9 +43,9 @@ class ControlAutoComplete(ControlBase):
             if value is None:
                 self.value = []
             else:
-                self.value = [(int(v) if v.isdigit() else None) for v in value.split(',')]
+                self.value = [(int(v) if v and v.isdigit() else None) for v in value.split(',')]
         else:
-            self.value = int(value) if value.isdigit() else None
+            self.value = int(value) if value and value.isdigit() else None
 
     def serialize(self):
         data = super(ControlAutoComplete,self).serialize()
