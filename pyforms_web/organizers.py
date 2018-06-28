@@ -1,5 +1,8 @@
 class no_columns(object):
-    def __init__(self, *args):  self.items = args
+    def __init__(self, *args, **kwargs):
+        self.css   = kwargs.get('css', '')
+        self.style = kwargs.get('style', '')
+        self.items = args
     def __getitem__(self,index): return self.items[index]
     def __setitem__(self,index,value): self.items[index] = value
     def __len__(self):  return len(self.items)

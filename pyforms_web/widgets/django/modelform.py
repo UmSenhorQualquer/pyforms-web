@@ -243,6 +243,10 @@ class ModelFormWidget(BaseWidget):
 
         """
         query = field.related_model.objects.all()
+
+        limit_choices = field.get_limit_choices_to()
+        if limit_choices: query = query.filter(**limit_choices)
+        
         query = self.related_field_queryset(field, query)
 
         if keyword:
@@ -712,7 +716,13 @@ class ModelFormWidget(BaseWidget):
             if field.name in self.readonly:   continue
             
             pyforms_field = getattr(self, field.name)
-            queryset      = self.related_field_queryset(field, field.related_model.objects.all())
+            queryset = field.related_model.objects.all()
+            
+            #limit_choices = field.get_limit_choices_to()
+            #if limit_choices:
+            #    queryset = queryset.filter(**limit_choices)
+
+            queryset = self.related_field_queryset(field, queryset)
 
             self.update_related_field(field, pyforms_field, queryset)
 
@@ -827,7 +837,9 @@ class ModelFormWidget(BaseWidget):
         """
         self.object_pk = None
         obj = self.save_event()
-        if obj:
+        if self.parent and obj:
+            self.parent.show_edit_form(pk=self.object_pk)
+        elif obj:
             self._create_btn.hide()
             self._save_btn.show()
             self._remove_btn.show()
@@ -845,7 +857,7 @@ class ModelFormWidget(BaseWidget):
                 pyforms_field.show()
 
             self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
-
+            
 
     def __save_btn_event(self):
         """

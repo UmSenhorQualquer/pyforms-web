@@ -15,7 +15,7 @@ from django.utils import timezone
 import locale
 
 from pyforms_web.utils import get_lookup_verbose_name, get_lookup_value, get_lookup_field
-        
+from django.db.models.fields.files import FieldFile
 
 class ControlQueryList(ControlBase):
 
@@ -175,7 +175,7 @@ class ControlQueryList(ControlBase):
             'values_total':    total_rows,
             'selected_row_id': self._selected_row_id
         })
-        
+
         return data
 
         
@@ -214,6 +214,8 @@ class ControlQueryList(ControlBase):
             return locale.format("%f", col_value, grouping=True)
         elif isinstance(col_value, int ):
             return locale.format("%d", col_value, grouping=True)
+        elif isinstance(col_value, FieldFile ):
+            return col_value.name
         elif isinstance(col_value, models.Model ):
             return col_value.__str__()
         elif callable(col_value):
@@ -327,6 +329,10 @@ class ControlQueryList(ControlBase):
             
             elif field.is_relation:
                 objects = field.related_model.objects.all()
+
+                limit_choices = field.get_limit_choices_to()
+                if limit_choices: objects = objects.filter(**limit_choices)
+
                 filter_values = [(field.name+'='+str(o.pk), o.__str__() ) for o in objects]
                 field_properties.update({'items': filter_values})
                 

@@ -159,21 +159,18 @@ class BaseWidget(object):
         html += "</div></div>"
         return html
 
-    def generate_segments(self, formsetdict):
+    def generate_nocolumns(self, formset):
         """
-        Generate the html to organize the formset in segments
+        Generate the html for the no_columns organizer
         """
-        html = ''
-        for key, item in sorted(formsetdict.items()):
-            if item==True: continue
-            
-            html += "<h2 class='ui header' >{0}</h2>".format(key[key.find(':')+1:])
-            html += "<div class='ui segment pyforms-segment' >"
-            html += self.generate_panel(item)
-            html += "</div>"
-        return html
-
-
+        layout  = "<div class='row fields {size} {css}' style='{style}' >".format(
+            size=self.__get_fields_class(formset),
+            css=formset.css,
+            style=formset.style
+        )
+        for row in formset:
+            layout += self.generate_panel( row )
+        return layout+"</div>"
 
 
     def generate_tabs(self, formsetdict):
@@ -310,11 +307,14 @@ class BaseWidget(object):
             )
             
         
-        if isinstance(formset, (tuple,no_columns) ):
+        if isinstance(formset, tuple ):
             layout  = "<div class='row fields {0}' >".format(self.__get_fields_class(formset))
             for row in formset:
                 layout += self.generate_panel( row )
             return layout+"</div>"
+
+        elif isinstance(formset, no_columns ):
+            return self.generate_nocolumns(formset)
 
         elif isinstance(formset, segment):
             return self.generate_segment(formset)
