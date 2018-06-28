@@ -8,16 +8,17 @@ class ControlFileUpload(ControlBase):
 	def init_form(self):
 		return "new ControlFileUpload('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
-
+	@property
+	def filepath(self):
+		return os.path.join( settings.MEDIA_ROOT, self.value[len(settings.MEDIA_URL):] )
 
 	def serialize(self):
 		data 	  = super(ControlFileUpload, self).serialize()
 		if self.value:
 			try:
-				filepath = os.path.join( settings.MEDIA_ROOT, self.value[len(settings.MEDIA_URL):] )
 				file_data = {
 					'name': os.path.basename(self.value),
-					'size': os.path.getsize(filepath),
+					'size': os.path.getsize(self.filepath),
 					'file': 'http://localhost:8000'+self.value,
 					 'url': 'http://localhost:8000'+self.value
 				}
