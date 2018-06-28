@@ -111,16 +111,18 @@ class ModelAdminWidget(BaseWidget):
             if self.parent_model: self._add_btn.css = 'tiny basic blue'
         ##############################################
 
+        self.toolbar = self.get_toolbar_buttons(has_add_permission=has_add_permission)
+
         if self.parent_model:
             self.formset = [
-                '_add_btn' if has_add_permission else None,
+                self.toolbar,
                 '_list',
                 '_details' if has_add_permission or has_edit_permission else None,
             ]
         else:
             self.formset = [
                 segment( 
-                    '_add_btn' if has_add_permission else None,
+                    self.toolbar,
                     '_list'
                 ),
                 '_details' if has_add_permission or has_edit_permission else None,
@@ -155,6 +157,16 @@ class ModelAdminWidget(BaseWidget):
     #### FUNCTIONS ##################################################################
     #################################################################################
 
+    def get_toolbar_buttons(self, has_add_permission=False):
+        """
+        This function generate the formset configuration for the top buttons,
+
+        Returns:
+            list(str): Returns the formset configuration that will be append to
+            the end of the fieldsets.
+        """
+        return '_add_btn' if has_add_permission else None
+
     def populate_list(self):
         """
             Function called to configure the CONTROL_LIST to display the data
@@ -186,7 +198,10 @@ class ModelAdminWidget(BaseWidget):
         """
         # only if the button exists: 
         # if there is not add permission the add button is not created.
-        if hasattr(self, '_add_btn'): self._add_btn.show()
+
+        for o in ([self.toolbar] if isinstance(self.toolbar, str) else self.toolbar):
+            if o and hasattr(self, o):
+                getattr(self, o).show()
         
         self._list.show()
         self._list.selected_row_id = -1
@@ -200,7 +215,10 @@ class ModelAdminWidget(BaseWidget):
         # if there is no add permission then does not show the form
         if not self.has_add_permission(): return
         
-        self._add_btn.hide()
+        for o in ([self.toolbar] if isinstance(self.toolbar, str) else self.toolbar):
+            if o and hasattr(self, o):
+                getattr(self, o).hide()
+        
         self._list.hide()
         self._details.show()
 
@@ -234,7 +252,8 @@ class ModelAdminWidget(BaseWidget):
 
         # only if the button exists: 
         # if there is not add permission the add button is not created.
-        if hasattr(self, '_add_btn'): self._add_btn.hide()
+        for o in ([self.toolbar] if isinstance(self.toolbar, str) else self.toolbar):
+            if o and hasattr(self, o): getattr(self, o).hide()
 
         self._list.hide()       
         self._details.show()
