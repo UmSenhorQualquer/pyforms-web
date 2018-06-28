@@ -197,11 +197,11 @@ class ModelAdminWidget(BaseWidget):
         Function called to hide the form
         """
         # only if the button exists: 
-        # if there is not add permission the add button is not created.
-
-        for o in ([self.toolbar] if isinstance(self.toolbar, str) else self.toolbar):
-            if o and hasattr(self, o):
-                getattr(self, o).show()
+        toolbar = [self.toolbar] if isinstance(self.toolbar, str) else self.toolbar
+        if toolbar:
+            for o in toolbar:
+                if o and hasattr(self, o):
+                    getattr(self, o).show()
         
         self._list.show()
         self._list.selected_row_id = -1
@@ -215,9 +215,11 @@ class ModelAdminWidget(BaseWidget):
         # if there is no add permission then does not show the form
         if not self.has_add_permission(): return
         
-        for o in ([self.toolbar] if isinstance(self.toolbar, str) else self.toolbar):
-            if o and hasattr(self, o):
-                getattr(self, o).hide()
+        toolbar = [self.toolbar] if isinstance(self.toolbar, str) else self.toolbar
+        if toolbar:
+            for o in toolbar:
+                if o and hasattr(self, o):
+                    getattr(self, o).hide()
         
         self._list.hide()
         self._details.show()
@@ -251,9 +253,10 @@ class ModelAdminWidget(BaseWidget):
         if not self.has_edit_permission(): return
 
         # only if the button exists: 
-        # if there is not add permission the add button is not created.
-        for o in ([self.toolbar] if isinstance(self.toolbar, str) else self.toolbar):
-            if o and hasattr(self, o): getattr(self, o).hide()
+        toolbar = [self.toolbar] if isinstance(self.toolbar, str) else self.toolbar
+        if toolbar:
+            for o in toolbar:
+                if o and hasattr(self, o): getattr(self, o).hide()
 
         self._list.hide()       
         self._details.show()
