@@ -30,6 +30,8 @@ class ControlBase(object):
         self._visible       = kwargs.get('visible', True)
         self._error         = kwargs.get('error', False)
         self._css           = kwargs.get('css', None)
+        self._style         = kwargs.get('style', None)
+        self._field_style   = kwargs.get('field_style', None)
         self._enabled       = kwargs.get('enabled', True)
         self._enabled       = not kwargs.get('readonly', False)
         self._label_visible = kwargs.get('label_visible', True)
@@ -125,6 +127,12 @@ class ControlBase(object):
         }
         if self._css is not None: 
             res.update({'css':self._css})
+
+        if self._style is not None: 
+            res.update({'style':self._style})
+
+        if self._field_style is not None: 
+            res.update({'field_style':self._field_style})
 
         return res
 

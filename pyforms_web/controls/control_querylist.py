@@ -217,8 +217,12 @@ class ControlQueryList(ControlBase):
         elif isinstance(col_value, models.Model ):
             return col_value.__str__()
         elif callable(col_value):
-            col_value = col_value()
-            return '' if col_value is None else str(col_value)
+            v = col_value()
+
+            if hasattr(col_value, 'boolean') and getattr(col_value, 'boolean'):
+                v = '<i class="check circle green icon"></i>' if v else '<i class="minus circle red icon"></i>'
+
+            return '' if v is None else str(v)
         else:
             return col_value
 
@@ -240,24 +244,6 @@ class ControlQueryList(ControlBase):
             return str(col_value())
         else:
             return col_value
-
-            queryset_list = queryset.values_list(*(['pk']+list_display) )
-            queryset_list = queryset_list.distinct()
-            queryset_list = queryset_list.order_by(*queryset.query.order_by)
-
-            for row_values in queryset_list[first_row:last_row]:
-                row = [self.format_list_column(c) for c in row_values]
-                rows.append(row)
-            return rows
-
-            queryset_list = queryset.values_list(*(['pk']+list_display) )
-            queryset_list = queryset_list.distinct()
-            queryset_list = queryset_list.order_by(*queryset.query.order_by)
-                    
-            for row_values in queryset_list[first_row:last_row]:
-                row = [self.format_list_column(c) for c in row_values]
-                rows.append(row)
-            return rows
 
     
     

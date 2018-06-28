@@ -213,6 +213,10 @@ class ControlBase{
 			this.hide();
 		if(!this.properties.enabled)
 			this.disable();
+		if(this.properties.style)
+			this.jquery().attr('style', this.properties.style);
+		if(this.properties.field_style)
+			this.jquery_place().attr('style', this.properties.field_style);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
