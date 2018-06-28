@@ -15,6 +15,9 @@ class ControlBase(object):
         :param bool visible: Set the control visible or hidden. Default = True.
         :param bool error: Mark the control as having and error. Default = False.
         :param str css: Extra css classes to add to the control.
+        :param str field_css: Extra css classes to add to the field dive that encapsulates the control.
+        :param str style: Extra style to add to the control.
+        :param str field_style: Extra style to add to the field div that encapsulates the control.
         :param bool enabled: Set the control enabled or disabled. Default = True.
         :param bool readonly: Set the control as read only. Default = False.
         :param bool label_visible: Hide or show the label. Default = True.
@@ -30,6 +33,7 @@ class ControlBase(object):
         self._visible       = kwargs.get('visible', True)
         self._error         = kwargs.get('error', False)
         self._css           = kwargs.get('css', None)
+        self._field_css     = kwargs.get('field_css', None)
         self._style         = kwargs.get('style', None)
         self._field_style   = kwargs.get('field_style', None)
         self._enabled       = kwargs.get('enabled', True)
@@ -127,6 +131,9 @@ class ControlBase(object):
         }
         if self._css is not None: 
             res.update({'css':self._css})
+
+        if self._field_css is not None: 
+            res.update({'field_css':self._field_css})
 
         if self._style is not None: 
             res.update({'style':self._style})
@@ -322,6 +329,40 @@ class ControlBase(object):
     def css(self, value): 
         if value: self.mark_to_update_client()
         self._css = value
+    @property
+    def field_css(self):
+        """
+        Set or return the extra css of the field div that encapsulates the control.
+        """
+        return self._field_css
+    @field_css.setter
+    def field_css(self, value): 
+        if value: self.mark_to_update_client()
+        self._field_css = value
+
+
+
+    @property
+    def style(self):
+        """
+        Set or return the style of the control.
+        """
+        return self._style
+    @style.setter
+    def style(self, value): 
+        if value: self.mark_to_update_client()
+        self._style = value
+
+    @property
+    def field_style(self):
+        """
+        Set or return the style of the field div that encapsulate the control.
+        """
+        return self._field_style
+    @field_style.setter
+    def field_style(self, value): 
+        if value: self.mark_to_update_client()
+        self._field_style = value
 
 
     ##########################################################################

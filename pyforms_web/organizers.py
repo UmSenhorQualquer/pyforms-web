@@ -14,7 +14,9 @@ class no_columns(object):
 class segment(object):
     def __init__(self, *args, **kwargs): 
         self.css   = kwargs.get('css', '')
+        self.field_css   = kwargs.get('field_css', '')
         self.style = kwargs.get('style', '')
+        self.field_style = kwargs.get('field_style', '')
         self.items = args
     def __getitem__(self,index): return self.items[index]
     def __setitem__(self,index,value): self.items[index] = value

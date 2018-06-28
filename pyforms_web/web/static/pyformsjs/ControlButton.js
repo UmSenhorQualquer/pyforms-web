@@ -7,7 +7,7 @@ class ControlButton extends ControlBase{
 		var html = "<div class='field control ControlButton' id='"+this.place_id()+"'>";
 		if(this.properties.label_visible) html += '<label>&nbsp;</label>';
 		html +=(!this.properties.labeled)?"<button type='button'":"<div ";
-		html +=" title='"+this.properties.help+"' id='"+this.control_id()+"' class='ui button "+this.properties.css+"' >";
+		html +=" title='"+this.properties.help+"' id='"+this.control_id()+"' class='ui button' >";
 		html += this.properties.label;
 		html +=(!this.properties.labeled)?"</button>":"</div>";
 		html += '</div>';
@@ -22,7 +22,6 @@ class ControlButton extends ControlBase{
 				self.basewidget.fire_event( self.name, 'pressed' );
 		});
 
-		if(this.properties.css) this.jquery().addClass(this.properties.css);
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -40,17 +39,10 @@ class ControlButton extends ControlBase{
 
 
 	deserialize(data){
-		if(data.css!=this.properties.css)
-			this.jquery().removeClass(this.properties.css);
-		
-
 		$.extend(this.properties, data);
 		this.set_value(this.properties.value);
 
 		this.jquery().html(this.properties.label);
-
-		this.jquery().addClass(this.properties.css);
-		
 		
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 	};

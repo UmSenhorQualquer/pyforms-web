@@ -150,9 +150,13 @@ class BaseWidget(object):
         """
         Generate the html to organize the formset in segments
         """
-        html  = "<div class='ui segment pyforms-segment {0}' style='{1}' >".format(row.css, row.style)
+        html  = "<div class='field {field_css}' style='{field_style}' ><div class='ui segment pyforms-segment {css}' style='{style}' >".format(
+            css=row.css,
+            style=row.style,
+            field_css=row.field_css,
+            field_style=row.field_style)
         html += self.generate_panel( list(row) )
-        html += "</div>"
+        html += "</div></div>"
         return html
 
     def generate_segments(self, formsetdict):
@@ -193,6 +197,7 @@ class BaseWidget(object):
         control = self.controls.get(row, None)
         if control==None:
             if   row==' ':                   return "<div class='field' ></div>"
+            if   row.startswith('empty:'):   return "<div class='field {0} wide' ></div>".format(row[6:])
             elif row.startswith('h1:'):      return "<h1 class='field' >{0}</h1>".format(row[3:])
             elif row.startswith('h1-right:'):return "<h1 class='ui right aligned header field' >{0}</h1>".format(row[9:])
             elif row.startswith('h2:'):      return "<h2 class='field' >{0}</h2>".format(row[3:])
@@ -226,7 +231,7 @@ class BaseWidget(object):
            [
                 no_columns('_toggle_btn','_copy_btn', '_css_btn'),
                 ' ',
-                '_input',
+                ('empty:twelve','_input'),
                 '_text',
                 {
                     'a:Free text': [
@@ -269,6 +274,10 @@ class BaseWidget(object):
             - Use [a:,b:,c:] prefix to sort the tabs.
 
         - **'-'**: Draw a vertical line.
+
+        - **' '**: Empty column.
+
+        - **Empty column**: Use ' ', or the prefix 'empty:' + size of the column (ex: one, two, ..., sixteen) to add a empty column.
 
         - **segment**: Wraps the formset around a segment (Semantic UI segment).
             

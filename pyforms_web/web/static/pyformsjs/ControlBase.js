@@ -7,6 +7,8 @@ class ControlBase{
 		this.name 			= name;
 		this.properties 	= properties;
 		this.basewidget 	= undefined; //Will be set in runtime by the parent BaseWidget object.
+		this.added_classes  = [];
+		this.added_fieldclasses  = [];
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +39,36 @@ class ControlBase{
 
 	jquery_place(){ 
 		return $( "#"+this.place_id() ); 
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+
+	set_css(css){
+		for(var i=0; i<this.added_classes.length; i++)
+			this.jquery().removeClass(this.added_classes[i]);
+	
+		var classes = css.split(" ");
+
+		for(var i=0; i<classes.length; i++)
+			this.jquery().addClass(classes[i]);
+
+		this.added_classes = classes;
+
+		console.log(classes, this.properties.name);
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+
+	set_field_css(css){
+		for(var i=0; i<this.added_fieldclasses.length; i++)
+			this.jquery_place().removeClass(this.added_fieldclasses[i]);
+	
+		var classes = css.split(" ");
+
+		for(var i=0; i<classes.length; i++)
+			this.jquery_place().addClass(classes[i]);
+		
+		this.added_fieldclasses = classes;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -180,6 +212,7 @@ class ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	apply_deserialization(data){
+
 		if(this.properties.visible)	
 			this.show();
 		else
@@ -189,6 +222,18 @@ class ControlBase{
 			this.enable();
 		else
 			this.disable();
+
+		if(this.properties.style)
+			this.jquery().attr('style', this.properties.style);
+
+		if(this.properties.field_style)
+			this.jquery_place().attr('style', this.properties.field_style);
+
+		if(this.properties.css)
+			this.set_css(this.properties.css);
+
+		if(this.properties.field_css)
+			this.set_field_css(this.properties.field_css);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -203,20 +248,29 @@ class ControlBase{
 	init_control(){
 		
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
-		if(this.properties.css) this.jquery().addClass(this.properties.css);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
 
 	after_init_control(){
+		
 		if(!this.properties.visible)	
 			this.hide();
+		
 		if(!this.properties.enabled)
 			this.disable();
+		
 		if(this.properties.style)
 			this.jquery().attr('style', this.properties.style);
+		
 		if(this.properties.field_style)
 			this.jquery_place().attr('style', this.properties.field_style);
+
+		if(this.properties.css)
+			this.set_css(this.properties.css);
+
+		if(this.properties.field_css)
+			this.set_field_css(this.properties.field_css);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
