@@ -224,15 +224,14 @@ class ModelFormWidget(BaseWidget):
         """
         self.hide_form()
 
-    
 
-
-    def autocomplete_search(self, keyword, field):
+    def autocomplete_search(self, queryset, keyword, control):
         """
         Function used by a combobox to get the items dynamically
 
+        :param queryset keyword: Queryset from where to filter the results
         :param str keyword: Keyword for filter the results
-        :param django.db.models.fields.Field field: Django field where the autocomplete will be applied
+        :param pyforms.controls.BaseControl: Control calling the autocomplete
         
         Returns:
             list(dict): Results for the search in the format
@@ -242,27 +241,10 @@ class ModelFormWidget(BaseWidget):
                 [{'name':name, 'value':id, 'text':text}, ...]
 
         """
-        query = field.related_model.objects.all()
+        field = self.model._meta.get_field(control.name)
+        queryset = self.related_field_queryset(field, queryset)
 
-        limit_choices = field.get_limit_choices_to()
-        if limit_choices: query = query.filter(**limit_choices)
-        
-        query = self.related_field_queryset(field, query)
-
-        if keyword:
-            if hasattr(field.related_model, 'autocomplete_search_fields'):
-                or_filter = Q()
-                for search_field in field.related_model.autocomplete_search_fields():
-                    or_filter.add( Q(**{search_field:keyword}), Q.OR)
-            else:
-                or_filter = Q(pk=keyword)
-        else:
-            or_filter = Q()
-
-        try:
-            return [{'name':str(o), 'value':o.pk, 'text':str(o)} for o in query.filter(or_filter)]
-        except:
-            return []
+        return queryset
 
     
     def related_field_queryset(self, field, queryset):
@@ -792,19 +774,29 @@ class ModelFormWidget(BaseWidget):
                 )
             elif isinstance(field, models.ForeignKey):
                 url = "/pyforms/autocomplete/{app_id}/{field_name}/{{query}}/".format(app_id=self.uid, field_name=field.name)
+                
+                query = field.related_model.objects.all()
+                limit_choices = field.get_limit_choices_to()
+                if limit_choices: query = query.filter(**limit_choices)
+        
                 pyforms_field = ControlAutoComplete( 
                     label.capitalize(), 
-                    items_url=url,
-                    model=field.related_model
+                    queryset=query,
+                    queryset_filter=self.autocomplete_search
                 )
 
             elif isinstance(field, models.ManyToManyField):
                 url = "/pyforms/autocomplete/{app_id}/{field_name}/{{query}}/".format(app_id=self.uid, field_name=field.name)
+                
+                query = field.related_model.objects.all()
+                limit_choices = field.get_limit_choices_to()
+                if limit_choices: query = query.filter(**limit_choices)
+        
                 pyforms_field = ControlAutoComplete( 
                     label.capitalize(), 
-                    items_url=url,
-                    model=field.related_model,
-                    multiple=True
+                    queryset=query,
+                    multiple=True,
+                    queryset_filter=self.autocomplete_search
                 )
             else:
                 pyforms_field = ControlText( label.capitalize() )

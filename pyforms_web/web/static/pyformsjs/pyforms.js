@@ -108,7 +108,7 @@ class PyformsManager{
         $.getScript("/static/jqplot/plugins/jqplot.pieRenderer.js");
         $.getStylesheet("/static/jqplot/jquery.jqplot.css");
 
-        $.getScript("/static/filer/js/jquery.filer.min.js");
+        $.getScript("/static/filer/js/jquery.filer.js");
         $.getStylesheet("/static/filer/css/jquery.filer.css");
         $.getStylesheet("/static/filer/css/jquery.filer-dragdropbox-theme.css");
 

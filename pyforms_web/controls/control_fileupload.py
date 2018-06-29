@@ -19,8 +19,8 @@ class ControlFileUpload(ControlBase):
 				file_data = {
 					'name': os.path.basename(self.value),
 					'size': os.path.getsize(self.filepath),
-					'file': 'http://localhost:8000'+self.value,
-					 'url': 'http://localhost:8000'+self.value
+					'file': self.value,
+					 'url': self.value
 				}
 				data.update({ 'file_data':file_data })
 			except OSError:
