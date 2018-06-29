@@ -109,22 +109,14 @@ def remove_app(request, app_id):
 @csrf_exempt
 def autocomplete_search(request, app_id, fieldname, keyword=None):
     app   = ApplicationsLoader.get_instance(request, app_id)
-    field = getattr(app,fieldname)
-        
-    if isinstance(app, ModelFormWidget):
-        modelfield = app.model._meta.get_field(fieldname)
-        if modelfield is not None:
-            items = app.autocomplete_search(keyword, modelfield)
-        else:
-            field = getattr(app,fieldname)
-            items = field.items_query(keyword)
-    else:
-        items = field.items_query(keyword)
-
+    field = getattr(app, fieldname)
     
+    items = []
     if not field.multiple:
-        items = [{'name':'---', 'value': None, 'text':'---'}] + items
+        items += [{'name':'---', 'value': None, 'text':'---'}] + items
    
+    items += field.autocomplete_search(keyword)
+    
     data  = {'success': len(items)>0, 'results': items}
 
     return HttpResponse(simplejson.dumps(data), "application/json")

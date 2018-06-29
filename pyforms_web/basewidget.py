@@ -683,8 +683,8 @@ class BaseWidget(object):
         result = {}
         for name, var in vars(self).items():
             if isinstance(var, ControlBase):
-                var.parent  = self
                 var._name   = name
+                var.parent  = self
                 result[name]= var
 
         return result
