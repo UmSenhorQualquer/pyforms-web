@@ -52,7 +52,7 @@ class PyFormsMiddleware(object):
 		)
 
 		if os.path.isfile(app_path): 
-			lock = filelock.FileLock("lockfile.txt")
+			lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
 			with lock.acquire(timeout=10):
 				with open(app_path, 'rb') as f: 
 					return dill.load(f)
@@ -68,7 +68,7 @@ class PyFormsMiddleware(object):
 			"{0}.app".format(app_id)
 		)
 		if os.path.isfile(app_path):
-			lock = filelock.FileLock("lockfile.txt")
+			lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
 			with lock.acquire(timeout=10): 
 				os.remove(app_path)
 			return True

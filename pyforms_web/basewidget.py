@@ -527,7 +527,7 @@ class BaseWidget(object):
 
         app_path = os.path.join(userpath, "{0}.app".format(self.uid) )
 
-        lock = filelock.FileLock("lockfile.txt")
+        lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
         with lock.acquire(timeout=4):
             with open(app_path, 'wb') as f: 
                 dill.dump(self, f)
