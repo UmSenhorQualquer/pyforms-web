@@ -209,6 +209,7 @@ class BaseWidget(object):
             elif row.startswith('warning:'): return "<div class='ui warning visible message'>{0}</div>".format(row[8:])
             elif row.startswith('alert:'):   return "<div class='ui error visible message'>{0}</div>".format(row[6:])
             elif row.startswith('msg:'):     return "<div class='ui message'>{0}</div>".format(row[4:])
+            elif row.startswith('text:'):    return "<div class='field'>{0}</div>".format(row[5:])
             elif row == '-':                 return "<div class='ui clearing divider'></div>"
             else:                            return row
         else:
@@ -305,9 +306,7 @@ class BaseWidget(object):
                 left        = self.generate_panel(formset[0:index]),
                 right       = self.generate_panel(formset[index+1:])
             )
-            
-        
-        if isinstance(formset, tuple ):
+        elif isinstance(formset, tuple ):
             layout  = "<div class='row fields {0}' >".format(self.__get_fields_class(formset))
             for row in formset:
                 layout += self.generate_panel( row )
@@ -322,8 +321,10 @@ class BaseWidget(object):
         elif isinstance(formset, list):
             layout  = ""
             for row in formset:
-                if row == ' ': layout += "<div class='field-empty-space' ></div>"
-                layout += self.generate_panel( row )
+                if row == ' ': 
+                    layout += "<div class='field-empty-space' ></div>"
+                else:
+                    layout += self.generate_panel( row )
             return layout
 
         elif isinstance(formset, dict ):

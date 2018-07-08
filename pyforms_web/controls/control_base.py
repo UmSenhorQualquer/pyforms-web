@@ -327,7 +327,7 @@ class ControlBase(object):
         return self._css
     @css.setter
     def css(self, value): 
-        if value: self.mark_to_update_client()
+        if value!=self._css: self.mark_to_update_client()
         self._css = value
     @property
     def field_css(self):
@@ -337,7 +337,7 @@ class ControlBase(object):
         return self._field_css
     @field_css.setter
     def field_css(self, value): 
-        if value: self.mark_to_update_client()
+        if value!=self._css: self.mark_to_update_client()
         self._field_css = value
 
 

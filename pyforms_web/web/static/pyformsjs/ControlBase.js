@@ -44,6 +44,7 @@ class ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	set_css(css){
+		console.log(this.added_classes, 'add-classes');
 		for(var i=0; i<this.added_classes.length; i++)
 			this.jquery().removeClass(this.added_classes[i]);
 	

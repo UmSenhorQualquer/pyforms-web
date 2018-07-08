@@ -63,6 +63,7 @@ class ControlAutoComplete(ControlBase):
 
             if keyword:
                 model = queryset.model
+     
                 if hasattr(model, 'autocomplete_search_fields'):
                     or_filter = Q()
                     for search_field in model.autocomplete_search_fields():

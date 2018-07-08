@@ -127,3 +127,15 @@ h3.subtitle {
 [action]{
 	cursor: pointer !important;
 }
+
+.pyforms-segment > .field{
+	margin-bottom: 14px !important;
+}
+
+.pyforms-segment > .field:last-child{
+	margin-bottom: auto !important;
+}
+
+.pyforms-segment > .fields:last-child{
+	margin-bottom: 0px;
+}
