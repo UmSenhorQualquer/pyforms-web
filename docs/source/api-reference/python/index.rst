@@ -10,5 +10,5 @@ Python
 
    basewidget
    controls
-   modeladmin/admin
+   widgets/django
    

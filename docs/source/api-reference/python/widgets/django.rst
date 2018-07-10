@@ -12,7 +12,7 @@ ModelAdmin
     :width: 500px
     :align: center
     
-.. autoclass:: pyforms_web.modeladmin.model_admin.ModelAdmin
+.. autoclass:: pyforms_web.widgets.django.modeladmin.ModelAdminWidget
     :members:
     :undoc-members:
     :show-inheritance:
@@ -24,7 +24,7 @@ EditFormAdmin
     :width: 600px
     :align: center
 
-.. autoclass:: pyforms_web.modeladmin.editform_admin.EditFormAdmin
+.. autoclass:: pyforms_web.widgets.django.modelform.ModelFormWidget
     :members:
     :undoc-members:
     :show-inheritance:
@@ -43,7 +43,7 @@ ViewFormAdmin
     :width: 600px
     :align: center
 
-.. autoclass:: pyforms_web.modeladmin.viewform_admin.ViewFormAdmin
+.. autoclass:: pyforms_web.widgets.django.modelviewform.ModelViewFormWidget
     :members:
     :undoc-members:
     :show-inheritance:

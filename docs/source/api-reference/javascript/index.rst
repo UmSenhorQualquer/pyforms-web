@@ -7,5 +7,6 @@ Javascript
 .. toctree::
    :titlesonly:
 
-   pyforms
    basewidget
+   controls
+   pyforms

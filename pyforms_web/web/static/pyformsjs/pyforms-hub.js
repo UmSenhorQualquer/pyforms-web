@@ -1,8 +1,18 @@
+/**
+Function called to show a message. This function can be overriden.
+@param {str} msg - Message.
+*/
 function error_msg(msg){
 	// 
 	alert(msg);
 };
 
+/**
+Function called to execute a pyforms application.
+@param {str} application - Full python module path of the Widget to be executed.
+@param {object} constructor_params - Widget parameters.
+@param {object} method_params - Functions and parameters to be executed after the Widget initialization.
+*/
 function run_application(application, constructor_params, method_params){
 	// run a aplication
 	var data2send = {};
@@ -32,6 +42,10 @@ function run_application(application, constructor_params, method_params){
 	});
 };
 
+/**
+Function called to check if there is a hash command to be executed.
+Url hash can be used to open an application.
+*/
 function pyforms_checkhash(){
 	//example: #/<class_fullname>/?<parameter name for the constructor>=<parameter value>   pass the parameter for the constructor
 	//example call method: #/<class_fullname>/<method to call>/<name of the method to call>/<parameter name for the method>/<parameter value>/
@@ -73,6 +87,7 @@ function pyforms_checkhash(){
 	if(hash.charAt(hash.length-1)!='&')
 		window.location.hash = hash+((query.length>1)?'':'?')+'&';
 };
+
 
 var pyforms_checkhash_flag = true; //flag used to avoid multiple checks of the hashcode
 function pyforms_checkhash_wrapper(){

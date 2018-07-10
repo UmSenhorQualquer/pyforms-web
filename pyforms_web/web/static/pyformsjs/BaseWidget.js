@@ -111,22 +111,6 @@ class BaseWidget{
     ////////////////////////////////////////////////////////////
 
     /**
-    Depricated.
-    */
-    current_folder(){
-        try {
-            var currentfolder = $('#files-browser-div').dataviewer('path');
-            if(currentfolder==undefined) currentfolder = '/';
-        }
-        catch(err) {
-            currentfolder = '/';
-        }   
-        return currentfolder;
-    }
-
-    ////////////////////////////////////////////////////////////
-
-    /**
     Fire an application event.
     @param {str} dom_id - Python object name.
     @param {str} event - Event name.
@@ -134,7 +118,7 @@ class BaseWidget{
     */
     fire_event(dom_in, event, show_loading){
 
-        var data = {event: {control:dom_in, event: event}, userpath: this.current_folder() };
+        var data = {event: {control:dom_in, event: event}};
         this.events_queue.push(data)
 
         if(this.parent_id===undefined)
@@ -150,7 +134,7 @@ class BaseWidget{
     Update controls with the values from the server.
     */
     update_controls(){      
-        pyforms.query_server(this, { userpath: this.current_folder() }); 
+        pyforms.query_server(this, {}); 
     }
 
     ////////////////////////////////////////////////////////////
@@ -211,7 +195,7 @@ class BaseWidget{
         if(this.events_queue.length>0)
             data = this.events_queue.pop(0)
         else
-            data = { userpath: this.current_folder() };
+            data = {};
         
         
         for (var index = 0; index <  this.controls.length; index++) {

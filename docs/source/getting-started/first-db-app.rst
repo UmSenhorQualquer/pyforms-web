@@ -8,11 +8,11 @@ This example shows how to build quick forms to manage Django models.
 
     The example is based on the functionalities next classes:
 
-        * :class:`pyforms_web.modeladmin.model_admin.ModelAdmin`
+        * :class:`pyforms_web.widgets.django.modeladmin.ModelAdminWidget`
 
-        * :class:`pyforms_web.modeladmin.editform_admin.EditFormAdmin`
+        * :class:`pyforms_web.widgets.django.modelform.ModelFormWidget`
 
-        * :class:`pyforms_web.modeladmin.viewform_admin.ViewFormAdmin`
+        * :class:`pyforms_web.widgets.django.modelviewform.ModelViewFormWidget`
 
 
 Prepare the django app
@@ -65,12 +65,12 @@ Create the file **my_dbmodule_name/apps/post_app.py** and add the next code to i
 
 .. code:: python
 
-    from pyforms.basewidget import ModelAdmin
-    from confapp                import conf                           
-
+    from confapp import conf                           
+    from pyforms_web.widgets.django import ModelAdminWidget
+    
     from my_dbmodule_name.models import Post
 
-    class PostApp(ModelAdmin):
+    class PostApp(ModelAdminWidget):
 
         UID   = 'post-app'
         MODEL = Post
