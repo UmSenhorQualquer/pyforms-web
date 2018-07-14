@@ -6,7 +6,7 @@
 Enumerates Bpod board supported operations.
 
 
-ModelAdmin
+ModelAdminWidget
 ----------------------------
 .. image:: /_static/imgs/model-admin.png
     :width: 500px
@@ -17,7 +17,7 @@ ModelAdmin
     :undoc-members:
     :show-inheritance:
 
-EditFormAdmin
+ModelFormWidget
 ----------------------------
 
 .. image:: /_static/imgs/model-edit.png
@@ -34,7 +34,7 @@ EditFormAdmin
 
 ----------------------------
 
-ViewFormAdmin
+ModelViewFormWidget
 ----------------------------
 
 |

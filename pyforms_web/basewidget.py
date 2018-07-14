@@ -552,7 +552,7 @@ class BaseWidget(object):
             hasattr(request,'updated_apps'):
             request.updated_apps.add_top(self)
 
-    def load_serialized_form(self, params):
+    def deserialize_form(self, params):
         """
         Load the json parameters sent by the client side
         

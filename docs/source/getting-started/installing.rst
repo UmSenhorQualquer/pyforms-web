@@ -2,7 +2,7 @@
 Install & configure
 ********************
 
-On this page is explained how to configure your environment and your django app to start using pyforms.
+On this page it is explained how to configure your environment and your django app to start using pyforms.
 
 .. note:: The instructions on this page assumes you know how the `Django framework <https://www.djangoproject.com/>`_ works.
 
@@ -37,10 +37,10 @@ Edit the django project **settings.py** file to include the next configurations.
 .. code:: python
 
     INSTALLED_APPS = [
-        'jfu',
-        'sorl.thumbnail',
         'orquestra',
         'pyforms_web.web'
+        'jfu',
+        'sorl.thumbnail',
         ...
     ]
 
@@ -56,15 +56,6 @@ Edit the django project **settings.py** file to include the next configurations.
         os.path.join(BASE_DIR, "static", 'css'),
     ]
 
-    TEMPLATES = [
-        {
-            ...
-            'DIRS': [os.path.join(BASE_DIR, 'templates')],
-            ...
-        },
-    ]
-
-
 
 Edit the django project **urls.py** file to include the next urls configurations.
 
@@ -76,13 +67,27 @@ Edit the django project **urls.py** file to include the next urls configurations
     from django.urls    import include, path
 
     urlpatterns = [
-        path('',          include('orquestra.urls')       ),
         path('pyforms/',  include('pyforms_web.web.urls') ),
+        path('',          include('orquestra.urls')       ),
     ]
 
     if settings.DEBUG:
         from django.conf.urls.static import static
         urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+Create a pyforms settings file
+================================
+
+In the django project root folder (same folder of the manage.py file) create the loca_settings.py file with the next content.
+
+.. code:: python
+
+   SETTINGS_PRIORITY = 0 # Will define this settings file as priority. Will override all the settings with lower priority.
+   PYFORMS_MODE = 'WEB' # Will configure pyforms to run as WEB mode.
+
+
+
 
 Run the project
 ================
@@ -100,6 +105,11 @@ Access to `http://localhost:8000 <http://localhost:8000/>`_
     :width: 100%
     :align: center
 
+|
+
+------------------------------
+
+(optional)
 
 Configure django-allauth
 =========================
@@ -113,10 +123,17 @@ Add the next configuration to your Django project setttings.
 
 .. code:: python
 
-    ...
+   ...
 
    LOGIN_URL = '/accounts/login/'
    LOGIN_REDIRECT_URL = '/'
 
+Add the next configuration to the **local_settings.py** file to configure **orquestra** to require always authentication before accessing the applications.
 
-Do not forget to apply the db migrations to your project.
+.. code:: python
+
+   ORQUESTRA_REQUIREAUTH = True
+
+.. note::
+   
+   Do not forget to apply the db migrations to your project.

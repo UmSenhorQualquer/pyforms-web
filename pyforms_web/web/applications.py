@@ -66,7 +66,7 @@ class ApplicationsLoader:
         if not app.has_session_permissions(request.user):
             raise PermissionDenied('The user do not have access to the application')
         
-        if app_data is not None: app.load_serialized_form(app_data)
+        if app_data is not None: app.deserialize_form(app_data)
 
         for m in request.updated_apps.applications: m.commit()
         
@@ -80,7 +80,7 @@ class ApplicationsLoader:
         
         if app_data is not None:
             try:
-                app.load_serialized_form(app_data)
+                app.deserialize_form(app_data)
             except Exception as e:
                 traceback.print_exc()
                 app.alert(str(e))

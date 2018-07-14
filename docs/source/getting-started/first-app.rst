@@ -1,6 +1,17 @@
-******************************
+******************
 First application
-******************************
+******************
+
+.. note::
+
+    More documentation to read about this example at:
+
+        * :class:`pyforms_web.basewidget.BaseWidget`
+
+        * :class:`pyforms_web.controls.control_base.ControlBase`
+
+
+
 
 Here it is shown how to create the first pyforms app for a django project.
 
@@ -37,71 +48,72 @@ Create the file **my_module_name/apps/site_crawl.py** and add the next code to i
 
 .. code:: python
 
-    from orquestra.plugins import LayoutPositions
-    from pyforms_web.basewidget import BaseWidget
+    from pyforms.basewidget import BaseWidget
+    from confapp import conf
 
     class SiteCrawlApp(BaseWidget):
-        
+
         UID                  = 'site-crawl-app'
         TITLE                = 'Site crawl'
-        
-        LAYOUT_POSITION      = LayoutPositions.HOME
+
+        LAYOUT_POSITION      = conf.ORQUESTRA_HOME
 
         ORQUESTRA_MENU       = 'left'
         ORQUESTRA_MENU_ICON  = 'browser'
         ORQUESTRA_MENU_ORDER = 0
 
-Run your django project to visualize the next screen.
 
-.. image:: /_static/imgs/first-app-empty.png
-    :width: 100%
-    :align: center
+You have created the most basic application. Access to http://localhost:8000 using your browser and visualize it.
 
-Now update the **SiteCrawlApp** application with the next code.
+Now update the **SiteCrawlApp** application with the next code:
 
 .. code:: python
 
-    from orquestra.plugins import LayoutPositions
-    from pyforms_web.basewidget import BaseWidget
+    from pyforms.basewidget import BaseWidget
+    from confapp import conf
 
-    from pyforms_web.controls.ControlButton import ControlButton
-    from pyforms_web.controls.ControlText   import ControlText
-    from pyforms_web.controls.ControlList   import ControlList
+    from pyforms.controls import ControlButton
+    from pyforms.controls import ControlText
+    from pyforms.controls import ControlList
 
     class SiteCrawlApp(BaseWidget):
-        
+
         UID                  = 'site-crawl-app'
         TITLE                = 'Site crawl'
-        
-        LAYOUT_POSITION      = LayoutPositions.HOME
+
+        LAYOUT_POSITION      = conf.ORQUESTRA_HOME
 
         ORQUESTRA_MENU       = 'left'
         ORQUESTRA_MENU_ICON  = 'browser'
         ORQUESTRA_MENU_ORDER = 0
 
+
         def __init__(self, *args, **kwargs):
+        
             super(SiteCrawlApp, self).__init__(*args, **kwargs)
 
-            self._url     = ControlText('Page url')
+            self._url          = ControlText('Page url')
             self._getlinks_btn = ControlButton('Get links', default=self.___getlinks_btn_evt, label_visible=False)
 
-            self._links_list = ControlList('Links list', horizontal_headers=['Found links'])
-
-            
+            self._links_list   = ControlList('Links list', horizontal_headers=['Found links'])
 
             self.formset = ['_url', '_getlinks_btn', '_links_list']
 
 
         def ___getlinks_btn_evt(self):
+
             self._links_list.value = [
-                ['Link1'], 
+                ['Link1'],
                 ['Link2']
             ]
 
 
 
-Restart your django project to visualize the updates.
+Restart your django project to visualize the updates. 
+
+Press the button to see what happens.
 
 .. image:: /_static/imgs/first-app.png
     :width: 100%
     :align: center
+

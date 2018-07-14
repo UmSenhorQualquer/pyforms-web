@@ -91,8 +91,14 @@ The next code produces the next web application.
 
    overview
    getting-started/installing
+
+.. toctree::
+   :maxdepth: 4
+   :caption: Learn
+   
    getting-started/first-app
-   getting-started/first-db-app
+   getting-started/db-apps
+   getting-started/formset
 
 .. toctree::
    :maxdepth: 4
