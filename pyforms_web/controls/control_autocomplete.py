@@ -80,6 +80,7 @@ class ControlAutoComplete(ControlBase):
         else:
             return []
 
+    """
     @property
     def value(self):  return self._value
 
@@ -87,6 +88,7 @@ class ControlAutoComplete(ControlBase):
     def value(self, value):
         if self._value!=value: self.mark_to_update_client()
         self._value = value
+    """
     
     def deserialize(self, data):
         super(ControlAutoComplete,self).deserialize(data)
