@@ -44,13 +44,16 @@ class ModelAdminWidget(BaseWidget):
     EDITFORM_CLASS  = ModelFormWidget #: class: Edit form class
     ADDFORM_CLASS   = None #: class: Create form class
 
+    USE_DETAILS_TO_ADD  = True #: boolean: Use the flag to create the ControlEmptyWidget self._details. This control is used to load the ADDFORM_CLASS.
+    USE_DETAILS_TO_EDIT = True #: boolean: Use the flag to create the ControlEmptyWidget self._details. This control is used to load the EDITFORM_CLASS.
+
     INLINES         = []    #: list(class): Sub models to show in the interface
     LIST_FILTER     = None  #: list(str): List of filters fields
     LIST_DISPLAY    = None  #: list(str): List of fields to display in the table
     SEARCH_FIELDS   = None  #: list(str): Fields to be used in the search
 
-    FIELDSETS       = None  #: Formset of the edit form
     CONTROL_LIST    = ControlQueryList #: class: Control to be used in to list the values
+    FIELDSETS       = None  #: Formset of the edit form
     READ_ONLY       = []    #: list(str): List of readonly fields 
 
     LIST_ROWS_PER_PAGE = 10 #: int: number of rows to show per page
@@ -96,7 +99,7 @@ class ModelAdminWidget(BaseWidget):
             n_pages      = self.LIST_N_PAGES
         )
 
-        if has_add_permission or has_edit_permission:
+        if (self.USE_DETAILS_TO_ADD or self.USE_DETAILS_TO_EDIT) and (has_add_permission or has_edit_permission):
             self._details = ControlEmptyWidget('Details', visible=False)
         
         ##############################################
@@ -206,7 +209,9 @@ class ModelAdminWidget(BaseWidget):
         self._list.show()
         self._list.selected_row_id = -1
         self.populate_list()
-        self._details.hide()
+        
+        if hasattr(self, '_details'): 
+            self._details.hide()
 
     def show_create_form(self):
         """
@@ -222,23 +227,26 @@ class ModelAdminWidget(BaseWidget):
                     getattr(self, o).hide()
         
         self._list.hide()
-        self._details.show()
+
+        if hasattr(self, '_details'): 
+            self._details.show()
 
         params = {
             'title':'Create', 
             'model':self.model, 
             'parent_model':self.parent_model,
-            'parent_pk':self.parent_pk,
-            'parent_win': self
+            'parent_pk':self.parent_pk
         }
 
+        if self.USE_DETAILS_TO_ADD: params.update({'parent_win': self}  )
         if self.INLINES: params.update({'inlines':self.INLINES})
         if self.FIELDSETS: params.update({'fieldsets':self.FIELDSETS})
         if self.READ_ONLY: params.update({'readonly':self.READ_ONLY})
 
         createform = self.addmodel_class(**params)
 
-        self._details.value  = createform
+        if hasattr(self, '_details') and self.USE_DETAILS_TO_ADD: 
+            self._details.value = createform
 
 
 
@@ -252,16 +260,7 @@ class ModelAdminWidget(BaseWidget):
         # if there is no edit permission then does not show the form
         if not self.has_edit_permission(): return
 
-        # only if the button exists: 
-        toolbar = [self.toolbar] if isinstance(self.toolbar, str) else self.toolbar
-        if toolbar:
-            for o in toolbar:
-                if o and hasattr(self, o): getattr(self, o).hide()
-
-        self._list.hide()       
-        self._details.show()
         
-    
         # create the edit form a add it to the empty widget details
         # override the function hide_form to make sure the list is shown after the user close the edition form
         params = {
@@ -269,17 +268,32 @@ class ModelAdminWidget(BaseWidget):
             'model':self.model, 
             'pk':pk,
             'parent_model':self.parent_model,
-            'parent_pk':self.parent_pk,
-            'parent_listapp':self
+            'parent_pk':self.parent_pk
         }
 
-        if self.INLINES: params.update({'inlines':self.INLINES})
+        if self.USE_DETAILS_TO_EDIT: params.update({'parent_listapp': self}  )
+        if self.INLINES:   params.update({'inlines':  self.INLINES}  )
         if self.FIELDSETS: params.update({'fieldsets':self.FIELDSETS})
-        if self.READ_ONLY: params.update({'readonly':self.READ_ONLY})
+        if self.READ_ONLY: params.update({'readonly': self.READ_ONLY})
 
         editform = self.editmodel_class(**params)
-        self._details.value = editform
-        
+
+        if hasattr(self, '_details') and self.USE_DETAILS_TO_EDIT: 
+            self._details.value = editform
+            self._list.hide()
+            self._details.show()
+
+            # only if the button exists: 
+            toolbar = [self.toolbar] if isinstance(self.toolbar, str) else self.toolbar
+            if toolbar:
+                for o in toolbar:
+                    if o and hasattr(self, o): getattr(self, o).hide()
+
+        else:
+            self._list.show()
+            if hasattr(self, '_details'): 
+                self._details.hide()
+
 
 
     def set_parent(self, parent_model, parent_pk):

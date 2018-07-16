@@ -22,7 +22,8 @@ from {application_name}.models import {model_name}
 #     #REMOVE_BTN_LABEL   = '<i class="trash outline icon"></i> Remove'
 #     #POPUP_REMOVE_TITLE = 'The next objects are going to be affected or removed'
 
-#     #HAS_CANCEL_BTN     = True #Flag to show or hide the cancel button
+#     #HAS_CANCEL_BTN_ON_ADD  = True #Flag to show or hide the cancel button
+#     #HAS_CANCEL_BTN_ON_EDIT = True #Flag to show or hide the cancel button
 
 #    def delete_event(self):
 #        return super({model_name}EditFormAdmin,self).delete_event()

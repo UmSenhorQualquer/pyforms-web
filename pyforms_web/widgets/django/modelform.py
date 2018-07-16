@@ -72,8 +72,15 @@ class ModelFormWidget(BaseWidget):
     TITLE          = None  #: str: Title of the application
     INLINES        = []    #: list(class): Sub models to show in the interface
     FIELDSETS      = None  #: Formset of the edit form
-    READ_ONLY      = []    #: list(str): List of readonly fields 
-    HAS_CANCEL_BTN = True  #: bool: Flag to show or hide the cancel button
+    READ_ONLY      = []    #: list(str): List of readonly fields
+
+    #: bool: Flag to show or hide the cancel button
+    HAS_CANCEL_BTN_ON_EDIT = True
+    #: bool: Flag to show or hide the cancel button
+    HAS_CANCEL_BTN_ON_ADD  = True
+
+    #: bool: Close the application on remove
+    CLOSE_ON_REMOVE = False 
  
     #: str: Label for the save button
     SAVE_BTN_LABEL     = '<i class="save icon"></i> Save' 
@@ -103,9 +110,8 @@ class ModelFormWidget(BaseWidget):
         self.model     = kwargs.get('model',     self.MODEL)
         self.fieldsets = kwargs.get('fieldsets', self.FIELDSETS)
         self.readonly  = kwargs.get('readonly',  self.READ_ONLY)
-        self.has_cancel_btn = kwargs.get('has_cancel_btn',  self.HAS_CANCEL_BTN)
+        self.has_cancel_btn = kwargs.get('has_cancel_btn',  self.HAS_CANCEL_BTN_ON_ADD if self.object_pk is None else self.HAS_CANCEL_BTN_ON_EDIT)
 
-        
         self.inlines = self.INLINES if len(self.INLINES)>0 else kwargs.get('inlines', self.INLINES)
         
         if self.fieldsets is None: self.fieldsets = self.FIELDSETS
@@ -465,6 +471,8 @@ class ModelFormWidget(BaseWidget):
             if self.delete_event():
                 self.success('The object was deleted with success!','Success!')
                 popup.close()
+                if self.CLOSE_ON_REMOVE:
+                    self.close()
             else:
                 popup.warning('The object was not deleted!','Warning!')
 
@@ -829,9 +837,13 @@ class ModelFormWidget(BaseWidget):
         """
         self.object_pk = None
         obj = self.save_event()
+
         if self.parent and obj:
+            # it is being use from a ModelAdminWidget
             self.parent.show_edit_form(pk=self.object_pk)
+            self.parent.hide_form()
         elif obj:
+            # it is executing as a single app
             self._create_btn.hide()
             self._save_btn.show()
             self._remove_btn.show()
