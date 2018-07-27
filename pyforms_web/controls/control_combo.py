@@ -61,10 +61,12 @@ class ControlCombo(ControlBase):
         for key, val in self._items.items():
             if str(value)==str(val):
                 if str(self._value)!=str(value): 
+                    self._value = str(val)
                     self.mark_to_update_client()
                     if self._init_form_called:
+                        
                         self.changed_event()
-                self._value = str(val)
+                
         
     @property
     def text(self): return ""
