@@ -220,17 +220,6 @@ class ModelAdminWidget(BaseWidget):
         """
         # if there is no add permission then does not show the form
         if not self.has_add_permission(): return
-        
-        toolbar = [self.toolbar] if isinstance(self.toolbar, str) else self.toolbar
-        if toolbar:
-            for o in toolbar:
-                if o and hasattr(self, o):
-                    getattr(self, o).hide()
-        
-        self._list.hide()
-
-        if hasattr(self, '_details'): 
-            self._details.show()
 
         params = {
             'title':'Create', 
@@ -246,8 +235,20 @@ class ModelAdminWidget(BaseWidget):
 
         createform = self.addmodel_class(**params)
 
-        if hasattr(self, '_details') and self.USE_DETAILS_TO_ADD: 
+        if hasattr(self, '_details') and self.USE_DETAILS_TO_ADD:
+            self._list.hide()
+            self._details.show()
             self._details.value = createform
+            toolbar = [self.toolbar] if isinstance(self.toolbar, str) else self.toolbar
+            if toolbar:
+                for o in toolbar:
+                    if o and hasattr(self, o):
+                        getattr(self, o).hide()
+        else:
+            self._list.show()
+            if hasattr(self, '_details'): 
+                self._details.hide()
+
 
 
 
