@@ -186,12 +186,13 @@ class BaseWidget{
         }
 
         //add auto refresh
-        if(data['refresh_timeout']!=null && this.refresh_timeout!=data['refresh_timeout'] ){
-            if(this.timeout_loop)
-                clearInterval(this.timeout_loop);
-            var self = this;
-            this.refresh_timeout = data['refresh_timeout'];
-            this.timeout_loop = setInterval(function(){ self.refresh_timeout_event(); }, data['refresh_timeout']);
+        if(data['refresh_timeout']!=null){
+            if( this.refresh_timeout!=data['refresh_timeout'] ){
+                var self = this;
+                if(this.timeout_loop){ clearInterval(this.timeout_loop); }
+                this.refresh_timeout = data['refresh_timeout'];
+                this.timeout_loop = setInterval(function(){ self.refresh_timeout_event(); }, data['refresh_timeout']);
+            }
         }else{
             if(this.timeout_loop)
                 clearInterval(this.timeout_loop);
