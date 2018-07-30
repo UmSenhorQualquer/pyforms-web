@@ -190,7 +190,7 @@ class BaseWidget{
             if(this.timeout_loop)
                 clearInterval(this.timeout_loop);
             var self = this;
-            var this.refresh_timeout = data['refresh_timeout'];
+            this.refresh_timeout = data['refresh_timeout'];
             this.timeout_loop = setInterval(function(){ self.refresh_timeout_event(); }, data['refresh_timeout']);
         }else{
             if(this.timeout_loop)
