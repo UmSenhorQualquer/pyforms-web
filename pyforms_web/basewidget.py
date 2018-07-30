@@ -65,7 +65,8 @@ class BaseWidget(object):
         self._controls      = []
         self._html          = ''
         self._js            = ''
-        self._css         = kwargs.get('css', self.CSS)
+        self._css           = kwargs.get('css', self.CSS)
+        self.refresh_timeout= kwargs.get('refresh_timeout', self.REFRESH_TIMEOUT)
         self._close_widget  = False
 
         self.init_form_result = None
@@ -113,7 +114,7 @@ class BaseWidget(object):
         parent_code = 'undefined'
         if parent: parent_code = "'{0}'".format(parent.uid)
 
-        extra_data = {'refresh_timeout': self.REFRESH_TIMEOUT, 'messages':self._messages}
+        extra_data = {'refresh_timeout': self.refresh_timeout, 'messages':self._messages}
 
         modulename = inspect.getmodule(self).__name__ + '.' + self.__class__.__name__
 
@@ -132,14 +133,12 @@ class BaseWidget(object):
             'title': self._title,
             'css': self._css,
             'app_id':self.uid, 
-            'refresh_timeout':  
-            self.REFRESH_TIMEOUT
+            'refresh_timeout':  self.refresh_timeout
         }
 
        
         return res
         
-
 
 
 
@@ -598,7 +597,8 @@ class BaseWidget(object):
             'layout_position':  self.LAYOUT_POSITION if hasattr(self, 'LAYOUT_POSITION') else 5,
             'title':            self.title,
             'close_widget':     self._close_widget,
-            'js-code':          list(self._js_code2execute)
+            'js-code':          list(self._js_code2execute),
+            'refresh_timeout':  self.refresh_timeout
         }
         
         self._js_code2execute = []
@@ -752,6 +752,15 @@ class BaseWidget(object):
         """
         return True
 
+    @refresh_timeout.setter
+    def refresh_timeout(self, value): self._refresh_timeout = value
+
+    @property
+    def refresh_timeout(self):
+        """
+        Return a boolean indicating if the form is visible or not 
+        """
+        return self._refresh_timeout
 
     ############################################################################
     ############ WEB Properties ################################################
