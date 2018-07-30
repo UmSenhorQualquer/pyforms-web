@@ -194,8 +194,10 @@ class BaseWidget{
                 this.timeout_loop = setInterval(function(){ self.refresh_timeout_event(); }, data['refresh_timeout']);
             }
         }else{
-            if(this.timeout_loop)
+            if(this.timeout_loop){
                 clearInterval(this.timeout_loop);
+                this.timeout_loop = null;
+            }
         }
     }
     ////////////////////////////////////////////////////////////
