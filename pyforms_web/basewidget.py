@@ -752,15 +752,17 @@ class BaseWidget(object):
         """
         return True
 
-    @refresh_timeout.setter
-    def refresh_timeout(self, value): self._refresh_timeout = value
-
     @property
     def refresh_timeout(self):
         """
         Return a boolean indicating if the form is visible or not 
         """
         return self._refresh_timeout
+
+    @refresh_timeout.setter
+    def refresh_timeout(self, value): self._refresh_timeout = value
+
+    
 
     ############################################################################
     ############ WEB Properties ################################################
