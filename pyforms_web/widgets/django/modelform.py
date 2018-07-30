@@ -129,6 +129,7 @@ class ModelFormWidget(BaseWidget):
         self.parent_field = None
         self.parent_pk    = kwargs.get('parent_pk', None)
         self.parent_model = kwargs.get('parent_model', None)
+        
         if self.parent_model and self.parent_pk:
             self.__set_parent(self.parent_model, self.parent_pk)
         #######################################################
@@ -492,6 +493,32 @@ class ModelFormWidget(BaseWidget):
         :param django.db.models.Model obj: Object to save.
         
         """
+        try:
+            obj.full_clean()
+        except ValidationError as e:
+            html = '<ul class="list">'
+            for field_name, messages in e.message_dict.items():
+                
+                try:
+                    getattr(self, field_name).error = True
+
+                    label = get_lookup_verbose_name(self.model, field_name)
+                    html += '<li><b>{0}</b>'.format(label.capitalize())
+                    field_error = True
+            
+                except FieldDoesNotExist:
+                    field_error = False
+                except AttributeError:
+                    field_error = False
+
+                if field_error: html += '<ul>'
+                for msg in messages: html += '<li>{0}</li>'.format(msg)
+                if field_error: html += '</ul></li>'
+                
+            html+= '</ul>'
+            self.alert(html)
+            return None
+
         obj.save()
 
     def save_event(self):
@@ -577,34 +604,6 @@ class ModelFormWidget(BaseWidget):
                     setattr(obj, field.name, value)
                 
 
-            try:
-                obj.full_clean()
-            except ValidationError as e:
-                html = '<ul class="list">'
-                for field_name, messages in e.message_dict.items():
-                    
-                    try:
-                        getattr(self, field_name).error = True
-
-                        label = get_lookup_verbose_name(self.model, field_name)
-                        html += '<li><b>{0}</b>'.format(label.capitalize())
-
-                        field_error = True
-                
-                    except FieldDoesNotExist:
-                        field_error = False
-                    except AttributeError:
-                        field_error = False
-
-
-                    if field_error: html += '<ul>'
-                    for msg in messages: html += '<li>{0}</li>'.format(msg)
-                    if field_error: html += '</ul></li>'
-                    
-                html+= '</ul>'
-                self.alert(html)
-                return None
-
             self.save_object(obj)
             
             for field in self.model._meta.get_fields():
@@ -652,14 +651,15 @@ class ModelFormWidget(BaseWidget):
         :param django.db.models.Model parent_model: Parent model.
         :param int parent_pk: Parent object primary key.
         """
-        self.parent_pk      = parent_pk
-        self.parent_model   = parent_model
+        self.parent_pk    = parent_pk
+        self.parent_model = parent_model
 
         for field in self.model._meta.get_fields():
             if isinstance(field, models.ForeignKey):
                 if parent_model == field.related_model:
                     self.parent_field = field
                     break
+
 
 
     def get_visible_fields_names(self):
@@ -679,11 +679,11 @@ class ModelFormWidget(BaseWidget):
                 if field.one_to_one and field.name.endswith('_ptr'): continue
 
                 fields.append(field.name)
-           
-            if self.parent_field: 
-                try:
-                    fields.remove(self.parent_field.name)
-                except ValueError: pass
+        
+        if self.parent_field: 
+            try:
+                fields.remove(self.parent_field.name)
+            except ValueError: pass
 
         return [field for field in fields if field is not None]
 
