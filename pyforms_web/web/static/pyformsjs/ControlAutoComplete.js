@@ -19,7 +19,7 @@ class ControlAutoComplete extends ControlBase{
             placeholder: false
         });
 
-        console.long
+        
         
         this.jquery().dropdown('setup menu', { values: this.properties.items });
         this.set_value(this.properties.value);

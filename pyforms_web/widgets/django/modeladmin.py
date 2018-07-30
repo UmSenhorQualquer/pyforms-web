@@ -99,7 +99,8 @@ class ModelAdminWidget(BaseWidget):
             n_pages      = self.LIST_N_PAGES
         )
 
-        if (self.USE_DETAILS_TO_ADD or self.USE_DETAILS_TO_EDIT) and (has_add_permission or has_edit_permission):
+        has_details = (self.USE_DETAILS_TO_ADD or self.USE_DETAILS_TO_EDIT) and (has_add_permission or has_edit_permission)
+        if has_details:
             self._details = ControlEmptyWidget('Details', visible=False)
         
         ##############################################
@@ -119,16 +120,16 @@ class ModelAdminWidget(BaseWidget):
         if self.parent_model:
             self.formset = [
                 self.toolbar,
+                '_details' if has_details else None,
                 '_list',
-                '_details' if has_add_permission or has_edit_permission else None,
             ]
         else:
             self.formset = [
+                '_details' if has_details else None,
                 segment( 
                     self.toolbar,
                     '_list'
                 ),
-                '_details' if has_add_permission or has_edit_permission else None,
             ]
         
         # if the user has edit permission then 

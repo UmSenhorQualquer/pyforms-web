@@ -139,3 +139,21 @@ h3.subtitle {
 .pyforms-segment > .fields:last-child{
 	margin-bottom: 0px;
 }
+
+
+
+.pyforms-segment > .ControlEmptyWidget > .form > .field {
+	margin-bottom: 14px !important;
+}
+
+.pyforms-segment > .ControlEmptyWidget > .form .field:last-child {
+	margin-bottom: 0px !important;
+}
+
+.pyforms-segment > .ControlEmptyWidget > .form .fields:last-child {
+	margin-bottom: 0px !important;
+}
+
+.pyforms-segment > div > .form {
+	margin-bottom: 0px !important;
+}

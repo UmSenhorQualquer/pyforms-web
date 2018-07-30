@@ -13,6 +13,7 @@ class BaseWidget{
         this.controls   = controls;
         this.events_queue = [];
         this.parent_id  = parent_id;
+        this.layout_position = data.layout_position;
 
         // variables used to verify if the loading layer needs to be shown or not
         this.loading_begin   = undefined;
@@ -181,8 +182,8 @@ class BaseWidget{
         
 
         if(data['close_widget']){ 
+            pyforms.close_layout_place(data);
             pyforms.remove_app(data['uid']);
-            pyforms.close_layout_place(data['layout_position']);
         }
 
         //add auto refresh

@@ -402,13 +402,19 @@ class PyformsManager{
 
     @param {int} layout_position - Layout id.
     */
-    close_layout_place(layout_position){
-        for(var i=0; i<this.layout_places.length; i++){
-            if( this.layout_places[i].place==layout_position && this.layout_places[i].close_handler ){
-                this.layout_places[i].close_handler();
-                break;
-            }
-        };
+    close_layout_place(app_data){
+        var app = pyforms.find_app(app_data['uid']);
+        
+        var layout_position = app_data['layout_position'];
+        var application_id  = app_data['uid'];
+        
+        if( app!=undefined)
+            for(var i=0; i<this.layout_places.length; i++){
+                if( this.layout_places[i].place==layout_position && this.layout_places[i].close_handler ){
+                    this.layout_places[i].close_handler(application_id);
+                    break;
+                }
+            };
     };
     
 }

@@ -26,7 +26,6 @@ class ControlFloat extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	set_value(value){
-		console.log(value);
 		if(value!=null)
 			this.jquery().val(value); 
 		else
