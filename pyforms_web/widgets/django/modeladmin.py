@@ -140,7 +140,7 @@ class ModelAdminWidget(BaseWidget):
         
         #if it is a inline app, add the title to the header
         
-        if self.parent_model:
+        if self.parent_model and self.title:
             self.formset = ['h3:'+str(title)]+self.formset
 
         self.populate_list()
@@ -225,10 +225,10 @@ class ModelAdminWidget(BaseWidget):
             'title':'Create', 
             'model':self.model, 
             'parent_model':self.parent_model,
-            'parent_pk':self.parent_pk
+            'parent_pk':self.parent_pk,
+            'parent_win': self
         }
 
-        if self.USE_DETAILS_TO_ADD: params.update({'parent_win': self}  )
         if self.INLINES: params.update({'inlines':self.INLINES})
         if self.FIELDSETS: params.update({'fieldsets':self.FIELDSETS})
         if self.READ_ONLY: params.update({'readonly':self.READ_ONLY})
@@ -250,9 +250,6 @@ class ModelAdminWidget(BaseWidget):
                 self._details.hide()
 
 
-
-
-
     def show_edit_form(self, pk=None):
         """
         Show the edition for for a specific object
@@ -270,10 +267,10 @@ class ModelAdminWidget(BaseWidget):
             'model':self.model, 
             'pk':pk,
             'parent_model':self.parent_model,
-            'parent_pk':self.parent_pk
+            'parent_pk':self.parent_pk,
+            'parent_win': self
         }
 
-        if self.USE_DETAILS_TO_EDIT: params.update({'parent_listapp': self}  )
         if self.INLINES:   params.update({'inlines':  self.INLINES}  )
         if self.FIELDSETS: params.update({'fieldsets':self.FIELDSETS})
         if self.READ_ONLY: params.update({'readonly': self.READ_ONLY})
@@ -346,7 +343,9 @@ class ModelAdminWidget(BaseWidget):
         obj = self.selected_row_object
         if obj:
             self.object_pk = obj.pk
+            self._list.selected_row_id = None
             self.show_edit_form(obj.pk)
+            
 
     def __get_queryset(self):
         """

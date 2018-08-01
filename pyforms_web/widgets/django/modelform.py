@@ -81,6 +81,8 @@ class ModelFormWidget(BaseWidget):
 
     #: bool: Close the application on remove
     CLOSE_ON_REMOVE = False 
+    #: bool: Close the application on cancel
+    CLOSE_ON_CANCEL = False
  
     #: str: Label for the save button
     SAVE_BTN_LABEL     = '<i class="save icon"></i> Save' 
@@ -229,7 +231,10 @@ class ModelFormWidget(BaseWidget):
         """
         Event called when the cancel button is pressed
         """
-        self.hide_form()
+        if self.CLOSE_ON_CANCEL:
+            self.close()
+        else:
+            self.hide_form()
 
 
     def autocomplete_search(self, queryset, keyword, control):
@@ -455,6 +460,7 @@ class ModelFormWidget(BaseWidget):
             self._create_btn.show()
             self._save_btn.hide()
             for field in self.inlines_controls: field.hide()
+            if self.parent: self.parent.populate_list()
             return True
         else:
             return False
@@ -472,8 +478,7 @@ class ModelFormWidget(BaseWidget):
             if self.delete_event():
                 self.success('The object was deleted with success!','Success!')
                 popup.close()
-                if self.CLOSE_ON_REMOVE:
-                    self.close()
+                if self.CLOSE_ON_REMOVE: self.close()
             else:
                 popup.warning('The object was not deleted!','Warning!')
 
@@ -520,6 +525,7 @@ class ModelFormWidget(BaseWidget):
             return None
 
         obj.save()
+        return obj
 
     def save_event(self):
         """

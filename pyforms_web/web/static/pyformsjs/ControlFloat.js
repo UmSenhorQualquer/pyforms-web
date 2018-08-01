@@ -19,7 +19,7 @@ class ControlFloat extends ControlBase{
 
 	get_value(){ 
 		var value = this.jquery().val();
-		if(value=='null' || value.length==0) return null;
+		if(value==undefined || value==null || value=='null' || value.length==0) return null;
 		else return value;
 	}
 

@@ -150,9 +150,9 @@ class ControlBase(object):
         :param dict properties: Serialized data to load.
         """
         self.value    = properties.get('value',None)
-        self._label   = properties.get('label','')
-        self._help    = properties.get('help','')
-        self._visible = properties.get('visible',True)
+        #self._label   = properties.get('label','')
+        #self._help    = properties.get('help','')
+        #self._visible = properties.get('visible',True)
 
     
     def clean_field(self):
