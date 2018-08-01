@@ -9,29 +9,16 @@ def make_lambda_func(func, **kwargs):
 
 
 def get_lookup_field(model, lookup):
+
     # will return first non relational field's verbose_name in lookup
     parts = lookup.split(LOOKUP_SEP)
     for i, part in enumerate(parts):
-        try:
-            f = model._meta.get_field(part)
-        except FieldDoesNotExist:
-            f = None
-            # check if field is related
-            """for f in model._meta.related_objects:
-                if f.get_accessor_name() == part:
-                    break
-            else:
-                raise ValueError("Invalid lookup string")
-
-        if f.is_relation:
+        f = model._meta.get_field(part)
+        if (len(parts)-1)==i:
+            return f
+        elif hasattr(f, 'is_relation') and f.is_relation:
             model = f.related_model
-            if (len(parts)-1)==i:
-                return model
-            else:
-                continue
-            """
-
-        return f
+    return f
 
 
 def get_lookup_value(o, lookup):

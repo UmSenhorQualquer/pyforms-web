@@ -331,9 +331,10 @@ class ControlQueryList(ControlBase):
                 objects = field.related_model.objects.all()
 
                 limit_choices = field.get_limit_choices_to()
-                if limit_choices: objects = objects.filter(**limit_choices)
+                if limit_choices: 
+                    objects = objects.filter(**limit_choices)
 
-                filter_values = [(field.name+'='+str(o.pk), o.__str__() ) for o in objects]
+                filter_values = [(column_name+'='+str(o.pk), o.__str__() ) for o in objects]
                 field_properties.update({'items': filter_values})
                 
             else:
@@ -342,6 +343,5 @@ class ControlQueryList(ControlBase):
                 field_properties.update({'items': filter_values})
 
             filters_list.append(field_properties)
-
 
         return filters_list
