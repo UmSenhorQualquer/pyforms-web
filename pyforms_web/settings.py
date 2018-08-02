@@ -5,6 +5,7 @@ PYFORMS_WEB_APPS_TIMEOUT   = 3600*48
 
 PYFORMS_APPS = {}
 
+LAYOUT_NEW_WINDOW = 2
 
 try:
 	import os

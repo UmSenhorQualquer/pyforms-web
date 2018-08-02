@@ -794,7 +794,7 @@ class BaseWidget(object):
 
 
 class PopupWindow(BaseWidget):
-    LAYOUT_POSITION = conf.ORQUESTRA_NEW_WINDOW
+    LAYOUT_POSITION = conf.LAYOUT_NEW_WINDOW
 
     def __init__(self, title, msg, buttons, handler, msg_type, parent_win=None):
         BaseWidget.__init__(self, title, parent_win=parent_win)
