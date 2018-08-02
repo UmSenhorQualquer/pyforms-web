@@ -1,3 +1,16 @@
+# 3rd party dependencies
+numpy
+opencv-python
+
+# rtd dependencies
+sphinx
+sphinx-autobuild
+sphinx-rtd-theme
+sphinx-js
+recommonmark
+python-dateutil
+
+# swp dependencies
 confapp
+git+https://github.com/UmSenhorQualquer/orquestra.git
 git+https://github.com/UmSenhorQualquer/django-jfu.git
-git+https://bitbucket.org/UmSenhorQualquer/orquestra.git
