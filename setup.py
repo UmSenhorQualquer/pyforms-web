@@ -23,14 +23,11 @@ def find_files(package_name,directory, pattern):
 
 setup(
     name                = 'PyForms-Web',
-    version             = '0.1.6',
-    description         = """
-        Pyforms is a Python 2.7 and 3.0 framework to develop GUI application,
-        which promotes modular software design and code reusability with minimal effort.
-    """,
+    version             = '4',
+    description         = """Pyforms Web is Python 3 framework to create single-page web applications.""",
     author               = 'Ricardo Ribeiro',
     author_email         = 'ricardojvr@gmail.com',
-    license              = 'MIT',
+    license              = 'GNU GPLv3',
     url                  = 'https://github.com/UmSenhorQualquer/pyforms',
     include_package_data = True,
     packages=find_packages(),
@@ -41,6 +38,10 @@ setup(
         )
     },
     install_requires=[
+        'django-jfu-pyforms',
+        'orquestra',
+        'numpy',
+        'opencv-python',
         'django>2.0',
         'simplejson',
         'sorl-thumbnail',

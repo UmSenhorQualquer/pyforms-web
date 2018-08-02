@@ -8,3 +8,7 @@ docs/\.DS_Store
 \.DS_Store
 
 PyForms_Web\.egg-info/
+
+build/
+
+dist/

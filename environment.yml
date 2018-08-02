@@ -3,17 +3,9 @@ channels:
   - defaults
 dependencies:
   - python=3.5
-  - pip
   - pip:
-    - confapp
-    - numpy
-    - opencv-python
-    - git+https://github.com/UmSenhorQualquer/orquestra.git
-    - git+https://github.com/UmSenhorQualquer/django-jfu.git
     - sphinx
     - sphinx-autobuild
     - sphinx-rtd-theme
     - sphinx-js
     - recommonmark
-    - python-dateutil
-    - django
