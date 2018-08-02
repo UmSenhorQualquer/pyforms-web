@@ -2,7 +2,7 @@ name: pyforms-web-environment
 channels:
   - defaults
 dependencies:
-  - python=3.6.5
+  - python=3.5
   - pip
   - pip:
     - confapp
