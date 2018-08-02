@@ -46,7 +46,7 @@ extensions = [
     'sphinx_js'
 ]
 
-js_source_path = '../pyforms_web/web/static/pyformsjs'
+js_source_path = '../../pyforms_web/web/static/pyformsjs'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
