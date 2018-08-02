@@ -19,8 +19,7 @@ Configure the environment
 
 .. code:: bash
 
-    pip install -r pyforms-web/requirements.txt
-    pip install pyforms-web/. 
+    pip install pyforms-web
 
 
 Configure a django project
