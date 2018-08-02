@@ -1,0 +1,18 @@
+name: pyforms-web-environment
+channels:
+  - defaults
+dependencies:
+  - pip=10.0.1=py36_0
+- pip:
+  - confapp
+  - numpy
+  - opencv-python
+  - git+https://github.com/UmSenhorQualquer/orquestra.git
+  - git+https://github.com/UmSenhorQualquer/django-jfu.git
+  - sphinx
+  - sphinx-autobuild
+  - sphinx-rtd-theme
+  - sphinx-js
+  - recommonmark
+  - python-dateutil
+  - django
