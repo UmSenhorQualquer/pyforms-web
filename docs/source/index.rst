@@ -6,17 +6,6 @@
 Pyforms Web documentation!
 ===========================
 
-.. raw:: html
-
-   <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-   <input type="hidden" name="cmd" value="_s-xclick">
-   <input type="hidden" name="hosted_button_id" value="Q8UKJBTBG79ZS">
-   <input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online!">
-   <img alt="" border="0" src="https://www.paypalobjects.com/pt_PT/i/scr/pixel.gif" width="1" height="1">
-   </form>
-
-|
-
 **Pyforms Web** is Python 3 framework to create single-page web applications.
 
 The framework aims the boost the developement productivity by providing an API in Python that generates HTML Forms amd manages all the client\server forms communications.
