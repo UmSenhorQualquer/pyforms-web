@@ -6,10 +6,6 @@
    :synopsis: Pyforms Controls
 
 
-Enumerates Bpod board supported operations.
-
-
-
 ControlBase
 ----------------------------
 
@@ -275,6 +271,20 @@ ControlLabel
     :undoc-members:
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
+
+
+----------------------------
+
+ControlSimpleLabel
+----------------------------
+
+.. autoclass:: pyforms_web.controls.control_simplelabel.ControlSimpleLabel
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
+
 
 ----------------------------
 

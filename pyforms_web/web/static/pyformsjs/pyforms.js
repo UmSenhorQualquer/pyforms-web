@@ -78,6 +78,7 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/ControlBoundingSlider.js");
         $.getScript("/static/pyformsjs/ControlVisVis.js");
         $.getScript("/static/pyformsjs/ControlLabel.js");
+        $.getScript("/static/pyformsjs/ControlSimpleLabel.js");
         $.getScript("/static/pyformsjs/ControlTimeout.js");
         $.getScript("/static/pyformsjs/ControlEmptyWidget.js");
         $.getScript("/static/pyformsjs/ControlMenu.js");

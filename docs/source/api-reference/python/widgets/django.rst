@@ -3,8 +3,6 @@
 ***************************
 
 
-Enumerates Bpod board supported operations.
-
 
 ModelAdminWidget
 ----------------------------
