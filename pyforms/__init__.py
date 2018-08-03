@@ -3,7 +3,7 @@
 
 __author__ 		= "Ricardo Ribeiro"
 __credits__ 	= ["Ricardo Ribeiro"]
-__license__ 	= "MIT"
+__license__ 	= 'GNU GPLv3'
 __version__ 	= '4.0'
 __maintainer__ 	= ["Ricardo Ribeiro", "Carlos Mão de Ferro"]
 __email__ 		= ["ricardojvr@gmail.com", "cajomferro@gmail.com"]
