@@ -45,20 +45,6 @@ Orquestra implements a layout environment to accommodate Pyforms applications. T
 
 |
 
-Requirements
-=============
-
-- Python 3
-- Django (2.0+)
-- simplejson
-- sorl-thumbnail
-- dill
-- filelock
-- Pillow
-- python-dateutil
-- confapp
-
-
 
 Developer
 =============

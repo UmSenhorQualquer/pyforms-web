@@ -9,13 +9,7 @@ On this page it is explained how to configure your environment and your django a
 Configure the environment
 ==========================
 
-* First clone the `Pyforms <https://bitbucket.org/UmSenhorQualquer/pyforms-web/>`_ git project at bitbucket.
-
-.. code:: bash
-
-    git clone https://bitbucket.org/UmSenhorQualquer/pyforms-web.git
-
-* Then open the terminal and install the **requirements.txt** in the pyforms-web directory to configure your environment.
+* Install Pyforms using **pip**.
 
 .. code:: bash
 
@@ -46,13 +40,6 @@ Edit the django project **settings.py** file to include the next configurations.
     MIDDLEWARE = [
         ...
         'pyforms_web.web.middleware.PyFormsMiddleware'
-    ]
-
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "static", 'semantic-ui'),
-        os.path.join(BASE_DIR, "static", 'jquery-ui'),
-        os.path.join(BASE_DIR, "static", 'js'),
-        os.path.join(BASE_DIR, "static", 'css'),
     ]
 
 
