@@ -124,10 +124,5 @@ class ComputerVisionAlgorithm(BaseWidget):
 
 Result of the application running in a web browser:
 
-```bash
-
-$> python test.py terminal_mode --help
-```
-
 
 ![ScreenShot](docs/source/_static/imgs/web-example-computervisionalgorithm.png)
