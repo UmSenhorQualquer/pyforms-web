@@ -62,10 +62,21 @@ from pyforms.controls   import ControlSlider
 from pyforms.controls   import ControlPlayer
 from pyforms.controls   import ControlButton
 
+from confapp import conf
+
 class ComputerVisionAlgorithm(BaseWidget):
+
+    UID = 'cva'
+    TITLE = 'Computer vision algorithm'
+
+    LAYOUT_POSITION = conf.ORQUESTRA_HOME
+
+    ORQUESTRA_MENU = 'left'
+    ORQUESTRA_MENU_ORDER = 10
 
     def __init__(self, *args, **kwargs):
         super().__init__('Computer vision algorithm example')
+
 
         #Definition of the forms fields
         self._videofile  = ControlFile('Video')
@@ -109,11 +120,6 @@ class ComputerVisionAlgorithm(BaseWidget):
         """
         pass
 
-
-if __name__ == '__main__':
-
-    from pyforms import start_app
-    start_app(ComputerVisionAlgorithm)
 ```
 
 Result of the application running in a web browser:
@@ -124,4 +130,4 @@ $> python test.py terminal_mode --help
 ```
 
 
-![ScreenShot](docs/source/_static/imgs/web-example-computervisionalgorithm.png "Screen")
+![ScreenShot](docs/source/_static/imgs/web-example-computervisionalgorithm.png)
