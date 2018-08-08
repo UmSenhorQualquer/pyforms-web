@@ -4,9 +4,9 @@ If you find this project useful, please, do not forget to ![star it](https://raw
 
 # Pyforms Web
 
-Pyforms **Web** is a software layer, part of the Pyforms main library. This layer implements the execution of a Pyforms application in the terminal.
+Pyforms **Web** is a software layer, part of the Pyforms main library. This layer implements the execution of a Pyforms application in a web browser.
 
-![Diagram](docs/source/_static/imgs/pyforms-layers-terminal.png "Screen")
+![Diagram](docs/source/_static/imgs/pyforms-layers-web.png "Screen")
 
 
 
@@ -37,7 +37,7 @@ Pyforms is a Python 3 cross-enviroment framework that aims the boost the develop
 
 ## Installation
 
-Check the documentation at [pyforms.readthedocs.org](http://pyforms.readthedocs.org) and [pyforms-terminal.readthedocs.org](http://pyforms-terminal.readthedocs.org)
+Check the documentation at [pyforms.readthedocs.org](http://pyforms.readthedocs.org) and [pyforms-web.readthedocs.org](http://pyforms-web.readthedocs.org)
 
 ## Rationale behind the framework
 
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     start_app(ComputerVisionAlgorithm)
 ```
 
-Result of runnning the application in the terminal:
+Result of the application running in a web browser:
 
 ```bash
 
