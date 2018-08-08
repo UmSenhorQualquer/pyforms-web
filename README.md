@@ -124,4 +124,4 @@ $> python test.py terminal_mode --help
 ```
 
 
-![ScreenShot](docs/source/_static/imgs/terminal-example-computervisionalgorithm.png "Screen")
+![ScreenShot](docs/source/_static/imgs/web-example-computervisionalgorithm.png "Screen")
