@@ -68,8 +68,6 @@ setup(
         
         'Programming Language :: Python :: 3',
 
-        'Environment :: MacOS X',
-        'Environment :: Win32 (MS Windows)',
         'Environment :: Web Environment',
 
         'Intended Audience :: Developers',
