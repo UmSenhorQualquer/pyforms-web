@@ -19,8 +19,6 @@ Pyforms is a Python 3 cross-enviroment framework that aims the boost the develop
 
 [More @ ![Diagram](https://raw.githubusercontent.com/UmSenhorQualquer/pyforms-web/v4/docs/source/_static/imgs/rtd.png)](https://pyforms.readthedocs.io)
 
-
-
 ## Advantages
 * With a minimal API, interfaces are easily defined using a short Python code.
 * Avoid the constant switching between the GUI designers and the Python IDE.
@@ -29,11 +27,6 @@ Pyforms is a Python 3 cross-enviroment framework that aims the boost the develop
 * It makes the applications maintenance easier.
 * Turn the prototyping much easier and fast.
 * Due to its simplicity it has a low learning curve.
-
-## Examples of applications developed in Pyforms
-* [Python Video Annotator](https://github.com/UmSenhorQualquer/pythonVideoAnnotator)
-* [3D tracking analyser](https://github.com/UmSenhorQualquer/3D-tracking-analyser)
-* [PyBpod](http://pybpod.readthedocs.io)
 
 ## Installation
 
