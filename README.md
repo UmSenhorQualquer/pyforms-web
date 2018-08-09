@@ -6,7 +6,7 @@ If you find this project useful, please, do not forget to ![star it](https://raw
 
 Pyforms **Web** is a software layer, part of the Pyforms main library. This layer implements the execution of a Pyforms application in a web browser.
 
-![Diagram](docs/source/_static/imgs/pyforms-layers-web.png "Screen")
+![Diagram](https://raw.githubusercontent.com/UmSenhorQualquer/pyforms-terminal/v4/docs/source/_static/imgs/pyforms-layers-terminal.png "Screen")
 
 
 
@@ -17,7 +17,7 @@ Pyforms **Web** is a software layer, part of the Pyforms main library. This laye
 
 Pyforms is a Python 3 cross-enviroment framework that aims the boost the developement productivity. The library provides an API in Python to develop applications that can be executed in Windows GUI mode, Web mode, or in Terminal mode.
 
-[More @ ![Diagram](docs/source/_static/imgs/rtd.png)](https://pyforms.readthedocs.io)
+[More @ ![Diagram](https://raw.githubusercontent.com/UmSenhorQualquer/pyforms-terminal/v4/docs/source/_static/imgs/rtd.png)](https://pyforms.readthedocs.io)
 
 
 
@@ -126,4 +126,4 @@ class ComputerVisionAlgorithm(BaseWidget):
 Result of the application running in a web browser:
 
 
-![ScreenShot](docs/source/_static/imgs/web-example-computervisionalgorithm.png)
+![ScreenShot](https://raw.githubusercontent.com/UmSenhorQualquer/pyforms-web/v4/docs/source/_static/imgs/web-example-computervisionalgorithm.png)
