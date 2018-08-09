@@ -2,7 +2,19 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
-import os, fnmatch
+import os, fnmatch, re
+
+version = ''
+license = ''
+with open('pyforms_web/__init__.py', 'r') as fd:
+    version = re.search(
+        r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', fd.read(), re.MULTILINE).group(1)
+
+    license = re.search(
+        r'^__license__\s*=\s*[\'"]([^\'"]*)[\'"]', fd.read(), re.MULTILINE).group(1)
+
+if not version: raise RuntimeError('Cannot find version information')
+if not license: raise RuntimeError('Cannot find license information')
 
 
 def find_files(package_name,directory, pattern):
@@ -14,20 +26,18 @@ def find_files(package_name,directory, pattern):
 
 
 setup(
-    name                = 'PyForms-Web',
-    version             = '4',
-    description         = """Pyforms Web is Python 3 framework to create single-page web applications.""",
+    name                 = 'PyForms-Web',
+    version              = version,
+    description          = """Pyforms Web is Python 3 framework to create single-page web applications.""",
     author               = 'Ricardo Ribeiro',
     author_email         = 'ricardojvr@gmail.com',
-    license              = 'GNU GPLv3',
-    url                  = 'https://github.com/UmSenhorQualquer/pyforms',
+    license              = license,
+    url                  = 'https://github.com/UmSenhorQualquer/pyforms-web',
     include_package_data = True,
     packages=find_packages(),
     package_data={
         'pyforms_web':
-        list(
-            find_files('pyforms_web','web/static/', '*.*')
-        )
+        list( find_files('pyforms_web','web/static/', '*.*') )
     },
     install_requires=[
         'django-jfu-pyforms',
