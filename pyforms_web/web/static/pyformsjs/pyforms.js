@@ -82,6 +82,7 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/ControlTimeout.js");
         $.getScript("/static/pyformsjs/ControlEmptyWidget.js");
         $.getScript("/static/pyformsjs/ControlMenu.js");
+        $.getScript("/static/pyformsjs/ControlTree.js");
         $.getScript("/static/pyformsjs/ControlWorkflow.js");
         $.getScript("/static/pyformsjs/BaseWidget.js");
 

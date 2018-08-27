@@ -32,7 +32,7 @@ from .controls.control_piechart               import ControlPieChart
 from .controls.control_progress               import ControlProgress
 from .controls.control_querycards             import ControlQueryCards
 from .controls.control_querycombo             import ControlQueryCombo
-from .controls.control_queryitem             import ControlQueryItem
+from .controls.control_queryitem              import ControlQueryItem
 from .controls.control_querylist              import ControlQueryList
 from .controls.control_slider                 import ControlSlider
 from .controls.control_template               import ControlTemplate
@@ -42,6 +42,7 @@ from .controls.control_timeout                import ControlTimeout
 from .controls.control_visvis                 import ControlVisVis
 from .controls.control_workflow               import ControlWorkflow 
 from .controls.control_img                    import ControlImg
+from .controls.control_tree                   import ControlTree
 
 try:
     from .controls.control_image              import ControlImage

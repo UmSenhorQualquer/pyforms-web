@@ -1,11 +1,11 @@
 .ControlBreadcrumb{
-	margin: 0 0 2em !important;
+    margin: 0 0 2em !important;
 }
 
 
 
 .ControlTimeout .progress{
-	margin-top: 20px !important;
+    margin-top: 20px !important;
     margin-bottom: 0px !important;
 }
 
@@ -15,77 +15,77 @@
 
 
 .ControlEmptyWidget{
-	
+    
 }
 
 
 .ControlSlider input[type='range']{
-	min-width: 300px;
+    min-width: 300px;
 }
 
 .ControlPlayer .max-width-700{
-	max-width: 700px !important;
+    max-width: 700px !important;
 }
 
 
 .row .viewer, .viewer{
-	width: 100%;
-	height: 400px;
+    width: 100%;
+    height: 400px;
 }
 
 .columns .viewer{
-	width: 480px;
-	height: 400px;
+    width: 480px;
+    height: 400px;
 }
 
 .columns .control, .columns .rows{
-	display: inline-block;
+    display: inline-block;
 }
 
 .rows .control{
-	display: table;
+    display: table;
 }
 
 .verticalSplitter,   .horizontalSplitter {
-	height: 200px;
-	width: 500px;
-	border: 5px solid #aaa;
+    height: 200px;
+    width: 500px;
+    border: 5px solid #aaa;
 }
 
 .verticalSplitter div,   .horizontalSplitter div{
-	overflow: auto;
+    overflow: auto;
 }
 
 .vsplitbar {
-	width: 5px;
-	background: #aaa;
+    width: 5px;
+    background: #aaa;
 }
 
 .hsplitbar {
-	height: 5px;
-	background: #aaa;
+    height: 5px;
+    background: #aaa;
 }
 
 .filename{
-	min-width: 201px;
-	width: 201px;
+    min-width: 201px;
+    width: 201px;
 }
 
 .textfield{
-	min-width: 231px;
+    min-width: 231px;
 }
 
 
 .noTitleStuff .ui-dialog-titlebar {display:none}
 
 h3.subtitle {
-	color: #333;
-	padding: 10px;
-	padding-right: 0px;
-	max-width: 790px;
-	text-transform: uppercase;
-	text-decoration: underline;
-	letter-spacing: 2px;
+    color: #333;
+    padding: 10px;
+    padding-right: 0px;
+    max-width: 790px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    letter-spacing: 2px;
 }
 
 
@@ -93,67 +93,131 @@ h3.subtitle {
 
 
 #schedulejob-window-bottom{
-	float: right;
-	margin-right: 30px;
-	margin-top: 15px;
-	margin-bottom: 15px;
+    float: right;
+    margin-right: 30px;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 
 
 .choose-file-button{
-	padding-left: 5px;
-	position: relative;
-	top: 11px;
+    padding-left: 5px;
+    position: relative;
+    top: 11px;
 }
 
 .ControlWorkflow .flowchart-container{
-	width:  100%;
-	height: 100%;
+    width:  100%;
+    height: 100%;
 }
 
 .field-empty-space{
-	height: 30px;
+    height: 30px;
 }
 
 .ControlQueryList td, .ControlQueryList th{
-	cursor: pointer !important;
+    cursor: pointer !important;
 }
 
 .ControlList td, .ControlList th{
-	cursor: pointer !important;
+    cursor: pointer !important;
 }
 
 [action]{
-	cursor: pointer !important;
+    cursor: pointer !important;
 }
 
 .pyforms-segment > .field{
-	margin-bottom: 14px !important;
+    margin-bottom: 14px !important;
 }
 
 .pyforms-segment > .field:last-child{
-	margin-bottom: auto !important;
+    margin-bottom: auto !important;
 }
 
 .pyforms-segment > .fields:last-child{
-	margin-bottom: 0px;
+    margin-bottom: 0px;
 }
 
 
 
 .pyforms-segment > .ControlEmptyWidget > .form > .field {
-	margin-bottom: 14px !important;
+    margin-bottom: 14px !important;
 }
 
 .pyforms-segment > .ControlEmptyWidget > .form .field:last-child {
-	margin-bottom: 0px !important;
+    margin-bottom: 0px !important;
 }
 
 .pyforms-segment > .ControlEmptyWidget > .form .fields:last-child {
-	margin-bottom: 0px !important;
+    margin-bottom: 0px !important;
 }
 
 .pyforms-segment > div > .form {
-	margin-bottom: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+
+
+
+
+
+.ControlTree ul.tree{
+    margin-left: 0px;
+    padding-left: 10px;
+}
+
+.ControlTree ul.tree ul {
+    margin-left: 0px;
+    padding-left: 15px;
+}
+
+.ControlTree ul.tree li {
+    list-style: none;
+    margin: 0;
+    padding: 0 7px;
+    line-height: 20px;
+    border-left:1px solid rgb(180,180,180);
+}
+
+.ControlTree ul.tree li label:hover {
+    background-color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-radius: 3px;
+    cursor: pointer; 
+}
+
+.ControlTree ul.tree li label.selected {
+    background-color: #999;
+    color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-radius: 3px;
+    cursor: pointer; 
+}
+
+.ControlTree ul.tree li:last-child {
+    border-left:none;
+}
+
+.ControlTree ul.tree li:before {
+    position:relative;
+    top:-0.3em;
+    height:1em;
+    width:12px;
+    color:white;
+    border-bottom:1px solid rgb(180,180,180);
+    content:"";
+    display:inline-block;
+    left:-7px;
+}
+
+.ControlTree ul.tree li:last-child:before {
+    border-left:1px solid rgb(180,180,180);   
 }
