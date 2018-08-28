@@ -33,16 +33,22 @@ class ControlVisVis extends ControlBase{
 				location: 'e'
 			},
 			axes:{
-				xaxis:{
+				/*xaxis:{
 					renderer: 		$.jqplot.DateAxisRenderer, 
 					labelRenderer: 	$.jqplot.CanvasAxisLabelRenderer,
 					tickRenderer: 	$.jqplot.CanvasAxisTickRenderer,
 					tickOptions: {angle: -45}
-				}
+				}*/
 			},
 			cursor:{
+				style: 'pointer',
 				show: true, 
-				zoom: true
+				zoom: true,
+          		tooltipOffset: 10,
+				showTooltip: true,
+				followMouse: true,
+				showTooltipDataPosition: true,
+				showVerticalLine: true
 			}
 		});
 

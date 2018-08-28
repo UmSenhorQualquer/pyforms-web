@@ -23,7 +23,7 @@ class ControlPlayerJs extends ControlBase{
     init_control(){
 
         var html = "<div id='"+this.place_id()+"' class='field control ControlPlayer' >";
-
+        html += `
         <video id="example_video_1" class="video-js vjs-default-skin" controls preload="auto" width="640" height="264"
             poster="//vjs.zencdn.net/v/oceans.png"
             data-setup="{}">
@@ -35,7 +35,7 @@ class ControlPlayerJs extends ControlBase{
             To view this video please enable JavaScript, and consider upgrading to a web browser that
             <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
           </p>
-        </video>
+        </video>`
         html += "<div class='ui card "+this.properties.css+"' id='card"+this.control_id()+"' >";
         html += "<div class='image'>";
         html += "<img style='width:100%;' class='image' src='data:image/png;base64,"+this.properties.base64content+"' id='display"+this.control_id()+"' />";

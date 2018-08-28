@@ -35,6 +35,12 @@ class PyformsManager{
         this.applications = [];
         $.ajaxSetup({async: false, cache: true});
 
+        //$.getStylesheet("/static/video-js.css");
+        //$.getScript("/static/video.js");
+        //$.getScript("/static/videojs.framebyframe.min.js");
+        
+        
+
         $.getStylesheet("/static/pyforms.css");
         $.getScript("/static/jquery.json-2.4.min.js");
         $.getScript("/static/base64.js");
@@ -74,7 +80,7 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/ControlQueryCards.js");
         $.getScript("/static/pyformsjs/ControlPassword.js");
         $.getScript("/static/pyformsjs/ControlPlayer.js");
-        $.getScript("/static/pyformsjs/ControlPlayerJs.js");
+        //$.getScript("/static/pyformsjs/ControlPlayerJs.js");
         $.getScript("/static/pyformsjs/ControlProgress.js");
         $.getScript("/static/pyformsjs/ControlBoundingSlider.js");
         $.getScript("/static/pyformsjs/ControlVisVis.js");
@@ -88,7 +94,6 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/BaseWidget.js");
 
 
-        $.getScript("/static/videojs.framebyframe.min.js");
         $.getScript("/static/jquery.flowchart/jquery.panzoom.min.js");
         $.getScript("/static/jquery.flowchart/jquery.mousewheel.min.js");
         $.getScript("/static/jquery.flowchart/jquery.flowchart.min.js");
@@ -115,6 +120,8 @@ class PyformsManager{
         $.getScript("/static/filer/js/jquery.filer.js");
         $.getStylesheet("/static/filer/css/jquery.filer.css");
         $.getStylesheet("/static/filer/css/jquery.filer-dragdropbox-theme.css");
+
+
 
         $.ajaxSetup({async: true, cache: false});
 
