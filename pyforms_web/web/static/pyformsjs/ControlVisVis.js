@@ -4,6 +4,8 @@ class ControlVisVis extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
+		this.update_it = false;
+
 		var html =  "<div id='"+this.place_id()+"' class='field control ControlVisVis' >";
 		html += 	"<div id='chart-container-"+this.control_id()+"' title='"+this.properties.help+"'   >";
 		html += 	"<div id='"+this.control_id()+"' ></div>";
@@ -46,7 +48,15 @@ class ControlVisVis extends ControlBase{
 
 		this.chart = chart;
 
-		
+		var self = this;
+		this.jquery().bind('jqplotDataClick',
+            function (ev, seriesIndex, pointIndex, data) {   
+            	self.properties.selected_series = seriesIndex;
+            	self.properties.selected_data   = data;
+            	self.update_it = true;
+            	self.basewidget.fire_event( self.name, 'remote_data_selected_event' );
+            }
+        );
 	};
 
 
@@ -71,6 +81,10 @@ class ControlVisVis extends ControlBase{
 	get_value(){ 
 		return this.properties.value; 
 	};
+
+	update_server(){
+        return this.get_value()!=this.properties.value || this.update_it;
+    }
 
 	////////////////////////////////////////////////////////////////////////////////
 

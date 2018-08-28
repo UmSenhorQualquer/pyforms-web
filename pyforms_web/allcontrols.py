@@ -44,6 +44,9 @@ from .controls.control_workflow               import ControlWorkflow
 from .controls.control_img                    import ControlImg
 from .controls.control_tree                   import ControlTree
 
+from .controls.control_playerjs               import ControlPlayerJs
+
+
 try:
     from .controls.control_image              import ControlImage
 except:
