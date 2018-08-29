@@ -221,3 +221,88 @@ h3.subtitle {
 .ControlTree ul.tree li:last-child:before {
     border-left:1px solid rgb(180,180,180);   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.ControlPlayerJs .canvas, .ControlPlayerJs .video{
+    height: 100%;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: #000;
+    z-index: 5;
+    cursor: pointer;
+}
+
+.ControlPlayerJs .video-graph {
+    min-height: 200px;
+    width: 100%;
+    background-color: #FFF;
+    
+}
+
+.ControlPlayerJs .video-timeline {
+    background: rgba(255, 255, 255, 0.4);
+    bottom: 12px;
+    cursor: pointer;
+    height: 12px;
+    left: 0;
+    opacity: 1;
+    position: relative;
+    transition: all 0.2s;
+    width: 100%;
+    z-index: 12;
+}
+
+.ControlPlayerJs .video-timeline-passed {
+    background: #E81D31;
+    height: 100%;
+    width: 0;
+}
+@media screen and (min-width: 768px) {
+    .ControlPlayerJs .video-timeline-passed {
+        background: rgba(255, 255, 255, 0.7);
+    }
+}
+
+
+.ControlPlayerJs .video-timeline-loaded {
+    background: #333;
+    opacity: 0.7;
+    position: relative;
+    bottom: 5px;
+    height: 5px;
+    width: 0;
+}
+
+.ControlPlayerJs:hover .video-timeline {
+    height: 12px;
+    opacity: 0.85;
+}
+
+.ControlPlayerJs:hover .video-timeline-passed {
+    background: #E81D31;
+}
+
+.ControlPlayerJs:hover .video-event {
+    bottom: 12px;
+}
+
+.ControlPlayerJs:hover .video-timeline-event {
+    background: #790c17;
+    opacity: 0.8;
+}

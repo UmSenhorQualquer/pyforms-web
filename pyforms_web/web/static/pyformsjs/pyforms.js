@@ -80,7 +80,7 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/ControlQueryCards.js");
         $.getScript("/static/pyformsjs/ControlPassword.js");
         $.getScript("/static/pyformsjs/ControlPlayer.js");
-        //$.getScript("/static/pyformsjs/ControlPlayerJs.js");
+        $.getScript("/static/pyformsjs/ControlPlayerJs.js");
         $.getScript("/static/pyformsjs/ControlProgress.js");
         $.getScript("/static/pyformsjs/ControlBoundingSlider.js");
         $.getScript("/static/pyformsjs/ControlVisVis.js");
@@ -94,6 +94,7 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/BaseWidget.js");
 
 
+        $.getScript("/static/canvas-video-player.js");
         $.getScript("/static/jquery.flowchart/jquery.panzoom.min.js");
         $.getScript("/static/jquery.flowchart/jquery.mousewheel.min.js");
         $.getScript("/static/jquery.flowchart/jquery.flowchart.min.js");
