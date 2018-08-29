@@ -26,13 +26,15 @@ var CanvasVideoPlayer = function(options) {
     }
 
     this.player = document.querySelector(this.options.playerSelector);
-    this.video = document.querySelector(this.options.videoSelector);
+    this.video  = document.querySelector(this.options.videoSelector);
     this.canvas = document.querySelector(this.options.canvasSelector);
     this.timeline = document.querySelector(this.options.timelineSelector);
-    this.timelinePassed = document.querySelector(this.options.timelineSelector + '> div.video-timeline-passed');
+    this.timelinePassed  = document.querySelector(this.options.timelineSelector + '> div.video-timeline-passed');
     this.timeline_loaded = document.querySelector(this.options.timelineSelector + '> div.video-timeline-loaded');
     this.timeline_loaded = document.querySelector(this.options.timelineSelector + '> div.video-timeline-loaded');
-    this.graph = document.querySelector(this.options.playerSelector + '> canvas.video-graph');
+    
+    this.graph = new TimelineWidget({selector: this.options.playerSelector + '> div.video-graph' }, this);
+
 
 
     if (!this.options.videoSelector || !this.video) {
@@ -60,10 +62,6 @@ var CanvasVideoPlayer = function(options) {
         return;
     }
 
-    if (this.options.player && !this.graph) {
-        console.error('Element for the "graph" not found');
-        return;
-    }
 
     if (this.options.audio) {
         if (typeof(this.options.audio) === 'string'){
@@ -90,11 +88,8 @@ var CanvasVideoPlayer = function(options) {
         }
     }
 
-    console.log(this.graph);
     // Canvas context
     this.ctx = this.canvas.getContext('2d');
-    this.graphctx = this.graph.getContext('2d');
-
     this.playing = false;
 
     this.resizeTimeoutReference = false;
@@ -104,11 +99,14 @@ var CanvasVideoPlayer = function(options) {
 
     this.init();
     this.bind();
-    this.draw_grid();
+    this.graph.init();
 };
 
 CanvasVideoPlayer.prototype.init = function() {
     this.video.load();
+    
+    this.canvas.style.width  = this.options.video_width;
+    this.canvas.style.height = this.options.video_height;
 
     this.setCanvasSize();
 
@@ -117,21 +115,6 @@ CanvasVideoPlayer.prototype.init = function() {
     }    
 };
 
-CanvasVideoPlayer.prototype.draw_grid = function() {
-    var width = this.graph.clientWidth;
-    var height = this.graph.clientHeight;
-    var step  = 50;
-    console.log(width, height);
-    this.graphctx.setLineDash([5, 15]);
-    this.graphctx.lineWidth = 1;
-    for(var x=0; x<width; x+=step){
-        this.graphctx.beginPath();
-        this.graphctx.moveTo(x,0);
-        this.graphctx.lineTo(x,height);
-        this.graphctx.stroke();
-    }
-    this.graphctx.setLineDash([]);
-};
 
 // Used most of the jQuery code for the .offset() method
 CanvasVideoPlayer.prototype.getOffset = function(elem) {
@@ -160,6 +143,14 @@ CanvasVideoPlayer.prototype.jumpTo = function(percentage) {
 
     if (this.options.audio) {
         this.audio.currentTime = this.audio.duration * percentage;
+    }
+};
+
+CanvasVideoPlayer.prototype.jumpToFrame = function(frame) {
+    this.video.currentTime = frame / this.options.framesPerSecond;
+
+    if (this.options.audio) {
+        this.audio.currentTime = frame / this.options.framesPerSecond;
     }
 };
 
@@ -267,13 +258,15 @@ CanvasVideoPlayer.prototype.updateProgress = function() {
 CanvasVideoPlayer.prototype.updateTimeline = function() {
     var percentage = (this.video.currentTime * 100 / this.video.duration).toFixed(2);
     this.timelinePassed.style.width = percentage + '%';
+
+    this.graph.set_position( this.frame_index() );
 };
 
 CanvasVideoPlayer.prototype.setCanvasSize = function() {
-    this.width = this.canvas.clientWidth;
+    this.width  = this.canvas.clientWidth;
     this.height = this.canvas.clientHeight;
 
-    this.canvas.setAttribute('width', this.width);
+    this.canvas.setAttribute('width',  this.width);
     this.canvas.setAttribute('height', this.height);
 };
 

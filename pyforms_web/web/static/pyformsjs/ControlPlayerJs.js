@@ -12,7 +12,7 @@ class ControlPlayerJs extends ControlBase{
                     <div class="video-timeline-passed"></div>
                     <div class="video-timeline-loaded"></div>
                 </div>
-                <canvas class='video-graph' ></canvas>
+                <div class='video-graph'></div>
             <div>`;
 
         this.jquery_place().replaceWith(html);

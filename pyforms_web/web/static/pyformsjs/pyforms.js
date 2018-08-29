@@ -94,6 +94,10 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/BaseWidget.js");
 
 
+        $.getScript("/static/timeline/timeline.js");
+        $.getScript("/static/timeline/track.js");
+        $.getScript("/static/timeline/event.js");
+        $.getScript("/static/timeline/graph.js");
         $.getScript("/static/canvas-video-player.js");
         $.getScript("/static/jquery.flowchart/jquery.panzoom.min.js");
         $.getScript("/static/jquery.flowchart/jquery.mousewheel.min.js");

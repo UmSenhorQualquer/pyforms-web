@@ -12,6 +12,7 @@ class ControlPlayerJs(ControlBase):
     def __init__(self, *args, **kwargs):
         kwargs['css']     = kwargs.get('css', 'fluid')
         self.draws_url    = kwargs.get('draws_url', None)
+        self.video_fps    = kwargs.get('fps', None)
         self.video_width  = kwargs.get('width', None)
         self.video_height = kwargs.get('height', None)
         ControlBase.__init__(self, *args, **kwargs)
@@ -29,3 +30,5 @@ class ControlPlayerJs(ControlBase):
             'draws_url':    self.draws_url
         })
         return data
+
+

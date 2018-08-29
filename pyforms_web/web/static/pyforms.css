@@ -249,10 +249,9 @@ h3.subtitle {
 }
 
 .ControlPlayerJs .video-graph {
-    min-height: 200px;
-    width: 100%;
+    min-height: 100px;
     background-color: #FFF;
-    
+    width: 100%;
 }
 
 .ControlPlayerJs .video-timeline {
