@@ -10,8 +10,11 @@ from io import BytesIO
 class ControlPlayerJs(ControlBase):
 
     def __init__(self, *args, **kwargs):
-        kwargs['css']     = kwargs.get('css', 'fluid')
-        self.draws_url    = kwargs.get('draws_url', None)
+        kwargs['css'] = kwargs.get('css', 'fluid')
+        
+        self._load_dataset = None
+        self.data_url = kwargs.get('data_url', None)
+
         self.video_fps    = kwargs.get('fps', None)
         self.video_width  = kwargs.get('width', None)
         self.video_height = kwargs.get('height', None)
@@ -21,14 +24,20 @@ class ControlPlayerJs(ControlBase):
     def init_form(self): 
         return "new ControlPlayerJs('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
+    def load_dataset(name):
+        self._load_dataset = name
+
 
     def serialize(self):
         data = super().serialize()
         data.update({
             'video_width':  self.video_width,
             'video_height': self.video_height,
-            'draws_url':    self.draws_url
+            'data_url':     self.data_url,
         })
+        if self._load_dataset:
+            data.update({ 'load_dataset ': self._load_dataset })
+            self._load_dataset = None
         return data
 
 

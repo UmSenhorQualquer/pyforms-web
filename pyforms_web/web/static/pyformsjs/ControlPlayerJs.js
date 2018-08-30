@@ -1,28 +1,13 @@
 class ControlPlayerJs extends ControlBase{
     
     init_control(){
-        this.set_value(this.properties.value);
-    };
-
-    ////////////////////////////////////////////////////////////////////////////////
-
-    get_value(){ 
-        this.properties.video_index = $( "#timeline"+this.control_id()).val();
-        return this.properties.value; 
-    };
-
-    ////////////////////////////////////////////////////////////////////////////////
-
-    set_value(value){
-        if( this.canvasVideo ) this.canvasVideo.unbind();
-
         var html = `
             <div id='`+this.place_id()+`' class='field control ControlPlayerJs' >
                 <video class="video" id="`+this.control_id()+`" muted >
                     <source src="`+this.properties.value+`">
                     Your browser does not support HTML5 video.
                 </video>
-                <canvas class="canvas" id="canvas-`+this.control_id()+`" ></canvas>
+                <div style='background-color:black' ><canvas class="canvas" id="canvas-`+this.control_id()+`" ></canvas></div>
                 <div class="video-timeline" id="timeline-`+this.control_id()+`" >
                     <div class="video-timeline-passed"></div>
                     <div class="video-timeline-loaded"></div>
@@ -33,6 +18,7 @@ class ControlPlayerJs extends ControlBase{
         this.jquery_place().replaceWith(html);
 
         var self = this;
+        
         $(document).ready(function(){
             self.canvasVideo = new CanvasVideoPlayer({
                 playerSelector:     '#'+self.place_id(),
@@ -45,6 +31,19 @@ class ControlPlayerJs extends ControlBase{
                 draws_url: self.properties.draws_url
             });
         });
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    get_value(){ 
+        this.properties.video_index = $( "#timeline"+this.control_id()).val();
+        return this.properties.value; 
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    set_value(value){
+        this.canvasVideo.open(value);
     };
 
     ////////////////////////////////////////////////////////////////////////////////

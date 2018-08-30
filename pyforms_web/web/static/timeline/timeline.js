@@ -57,7 +57,7 @@ class TimelineWidget{
         this.canvas.setAttribute('height', this.height);
 
         
-        var track = this.add_track('track 1');
+        /*var track = this.add_track('track 1');
         track.add_event('Event x', 20, 40);
         track.add_event('Event x', 200, 300);
         track.add_event('Event x', 50, 70);
@@ -67,12 +67,14 @@ class TimelineWidget{
         // draw graph
         var values = Array.from({length: 1000}, () => Math.floor(Math.random() * 70));
 
-        var graph = this.add_graph('Test', values, '#4c4');
+        var graph = this.add_graph('Test', values, '#4c4');*/
 
         this.draw();
         
         this.bind();
     }
+
+
 
     bind(){
         var self = this;

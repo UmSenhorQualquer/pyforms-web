@@ -3,7 +3,6 @@
 
 class CanvasVideoPlayer{
 
-
     constructor(options){
 
         this.options = {
@@ -15,8 +14,7 @@ class CanvasVideoPlayer{
             resetOnLastFrame: false,
             loop: false,
             video_width: null,
-            video_height: null,
-            draws_url: null
+            video_height: null
         };
 
         for (var i in options) this.options[i] = options[i];
@@ -94,6 +92,11 @@ class CanvasVideoPlayer{
 
         this.bind();
         this.graph.init();
+    }
+
+    open(video_url){
+        this.video_source.src = video_url;
+        this.init()
     }
     
   
@@ -199,13 +202,13 @@ class CanvasVideoPlayer{
 
     unbind(){
 
-        if(this.canvasClickHandler) this.canvas.removeEventListener('click', this.canvasClickHandler);
+        if(this.canvasClickHandler)       this.canvas.removeEventListener('click', this.canvasClickHandler);
         if(this.videoLoadedUpdateHandler) this.video.removeEventListener('progress', this.videoLoadedUpdateHandler);
-        if(this.videoTimeUpdateHandler) this.video.removeEventListener('timeupdate', this.videoTimeUpdateHandler);
-        if(this.videoCanPlayHandler) this.video.removeEventListener('canplay', this.videoCanPlayHandler);
+        if(this.videoTimeUpdateHandler)   this.video.removeEventListener('timeupdate', this.videoTimeUpdateHandler);
+        if(this.videoCanPlayHandler)      this.video.removeEventListener('canplay', this.videoCanPlayHandler);
         if(this.videoDurationChangeHandler) this.video.removeEventListener('durationchange', this.videoDurationChangeHandler);
-        if(this.timelineClickHandler) this.timeline.removeEventListener('click', this.timelineClickHandler);
-        if(this.windowResizeHandler) window.removeEventListener('resize', this.windowResizeHandler);
+        if(this.timelineClickHandler)     this.timeline.removeEventListener('click', this.timelineClickHandler);
+        if(this.windowResizeHandler)      window.removeEventListener('resize', this.windowResizeHandler);
 
     };
 

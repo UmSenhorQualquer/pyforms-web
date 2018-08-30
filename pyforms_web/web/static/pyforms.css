@@ -235,9 +235,6 @@ h3.subtitle {
 
 
 
-.ControlPlayerJs{
-    background-color: black;
-}
 
 
 .ControlPlayerJs .canvas, .ControlPlayerJs .video{
@@ -282,11 +279,6 @@ h3.subtitle {
     height: 100%;
     width: 0;
 }
-@media screen and (min-width: 768px) {
-    .ControlPlayerJs .video-timeline-passed {
-        background: rgba(255, 255, 255, 0.7);
-    }
-}
 
 
 .ControlPlayerJs .video-timeline-loaded {
@@ -300,7 +292,6 @@ h3.subtitle {
 
 .ControlPlayerJs:hover .video-timeline {
     height: 12px;
-    opacity: 0.85;
 }
 
 .ControlPlayerJs:hover .video-timeline-passed {
@@ -313,7 +304,6 @@ h3.subtitle {
 
 .ControlPlayerJs:hover .video-timeline-event {
     background: #790c17;
-    opacity: 0.8;
 }
 
 .ControlPlayerJs .timeline-progressbar div{
