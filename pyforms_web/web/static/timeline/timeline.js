@@ -18,26 +18,27 @@ class TimelineWidget{
             this.options[i] = options[i];
         }
 
+        this.timeline_length=10000;
+
         this.player = player;
 
         this.timeline = document.querySelector(this.options.selector);
-        this.canvas   = document.createElement('canvas');
-        this.timeline.appendChild(this.canvas);
         
-        this.zoom_wrapper = document.createElement('div');
-        this.zoom_wrapper.style.marginTop = '10px';
+        this.timeline.innerHTML = `
+        <canvas></canvas>
+        <div class='timeline-progressbar'><div></div></div>
+        <div class='timeline-zoombar'><i class='ui icon minus'></i><i class='ui icon plus'></i><div></div></div>
+        `
+        this.canvas       = document.querySelector(this.options.selector + '> canvas');
+        this.zoom_wrapper = document.querySelector(this.options.selector + '> .timeline-zoombar');
+        this.zoom_div     = document.querySelector(this.options.selector + '> .timeline-zoombar > div');
         
-        this.zoom_div = document.createElement('div');
-        this.zoom_div.style.backgroundColor = '#666';
-        this.zoom_div.style.height = '10px';
-
-        this.timeline.appendChild(this.zoom_wrapper);
-        this.zoom_wrapper.appendChild(this.zoom_div);
-
+        this.progress_wrapper = document.querySelector(this.options.selector + '> .timeline-progressbar');
+        this.progrees_div     = document.querySelector(this.options.selector + '> .timeline-progressbar > div');
         
         this.ctx = this.canvas.getContext('2d');
 
-        this.last_x = null;
+        this.last_x     = null;
         this.last_clip  = null;
         this.tracks     = [];
         this.graphs     = [];
@@ -57,13 +58,14 @@ class TimelineWidget{
 
         
         var track = this.add_track('track 1');
-        //track.add_event('Event x', 20, 40);
-        //track.add_event('Event x', 200, 300);
-        //track.add_event('Event x', 50, 70);
+        track.add_event('Event x', 20, 40);
+        track.add_event('Event x', 200, 300);
+        track.add_event('Event x', 50, 70);
         track.add_event('Event x', 500, 650);
+        track.add_event('Event x', 1000, 1200, 'green');
 
         // draw graph
-        var values = Array.from({length: this.width}, () => Math.floor(Math.random() * 70));
+        var values = Array.from({length: 1000}, () => Math.floor(Math.random() * 70));
 
         var graph = this.add_graph('Test', values, '#4c4');
 
@@ -80,8 +82,23 @@ class TimelineWidget{
                 self.player.jumpToFrame( self.x2frame(e.offsetX) );
         });
 
+        window.addEventListener('resize', function() {
+            self.width  = self.timeline.clientWidth;
+            self.canvas.setAttribute('width', self.width);
+            self.update_progressbar();
+            self.zoom_div.style.width = self.zoom_wrapper.clientWidth*self.zoom/4;
+            self.draw();
+        });
+
+        /*
+        this.progress_wrapper.addEventListener('click', function(e){
+            var percentage = e.offsetX / self.timeline_length;
+            var frame2jump = self.timeline_length*percentage;
+            self.set_offset( frame2jump );
+        });*/
+
         this.timeline.addEventListener('wheel', function(e){
-            self.move(-e.wheelDelta);
+            self.move(-e.deltaY);
             event.preventDefault();
         });
 
@@ -91,17 +108,36 @@ class TimelineWidget{
         });
     }
 
+    update_progressbar(){
+        var percentage = ( this.x2frame(this.width) / this.timeline_length )*100;
+        this.progrees_div.style.width = (percentage<100?percentage:100) + '%';
+    }
+
+    set_length(value){
+        this.timeline_length = value;
+        this.update_progressbar();
+    }
+
     set_zoom(percentage){
-        this.zoom_div.style.width = this.zoom_wrapper.clientWidth*percentage/4;
         this.zoom = percentage;
+        this.zoom_div.style.width = this.zoom_wrapper.clientWidth*this.zoom/4;
         this.draw();
+
+        // update progress bar
+        this.update_progressbar()
     }
 
     set_offset(offset){
         this.offset = offset;
+        var visible_frames = (this.width/this.zoom);
 
-        if(offset<0) this.offset=0;
+        if( this.x2frame(this.width) > this.timeline_length ) this.offset = this.timeline_length-(this.width/this.zoom);
+        if( this.offset<0) this.offset=0;
+        
+
         this.draw();
+        // update progress bar
+        this.update_progressbar()
     }
 
     move(delta){
@@ -223,6 +259,8 @@ class TimelineWidget{
         this.last_x    = x-5;
 
         this.draw_pointer();
+
+        
     }
 
 

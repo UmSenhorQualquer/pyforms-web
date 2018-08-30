@@ -235,7 +235,9 @@ h3.subtitle {
 
 
 
-
+.ControlPlayerJs{
+    background-color: black;
+}
 
 
 .ControlPlayerJs .canvas, .ControlPlayerJs .video{
@@ -248,6 +250,14 @@ h3.subtitle {
     cursor: pointer;
 }
 
+.ControlPlayerJs .canvas{
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
 .ControlPlayerJs .video-graph {
     min-height: 100px;
     background-color: #FFF;
@@ -256,12 +266,12 @@ h3.subtitle {
 
 .ControlPlayerJs .video-timeline {
     background: rgba(255, 255, 255, 0.4);
-    bottom: 12px;
+    /*bottom: 12px;*/
     cursor: pointer;
     height: 12px;
     left: 0;
     opacity: 1;
-    position: relative;
+    /*position: relative;*/
     transition: all 0.2s;
     width: 100%;
     z-index: 12;
@@ -304,4 +314,35 @@ h3.subtitle {
 .ControlPlayerJs:hover .video-timeline-event {
     background: #790c17;
     opacity: 0.8;
+}
+
+.ControlPlayerJs .timeline-progressbar div{
+    height: 12px;
+    background-color: #666666;
+}
+
+.ControlPlayerJs .timeline-zoombar > div{
+    height: 12px;
+    background-color: #cce6ff;
+    z-index: 10;
+}
+
+.ControlPlayerJs .timeline-zoombar > i{
+    font-size: 12px;
+    position: relative;
+    color: black;
+    z-index: 1;
+}
+
+.ControlPlayerJs .timeline-zoombar > i.minus{
+    float: left;
+    left: 2px;
+    top:-3px;
+}
+
+
+.ControlPlayerJs .timeline-zoombar > i.plus{
+    float: right;
+    right: 2px;
+    top:-2px;
 }
