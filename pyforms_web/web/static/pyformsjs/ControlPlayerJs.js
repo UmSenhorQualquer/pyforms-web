@@ -20,7 +20,7 @@ class ControlPlayerJs extends ControlBase{
         var self = this;
         
         $(document).ready(function(){
-            self.canvasVideo = new CanvasVideoPlayer({
+            self.video = new CanvasVideoPlayer({
                 playerSelector:     '#'+self.place_id(),
                 videoSelector:      '#'+self.control_id(),
                 canvasSelector:     '#canvas-'+self.control_id(),
@@ -35,29 +35,49 @@ class ControlPlayerJs extends ControlBase{
 
     ////////////////////////////////////////////////////////////////////////////////
 
+    load_data(){ 
+        if(!this.properties.data_url) return;
+
+        var self = this;
+        $.ajax({
+            method: 'get',
+            cache: false,
+            dataType: "json",
+            url: this.properties.data_url+'?nocache='+$.now(),
+            contentType: "application/json; charset=utf-8",
+            success: function(res){
+                if(res.graphs){
+                    for(var i in res.graphs)
+                        self.video.add_graph(res.graphs[i].title, res.graphs[i].data, res.graphs[i].color);
+                }
+            }
+        }).always(function() {
+            self.properties.data_url = undefined;
+        });
+    };
+    ////////////////////////////////////////////////////////////////////////////////
+
+
     get_value(){ 
-        this.properties.video_index = $( "#timeline"+this.control_id()).val();
-        return this.properties.value; 
+        return null;
     };
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    set_value(value){
-        this.canvasVideo.open(value);
+    set_value(value){console.log(value);
+        this.video.open(value);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
 
     update_server(){
-        return this.properties.video_index != $( "#timeline"+this.control_id() ).val()
+        return false;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    serialize(){
-        super.serialize();
-        this.properties.base64content = null;
-        return this.properties;
+    deserialize(data){
+        super.deserialize(data);
+        this.load_data();
     }
-
 }

@@ -70,6 +70,7 @@ class CanvasVideoPlayer{
         this.ctx = this.canvas.getContext('2d');
 
         this.init();
+        this.graph.init();
     }
 
     init() {
@@ -91,7 +92,7 @@ class CanvasVideoPlayer{
         }
 
         this.bind();
-        this.graph.init();
+        
     }
 
     open(video_url){
@@ -349,5 +350,8 @@ class CanvasVideoPlayer{
             };
     };
 
+    add_graph(title, data, color){
+        return this.graph.add_graph(title, data, color);
+    } 
 
 }

@@ -173,6 +173,7 @@ class TimelineWidget{
     add_graph(title, data, color){
         var graph = new TimelineGraph(title, data, color, this);
         this.graphs.push(graph);
+        this.draw();
         return graph;
     }
 

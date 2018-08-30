@@ -259,8 +259,9 @@ class ControlBase{
     @param {object} data - Data sent by the server.
     */
     deserialize(data){
+        var update_value = data.value!=this.properties.value;
         $.extend(this.properties, data);
-        this.set_value(this.properties.value);
+        if(update_value) this.set_value(this.properties.value);
         this.set_label(this.properties.label);
 
         if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');

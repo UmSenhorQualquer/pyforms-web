@@ -1,9 +1,11 @@
+var TIMELINEGRAPH_COLORS = ['#DC143C','	#6495ED','#008B8B','#7FFF00', '#E9967A','#2F4F4F', '#9400D3', '#FFD700', '#FFB6C1', '#BA55D3','#9ACD32' ];
+
 class TimelineGraph{
 	
 	constructor(title, data, color, timeline){
 
     	this.title    = title;
-    	this.color 	  = color?color:'blue';
+    	this.color 	  = color?color:TIMELINEGRAPH_COLORS.shift();
     	this.timeline = timeline;
     	this.data     = data?data:[];
 
@@ -31,7 +33,7 @@ class TimelineGraph{
 		if(diff_max_min<=0) diff_max_min = 1
 
 		this.ctx.beginPath();
-        this.ctx.strokeStyle = "red";
+        this.ctx.strokeStyle = this.color;
 
         var y = this.data[begin];
         y = this.timeline.height - (y*fov_height)/diff_max_min;
