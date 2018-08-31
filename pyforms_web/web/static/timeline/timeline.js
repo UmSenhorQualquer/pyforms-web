@@ -177,6 +177,16 @@ class TimelineWidget{
         return graph;
     }
 
+    add_event(title, begin, end, color, track_idx){
+        console.log((track_idx-this.tracks.length+1));
+        if( track_idx>=this.tracks.length ){
+            for(var i=0; i<(track_idx-this.tracks.length+1); i++)
+                this.add_track('');
+        }
+
+        return this.tracks[track_idx].add_event(title, begin, end, color, this.tracks[track_idx]);
+    }
+
     draw_grid(){
         this.ctx.clearRect(0, 0, this.width, this.height);
 

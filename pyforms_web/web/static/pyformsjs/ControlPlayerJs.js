@@ -46,10 +46,18 @@ class ControlPlayerJs extends ControlBase{
             url: this.properties.data_url+'?nocache='+$.now(),
             contentType: "application/json; charset=utf-8",
             success: function(res){
+
                 if(res.graphs){
                     for(var i in res.graphs)
                         self.video.add_graph(res.graphs[i].title, res.graphs[i].data, res.graphs[i].color);
                 }
+
+                if(res.events){
+                    for(var i in res.events)
+                        self.video.add_event(res.events[i][0], res.events[i][1], res.events[i][2], res.events[i][3], res.events[i][4]);
+                    self.video.draw_timeline();
+                }
+                
             }
         }).always(function() {
             self.properties.data_url = undefined;

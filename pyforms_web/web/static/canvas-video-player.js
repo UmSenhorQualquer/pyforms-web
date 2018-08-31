@@ -92,7 +92,6 @@ class CanvasVideoPlayer{
         }
 
         this.bind();
-        
     }
 
     open(video_url){
@@ -350,8 +349,15 @@ class CanvasVideoPlayer{
             };
     };
 
+    draw_timeline(){
+        this.graph.draw();
+    }
+
     add_graph(title, data, color){
         return this.graph.add_graph(title, data, color);
     } 
 
+    add_event(title, begin, end, color, track_idx){
+        this.graph.add_event(title, begin, end, color, track_idx);
+    }
 }

@@ -18,8 +18,8 @@ class TimelineGraph{
     }
 
     draw(){
-    	var begin = this.timeline.offset;
-        var end   = this.timeline.offset+this.timeline.width;
+    	var begin = this.timeline.offset | 0;
+        var end   = (this.timeline.offset+this.timeline.width) | 0;
 
     	if( begin>=this.data.length ) return;
 
