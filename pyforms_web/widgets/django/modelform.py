@@ -548,6 +548,12 @@ class ModelFormWidget(BaseWidget):
                 
                 obj = self.create_newobject()
 
+            else:
+                queryset = self.model.objects.filter(pk=obj.pk)
+                if hasattr(queryset, 'save_by_request'):
+                    request  = PyFormsMiddleware.get_request()
+                    if not queryset.save_by_request(request).exists():
+                        raise Exception('Your user does not have permissions to save')
             ###########################################
             
             # if it is working as an inline edition form #
@@ -908,6 +914,12 @@ class ModelFormWidget(BaseWidget):
 
         if self.object_pk:
             obj = self.model_object
+
+            queryset = self.model.objects.filter(pk=obj.pk)
+            if hasattr(queryset, 'remove_by_request'):
+                request  = PyFormsMiddleware.get_request()
+                if not queryset.remove_by_request(request).exists():
+                    raise Exception('Your user does not have permissions to remove')
 
             objects = obj, related_objects(obj)
             html = related_objects_html([objects])
