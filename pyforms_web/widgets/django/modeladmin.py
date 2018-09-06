@@ -320,6 +320,13 @@ class ModelAdminWidget(BaseWidget):
         Returns:
             bool: True if has add permission, False otherwise.
         """
+        queryset = self.model.objects.all()
+
+        if hasattr(queryset, 'add_by_request'):
+            request = PyFormsMiddleware.get_request()
+            queryset = queryset.add_by_request(request)
+            return queryset.exists()
+        
         return True
 
     def has_edit_permission(self):
@@ -329,7 +336,14 @@ class ModelAdminWidget(BaseWidget):
         Returns:
             bool: True if has edit permission, False otherwise.
         """
+        queryset = self.model.objects.all()
+        if hasattr(queryset, 'edit_by_request'):
+            request = PyFormsMiddleware.get_request()
+            queryset = queryset.edit_by_request(request)
+            return queryset.exists()
         return True
+
+
 
     #################################################################################
     #### PRIVATE FUNCTIONS ##########################################################
@@ -361,8 +375,8 @@ class ModelAdminWidget(BaseWidget):
         # if so use it to get the data for visualization
         request  = PyFormsMiddleware.get_request()
 
-        if hasattr(queryset, 'filter_by_request'):
-            queryset = queryset.filter_by_request(request)
+        if hasattr(queryset, 'list_by_request'):
+            queryset = queryset.list_by_request(request)
 
         if hasattr(self.model, 'get_queryset'):
             queryset = self.model.get_queryset(request, queryset)
