@@ -361,6 +361,9 @@ class ModelAdminWidget(BaseWidget):
         # if so use it to get the data for visualization
         request  = PyFormsMiddleware.get_request()
 
+        if hasattr(queryset, 'filter_by_request'):
+            queryset = queryset.filter_by_request(request)
+
         if hasattr(self.model, 'get_queryset'):
             queryset = self.model.get_queryset(request, queryset)
         
