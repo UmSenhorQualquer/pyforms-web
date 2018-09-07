@@ -291,28 +291,28 @@ Example:
             The function filters the queryset to return only the objects the user has permissions to list.
             """
             ...
-            return qs
+            return self
 
         def view_permissions(self, user):
             """
             The function filters the queryset to return only the objects the user has permissions to view.
             """
             ...
-            return qs
+            return self
 
         def update_permissions(self, user):
             """
             The function filters the queryset to return only the objects the user has permissions to update.
             """
             ...
-            return qs
+            return self
 
         def remove_permissions(self, user):
             """
             The function filters the queryset to return only the objects the user has permissions to remove.
             """
             ...
-            return qs
+            return self
 
 
 
