@@ -84,9 +84,7 @@ class ModelAdminWidget(BaseWidget):
         if self.parent_model and self.parent_pk:
             self.set_parent(self.parent_model, self.parent_pk)
         
-        has_add_permission  = self.has_add_permission()  and self.addmodel_class  is not None
-        has_edit_permission = self.has_edit_permission() and self.editmodel_class is not None
-
+        
         BaseWidget.__init__(self, title)
         
         #######################################################
@@ -99,12 +97,14 @@ class ModelAdminWidget(BaseWidget):
             n_pages      = self.LIST_N_PAGES
         )
 
-        has_details = (self.USE_DETAILS_TO_ADD or self.USE_DETAILS_TO_EDIT) and (has_add_permission or has_edit_permission)
+        has_details = self.USE_DETAILS_TO_ADD or self.USE_DETAILS_TO_EDIT
         if has_details:
             self._details = ControlEmptyWidget('Details', visible=False)
         
         ##############################################
         # Check if the add button should be included
+        has_add_permission = self.__has_add_permissions() and self.addmodel_class  is not None
+        
         if has_add_permission:
 
             self._add_btn = ControlButton(
@@ -132,12 +132,8 @@ class ModelAdminWidget(BaseWidget):
                 ),
             ]
         
-        # if the user has edit permission then 
-        if has_edit_permission:
-            # events
-            self._list.item_selection_changed_event = self.__list_item_selection_changed_event
+        self._list.item_selection_changed_event = self.__list_item_selection_changed_event
 
-        
         #if it is a inline app, add the title to the header
         
         if self.parent_model and self.title:
@@ -219,7 +215,7 @@ class ModelAdminWidget(BaseWidget):
         Show an empty for for creation
         """
         # if there is no add permission then does not show the form
-        if not self.has_add_permission(): return
+        if not self.has_add_permissions(): return
 
         params = {
             'title':'Create', 
@@ -250,14 +246,14 @@ class ModelAdminWidget(BaseWidget):
                 self._details.hide()
 
 
-    def show_edit_form(self, pk=None):
+    def show_edit_form(self, obj=None):
         """
         Show the edition for for a specific object
 
         :param int pk: Primary key of the object to edit
         """
         # if there is no edit permission then does not show the form
-        if not self.has_edit_permission(): return
+        if not self.__has_view_permissions(obj): return
 
         
         # create the edit form a add it to the empty widget details
@@ -265,7 +261,7 @@ class ModelAdminWidget(BaseWidget):
         params = {
             'title':'Edit', 
             'model':self.model, 
-            'pk':pk,
+            'pk':obj.pk,
             'parent_model':self.parent_model,
             'parent_pk':self.parent_pk,
             'parent_win': self
@@ -313,34 +309,46 @@ class ModelAdminWidget(BaseWidget):
                     break
 
     
-    def has_add_permission(self):
+    def has_add_permissions(self):
         """
         Function called to check if one has permission to add new objects.
         
         Returns:
             bool: True if has add permission, False otherwise.
         """
-        queryset = self.model.objects.all()
-
-        if hasattr(queryset, 'add_by_request'):
-            request = PyFormsMiddleware.get_request()
-            queryset = queryset.add_by_request(request)
-            return queryset.exists()
-        
         return True
 
-    def has_edit_permission(self):
+    def has_view_permissions(self, obj):
         """
-        Function called to check if one has permission to edit the objects.
+        Function called to check if one has permission to view an object.
         
+        :param django.db.models.Model obj: object to view.
+
         Returns:
-            bool: True if has edit permission, False otherwise.
+            bool: True if has view permissions, False otherwise.
         """
-        queryset = self.model.objects.all()
-        if hasattr(queryset, 'edit_by_request'):
-            request = PyFormsMiddleware.get_request()
-            queryset = queryset.edit_by_request(request)
-            return queryset.exists()
+        return True
+
+    def has_remove_permissions(self, obj):
+        """
+        Function called to check if one has permission to remove an object.
+        
+        :param django.db.models.Model obj: object to remove.
+
+        Returns:
+            bool: True if has remove permissions, False otherwise.
+        """
+        return True
+
+    def has_update_permissions(self, obj):
+        """
+        Function called to check if one has permission to update an object.
+        
+        :param django.db.models.Model obj: object to update.
+
+        Returns:
+            bool: True if has update permissions, False otherwise.
+        """
         return True
 
 
@@ -349,6 +357,41 @@ class ModelAdminWidget(BaseWidget):
     #### PRIVATE FUNCTIONS ##########################################################
     #################################################################################
 
+    def __has_add_permissions(self):
+        """
+        Function called to check if one has permission to add new objects.
+        
+        Returns:
+            bool: True if has add permission, False otherwise.
+        """
+        if not self.has_add_permissions():
+            return False
+
+        queryset = self.model.objects.all()
+        if  hasattr(queryset, 'has_add_permissions'):
+            return queryset.has_add_permissions(
+                PyFormsMiddleware.user()
+            )
+        else:    
+            return True
+
+    def __has_view_permissions(self, obj):
+        """
+        The functions returns if the user has permissions to view the objects or not.
+        
+        Returns:
+            bool: True if has view permissions, False otherwise.
+        """
+        if not self.has_view_permissions(obj):
+            return False
+
+        queryset = self.model.objects.filter(pk=obj.pk)
+        if  hasattr(queryset, 'view_permissions'):
+            return queryset.view_permissions(
+                PyFormsMiddleware.user()
+            ).exists()
+        else:    
+            return True
 
     def __list_item_selection_changed_event(self):
         """
@@ -356,10 +399,14 @@ class ModelAdminWidget(BaseWidget):
         """
         obj = self.selected_row_object
         if obj:
-            self.object_pk = obj.pk
-            self._list.selected_row_id = None
-            self.show_edit_form(obj.pk)
-            
+            # if the user has edit permission then 
+            if self.__has_view_permissions(obj):
+                self.object_pk = obj.pk
+                self._list.selected_row_id = None
+                self.show_edit_form(obj)
+            else:
+                raise Exception('You do not have permissions to visualize this record.')
+
 
     def __get_queryset(self):
         """
@@ -375,8 +422,8 @@ class ModelAdminWidget(BaseWidget):
         # if so use it to get the data for visualization
         request  = PyFormsMiddleware.get_request()
 
-        if hasattr(queryset, 'list_by_request'):
-            queryset = queryset.list_by_request(request)
+        if hasattr(queryset, 'list_permissions'):
+            queryset = queryset.list_permissions(request.user)
 
         if hasattr(self.model, 'get_queryset'):
             queryset = self.model.get_queryset(request, queryset)

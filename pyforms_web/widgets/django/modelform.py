@@ -137,15 +137,18 @@ class ModelFormWidget(BaseWidget):
         #######################################################
 
         # Create the edit buttons buttons #####################
-        self._save_btn   = ControlButton(self.SAVE_BTN_LABEL, label_visible=False, default=self.__save_btn_event)
-        self.edit_buttons.append( self._save_btn )
+        if self.has_update_permissions():
+            self._save_btn   = ControlButton(self.SAVE_BTN_LABEL, label_visible=False, default=self.__save_btn_event)
+            self.edit_buttons.append( self._save_btn )
         
-        self._create_btn = ControlButton(self.CREATE_BTN_LABEL, label_visible=False, default=self.__create_btn_event)
-        self.edit_buttons.append( self._create_btn )
-        
-        self._remove_btn = ControlButton(self.REMOVE_BTN_LABEL,  css='red basic', label_visible=False, default=self.__remove_btn_event)  
-        self.edit_buttons.append( self._remove_btn )
-        
+        if self.has_add_permissions():
+            self._create_btn = ControlButton(self.CREATE_BTN_LABEL, label_visible=False, default=self.__create_btn_event)
+            self.edit_buttons.append( self._create_btn )
+            
+        if self.has_remove_permissions():
+            self._remove_btn = ControlButton(self.REMOVE_BTN_LABEL,  css='red basic', label_visible=False, default=self.__remove_btn_event)  
+            self.edit_buttons.append( self._remove_btn )
+            
         if self.has_cancel_btn:
             self._cancel_btn = ControlButton(self.CANCEL_BTN_LABEL, css='gray basic', label_visible=False, default=self.cancel_btn_event)
             self.edit_buttons.append( self._cancel_btn )
@@ -203,10 +206,11 @@ class ModelFormWidget(BaseWidget):
             list(str): Returns the formset configuration that will be append to
             the end of the fieldsets.
         """
-        buttons = ['_save_btn', '_create_btn']
-        if self.has_cancel_btn:
-            buttons = buttons + ['_cancel_btn', ' ']
-        buttons = buttons + ['_remove_btn']
+        buttons = []
+        if self.has_update_permissions():   buttons.append('_save_btn')
+        if self.has_add_permissions():      buttons.append('_create_btn')
+        if self.has_cancel_btn:             buttons.append('_cancel_btn')
+        if self.has_remove_permissions():   buttons.append('_remove_btn')
         return [no_columns(*buttons)]
     
 
@@ -305,10 +309,9 @@ class ModelFormWidget(BaseWidget):
         """
 
         #check if it has permissions to add new registers
-        if ( self.parent and hasattr(self.parent, 'has_add_permission') ) and \
-           not self.parent.has_add_permission():
-           raise Exception('Your user does not have permissions to add')
-            
+        if not self.has_add_permissions():
+            raise Exception('Your user does not have permissions to add')
+    
         fields2show = self.get_visible_fields_names()
 
         self.__update_related_fields()
@@ -324,8 +327,8 @@ class ModelFormWidget(BaseWidget):
         for inline in self.inlines_controls:
             inline.hide()
 
-        self._save_btn.hide()
-        self._remove_btn.hide()
+        if self.has_update_permissions(): self._save_btn.hide()
+        if self.has_remove_permissions(): self._remove_btn.hide()
 
     def update_callable_fields(self):
         """
@@ -365,9 +368,14 @@ class ModelFormWidget(BaseWidget):
         """
         
         if  pk: self.object_pk = pk
+
+        if not self.has_view_permissions():
+            raise Exception('Your user does not have permissions to save')
+    
+
         for field in self.edit_fields:      field.show()
         for field in self.inlines_controls: field.show()
-        self._create_btn.hide()
+        if self.has_add_permissions():      self._create_btn.hide()
 
         self.__update_related_fields()
 
@@ -456,9 +464,9 @@ class ModelFormWidget(BaseWidget):
             obj = self.model_object
             obj.delete()
             self.object_pk = None
-            self._remove_btn.hide()
-            self._create_btn.show()
-            self._save_btn.hide()
+            if self.has_remove_permissions(): self._remove_btn.hide()
+            if self.has_add_permissions():    self._create_btn.show()
+            if self.has_update_permissions(): self._save_btn.hide()
             for field in self.inlines_controls: field.hide()
             if self.parent: self.parent.populate_list()
             return True
@@ -535,6 +543,7 @@ class ModelFormWidget(BaseWidget):
             :django.db.models.Model object: Created object or None if the object was not saved with success.
         """
         fields2show = self.get_visible_fields_names()
+        user = PyFormsMiddleware.user()
 
         try:
             obj = self.model_object
@@ -542,18 +551,14 @@ class ModelFormWidget(BaseWidget):
             ## create an object if does not exists ####
             if obj is None: 
                 #check if it has permissions to add new registers
-                if ( self.parent and hasattr(self.parent, 'has_add_permission') ) and \
-                   not self.parent.has_add_permission():
-                   raise Exception('Your user does not have permissions to add')
+                if not self.has_add_permissions():
+                    raise Exception('Your user does not have permissions to add')
                 
                 obj = self.create_newobject()
 
             else:
-                queryset = self.model.objects.filter(pk=obj.pk)
-                if hasattr(queryset, 'save_by_request'):
-                    request  = PyFormsMiddleware.get_request()
-                    if not queryset.save_by_request(request).exists():
-                        raise Exception('Your user does not have permissions to save')
+                if not self.has_update_permissions():
+                    raise Exception('Your user does not have permissions to save')
             ###########################################
             
             # if it is working as an inline edition form #
@@ -847,6 +852,10 @@ class ModelFormWidget(BaseWidget):
         """
         Event called by the create button
         """
+        if not has_add_permissions():
+            raise Exception('You do not have permissions to add objects.')
+
+
         self.object_pk = None
         obj = self.save_event()
 
@@ -856,9 +865,9 @@ class ModelFormWidget(BaseWidget):
             self.parent.hide_form()
         elif obj:
             # it is executing as a single app
-            self._create_btn.hide()
-            self._save_btn.show()
-            self._remove_btn.show()
+            if self.has_add_permissions():    self._create_btn.hide()
+            if self.has_update_permissions(): self._save_btn.show()
+            if self.has_remove_permissions(): self._remove_btn.show()
 
             self.inlines_apps = []
             for inline in self.inlines:
@@ -879,6 +888,9 @@ class ModelFormWidget(BaseWidget):
         """
         Event called by the save button
         """
+        if not has_update_permissions():
+            raise Exception('You do not have permissions to update the object.')
+
         obj = self.save_event()
         if obj:
             self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
@@ -915,11 +927,8 @@ class ModelFormWidget(BaseWidget):
         if self.object_pk:
             obj = self.model_object
 
-            queryset = self.model.objects.filter(pk=obj.pk)
-            if hasattr(queryset, 'remove_by_request'):
-                request  = PyFormsMiddleware.get_request()
-                if not queryset.remove_by_request(request).exists():
-                    raise Exception('Your user does not have permissions to remove')
+            if not self.has_remove_permissions(obj):
+                raise Exception('Your user does not have permissions to remove the object')
 
             objects = obj, related_objects(obj)
             html = related_objects_html([objects])
@@ -929,4 +938,82 @@ class ModelFormWidget(BaseWidget):
                 buttons=[self.REMOVE_BTN_LABEL,self.CANCEL_BTN_LABEL], 
                 handler=self.popup_remove_handler
             )
-            popup.button_0.css = 'basic red'    
+            popup.button_0.css = 'basic red'
+
+
+
+
+
+
+
+    def has_add_permissions(self):
+        """
+        The functions returns if the user has permissions to add objects or not.
+        
+        Returns:
+            bool: True if has add permissions, False otherwise.
+        """
+        if hasattr(self, 'parent') and not self.parent.has_add_permissions():
+            return False
+
+        queryset = self.model.objects.all()
+        if  hasattr(queryset, 'has_add_permissions'):
+            return queryset.has_add_permissions(
+                PyFormsMiddleware.user()
+            )
+        else:    
+            return True
+
+    def has_view_permissions(self):
+        """
+        The functions returns if the user has permissions to view the objects or not.
+        
+        Returns:
+            bool: True if has view permissions, False otherwise.
+        """
+        if hasattr(self, 'parent') and not self.parent.has_view_permissions(self.model_object):
+            return False
+
+        queryset = self.model.objects.filter(pk=self.object_pk)
+        if  hasattr(queryset, 'view_permissions'):
+            return queryset.view_permissions(
+                PyFormsMiddleware.user()
+            ).exists()
+        else:    
+            return True
+
+    def has_remove_permissions(self):
+        """
+        The functions returns if the user has permissions to remove the object or not.
+        
+        Returns:
+            bool: True if has remove permissions, False otherwise.
+        """
+        if hasattr(self, 'parent') and not self.parent.has_remove_permissions(self.model_object):
+            return False
+
+        queryset = self.model.objects.filter(pk=self.object_pk)
+        if  hasattr(queryset, 'remove_permissions'):
+            return queryset.remove_permissions(
+                PyFormsMiddleware.user()
+            ).exists()
+        else:    
+            return True
+
+    def has_update_permissions(self):
+        """
+        The functions returns if the user has permissions to update the current object or not.
+        
+        Returns:
+            bool: True if has update permissions, False otherwise.
+        """
+        if hasattr(self, 'parent') and not self.parent.has_update_permissions(self.model_object):
+            return False
+
+        queryset = self.model.objects.filter(pk=self.object_pk)
+        if  hasattr(queryset, 'update_permissions'):
+            return queryset.update_permissions(
+                PyFormsMiddleware.user()
+            ).exists()
+        else:    
+            return True
