@@ -861,7 +861,7 @@ class ModelFormWidget(BaseWidget):
 
         if self.parent and obj:
             # it is being use from a ModelAdminWidget
-            self.parent.show_edit_form(pk=self.object_pk)
+            self.parent.show_edit_form(self.model_object)
             self.parent.hide_form()
         elif obj:
             # it is executing as a single app
@@ -927,7 +927,7 @@ class ModelFormWidget(BaseWidget):
         if self.object_pk:
             obj = self.model_object
 
-            if not self.has_remove_permissions(obj):
+            if not self.has_remove_permissions():
                 raise Exception('Your user does not have permissions to remove the object')
 
             objects = obj, related_objects(obj)
