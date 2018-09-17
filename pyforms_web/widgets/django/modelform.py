@@ -888,7 +888,7 @@ class ModelFormWidget(BaseWidget):
         """
         Event called by the save button
         """
-        if not has_update_permissions():
+        if not self.has_update_permissions():
             raise Exception('You do not have permissions to update the object.')
 
         obj = self.save_event()
