@@ -852,7 +852,7 @@ class ModelFormWidget(BaseWidget):
         """
         Event called by the create button
         """
-        if not has_add_permissions():
+        if not self.has_add_permissions():
             raise Exception('You do not have permissions to add objects.')
 
 
