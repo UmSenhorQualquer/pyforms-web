@@ -499,7 +499,7 @@ class ModelFormWidget(BaseWidget):
         """
         return self.model()
 
-    def save_object(self, obj):
+    def save_object(self, obj, **kwargs):
         """
         Function called to save the object
 
@@ -532,7 +532,7 @@ class ModelFormWidget(BaseWidget):
             self.alert(html)
             return None
 
-        obj.save()
+        obj.save(**kwargs)
         return obj
 
     def save_event(self):
