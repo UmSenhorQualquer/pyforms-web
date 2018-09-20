@@ -203,8 +203,10 @@ class ModelAdminWidget(BaseWidget):
         Returns:
             django.db.models.query.QuerySet: Results.
         """
-        return queryset
-
+        if hasattr(queryset, 'list_permissions'):
+            return queryset.list_permissions(request.user)
+        else:
+            return queryset
     
         
     def hide_form(self):
