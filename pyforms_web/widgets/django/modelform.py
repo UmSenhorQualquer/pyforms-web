@@ -504,7 +504,7 @@ class ModelFormWidget(BaseWidget):
         Function called to save the object
 
         :param django.db.models.Model obj: Object to save.
-        
+        :param dict kwargs: Any named argument passed to this function will be passed to the Model save method. Example: Model.save(**kwargs).
         """
         try:
             obj.full_clean()
