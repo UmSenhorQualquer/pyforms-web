@@ -15,9 +15,14 @@ class ControlAutoComplete(ControlBase):
     :param str items_url: (Mandatory) Configure the Combo to get its items from an URL. Default=None.
     :param function autocomplete_search: Set the function to query the items in the case we are using the url mode. Default=self.autocomplete_search.
     :param str queryset: Set the queryset to which the autocomplete will get the values. Default=None.
-    :param function queryset_filter: Function to filter the queryset. Default=self.queryset_filter.
     :param boolean multiple: Allow multiple choices. Default=False.
-
+    :param function queryset_filter: 
+        Function to filter the queryset. Default=self.queryset_filter.
+        
+        ..code: python 
+            
+            def queryset_filter(self, qs, keyword, control):
+                return qs
 
     In the case you are using a Model queryset to retrieve the values you can define the fields to lookup for using the staticmethod **autocomplete_search_fields**
     as it is shown inthe example bellow.
