@@ -12,11 +12,12 @@ class ControlAutoComplete(ControlBase):
     This control implements an auto complete text box.
     The control gets its values from a url or from a queryset.
 
-    :param str items_url: (Optinal) Configure the Combo to get its items from an URL. Default=None.
-    :param function autocomplete_search: (Optinal) Set the function to query the items in the case we are using the url mode. Default=self.autocomplete_search.
+    :param str items_url: (Mandatory) Configure the Combo to get its items from an URL. Default=None.
+    :param function autocomplete_search: Set the function to query the items in the case we are using the url mode. Default=self.autocomplete_search.
     :param str queryset: Set the queryset to which the autocomplete will get the values. Default=None.
     :param function queryset_filter: Function to filter the queryset. Default=self.queryset_filter.
     :param boolean multiple: Allow multiple choices. Default=False.
+
 
     In the case you are using a Model queryset to retrieve the values you can define the fields to lookup for using the staticmethod **autocomplete_search_fields**
     as it is shown inthe example bellow.
@@ -45,7 +46,7 @@ class ControlAutoComplete(ControlBase):
         # set the queryset to which the autocomplete will get the values
         self.queryset = kwargs.get('queryset', None)
         # function to filter the queryset
-        self.queryset_filter = kwargs.get('queryset_filter', self.queryset_filter)
+        self.queryset_filter = kwargs.get('queryset_filter', None)
 
         # allow multiple choices
         self.multiple = kwargs.get('multiple', False)
@@ -54,8 +55,8 @@ class ControlAutoComplete(ControlBase):
         self._init_form_called = True
         return "new ControlAutoComplete('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
-    def queryset_filter(self, qs, keyword, control):
-        return qs
+    #def queryset_filter(self, qs, keyword, control):
+    #    return qs
 
     @property
     def queryset(self):
@@ -84,9 +85,11 @@ class ControlAutoComplete(ControlBase):
 
         if queryset:
 
-            queryset = self.queryset_filter(queryset, keyword, self)
-
             if keyword:
+
+                if self.queryset_filter:
+                    queryset = self.queryset_filter(queryset, keyword, self)
+                
                 model = queryset.model
      
                 if hasattr(model, 'autocomplete_search_fields'):
@@ -94,7 +97,8 @@ class ControlAutoComplete(ControlBase):
                     for search_field in model.autocomplete_search_fields():
                         or_filter.add( Q(**{search_field:keyword}), Q.OR)
                     queryset = queryset.filter(or_filter)
-                else:
+                
+                elif not self.queryset_filter:
                     queryset = queryset.filter(pk=keyword)
 
             try:

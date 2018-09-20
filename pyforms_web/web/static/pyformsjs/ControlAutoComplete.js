@@ -10,19 +10,17 @@ class ControlAutoComplete extends ControlBase{
         html += '</div>';
         this.jquery_place().replaceWith(html);
         
-        
         // get the items from an url
         this.jquery().dropdown({
             apiSettings: { url: this.properties.items_url },
             saveRemoteData:   false,
-            filterRemoteData: true,
-            placeholder: false
+            placeholder: false,
+            forceSelection: false
         });
 
-        
-        
         this.jquery().dropdown('setup menu', { values: this.properties.items });
         this.set_value(this.properties.value);
+        
         
         var self = this;
         this.jquery().dropdown('setting', 'onChange', function(){
@@ -40,6 +38,7 @@ class ControlAutoComplete extends ControlBase{
         if(!this.properties.multiple) value = [value]
         this.jquery().dropdown('set exactly', value);
         this.flag_exec_on_change_event = true;
+
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +53,7 @@ class ControlAutoComplete extends ControlBase{
 
     deserialize(data){
         this.properties = $.extend(this.properties, data);
-        
+
         this.jquery().dropdown('setup menu', { values: this.properties.items });
         this.set_value(this.properties.value);
 

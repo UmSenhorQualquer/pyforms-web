@@ -798,8 +798,6 @@ class ModelFormWidget(BaseWidget):
                     items=[('Unknown', None), ('Yes', True), ('No', False)]
                 )
             elif isinstance(field, models.ForeignKey):
-                url = "/pyforms/autocomplete/{app_id}/{field_name}/{{query}}/".format(app_id=self.uid, field_name=field.name)
-                
                 query = field.related_model.objects.all()
                 limit_choices = field.get_limit_choices_to()
                 if limit_choices: query = query.filter(**limit_choices)
@@ -811,8 +809,6 @@ class ModelFormWidget(BaseWidget):
                 )
 
             elif isinstance(field, models.ManyToManyField):
-                url = "/pyforms/autocomplete/{app_id}/{field_name}/{{query}}/".format(app_id=self.uid, field_name=field.name)
-                
                 query = field.related_model.objects.all()
                 limit_choices = field.get_limit_choices_to()
                 if limit_choices: query = query.filter(**limit_choices)
