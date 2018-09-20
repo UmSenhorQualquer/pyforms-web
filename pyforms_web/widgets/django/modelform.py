@@ -729,7 +729,7 @@ class ModelFormWidget(BaseWidget):
             #if limit_choices:
             #    queryset = queryset.filter(**limit_choices)
 
-            queryset = self.related_field_queryset(field, queryset)
+            queryset = self.get_related_field_queryset(field, queryset)
 
             self.update_related_field(field, pyforms_field, queryset)
 
