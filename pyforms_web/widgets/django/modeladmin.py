@@ -190,6 +190,21 @@ class ModelAdminWidget(BaseWidget):
         
         return queryset
 
+
+    def get_related_field_queryset(self, request, list_queryset, field, queryset):
+        """"
+        Called to return the main list filters for the ForeignKeys and ManyToMany fields.
+        
+        :param django.http.request.HttpRequest request: HttpRequest originating the call of this function.
+        :param django.db.models.query.QuerySet list_queryset: Queryset of the main list.
+        :param django.db.models.fields.Field field: Related django field.
+        :param django.db.models.query.QuerySet queryset: Default queryset for the related field.
+
+        Returns:
+            django.db.models.query.QuerySet: Results.
+        """
+        return queryset
+
     
         
     def hide_form(self):

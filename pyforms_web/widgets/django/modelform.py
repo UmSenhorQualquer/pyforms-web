@@ -258,12 +258,12 @@ class ModelFormWidget(BaseWidget):
 
         """
         field = self.model._meta.get_field(control.name)
-        queryset = self.related_field_queryset(field, queryset)
+        queryset = self.get_related_field_queryset(field, queryset)
 
         return queryset
 
     
-    def related_field_queryset(self, field, queryset):
+    def get_related_field_queryset(self, field, queryset):
         """
         Function called to manages the query for related fields like ForeignKeys and ManyToMany.
         

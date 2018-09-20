@@ -1,6 +1,7 @@
 from pyforms_web.controls.control_base import ControlBase
 from django.apps import apps
 
+from pyforms_web.web.middleware import PyFormsMiddleware
 from django.core.exceptions import FieldDoesNotExist
 
 from django.utils.dateparse import parse_datetime
@@ -330,10 +331,18 @@ class ControlQueryList(ControlBase):
             elif field.is_relation:
                 objects = field.related_model.objects.all()
 
+                # Apply the field limits choice ##################################
                 limit_choices = field.get_limit_choices_to()
                 if limit_choices: 
                     objects = objects.filter(**limit_choices)
+                ##################################################################
 
+                # Check if the parent window has a function to filter the related fields
+                if hasattr(self.parent, 'get_related_field_queryset'):
+                    objects = self.parent.get_related_field_queryset(
+                        PyFormsMiddleware.get_request(), queryset, field, objects
+                    )
+                
                 filter_values = [(column_name+'='+str(o.pk), o.__str__() ) for o in objects]
                 field_properties.update({'items': filter_values})
                 
