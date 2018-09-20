@@ -20,6 +20,8 @@ ControlBase
 ControlAutoComplete
 ----------------------------
 
+.. image:: /_static/imgs/controls/autocomplete.png
+
 .. autoclass:: pyforms_web.controls.control_autocomplete.ControlAutoComplete
     :members:
     :undoc-members:
