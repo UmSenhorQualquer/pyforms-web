@@ -618,6 +618,10 @@ class ModelFormWidget(BaseWidget):
 
                 elif not isinstance(field, models.ManyToManyField):
                     pyforms_field.error = False
+
+                    if isinstance(field, models.CharField) and value is None and field.null is False:
+                        value = ''
+                        
                     setattr(obj, field.name, value)
                 
 
