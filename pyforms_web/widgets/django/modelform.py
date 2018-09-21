@@ -621,29 +621,32 @@ class ModelFormWidget(BaseWidget):
                     setattr(obj, field.name, value)
                 
 
-            self.save_object(obj)
+            obj = self.save_object(obj)
+
+            # continues the save only if the object was saved with success
+            if obj is not None:
             
-            for field in self.model._meta.get_fields():
+                for field in self.model._meta.get_fields():
 
-                if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
-                    values          = getattr(self, field.name).value
-                    field_instance  = getattr(obj, field.name)
+                    if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
+                        values          = getattr(self, field.name).value
+                        field_instance  = getattr(obj, field.name)
 
-                    objs            = field.related_model.objects.filter(pk__in=values)
-                    values_2_remove = field_instance.all().exclude(pk__in=[o.pk for o in objs])
+                        objs            = field.related_model.objects.filter(pk__in=values)
+                        values_2_remove = field_instance.all().exclude(pk__in=[o.pk for o in objs])
 
-                    for o in values_2_remove: 
-                        field_instance.remove(o)
+                        for o in values_2_remove: 
+                            field_instance.remove(o)
 
-                    values_2_add    = objs.exclude(pk__in=[o.pk for o in field_instance.all()])
-                    for o in values_2_add:
-                        field_instance.add(o)
-                    
-                   
-            self.object_pk = obj.pk
+                        values_2_add    = objs.exclude(pk__in=[o.pk for o in field_instance.all()])
+                        for o in values_2_add:
+                            field_instance.add(o)
+                        
+                       
+                self.object_pk = obj.pk
 
-            self.update_callable_fields()
-            self.update_autonumber_fields()
+                self.update_callable_fields()
+                self.update_autonumber_fields()
 
             
 
@@ -949,7 +952,7 @@ class ModelFormWidget(BaseWidget):
         Returns:
             bool: True if has add permissions, False otherwise.
         """
-        if hasattr(self, 'parent') and not self.parent.has_add_permissions():
+        if hasattr(self, 'parent') and self.parent and not self.parent.has_add_permissions():
             return False
 
         queryset = self.model.objects.all()
@@ -967,7 +970,7 @@ class ModelFormWidget(BaseWidget):
         Returns:
             bool: True if has view permissions, False otherwise.
         """
-        if hasattr(self, 'parent') and not self.parent.has_view_permissions(self.model_object):
+        if hasattr(self, 'parent') and self.parent and not self.parent.has_view_permissions(self.model_object):
             return False
 
         queryset = self.model.objects.filter(pk=self.object_pk)
@@ -985,7 +988,7 @@ class ModelFormWidget(BaseWidget):
         Returns:
             bool: True if has remove permissions, False otherwise.
         """
-        if hasattr(self, 'parent') and not self.parent.has_remove_permissions(self.model_object):
+        if hasattr(self, 'parent') and self.parent and not self.parent.has_remove_permissions(self.model_object):
             return False
 
         queryset = self.model.objects.filter(pk=self.object_pk)
@@ -1003,7 +1006,7 @@ class ModelFormWidget(BaseWidget):
         Returns:
             bool: True if has update permissions, False otherwise.
         """
-        if hasattr(self, 'parent') and not self.parent.has_update_permissions(self.model_object):
+        if hasattr(self, 'parent') and self.parent and not self.parent.has_update_permissions(self.model_object):
             return False
 
         queryset = self.model.objects.filter(pk=self.object_pk)
