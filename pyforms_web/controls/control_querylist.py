@@ -216,7 +216,10 @@ class ControlQueryList(ControlBase):
         elif isinstance(col_value, int ):
             return locale.format("%d", col_value, grouping=True)
         elif isinstance(col_value, FieldFile ):
-            return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
+            try:
+                return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
+            except ValueError:
+                return ''
         elif isinstance(col_value, models.Model ):
             return col_value.__str__()
         elif callable(col_value):

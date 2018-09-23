@@ -267,7 +267,7 @@ class ModelAdminWidget(BaseWidget):
         """
         Show the edition for for a specific object
 
-        :param int pk: Primary key of the object to edit
+        :param django.db.models.Model obj: Object to be edited
         """
         # if there is no edit permission then does not show the form
         if not self.__has_view_permissions(obj): return
@@ -288,7 +288,8 @@ class ModelAdminWidget(BaseWidget):
         if self.FIELDSETS: params.update({'fieldsets':self.FIELDSETS})
         if self.READ_ONLY: params.update({'readonly': self.READ_ONLY})
 
-        editform = self.editmodel_class(**params)
+        editmodel_class = self.get_editmodel_class(obj)
+        editform = editmodel_class(**params)
 
         if hasattr(self, '_details') and self.USE_DETAILS_TO_EDIT: 
             self._details.value = editform
@@ -306,6 +307,14 @@ class ModelAdminWidget(BaseWidget):
             if hasattr(self, '_details'): 
                 self._details.hide()
 
+
+    def get_editmodel_class(self, obj):
+        """
+        Gets the pyforms app to edit the object
+
+        :param django.db.models.Model obj: Object to be edited
+        """
+        return self.editmodel_class
 
 
     def set_parent(self, parent_model, parent_pk):

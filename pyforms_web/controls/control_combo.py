@@ -8,7 +8,8 @@ class ControlCombo(ControlBase):
 
     def __init__(self, *args, **kwargs):
         self._init_form_called = False
-        
+
+        self._types = []
         self._items = collections.OrderedDict()
         items = kwargs.get('items', [])
         for item in items:
@@ -25,9 +26,12 @@ class ControlCombo(ControlBase):
         
         # The value for the item was not set, so it will use the label as a value 
         if isinstance(value, ValueNotSet):
-            self._items[label] = label
+            value = label
         else:
-            self._items[label] = str(value)
+            value = value
+
+        self._types.append(type(value))
+        self._items[label] = value
 
         if hasattr(self, '_parent'):
             self.mark_to_update_client()
@@ -43,6 +47,7 @@ class ControlCombo(ControlBase):
 
     def clear_items(self):
         self._items = collections.OrderedDict()
+        self._types = []
         self._value = None
 
         self.mark_to_update_client()
@@ -58,10 +63,10 @@ class ControlCombo(ControlBase):
 
     @value.setter
     def value(self, value):
-        for key, val in self._items.items():
+        for i, (key, val) in enumerate(self._items.items()):
             if str(value)==str(val):
                 if str(self._value)!=str(value): 
-                    self._value = str(val)
+                    self._value = self._types[i](val)
                     self.mark_to_update_client()
                     if self._init_form_called:
                         
@@ -84,14 +89,15 @@ class ControlCombo(ControlBase):
         data = ControlBase.serialize(self)
         items = []
         for key, value in self._items.items():
-            items.append({'text': key, 'value': value, 'name': key }) 
+            items.append({'text': key, 'value': str(value), 'name': key }) 
         
         value = self._value
-        if value==True:  value = 'true'
-        if value==False: value = 'false'
-        if value==None:  value = 'null'
+        if isinstance(value, bool):
+            if value==True:  value = 'true'
+            if value==False: value = 'false'
+            if value==None:  value = 'null'
         
-        data.update({ 'items': items, 'value': value })
+        data.update({ 'items': items, 'value': str(value) })
         return data
         
 
