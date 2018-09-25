@@ -13,10 +13,12 @@ from django.db import models
 from datetime import timedelta
 from calendar import monthrange
 from django.utils import timezone
-import locale
+import locale, csv
 
 from pyforms_web.utils import get_lookup_verbose_name, get_lookup_value, get_lookup_field
 from django.db.models.fields.files import FieldFile
+
+from django.http import HttpResponse
 
 class ControlQueryList(ControlBase):
 
@@ -28,6 +30,8 @@ class ControlQueryList(ControlBase):
         self.list_display       = kwargs.get('list_display', [])
         self.list_filter        = kwargs.get('list_filter', [])
         self.search_fields      = kwargs.get('search_fields', [])
+        self.export_csv         = kwargs.get('export_csv', False)
+        self.export_csv_columns = kwargs.get('export_csv_columns', self.list_display)
 
         self.search_field_key   = None
         self.filter_by          = []
@@ -71,7 +75,46 @@ class ControlQueryList(ControlBase):
         return [int(start_page-1) if int(start_page)>1 else -1] + list(range(int(start_page), int(end_page)+1)) + [ int(end_page+1) if int(end_page)<int(total_n_pages) else -1]
 
 
+    def export_csv_event(self):
+        """
+        Event called to export the queryset to excel
+        """
+        self.parent.execute_js( """window.open('/pyforms/export-csv/{0}/{1}/');""".format(self.parent.uid, self.name) )
 
+    def export_csv_http_response(self):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="{0}.csv"'.format(timezone.now().isoformat())
+        writer = csv.writer(response, delimiter=";")
+
+        queryset = self.value
+
+        for o in queryset:
+            row = [self.format_list_column(get_lookup_value(o, col)) for col in self.export_csv_columns] 
+            writer.writerow(row)
+            
+        return response 
+
+    @property
+    def export_csv_columns(self):
+        """
+        Sets and gets the list of columns to be used in the cvs export
+        By default it will assume the self.list_display value
+        """
+        return self._export_csv_columns
+    @export_csv_columns.setter
+    def export_csv_columns(self, value):
+        self._export_csv_columns = value
+
+
+    @property
+    def export_csv(self):
+        """
+        Flag to activate or deactivate the csv export button
+        """
+        return self._export_csv
+    @export_csv.setter
+    def export_csv(self, value):
+        self._export_csv = value
     
 
     @property
@@ -87,14 +130,29 @@ class ControlQueryList(ControlBase):
             model       = apps.get_model(self._app, self._model)
             qs          = model.objects.all()
             qs.query    = self._query
+
+            # apply filters
             for f in self.filter_by: qs = qs.filter(**f)
 
+            # apply search keys
             if self.search_field_key and len(self.search_field_key)>0:
                 search_filter = None
                 for s in self.search_fields:
                     q = Q(**{s: self.search_field_key})
                     search_filter = (search_filter | q) if search_filter else q
                 qs = qs.filter(search_filter)
+
+            # apply orders by
+            if len(self.sort_by)>0:
+                for sort in self.sort_by:
+                    direction = '-' if sort['desc'] else ''
+                    qs = queryset.order_by( direction+sort['column'] )
+            
+            # if no order by exists add one, to avoid the values to be show randomly in the list
+            order_by = list(qs.query.order_by)
+            if 'pk' not in order_by or '-pk' not in order_by:
+                order_by.append('-pk')
+                qs = qs.order_by( *order_by )
 
             return qs.distinct()
         else:
@@ -116,7 +174,6 @@ class ControlQueryList(ControlBase):
 
             self.mark_to_update_client()
             self.changed_event()
-
         
 
     def serialize(self, init_form=False):
@@ -128,19 +185,7 @@ class ControlQueryList(ControlBase):
         if self._update_list and queryset:
             row_start = self.rows_per_page*(self._current_page-1)
             row_end   = self.rows_per_page*(self._current_page)
-            model     = queryset.model
 
-            if len(self.sort_by)>0:
-                for sort in self.sort_by:
-                    direction = '-' if sort['desc'] else ''
-                    queryset = queryset.order_by( direction+sort['column'] )
-    
-            # if no order by exists add one, to avoid the values to be show randomly in the list
-            order_by = list(queryset.query.order_by)
-            if 'pk' not in order_by or '-pk' not in order_by:
-                order_by.append('-pk')
-                queryset = queryset.order_by( *order_by )
-            
             rows = self.queryset_to_list(queryset, self.list_display, row_start, row_end)
 
             if init_form:
@@ -167,6 +212,7 @@ class ControlQueryList(ControlBase):
         total_n_pages   = (total_rows / self.rows_per_page) + (0 if (total_rows % self.rows_per_page)==0 else 1)
 
         data.update({
+            'export_csv':      self.export_csv,
             'filter_by':       self.filter_by,
             'sort_by':         self.sort_by,
             'pages':           {'current_page': self._current_page, 'pages_list':self.__get_pages_2_show(queryset) },
@@ -216,7 +262,10 @@ class ControlQueryList(ControlBase):
         elif isinstance(col_value, int ):
             return locale.format("%d", col_value, grouping=True)
         elif isinstance(col_value, FieldFile ):
-            return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
+            try:
+                return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
+            except ValueError:
+                return ''
         elif isinstance(col_value, models.Model ):
             return col_value.__str__()
         elif callable(col_value):
@@ -255,7 +304,7 @@ class ControlQueryList(ControlBase):
             return [ [m.pk, str(m)] for m in queryset[first_row:last_row] ]
         else:
             queryset = queryset.distinct()
-            queryset = queryset.order_by(*queryset.query.order_by)
+            #queryset = queryset.order_by(*queryset.query.order_by)
 
             rows = []
             for o in queryset[first_row:last_row]:

@@ -539,6 +539,7 @@ class BaseWidget(object):
         :param str code: Javascript code to execute.
         """
         self._js_code2execute.append(code)
+        self.mark_to_update_client()
 
     
 
