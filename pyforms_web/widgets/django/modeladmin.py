@@ -52,6 +52,9 @@ class ModelAdminWidget(BaseWidget):
     LIST_DISPLAY    = None  #: list(str): List of fields to display in the table
     SEARCH_FIELDS   = None  #: list(str): Fields to be used in the search
 
+    EXPORT_CSV         = False #: boolean: Flag to activate the export of data to csv. The value of this flag is overwritten by the function has_export_csv_permissions
+    EXPORT_CSV_COLUMNS = None #: list(str): List of fields to export to the csv file. By default it will assume the fields in the LIST_DISPLAY variable
+
     CONTROL_LIST    = ControlQueryList #: class: Control to be used in to list the values
     FIELDSETS       = None  #: Formset of the edit form
     READ_ONLY       = []    #: list(str): List of readonly fields 
@@ -86,6 +89,8 @@ class ModelAdminWidget(BaseWidget):
         
         
         BaseWidget.__init__(self, title)
+
+        user = PyFormsMiddleware.user()
         
         #######################################################
         self._list = self.CONTROL_LIST(
@@ -94,7 +99,9 @@ class ModelAdminWidget(BaseWidget):
             list_filter  = self.LIST_FILTER   if self.LIST_FILTER   else [],
             search_fields= self.SEARCH_FIELDS if self.SEARCH_FIELDS else [],
             rows_per_page= self.LIST_ROWS_PER_PAGE,
-            n_pages      = self.LIST_N_PAGES
+            n_pages      = self.LIST_N_PAGES,
+            export_csv   = self.has_export_csv_permissions(user),
+            export_csv_columns = self.get_export_csv_columns(user)
         )
 
         has_details = self.USE_DETAILS_TO_ADD or self.USE_DETAILS_TO_EDIT
@@ -377,6 +384,28 @@ class ModelAdminWidget(BaseWidget):
         """
         return True
 
+
+    def has_export_csv_permissions(self, user):
+        """
+        Function called to check if one has permission to export the objects to csv.
+        
+        :param django.contrib.auth.models.User: User to check the permission.
+
+        Returns:
+            bool: True if has permissions, False otherwise.
+        """
+        return self.EXPORT_CSV
+
+    def get_export_csv_columns(self, user):
+        """
+        Function called to get the columns for the csv export.
+        
+        :param django.contrib.auth.models.User: User to check the permission.
+
+        Returns:
+            list(str): List of columns names.
+        """
+        return self.EXPORT_CSV_COLUMNS if self.EXPORT_CSV_COLUMNS is not None else self.LIST_DISPLAY
 
 
     #################################################################################

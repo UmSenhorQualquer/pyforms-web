@@ -172,11 +172,14 @@ class ControlQueryList extends ControlBase{
 			html += '<tfoot>';
 			html += '<tr>';
 			html += '<th colspan="'+(titles?titles.length:1)+'">';
-			//html += '<div class="ui left floated pagination menu tiny">';
 
 			html += '<a class="ui pointing basic label">'+this.properties.values_total+' results</a> ';
-			//html += '</div>';
+			
+			if( this.properties.export_csv )
+				html += '<a class="ui button mini basic export-csv-btn "> <i class="ui icon cloud download"></i> CSV</a> ';
+			
 			html += '<div class="ui right floated pagination menu tiny">';
+
 			var start_page = 0;
 			var end_page = (pages_list.length-1)>5?(pages_list.length-1):pages_list.length;
 				if( pages_list[0]>0 )
@@ -187,6 +190,7 @@ class ControlQueryList extends ControlBase{
 				if( pages_list[pages_list.length-1]>0 ) 
 					html += '<a pageindex="'+pages_list[pages_list.length-1]+'" class="icon item"><i class="right chevron icon"></i></a>';
 			html += '</div>';
+
 			html += '</th>';
 			html += '</tr>';
 			html += '</tfoot>';
@@ -225,6 +229,10 @@ class ControlQueryList extends ControlBase{
 				self.properties.pages.current_page = $(this).attr('pageindex');
 				self.basewidget.fire_event( self.name, 'page_changed_event' );
 			}
+		});
+
+		$("#"+this.control_id()+" .export-csv-btn" ).click(function(){
+			self.basewidget.fire_event( self.name, 'export_csv_event' );
 		});
 		
 	};
