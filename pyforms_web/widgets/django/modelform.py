@@ -969,7 +969,7 @@ class ModelFormWidget(BaseWidget):
 
     def has_view_permissions(self):
         """
-        The functions returns if the user has permissions to view the objects or not.
+        The functions returns if the user has permissions to view the queryset or not.
         
         Returns:
             bool: True if has view permissions, False otherwise.
@@ -978,16 +978,14 @@ class ModelFormWidget(BaseWidget):
             return False
 
         queryset = self.model.objects.filter(pk=self.object_pk)
-        if  hasattr(queryset, 'view_permissions'):
-            return queryset.view_permissions(
-                PyFormsMiddleware.user()
-            ).exists()
+        if  hasattr(queryset, 'has_view_permissions'):
+            return queryset.has_view_permissions( PyFormsMiddleware.user() )
         else:    
             return True
 
     def has_remove_permissions(self):
         """
-        The functions returns if the user has permissions to remove the object or not.
+        The functions returns if the user has permissions to remove the current queryset or not.
         
         Returns:
             bool: True if has remove permissions, False otherwise.
@@ -996,16 +994,14 @@ class ModelFormWidget(BaseWidget):
             return False
 
         queryset = self.model.objects.filter(pk=self.object_pk)
-        if  hasattr(queryset, 'remove_permissions'):
-            return queryset.remove_permissions(
-                PyFormsMiddleware.user()
-            ).exists()
+        if  hasattr(queryset, 'has_remove_permissions'):
+            return queryset.has_remove_permissions( PyFormsMiddleware.user() )
         else:    
             return True
 
     def has_update_permissions(self):
         """
-        The functions returns if the user has permissions to update the current object or not.
+        The functions returns if the user has permissions to update the current queryset or not.
         
         Returns:
             bool: True if has update permissions, False otherwise.
@@ -1014,9 +1010,7 @@ class ModelFormWidget(BaseWidget):
             return False
 
         queryset = self.model.objects.filter(pk=self.object_pk)
-        if  hasattr(queryset, 'update_permissions'):
-            return queryset.update_permissions(
-                PyFormsMiddleware.user()
-            ).exists()
+        if  hasattr(queryset, 'has_update_permissions'):
+            return queryset.has_update_permissions( PyFormsMiddleware.user() )
         else:    
             return True

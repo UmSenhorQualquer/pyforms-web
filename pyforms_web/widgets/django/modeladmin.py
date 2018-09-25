@@ -337,7 +337,7 @@ class ModelAdminWidget(BaseWidget):
 
     def has_view_permissions(self, obj):
         """
-        Function called to check if one has permission to view an object.
+        Function called to check if one has permission to view the current queryset.
         
         :param django.db.models.Model obj: object to view.
 
@@ -348,7 +348,7 @@ class ModelAdminWidget(BaseWidget):
 
     def has_remove_permissions(self, obj):
         """
-        Function called to check if one has permission to remove an object.
+        Function called to check if one has permission to remove the current queryset.
         
         :param django.db.models.Model obj: object to remove.
 
@@ -359,7 +359,7 @@ class ModelAdminWidget(BaseWidget):
 
     def has_update_permissions(self, obj):
         """
-        Function called to check if one has permission to update an object.
+        Function called to check if one has permission to update the current queryset.
         
         :param django.db.models.Model obj: object to update.
 
