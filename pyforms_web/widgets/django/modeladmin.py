@@ -424,9 +424,7 @@ class ModelAdminWidget(BaseWidget):
 
         queryset = self.model.objects.all()
         if  hasattr(queryset, 'has_add_permissions'):
-            return queryset.has_add_permissions(
-                PyFormsMiddleware.user()
-            )
+            return queryset.has_add_permissions( PyFormsMiddleware.user() )
         else:    
             return True
 
@@ -441,10 +439,8 @@ class ModelAdminWidget(BaseWidget):
             return False
 
         queryset = self.model.objects.filter(pk=obj.pk)
-        if  hasattr(queryset, 'view_permissions'):
-            return queryset.view_permissions(
-                PyFormsMiddleware.user()
-            ).exists()
+        if  hasattr(queryset, 'has_view_permissions'):
+            return queryset.has_view_permissions( PyFormsMiddleware.user() )
         else:    
             return True
 
