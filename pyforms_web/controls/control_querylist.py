@@ -84,7 +84,7 @@ class ControlQueryList(ControlBase):
     def export_csv_http_response(self):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="{0}.csv"'.format(timezone.now().isoformat())
-        writer = csv.writer(response)
+        writer = csv.writer(response, delimiter=";")
 
         queryset = self.value
 
