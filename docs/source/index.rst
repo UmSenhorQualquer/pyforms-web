@@ -8,7 +8,7 @@ Pyforms Web documentation!
 
 **Pyforms Web** is Python 3 framework to create single-page web applications.
 
-The framework aims the boost the developement productivity by providing an API in Python that generates HTML Forms amd manages all the client\server forms communications.
+The framework aims the boost the development productivity by providing an API in Python that generates HTML Forms amd manages all the client\server forms communications.
 
 Developers do not require to write any HTML or Javascript code, all the code is done in Python 3.
 
