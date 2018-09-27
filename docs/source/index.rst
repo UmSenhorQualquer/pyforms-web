@@ -97,6 +97,14 @@ The next code produces the next web application.
    api-reference/python/index
    api-reference/javascript/index
 
+.. toctree::
+   :maxdepth: 4
+   :caption: More docs
+   
+   Pyforms <https://pyforms.readthedocs.io>
+   Pyforms-GUI <https://pyforms-gui.readthedocs.io>
+   Pyforms-WEB <https://pyforms-web.readthedocs.io>
+
 Indices and tables
 ==================
 
