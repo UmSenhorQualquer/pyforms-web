@@ -132,7 +132,8 @@ class ControlQueryList(ControlBase):
             qs.query    = self._query
 
             # apply filters
-            for f in self.filter_by: qs = qs.filter(**f)
+            for f in self.filter_by: 
+                qs = qs.filter(**f)
 
             # apply search keys
             if self.search_field_key and len(self.search_field_key)>0:
@@ -313,7 +314,7 @@ class ControlQueryList(ControlBase):
             
             return rows
 
-
+    """
     def get_datetimefield_options(self, column_name):
         column_filter = "{0}__gte".format(column_name)
 
@@ -327,13 +328,13 @@ class ControlQueryList(ControlBase):
         
         return {
             'items': [
-                ("{0}__gte={1}&{0}__lte={2}".format(column_name, today_begin.isoformat(), today_end.isoformat()),      'Today'),
-                ("{0}__gte={1}&{0}__lte={2}".format(column_name, month_begin.isoformat(), month_end.isoformat()),      'This month'),
-                ("{0}__gte={1}&{0}__lte={2}".format(column_name, today_begin.isoformat(), next_4_months.isoformat()),  'Next 4 months'), 
+                ("{0}__gte={1}&{0}__lte={2}".format(column_name, today_begin.strftime('%Y-%m-%d'), today_end.strftime('%Y-%m-%d')),      'Today'),
+                ("{0}__gte={1}&{0}__lte={2}".format(column_name, month_begin.strftime('%Y-%m-%d'), month_end.strftime('%Y-%m-%d')),      'This month'),
+                ("{0}__gte={1}&{0}__lte={2}".format(column_name, today_begin.strftime('%Y-%m-%d'), next_4_months.strftime('%Y-%m-%d')),  'Next 4 months'), 
                 ("{0}__year={1}".format(column_name, now.year), 'This year')
             ]
         }
-
+    """
 
     def deserialize(self, properties):
         self._label   = properties.get('label','')
@@ -356,8 +357,6 @@ class ControlQueryList(ControlBase):
             
             if field is None: continue
 
-        
-            field_type       = 'combo'
             field_properties = {
                 'field_type': 'combo',
                 'label':    get_lookup_verbose_name(model, column_name),
@@ -375,8 +374,12 @@ class ControlQueryList(ControlBase):
                 })
             
             elif isinstance(field, (models.DateField, models.DateTimeField) ):
-                field_properties.update(self.get_datetimefield_options(column_name))
-            
+                #field_properties.update(self.get_datetimefield_options(column_name))
+                
+                field_properties.update({
+                    'field_type': 'date-range'
+                })
+
             elif field.is_relation:
                 objects = field.related_model.objects.all()
 
