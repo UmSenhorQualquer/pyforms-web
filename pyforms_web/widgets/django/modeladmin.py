@@ -179,7 +179,8 @@ class ModelAdminWidget(BaseWidget):
             Function called to configure the CONTROL_LIST to display the data
         """
         self._list.value = self.__get_queryset()
-
+        # force the list to be updated
+        self._list.mark_to_update_client()
 
     def get_queryset(self, request, queryset):
         """
@@ -220,7 +221,11 @@ class ModelAdminWidget(BaseWidget):
         """
         Function called to hide the form
         """
-        # only if the button exists: 
+
+        # hide details
+        if hasattr(self, '_details'): self._details.hide()
+
+        # show the buttons, only if the they exists: 
         toolbar = [self.toolbar] if isinstance(self.toolbar, str) else self.toolbar
         if toolbar:
             for o in toolbar:
@@ -231,8 +236,7 @@ class ModelAdminWidget(BaseWidget):
         self._list.selected_row_id = -1
         self.populate_list()
         
-        if hasattr(self, '_details'): 
-            self._details.hide()
+        
 
     def show_create_form(self):
         """

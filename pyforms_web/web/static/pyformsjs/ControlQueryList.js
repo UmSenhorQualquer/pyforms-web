@@ -279,9 +279,8 @@ class ControlQueryList extends ControlBase{
     ////////////////////////////////////////////////////////////////////////////////
 
     set_value(value){
-        
         var titles = this.properties.horizontal_headers;
-        var data   = this.properties.values;
+        var data   = value;
 
         if(this.properties.search_field_key==null)
             $("#"+this.place_id()+"-search").val('');

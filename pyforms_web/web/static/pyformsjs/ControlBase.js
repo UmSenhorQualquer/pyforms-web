@@ -259,6 +259,10 @@ class ControlBase{
     @param {object} data - Data sent by the server.
     */
     deserialize(data){
+        console.log(this.properties.name);
+        console.log(data);
+
+        console.log(this.properties.name, this.properties.value);
         var update_value = data.value!=this.properties.value;
         $.extend(this.properties, data);
         if(update_value) this.set_value(this.properties.value);

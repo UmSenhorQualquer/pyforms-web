@@ -802,14 +802,14 @@ class PopupWindow(BaseWidget):
         
         self._label = ControlLabel(default=msg)
         #self._label.css = msg_type
-       
+        buttons_formset = []
+            
         if buttons:
-            buttons_formset = []
             for i, b in enumerate(buttons):
                 name = 'button_{0}'.format(i)
                 setattr(self, name, ControlButton(b))
                 getattr(self, name ).value = make_lambda_func(handler, popup=self, button=b)
                 buttons_formset.append(name)
     
-        self.formset = ['_label'] + [no_columns(buttons_formset)]
+        self.formset = ['_label'] + ([no_columns(buttons_formset)] if buttons_formset else [])
        

@@ -83,6 +83,9 @@ class ModelFormWidget(BaseWidget):
     CLOSE_ON_REMOVE = False 
     #: bool: Close the application on cancel
     CLOSE_ON_CANCEL = False
+
+    #: bool: Call populate_list function of the parent application when object is saved, updated or deleted
+    POPULATE_PARENT = True
  
     #: str: Label for the save button
     SAVE_BTN_LABEL     = '<i class="save icon"></i> Save' 
@@ -235,10 +238,16 @@ class ModelFormWidget(BaseWidget):
         """
         Event called when the cancel button is pressed
         """
+
+        # close the application on cancel
         if self.CLOSE_ON_CANCEL:
             self.close()
-        else:
-            self.hide_form()
+        
+        # the application has a ModelAdmin app as parent. Call parent hide_form 
+        elif hasattr(self.parent, 'hide_form'):
+            self.parent.hide_form()
+
+        
 
 
     def autocomplete_search(self, queryset, keyword, control):
@@ -506,38 +515,15 @@ class ModelFormWidget(BaseWidget):
         :param django.db.models.Model obj: Object to save.
         :param dict kwargs: Any named argument passed to this function will be passed to the Model save method. Example: Model.save(**kwargs).
         """
-        try:
-            obj.full_clean()
-        except ValidationError as e:
-            html = '<ul class="list">'
-            for field_name, messages in e.message_dict.items():
-                
-                try:
-                    getattr(self, field_name).error = True
-
-                    label = get_lookup_verbose_name(self.model, field_name)
-                    html += '<li><b>{0}</b>'.format(label.capitalize())
-                    field_error = True
-            
-                except FieldDoesNotExist:
-                    field_error = False
-                except AttributeError:
-                    field_error = False
-
-                if field_error: html += '<ul>'
-                for msg in messages: html += '<li>{0}</li>'.format(msg)
-                if field_error: html += '</ul></li>'
-                
-            html+= '</ul>'
-            self.alert(html)
-            return None
-
         obj.save(**kwargs)
         return obj
 
     def save_event(self):
         """
-        Function called when the save is called.
+        Function called when the save is called. 
+        It check the user permissions.
+        It sets the object to be saved fields.
+        It validates the form fields values.
 
         Returns:
             :django.db.models.Model object: Created object or None if the object was not saved with success.
@@ -624,8 +610,40 @@ class ModelFormWidget(BaseWidget):
                         
                     setattr(obj, field.name, value)
                 
+            ### validate form values
+            try:
+                
+                obj.full_clean()
+                obj = self.save_object(obj)
 
-            obj = self.save_object(obj)
+            except ValidationError as e:
+                # Found errors, the object was not saved
+
+                html = '<ul class="list">'
+                for field_name, messages in e.message_dict.items():
+                    
+                    try:
+                        getattr(self, field_name).error = True
+
+                        label = get_lookup_verbose_name(self.model, field_name)
+                        html += '<li><b>{0}</b>'.format(label.capitalize())
+                        field_error = True
+                
+                    except FieldDoesNotExist:
+                        field_error = False
+                    except AttributeError:
+                        field_error = False
+
+                    if field_error: html += '<ul>'
+                    for msg in messages: html += '<li>{0}</li>'.format(msg)
+                    if field_error: html += '</ul></li>'
+                    
+                html+= '</ul>'
+                self.alert(html)
+
+                obj = None
+
+            
 
             # continues the save only if the object was saved with success
             if obj is not None:
@@ -864,8 +882,14 @@ class ModelFormWidget(BaseWidget):
 
         if self.parent and obj:
             # it is being use from a ModelAdminWidget
-            self.parent.show_edit_form(self.model_object)
-            self.parent.hide_form()
+
+            # update the parent list
+            if self.POPULATE_PARENT: self.parent.populate_list()
+            
+            self.cancel_btn_event()
+            self.parent.show_edit_form(obj)
+            self.parent.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
+        
         elif obj:
             # it is executing as a single app
             if self.has_add_permissions():    self._create_btn.hide()
@@ -897,6 +921,13 @@ class ModelFormWidget(BaseWidget):
         obj = self.save_event()
         if obj:
             self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
+
+            # update the parent list
+
+            if self.POPULATE_PARENT and self.parent:
+                self.parent.populate_list()
+
+    
 
     
     def __remove_btn_event(self):
@@ -942,6 +973,11 @@ class ModelFormWidget(BaseWidget):
                 handler=self.popup_remove_handler
             )
             popup.button_0.css = 'basic red'
+
+            # update the parent list
+            if self.POPULATE_PARENT and self.parent:
+                self.parent.populate_list()
+
 
 
 

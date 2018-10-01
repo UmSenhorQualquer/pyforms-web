@@ -218,8 +218,7 @@ class ControlQueryList(ControlBase):
             'sort_by':         self.sort_by,
             'pages':           {'current_page': self._current_page, 'pages_list':self.__get_pages_2_show(queryset) },
             'pages_total':     total_n_pages,
-            'value':           '',
-            'values':          rows,
+            'value':           rows,
             'values_total':    total_rows,
             'selected_row_id': self._selected_row_id
         })
