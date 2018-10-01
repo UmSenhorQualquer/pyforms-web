@@ -342,6 +342,19 @@ ControlPassword
 
 ----------------------------
 
+
+
+ControlPieChart
+----------------------------
+
+.. autoclass:: pyforms_web.controls.control_piechart.ControlPieChart
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
+----------------------------
+
 ControlPlayer
 ----------------------------
 

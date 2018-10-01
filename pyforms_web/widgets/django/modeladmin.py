@@ -200,7 +200,7 @@ class ModelAdminWidget(BaseWidget):
 
 
     def get_related_field_queryset(self, request, list_queryset, field, queryset):
-        """"
+        """
         Called to return the main list filters for the ForeignKeys and ManyToMany fields.
         
         :param django.http.request.HttpRequest request: HttpRequest originating the call of this function.
