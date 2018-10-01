@@ -277,6 +277,19 @@ ControlLabel
 
 ----------------------------
 
+
+ControlList
+----------------------------
+
+.. autoclass:: pyforms_web.controls.control_list.ControlList
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
+
+----------------------------
+
 ControlSimpleLabel
 ----------------------------
 

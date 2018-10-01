@@ -15,6 +15,9 @@ class ControlCombo(ControlBase):
         for item in items:
             self.add_item(*item)
 
+        if not items and 'default' in kwargs:
+            del kwargs['default']
+
         super(ControlCombo, self).__init__(*args, **kwargs)
         
     def init_form(self): 
