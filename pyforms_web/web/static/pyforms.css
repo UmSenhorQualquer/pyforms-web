@@ -336,3 +336,8 @@ h3.subtitle {
     right: 2px;
     top:-2px;
 }
+
+
+.ui.modal > .content{
+    background-color: #f1f4f5;
+} 

@@ -23,6 +23,7 @@ from django.conf import settings
 from django.db import models
 import os
 from django.db.models import Q
+from confapp import conf
 
 from pyforms_web.utils import get_lookup_verbose_name
 
@@ -239,10 +240,16 @@ class ModelFormWidget(BaseWidget):
         Event called when the cancel button is pressed
         """
 
+        # for orquestra
+        try:
+            if self.LAYOUT_POSITION in [conf.ORQUESTRA_NEW_WINDOW,conf.ORQUESTRA_NEW_TAB]:
+                self.close()
+        except:
+            pass
+
         # close the application on cancel
         if self.CLOSE_ON_CANCEL:
             self.close()
-        
         # the application has a ModelAdmin app as parent. Call parent hide_form 
         elif hasattr(self.parent, 'hide_form'):
             self.parent.hide_form()
@@ -325,12 +332,16 @@ class ModelFormWidget(BaseWidget):
 
         self.__update_related_fields()
 
-        # clear all the fields
+        # clear all the fields present in the model
         for field_name in fields2show:
             if hasattr(self, field_name):
-                pyforms_field = getattr(self, field_name)
-                pyforms_field.value = None
-
+                try:
+                    field = self.model._meta.get_field(field_name)
+                    pyforms_field = getattr(self, field_name)
+                    pyforms_field.value = None
+                except FieldDoesNotExist:
+                    pass
+                
         for field in self.edit_fields: field.show()
         
         for inline in self.inlines_controls:
@@ -511,11 +522,44 @@ class ModelFormWidget(BaseWidget):
     def save_object(self, obj, **kwargs):
         """
         Function called to save the object
+        It validates the form fields values.
 
+       
         :param django.db.models.Model obj: Object to save.
         :param dict kwargs: Any named argument passed to this function will be passed to the Model save method. Example: Model.save(**kwargs).
         """
-        obj.save(**kwargs)
+
+        ### validate form values
+        try:
+            obj.full_clean()
+            obj.save(**kwargs)
+        except ValidationError as e:
+            # Found errors, the object was not saved
+
+            html = '<ul class="list">'
+            for field_name, messages in e.message_dict.items():
+                
+                try:
+                    if hasattr(self, field_name):
+                        getattr(self, field_name).error = True
+                        label = get_lookup_verbose_name(self.model, field_name)
+                        html += '<li><b>{0}</b>'.format(label.capitalize())
+                        field_error = True
+                    else:
+                        field_error = False
+
+                except FieldDoesNotExist:
+                    field_error = False
+
+                if field_error: html += '<ul>'
+                for msg in messages: html += '<li>{0}</li>'.format(msg)
+                if field_error: html += '</ul></li>'
+                
+            html+= '</ul>'
+            self.alert(html)
+
+            obj = None
+
         return obj
 
     def save_event(self):
@@ -523,8 +567,7 @@ class ModelFormWidget(BaseWidget):
         Function called when the save is called. 
         It check the user permissions.
         It sets the object to be saved fields.
-        It validates the form fields values.
-
+       
         Returns:
             :django.db.models.Model object: Created object or None if the object was not saved with success.
         """
@@ -609,41 +652,8 @@ class ModelFormWidget(BaseWidget):
                         value = ''
                         
                     setattr(obj, field.name, value)
-                
-            ### validate form values
-            try:
-                
-                obj.full_clean()
-                obj = self.save_object(obj)
-
-            except ValidationError as e:
-                # Found errors, the object was not saved
-
-                html = '<ul class="list">'
-                for field_name, messages in e.message_dict.items():
-                    
-                    try:
-                        getattr(self, field_name).error = True
-
-                        label = get_lookup_verbose_name(self.model, field_name)
-                        html += '<li><b>{0}</b>'.format(label.capitalize())
-                        field_error = True
-                
-                    except FieldDoesNotExist:
-                        field_error = False
-                    except AttributeError:
-                        field_error = False
-
-                    if field_error: html += '<ul>'
-                    for msg in messages: html += '<li>{0}</li>'.format(msg)
-                    if field_error: html += '</ul></li>'
-                    
-                html+= '</ul>'
-                self.alert(html)
-
-                obj = None
-
-            
+              
+            obj = self.save_object(obj)            
 
             # continues the save only if the object was saved with success
             if obj is not None:
