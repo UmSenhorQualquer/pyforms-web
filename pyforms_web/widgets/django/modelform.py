@@ -114,6 +114,17 @@ class ModelFormWidget(BaseWidget):
 
         self.object_pk = kwargs.get('pk', None)
         self.model     = kwargs.get('model',     self.MODEL)
+
+        if self.object_pk:
+            if not self.has_view_permissions():
+                self.formset = ['alert:No permissions']
+                return 
+        else:
+            if not self.has_add_permissions():
+                self.formset = ['alert:No permissions']
+                return 
+
+
         self.fieldsets = kwargs.get('fieldsets', self.FIELDSETS)
         self.readonly  = kwargs.get('readonly',  self.READ_ONLY)
         self.has_cancel_btn = kwargs.get('has_cancel_btn',  self.HAS_CANCEL_BTN_ON_ADD if self.object_pk is None else self.HAS_CANCEL_BTN_ON_EDIT)
