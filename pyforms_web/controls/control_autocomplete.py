@@ -125,9 +125,8 @@ class ControlAutoComplete(ControlBase):
     """
     
     def deserialize(self, data):
-        super(ControlAutoComplete,self).deserialize(data)
-
-        value = data.get('value')
+        value = data.get('value', None)
+        
         if self.multiple:
             if value is None:
                 self.value = []
@@ -135,6 +134,7 @@ class ControlAutoComplete(ControlBase):
                 self.value = [(int(v) if v and v.isdigit() else None) for v in value.split(',')]
         else:
             self.value = int(value) if value and value.isdigit() else None
+
 
     def serialize(self):
         data = super(ControlAutoComplete,self).serialize()

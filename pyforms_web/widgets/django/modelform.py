@@ -521,6 +521,11 @@ class ModelFormWidget(BaseWidget):
             else:
                 popup.warning('The object was not deleted!','Warning!')
 
+
+
+
+
+
     def create_newobject(self):
         """
         Function called to create a new object of the model.
@@ -541,12 +546,35 @@ class ModelFormWidget(BaseWidget):
         """
 
         ### validate form values
-        try:
-            obj.full_clean()
-            obj.save(**kwargs)
-        except ValidationError as e:
-            # Found errors, the object was not saved
+        obj.save(**kwargs)
+        return obj
 
+
+
+
+
+
+    def validate_object(self, obj):
+        """
+        Function called the model object
+       
+        :param django.db.models.Model obj: Object to validate.
+
+        Returns:
+            :django.db.models.Model object: Created object or None if the object was not saved with success.
+        """
+
+        # Validate the object
+        try:
+            
+            obj.full_clean()
+            print('xxx')
+
+        except ValidationError as e:
+
+            obj = None
+
+            # Found errors, the object was not saved
             html = '<ul class="list">'
             for field_name, messages in e.message_dict.items():
                 
@@ -567,139 +595,201 @@ class ModelFormWidget(BaseWidget):
                 if field_error: html += '</ul></li>'
                 
             html+= '</ul>'
-            self.alert(html)
-
-            obj = None
+            raise Exception(html)
 
         return obj
 
-    def save_event(self):
+
+    def update_object_fields(self, obj):
         """
-        Function called when the save is called. 
-        It check the user permissions.
-        It sets the object to be saved fields.
-       
-        Returns:
-            :django.db.models.Model object: Created object or None if the object was not saved with success.
+        Update the obj fields values with the form inputs values
+
+        :param django.db.models.Model obj: Object to update the values.
         """
         fields2show = self.get_visible_fields_names()
+        
+        for field in self.model._meta.get_fields():
+            # ignore fields that are not in the formset
+            if field.name not in fields2show: continue
+            # ignore read only fields
+            if field.name in self.readonly:   continue
+            
+            pyforms_field = getattr(self, field.name)
+            value         = pyforms_field.value
+
+            # if AutoField
+            if   isinstance(field, models.AutoField):
+                continue
+            
+            # if FileField
+            elif isinstance(field, models.FileField):
+                getattr(self, field.name).error = False
+                value = getattr(self, field.name).value
+                if value:
+                    try:
+                        os.makedirs(os.path.join(settings.MEDIA_ROOT, field.upload_to))
+                    except os.error as e:
+                        pass
+
+                    paths = [p for p in value.split('/') if len(p)>0][1:]
+                    from_path   = os.path.join(settings.MEDIA_ROOT,*paths)
+                    if os.path.exists(from_path):
+                        to_path     = os.path.join(settings.MEDIA_ROOT, field.upload_to, os.path.basename(value) )
+                        os.rename(from_path, to_path)
+    
+                        url = '/'.join([field.upload_to]+[os.path.basename(value) ])
+                        if url[0]=='/': url = url[1:]
+                        setattr(obj, field.name, url)
+                elif field.null:
+                    setattr(obj, field.name, None)
+                else:
+                    setattr(obj, field.name, '')
+            
+            # if ForeignKey
+            elif isinstance(field, models.ForeignKey):
+                if value is not None:
+                    try:
+                        value = field.related_model.objects.get(pk=value)
+                    except:
+                        self.alert(
+                            'The field [{0}] has an error.'.format(field.verbose_name)
+                        )
+                        pyforms_field.error = True
+                else:
+                    value = None
+                    
+                setattr(obj, field.name, value)
+
+            # all other fields except the ManyToManyField
+            elif not isinstance(field, models.ManyToManyField):
+                pyforms_field.error = False
+
+                if isinstance(field, models.CharField) and value is None and field.null is False:
+                    value = ''
+                    
+                setattr(obj, field.name, value)
+
+        return obj
+
+    def save_related_fields(self, obj):
+        """
+        Save related fields
+
+        :param django.db.models.Model obj: Parent object to save.
+        """
+
+        for field in self.model._meta.get_fields():
+
+            if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
+                values          = getattr(self, field.name).value
+                field_instance  = getattr(obj, field.name)
+
+                objs            = field.related_model.objects.filter(pk__in=values)
+                values_2_remove = field_instance.all().exclude(pk__in=[o.pk for o in objs])
+
+                for o in values_2_remove: field_instance.remove(o)
+
+                values_2_add    = objs.exclude(pk__in=[o.pk for o in field_instance.all()])
+                for o in values_2_add: field_instance.add(o)
+                     
+        return obj
+
+
+    def save_form_event(self, obj):
+        """
+        Function handling the form save.
+        This function, updates the obj with the form values,
+        validate the obj fields, and call the save_event function.
+        
+        :param django.db.models.Model obj: Model object used for the save.
+        
+        Returns:
+            :boolean: It returns True or False if the save was successfully.
+        """
         user = PyFormsMiddleware.user()
 
+        # decides if an object is going to be created or updated
+        new_object = obj.pk is None
+
         try:
-            obj = self.model_object
-
-            ## create an object if does not exists ####
-            if obj is None: 
-                #check if it has permissions to add new registers
-                if not self.has_add_permissions():
-                    raise Exception('Your user does not have permissions to add')
-                
-                obj = self.create_newobject()
-
-            else:
-                if not self.has_update_permissions():
-                    raise Exception('Your user does not have permissions to save')
-            ###########################################
-            
-            # if it is working as an inline edition form #
-            if self.parent_field:
-                setattr(obj, 
-                    self.parent_field.name, 
-                    self.parent_model.objects.get(pk=self.parent_pk)
-                )
-            ##############################################
-
-            for field in self.model._meta.get_fields():
-                if field.name not in fields2show: continue
-                if field.name in self.readonly:   continue
-                
-                pyforms_field = getattr(self, field.name)
-                value         = pyforms_field.value
-
-                if   isinstance(field, models.AutoField):
-                    continue
-                
-                elif isinstance(field, models.FileField):
-                    getattr(self, field.name).error = False
-                    value = getattr(self, field.name).value
-                    if value:
-                        try:
-                            os.makedirs(os.path.join(settings.MEDIA_ROOT, field.upload_to))
-                        except os.error as e:
-                            pass
-
-                        paths = [p for p in value.split('/') if len(p)>0][1:]
-                        from_path   = os.path.join(settings.MEDIA_ROOT,*paths)
-                        if os.path.exists(from_path):
-                            to_path     = os.path.join(settings.MEDIA_ROOT, field.upload_to, os.path.basename(value) )
-                            os.rename(from_path, to_path)
-        
-                            url = '/'.join([field.upload_to]+[os.path.basename(value) ])
-                            if url[0]=='/': url = url[1:]
-                            setattr(obj, field.name, url)
-                    elif field.null:
-                        setattr(obj, field.name, None)
-                    else:
-                        setattr(obj, field.name, '')
-                
-                elif isinstance(field, models.ForeignKey):
-                    if value is not None:
-                        try:
-                            value = field.related_model.objects.get(pk=value)
-                        except:
-                            self.alert(
-                                'The field [{0}] has an error.'.format(field.verbose_name)
-                            )
-                            pyforms_field.error = True
-                    else:
-                        value = None
-                        
-                    setattr(obj, field.name, value)
-
-                elif not isinstance(field, models.ManyToManyField):
-                    pyforms_field.error = False
-
-                    if isinstance(field, models.CharField) and value is None and field.null is False:
-                        value = ''
-                        
-                    setattr(obj, field.name, value)
-              
-            obj = self.save_object(obj)            
-
-            # continues the save only if the object was saved with success
-            if obj is not None:
-            
-                for field in self.model._meta.get_fields():
-
-                    if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
-                        values          = getattr(self, field.name).value
-                        field_instance  = getattr(obj, field.name)
-
-                        objs            = field.related_model.objects.filter(pk__in=values)
-                        values_2_remove = field_instance.all().exclude(pk__in=[o.pk for o in objs])
-
-                        for o in values_2_remove: 
-                            field_instance.remove(o)
-
-                        values_2_add    = objs.exclude(pk__in=[o.pk for o in field_instance.all()])
-                        for o in values_2_add:
-                            field_instance.add(o)
-                        
-                       
-                self.object_pk = obj.pk
-
-                self.update_callable_fields()
-                self.update_autonumber_fields()
-
-            
-
-            return obj
-
+            obj = self.update_object_fields(obj)
+            obj = self.validate_object(obj)
+            return self.save_event(obj, new_object)
         except Exception as e:
             traceback.print_exc()
             self.alert(str(e))
+            return False
 
-            return None
+    def save_event(self, obj, new_object):
+        """
+        Function handling the form save.
+        This function, updates the obj with the form values,
+        validate the obj fields, and call the save_event function.
+        
+        :param django.db.models.Model obj: Model object used for the save.
+        
+        Returns:
+            :boolean: It returns True or False if the save was successfully.
+        """
+        
+        obj = self.save_object(obj)
+        obj = self.save_related_fields(obj)
+
+        self.object_pk = obj.pk
+        self.update_callable_fields()
+        self.update_autonumber_fields()
+
+        # Add object mode
+        if new_object:
+
+            if self.parent and obj:
+                # it is being use from a ModelAdminWidget
+
+                # update the parent list
+                if self.POPULATE_PARENT: self.parent.populate_list()
+                
+                self.cancel_btn_event()
+                self.parent.show_edit_form(obj)
+                self.parent.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
+            
+            elif obj:
+                # it is executing as a single app
+                if self.has_add_permissions():    self._create_btn.hide()
+                if self.has_update_permissions(): self._save_btn.show()
+                if self.has_remove_permissions(): self._remove_btn.show()
+
+                self.inlines_apps = []
+                for inline in self.inlines:
+                    pyforms_field       = getattr(self, inline.__name__)
+                    pyforms_field._name = inline.__name__
+                    app = inline(
+                        parent_model=self.model,
+                        parent_pk=self.object_pk
+                    )
+                    self.inlines_apps.append(app)
+                    pyforms_field.value = app
+                    pyforms_field.show()
+
+                self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
+
+        # Update object mode
+        else:
+
+            if obj:
+                self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
+
+                # update the parent list
+                if self.POPULATE_PARENT and self.parent:
+                    self.parent.populate_list()
+
+        return True
+
+
+    
+
+
+        
+
 
     
 
@@ -897,59 +987,28 @@ class ModelFormWidget(BaseWidget):
         if not self.has_add_permissions():
             raise Exception('You do not have permissions to add objects.')
 
-
-        self.object_pk = None
-        obj = self.save_event()
-
-        if self.parent and obj:
-            # it is being use from a ModelAdminWidget
-
-            # update the parent list
-            if self.POPULATE_PARENT: self.parent.populate_list()
-            
-            self.cancel_btn_event()
-            self.parent.show_edit_form(obj)
-            self.parent.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
-        
-        elif obj:
-            # it is executing as a single app
-            if self.has_add_permissions():    self._create_btn.hide()
-            if self.has_update_permissions(): self._save_btn.show()
-            if self.has_remove_permissions(): self._remove_btn.show()
-
-            self.inlines_apps = []
-            for inline in self.inlines:
-                pyforms_field       = getattr(self, inline.__name__)
-                pyforms_field._name = inline.__name__
-                app = inline(
-                    parent_model=self.model,
-                    parent_pk=self.object_pk
-                )
-                self.inlines_apps.append(app)
-                pyforms_field.value = app
-                pyforms_field.show()
-
-            self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
+        obj = self.create_newobject()
+        self.save_form_event(obj)
             
 
     def __save_btn_event(self):
         """
         Event called by the save button
         """
-        if not self.has_update_permissions():
-            raise Exception('You do not have permissions to update the object.')
+        obj = self.model_object
 
-        obj = self.save_event()
-        if obj:
-            self.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
+        if obj is None:
+            # The object is None, call the create event 
+            self.__create_btn_event()
+            return
 
-            # update the parent list
+        else:
 
-            if self.POPULATE_PARENT and self.parent:
-                self.parent.populate_list()
+            if not self.has_update_permissions():
+                raise Exception('You do not have permissions to update the object.')
 
-    
-
+            self.save_form_event(obj)
+            
     
     def __remove_btn_event(self):
         """
