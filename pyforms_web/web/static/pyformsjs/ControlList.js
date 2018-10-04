@@ -40,15 +40,22 @@ class ControlList extends ControlBase{
 		var html = "<div id='"+this.place_id()+"' class='field control'>";
 		if(this.properties.label_visible) html += '<label>&nbsp;</label>';
 		html += "<table class='ui selectable celled table "+this.properties.css+" ControlList' id='"+this.control_id()+"' >";
+		
+		// GENERATE THE HEADER
 		html += "<thead>";
 		html += "<tr>";
-		var titles = this.properties.horizontal_headers;
-		for(var i=0; i<titles.length; i++) html += "<th>"+titles[i]+"</th>";
+		var colssizes = this.properties.columns_size;
+		var titles 	  = this.properties.horizontal_headers;
+		for(var i=0; i<titles.length; i++){
+			html += `<th ${(colssizes)?`style='width:${colssizes[i]}'`:''} >${titles[i]}</th>`;
+		};
 		html += "</tr>";
 		html += "</thead>";
-		html += "<tbody>";
+		// END GENERATE THE HEADER
+
 		var data = this.properties.value;
 		
+		html += "<tbody>";
 		if(data!=undefined)
 			for(var i=0; i<data.length; i++){
 				var selected = this.properties.selected_index==i;
@@ -56,8 +63,9 @@ class ControlList extends ControlBase{
 				html += selected?"<tr>":"<tr>";
 				var length = 0;
 				if(data[i]) length = data[i].length;
-				for(var j=0; j<length; j++) 
+				for(var j=0; j<length; j++)
 					html += selected?"<td class='active' >"+data[i][j]+"</td>":"<td>"+data[i][j]+"</td>";
+				
 				if(length<titles.length) 
 					for(var j=length; j<titles.length; j++) 
 						html += selected?"<td class='active' ></td>":"<td></td>";
