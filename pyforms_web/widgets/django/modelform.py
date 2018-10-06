@@ -16,7 +16,7 @@ from pyforms_web.controls.control_multipleselectionquery  import ControlMultiple
 
 import collections
 from pyforms_web.web.middleware import PyFormsMiddleware
-from django.core.exceptions import ValidationError, FieldDoesNotExist
+from django.core.exceptions import ValidationError, FieldDoesNotExist, NON_FIELD_ERRORS
 from .utils import get_fieldsets_strings
 import traceback
 from django.conf import settings
@@ -568,7 +568,6 @@ class ModelFormWidget(BaseWidget):
         try:
             
             obj.full_clean()
-            print('xxx')
 
         except ValidationError as e:
 
@@ -584,8 +583,11 @@ class ModelFormWidget(BaseWidget):
                         label = get_lookup_verbose_name(self.model, field_name)
                         html += '<li><b>{0}</b>'.format(label.capitalize())
                         field_error = True
-                    else:
+                    elif field_name==NON_FIELD_ERRORS:
                         field_error = False
+                    else:
+                        html += '<li><b>{0}</b>'.format(field_name)
+                        field_error = True
 
                 except FieldDoesNotExist:
                     field_error = False
@@ -606,6 +608,14 @@ class ModelFormWidget(BaseWidget):
 
         :param django.db.models.Model obj: Object to update the values.
         """
+
+        # if it is working as an inline edition form #
+        if self.parent_field:
+            setattr(obj, 
+                self.parent_field.name, 
+                self.parent_model.objects.get(pk=self.parent_pk)
+            )
+
         fields2show = self.get_visible_fields_names()
         
         for field in self.model._meta.get_fields():
