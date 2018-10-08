@@ -109,12 +109,13 @@ class ModelFormWidget(BaseWidget):
         :param django.db.models.Model parent_model: Parent model class
         :param int pk: Model register to manage
         """
+
+        self.object_pk = kwargs.get('pk', None)
+        self.model     = kwargs.get('model', self.MODEL)
         
         BaseWidget.__init__(self, *args, **kwargs )
 
-        self.object_pk = kwargs.get('pk', None)
-        self.model     = kwargs.get('model',     self.MODEL)
-
+        
         if self.object_pk:
             if not self.has_view_permissions():
                 self.formset = ['alert:No permissions']
