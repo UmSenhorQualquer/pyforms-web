@@ -147,7 +147,7 @@ class ControlQueryList(ControlBase):
             if len(self.sort_by)>0:
                 for sort in self.sort_by:
                     direction = '-' if sort['desc'] else ''
-                    qs = queryset.order_by( direction+sort['column'] )
+                    qs = qs.order_by( direction+sort['column'] )
             
             # if no order by exists add one, to avoid the values to be show randomly in the list
             order_by = list(qs.query.order_by)
