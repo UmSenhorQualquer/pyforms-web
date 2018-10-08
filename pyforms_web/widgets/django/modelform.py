@@ -272,17 +272,12 @@ class ModelFormWidget(BaseWidget):
         """
         Function used by a combobox to get the items dynamically
 
-        :param queryset keyword: Queryset from where to filter the results
+        :param django.db.models.query.QuerySet queryset: Queryset from where to filter the results
         :param str keyword: Keyword for filter the results
         :param pyforms.controls.BaseControl: Control calling the autocomplete
         
         Returns:
-            list(dict): Results for the search in the format
-        
-            .. code-block:: python
-                    
-                [{'name':name, 'value':id, 'text':text}, ...]
-
+            django.db.models.query.QuerySet: Queryset used to update the autocomplete control
         """
         field = self.model._meta.get_field(control.name)
         queryset = self.get_related_field_queryset(field, queryset)
