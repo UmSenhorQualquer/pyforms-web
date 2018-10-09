@@ -126,8 +126,8 @@ class ModelFormWidget(BaseWidget):
                 return 
 
 
-        self.fieldsets = kwargs.get('fieldsets', self.FIELDSETS)
-        self.readonly  = kwargs.get('readonly',  self.READ_ONLY)
+        self.fieldsets = self.get_fieldsets(kwargs.get('fieldsets',  self.FIELDSETS))
+        self.readonly  = self.get_readonly(kwargs.get('readonly',  self.READ_ONLY))
         self.has_cancel_btn = kwargs.get('has_cancel_btn',  self.HAS_CANCEL_BTN_ON_ADD if self.object_pk is None else self.HAS_CANCEL_BTN_ON_EDIT)
 
         self.inlines = self.INLINES if len(self.INLINES)>0 else kwargs.get('inlines', self.INLINES)
@@ -212,6 +212,27 @@ class ModelFormWidget(BaseWidget):
     #### FUNCTIONS ##################################################################
     #################################################################################
 
+    def get_readonly(self, default):
+        """
+        The function returns the readonly fields to be set in the form.
+        
+        :param list(str) default: Default readonly configuration.
+
+        Returns:
+            list(str): Read only fields. Check class variable READ_ONLY to know more about it.
+        """
+        return default
+
+    def get_fieldsets(self, default):
+        """
+        The function returns the fieldsets organization to be set in the form.
+        
+        :param list(str) default: Default fieldsets configuration.
+        
+        Returns:
+            list(str): fieldsets. Check class variable FIELDSETS to know more about it.
+        """
+        return default
 
     def get_buttons_row(self):
         """
