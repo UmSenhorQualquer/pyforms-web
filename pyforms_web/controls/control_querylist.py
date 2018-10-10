@@ -13,7 +13,7 @@ from django.db import models
 from datetime import timedelta
 from calendar import monthrange
 from django.utils import timezone
-import locale, csv
+import locale, csv, itertools
 
 from pyforms_web.utils import get_lookup_verbose_name, get_lookup_value, get_lookup_field
 from django.db.models.fields.files import FieldFile
@@ -27,6 +27,7 @@ class ControlQueryList(ControlBase):
         self.n_pages            = kwargs.get('n_pages', 5)
         self._current_page      = 1
 
+        self.headers            = kwargs.get('headers', None)
         self.list_display       = kwargs.get('list_display', [])
         self.list_filter        = kwargs.get('list_filter', [])
         self.search_fields      = kwargs.get('search_fields', [])
@@ -196,20 +197,29 @@ class ControlQueryList(ControlBase):
         if init_form and self.list_display:
             #configure the headers titles
             headers         = []
-            for column_name in self.list_display:
-                label = get_lookup_verbose_name(queryset.model, column_name)
-                
-                headers.append({
-                    'label':  label,
-                    'column': column_name
-                })
+
+            if self.headers is None:
+                for column_name in self.list_display:
+                    label = get_lookup_verbose_name(queryset.model, column_name)
+                    
+                    headers.append({
+                        'label':  label,
+                        'column': column_name
+                    })
+            else:
+                for label, column_name in itertools.zip_longest(self.headers, self.list_display):
+                    headers.append({
+                        'label':  label,
+                        'column': column_name
+                    })
             data.update({ 'horizontal_headers':   headers, });
                 
         
         if len(self.search_fields)>0:
             data.update({'search_field_key': self.search_field_key if self.search_field_key is not None else ''})
-    
-        total_rows = queryset.count()
+        
+
+        total_rows = queryset.count() if queryset else 0
         total_n_pages   = (total_rows / self.rows_per_page) + (0 if (total_rows % self.rows_per_page)==0 else 1)
 
         data.update({

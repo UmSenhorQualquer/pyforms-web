@@ -123,6 +123,10 @@ h3.subtitle {
     cursor: pointer !important;
 }
 
+.pyforms-segment{
+    overflow-x: auto;
+}
+
 .pyforms-segment > .field{
     margin-bottom: 14px !important;
 }
