@@ -21,6 +21,7 @@ from .controls.control_html                   import ControlHtml
 from .controls.control_integer                import ControlInteger
 from .controls.control_itemslist              import ControlItemsList
 from .controls.control_label                  import ControlLabel
+from .controls.control_linechart              import ControlLineChart
 from .controls.control_simplelabel            import ControlSimpleLabel
 from .controls.control_list                   import ControlList
 from .controls.control_menu                   import ControlMenu

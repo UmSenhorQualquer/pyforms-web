@@ -274,6 +274,22 @@ ControlLabel
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
+ControlLineChart
+----------------------------
+
+.. image:: /_static/imgs/controls/linechart.png
+    :align: center
+
+
+.. autoclass:: pyforms_web.controls.control_linechart.ControlLineChart
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
+
 
 ----------------------------
 

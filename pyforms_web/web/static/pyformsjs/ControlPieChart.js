@@ -11,14 +11,15 @@ class ControlPieChart extends ControlBase{
         html +=     "</div>";
         this.jquery_place().replaceWith(html);
         var self   = this;
-        var legend = self.properties.legend;
-        var data   = self.properties.value;
+        var legend = true;
+        var data   = this.properties.value;
 
-        if(data.length==0 || data[0].length==0 ){ 
-            data = [[[0,0]]];
+        console.log(data);
+        if(!data || data.length==0){ 
+            data = [['Empty',0]];
         };
 
-        var chart = jQuery.jqplot(this.control_id(), data, 
+        var chart = jQuery.jqplot(this.control_id(), [data], 
             { 
                 seriesDefaults: {
                     // Make this a pie chart.
@@ -32,9 +33,10 @@ class ControlPieChart extends ControlBase{
                 legend: { 
                     show: true,
                     rendererOptions: {
-                        numberRows: 6
+                        numberRows: data.length/2
                     }, 
-                    location: 'e'
+                    placement: "outside",
+                    location: 's'
                 }
             }
         );
@@ -71,18 +73,20 @@ class ControlPieChart extends ControlBase{
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    set_value(value){/*
-        var self = this;
+    set_value(value){
         var options = {
-            data: value,
-            legend: {
-                show: self.properties.legend.length>0,
-                labels: self.properties.legend,
-                showLabels: true,
-                showSwatch: true
+            data: [value],
+            legend: { 
+                show: true,
+                rendererOptions: {
+                    numberRows: value.length/2
+                }, 
+                placement: "outside",
+                location: 's'
             }
-        };
-        this.chart.replot(options);*/
+    };
+        console.log(this.chart);
+        this.chart.replot(options);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +96,7 @@ class ControlPieChart extends ControlBase{
     };
 
     ////////////////////////////////////////////////////////////////////////////////
-
+    /*
     deserialize(data){
         this.properties = $.extend(this.properties, data);
         this.set_value(this.properties.value);
@@ -103,7 +107,7 @@ class ControlPieChart extends ControlBase{
     serialize(){
         this.properties.value = this.get_value();
         return this.properties; 
-    };
+    };*/
 }
 
     
