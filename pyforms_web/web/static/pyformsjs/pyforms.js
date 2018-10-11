@@ -252,6 +252,7 @@ class PyformsManager{
             var jsondata =  $.toJSON(data2send);
             var self = this;
             
+            $.ajaxSetup({async: false, cache: true});
             $.ajax({
                 method: 'post',
                 cache: false,
@@ -263,17 +264,16 @@ class PyformsManager{
                     if( res.result=='error' )
                         error_msg(res.msg);
                     else{
-                        $.ajaxSetup({async: false, cache: true});
                         for(var i=0; i<res.length; i++){
                             self.open_application(res[i]);                      
                         };
-                        $.ajaxSetup({async: true, cache: true});
                     };
                 }
             }).fail(function(xhr){
                 error_msg(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
             }).always(function(){
                 if(show_loading) basewidget.not_loading();
+                $.ajaxSetup({async: true, cache: true});
             });
 
             // check if there are more events to process ///////////////////////////
