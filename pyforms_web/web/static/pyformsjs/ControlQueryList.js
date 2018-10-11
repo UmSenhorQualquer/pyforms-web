@@ -231,7 +231,8 @@ class ControlQueryList extends ControlBase{
                 self.collect_filters_values();
                 self.basewidget.fire_event( self.name, 'filter_changed_event' );
             },
-            fullTextSearch: true
+            fullTextSearch: 'exact',
+            match: 'text'
         });
          
 
