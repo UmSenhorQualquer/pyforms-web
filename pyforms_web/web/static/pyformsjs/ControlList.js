@@ -39,7 +39,7 @@ class ControlList extends ControlBase{
 	load_table(){
 		var html = "<div id='"+this.place_id()+"' class='field control'>";
 		if(this.properties.label_visible) html += '<label>&nbsp;</label>';
-		html += "<table class='ui selectable celled table "+this.properties.css+" ControlList' id='"+this.control_id()+"' >";
+		html += "<div style='overflow-x: auto;' ><table class='ui selectable celled table "+this.properties.css+" ControlList' id='"+this.control_id()+"' >";
 		
 		// GENERATE THE HEADER
 		html += "<thead>";
@@ -55,7 +55,7 @@ class ControlList extends ControlBase{
 
 		var data = this.properties.value;
 		
-		html += "<tbody>";
+		html += "<tbody></div>";
 		if(data!=undefined)
 			for(var i=0; i<data.length; i++){
 				var selected = this.properties.selected_index==i;

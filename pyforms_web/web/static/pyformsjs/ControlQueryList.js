@@ -191,7 +191,7 @@ class ControlQueryList extends ControlBase{
         // End render the filters ###############################################
 
 
-        html += "<table class='ui selectable celled striped table ControlQueryList "+this.properties.css+" sortable' id='"+this.control_id()+"' >";
+        html += "<div style='overflow-x: auto;' ><table class='ui selectable celled striped table ControlQueryList "+this.properties.css+" sortable' id='"+this.control_id()+"' >";
         // render the table titles
         var titles = this.properties.horizontal_headers;
         if(titles && titles.length>0){
@@ -203,7 +203,7 @@ class ControlQueryList extends ControlBase{
         };
         html += "<tbody>";
         html += "</tbody>";
-        html += "</table>";
+        html += "</table></div>";
         html += "</div>";
 
         this.jquery_place().replaceWith(html);
