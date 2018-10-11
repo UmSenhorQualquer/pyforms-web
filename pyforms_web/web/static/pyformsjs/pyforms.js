@@ -51,6 +51,7 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/ControlTextArea.js");
         $.getScript("/static/pyformsjs/ControlBreadcrumb.js");
         $.getScript("/static/pyformsjs/ControlButton.js");
+        $.getScript("/static/pyformsjs/ControlBarsChart.js");
         $.getScript("/static/pyformsjs/ControlFile.js");
         $.getScript("/static/pyformsjs/ControlFileUpload.js");
         $.getScript("/static/pyformsjs/ControlDir.js");

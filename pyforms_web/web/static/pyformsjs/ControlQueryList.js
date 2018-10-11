@@ -226,10 +226,13 @@ class ControlQueryList extends ControlBase{
                 }
             })
 
-        $( "#"+this.place_id()+" .queryset-filter" ).dropdown({onChange:function(value, text, selectedItem){
-            self.collect_filters_values();
-            self.basewidget.fire_event( self.name, 'filter_changed_event' );
-        }});
+        $( "#"+this.place_id()+" .queryset-filter" ).dropdown({
+            onChange: function(value, text, selectedItem){
+                self.collect_filters_values();
+                self.basewidget.fire_event( self.name, 'filter_changed_event' );
+            },
+            fullTextSearch: true
+        });
          
 
         

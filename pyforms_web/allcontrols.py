@@ -3,6 +3,7 @@ from .controls.control_base                   import ControlBase
 from .controls.control_boundingslider         import ControlBoundingSlider
 from .controls.control_breadcrumb             import ControlBreadcrumb
 from .controls.control_button                 import ControlButton
+from .controls.control_barschart              import ControlBarsChart
 from .controls.control_calendar               import ControlCalendar
 from .controls.control_checkbox               import ControlCheckBox
 from .controls.control_checkboxlist           import ControlCheckBoxList

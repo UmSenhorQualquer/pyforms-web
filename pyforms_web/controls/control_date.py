@@ -11,7 +11,7 @@ class ControlDate(ControlBase):
 
     @property
     def value(self): return ControlBase.value.fget(self)
-
+        
     @value.setter
     def value(self, value):
         try:
@@ -22,6 +22,7 @@ class ControlDate(ControlBase):
                 try:
                     value = parse_datetime(value)
                     value = timezone.localtime(value)
+                    value = value.date()
                 except:
                     raise Exception('The value is not a valid date')
 
