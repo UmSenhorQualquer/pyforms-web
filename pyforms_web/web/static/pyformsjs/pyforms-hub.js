@@ -41,7 +41,6 @@ function run_application(application, constructor_params, method_params){
 	}).fail(function(xhr){
 		error_msg(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
 	}).always(function(){
-        if(show_loading) basewidget.not_loading();
         $.ajaxSetup({async: true, cache: true});
     });
 };
