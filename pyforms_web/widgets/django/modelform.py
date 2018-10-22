@@ -366,7 +366,8 @@ class ModelFormWidget(BaseWidget):
                 try:
                     field = self.model._meta.get_field(field_name)
                     pyforms_field = getattr(self, field_name)
-                    pyforms_field.value = None
+                    print(field.default, type(pyforms_field) )
+                    pyforms_field.value = None if field.default==models.fields.NOT_PROVIDED else field.default 
                 except FieldDoesNotExist:
                     pass
                 
@@ -923,12 +924,13 @@ class ModelFormWidget(BaseWidget):
             if not (callable(field) and not isinstance(field, models.Model)):
                 label = get_lookup_verbose_name(self.model, field_name)
 
+            # if it is a function
             if callable(field) and not isinstance(field, models.Model):
                 label = getattr(field, 'short_description') if hasattr(field, 'short_description') else field_name
                 pyforms_field = ControlText( label.capitalize(), readonly=True )
                 self._callable_fields.append( field_name )
 
-            
+            # if it is read only
             elif field.name in self.readonly:
 
                 if isinstance(field, models.TextField):
@@ -936,29 +938,33 @@ class ModelFormWidget(BaseWidget):
                 else:
                     pyforms_field = ControlText( label.capitalize(), readonly=True )
             
+            # if it is AutoField
             elif isinstance(field, models.AutoField):
                 pyforms_field = ControlText( label.capitalize(), readonly=True )
                 self._auto_fields.append( field_name )
-        
+            
+
             elif isinstance(field, models.Field) and field.choices:
                 pyforms_field = ControlCombo( 
                     label.capitalize(), 
-                    items=[ (c[1],c[0]) for c in field.choices]
+                    items=[ (c[1],c[0]) for c in field.choices],
+                    default=field.default
                 )
-            elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( label.capitalize() )
-            elif isinstance(field, models.BooleanField):                pyforms_field = ControlCheckBox( label.capitalize() )
-            elif isinstance(field, models.DateTimeField):               pyforms_field = ControlDateTime( label.capitalize() )
-            elif isinstance(field, models.DateField):                   pyforms_field = ControlDate( label.capitalize() )
-            elif isinstance(field, models.DecimalField):                pyforms_field = ControlFloat( label.capitalize() )
-            elif isinstance(field, models.FileField):                   pyforms_field = ControlFileUpload( label.capitalize() )
-            elif isinstance(field, models.FloatField):                  pyforms_field = ControlFloat( label.capitalize() )
-            elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( label.capitalize() )
-            elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( label.capitalize() )
-            elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( label.capitalize() )
+            elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( label.capitalize(), default=field.default )
+            elif isinstance(field, models.BooleanField):                pyforms_field = ControlCheckBox( label.capitalize(), default=field.default )
+            elif isinstance(field, models.DateTimeField):               pyforms_field = ControlDateTime( label.capitalize(), default=field.default )
+            elif isinstance(field, models.DateField):                   pyforms_field = ControlDate( label.capitalize(), default=field.default )
+            elif isinstance(field, models.DecimalField):                pyforms_field = ControlFloat( label.capitalize(), default=field.default )
+            elif isinstance(field, models.FileField):                   pyforms_field = ControlFileUpload( label.capitalize(), default=field.default )
+            elif isinstance(field, models.FloatField):                  pyforms_field = ControlFloat( label.capitalize(), default=field.default )
+            elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( label.capitalize(), default=field.default )
+            elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( label.capitalize(), default=field.default )
+            elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( label.capitalize(), default=field.default )
             elif isinstance(field, models.NullBooleanField):            
                 pyforms_field = ControlCombo( 
                     label.capitalize(), 
-                    items=[('Unknown', None), ('Yes', True), ('No', False)]
+                    items=[('Unknown', None), ('Yes', True), ('No', False)],
+                    default=field.default
                 )
             elif isinstance(field, models.ForeignKey):
                 query = field.related_model.objects.all()
@@ -968,7 +974,8 @@ class ModelFormWidget(BaseWidget):
                 pyforms_field = ControlAutoComplete( 
                     label.capitalize(), 
                     queryset=query,
-                    queryset_filter=self.autocomplete_search
+                    queryset_filter=self.autocomplete_search,
+                    default=field.default
                 )
 
             elif isinstance(field, models.ManyToManyField):
@@ -983,7 +990,7 @@ class ModelFormWidget(BaseWidget):
                     queryset_filter=self.autocomplete_search
                 )
             else:
-                pyforms_field = ControlText( label.capitalize() )
+                pyforms_field = ControlText( label.capitalize(), default=field.default )
             
             # add the field to the application
             if pyforms_field is not None: 
