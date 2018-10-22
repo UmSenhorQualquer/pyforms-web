@@ -90,10 +90,11 @@ class ControlAutoComplete(ControlBase):
 
         if queryset:
 
+            if self.queryset_filter:
+                queryset = self.queryset_filter(queryset, keyword, self)
+                
             if keyword:
 
-                if self.queryset_filter:
-                    queryset = self.queryset_filter(queryset, keyword, self)
                 
                 model = queryset.model
      
