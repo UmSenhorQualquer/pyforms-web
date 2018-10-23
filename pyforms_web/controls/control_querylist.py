@@ -33,6 +33,9 @@ class ControlQueryList(ControlBase):
         self.search_fields      = kwargs.get('search_fields', [])
         self.export_csv         = kwargs.get('export_csv', False)
         self.export_csv_columns = kwargs.get('export_csv_columns', self.list_display)
+        self._columns_size      = kwargs.get('columns_size', None)
+        self._columns_align     = kwargs.get('columns_align', None)
+
 
         self.search_field_key   = None
         self.filter_by          = []
@@ -123,6 +126,22 @@ class ControlQueryList(ControlBase):
     @selected_row_id.setter
     def selected_row_id(self, value): 
         self._selected_row_id = value
+
+    @property
+    def columns_size(self): return self._columns_size
+
+    @columns_size.setter
+    def columns_size(self, value):
+        self.mark_to_update_client()
+        self._columns_size = value
+
+    @property
+    def columns_align(self): return self._columns_align
+
+    @columns_align.setter
+    def columns_align(self, value):
+        self.mark_to_update_client()
+        self._columns_align = value
     
     @property
     def value(self):
@@ -223,6 +242,8 @@ class ControlQueryList(ControlBase):
         total_n_pages   = (total_rows / self.rows_per_page) + (0 if (total_rows % self.rows_per_page)==0 else 1)
 
         data.update({
+            'columns_align':   self.columns_align,
+            'columns_size':    self.columns_size,
             'export_csv':      self.export_csv,
             'filter_by':       self.filter_by,
             'sort_by':         self.sort_by,
@@ -362,6 +383,8 @@ class ControlQueryList(ControlBase):
 
         #configure the filters
         for column_name in list_filter:
+            order_by    = column_name
+            column_name = column_name[1:] if column_name.startswith('-') else column_name
             field = get_lookup_field(model, column_name)
             
             if field is None: continue
@@ -408,7 +431,7 @@ class ControlQueryList(ControlBase):
                 field_properties.update({'items': filter_values})
                 
             else:
-                column_values = queryset.values_list(column_name, flat=True).distinct().order_by(column_name)
+                column_values = queryset.values_list(column_name, flat=True).distinct().order_by(order_by)
                 filter_values = [(column_name+'='+str(column_value), column_value) for column_value in column_values]
                 field_properties.update({'items': filter_values})
 

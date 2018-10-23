@@ -193,11 +193,14 @@ class ControlQueryList extends ControlBase{
 
         html += "<div style='overflow-x: auto;' ><table class='ui selectable celled striped table ControlQueryList "+this.properties.css+" sortable' id='"+this.control_id()+"' >";
         // render the table titles
-        var titles = this.properties.horizontal_headers;
+        var colsalign = this.properties.columns_align;
+        var colssizes = this.properties.columns_size;
+        var titles    = this.properties.horizontal_headers;
         if(titles && titles.length>0){
             html += "<thead>";
             html += "<tr>";
-            for(var i=0; i<titles.length; i++) html += "<th column='"+titles[i].column+"' >"+titles[i].label+"</th>";
+            for(var i=0; i<titles.length; i++) 
+                html += `<th style='${(colssizes)?`width:${colssizes[i]}`:''}; ${(colsalign)?`text-align:${colsalign[i]}`:''}' column='${titles[i].column}' >${titles[i].label}</th>`;
             html += "</tr>";
             html += "</thead>";
         };
@@ -292,11 +295,12 @@ class ControlQueryList extends ControlBase{
             $("#"+this.place_id()+"-search").val(this.properties.search_field_key);
         
         var rows_html = '';
+        var colsalign = this.properties.columns_align;
         for(var i=0; i<data.length; i++){
             var selected = this.properties.selected_row_id==data[i][0];
             rows_html += "<tr row-id='"+data[i][0]+"' >";
             for(var j=1; j<data[i].length; j++)
-                rows_html += "<td class='"+(selected?'active':'')+"' >"+(data[i][j]?data[i][j]:'')+"</td>";
+                rows_html += `<td style='${(colsalign)?`text-align:${colsalign[j-1]}`:''}' class='${(selected?'active':'')}' >${(data[i][j]?data[i][j]:'')}</td>`;
             rows_html += "</tr>";
         };
         $( "#"+this.control_id()+" tbody" ).html(rows_html);

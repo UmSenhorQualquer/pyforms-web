@@ -44,16 +44,18 @@ class ControlList extends ControlBase{
 		// GENERATE THE HEADER
 		html += "<thead>";
 		html += "<tr>";
+		var colsalign = this.properties.columns_align;
 		var colssizes = this.properties.columns_size;
 		var titles 	  = this.properties.horizontal_headers;
 		for(var i=0; i<titles.length; i++){
-			html += `<th ${(colssizes)?`style='width:${colssizes[i]}'`:''} >${titles[i]}</th>`;
+			html += `<th style='${(colssizes)?`width:${colssizes[i]}`:''}; ${(colsalign)?`text-align:${colsalign[i]}`:''}' >${titles[i]}</th>`;
 		};
 		html += "</tr>";
 		html += "</thead>";
 		// END GENERATE THE HEADER
 
 		var data = this.properties.value;
+		var colsalign = this.properties.columns_align;
 		
 		html += "<tbody></div>";
 		if(data!=undefined)
@@ -64,7 +66,7 @@ class ControlList extends ControlBase{
 				var length = 0;
 				if(data[i]) length = data[i].length;
 				for(var j=0; j<length; j++)
-					html += selected?"<td class='active' >"+data[i][j]+"</td>":"<td>"+data[i][j]+"</td>";
+					html += selected?`<td style='${(colsalign)?`text-align:${colsalign[j-1]}`:''}' class='active' >${data[i][j]}</td>`:`<td style='${(colsalign)?`text-align:${colsalign[j-1]}`:''}' >${data[i][j]}</td>`;
 				
 				if(length<titles.length) 
 					for(var j=length; j<titles.length; j++) 
