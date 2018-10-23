@@ -599,7 +599,7 @@ class ModelFormWidget(BaseWidget):
                     if hasattr(self, field_name):
                         getattr(self, field_name).error = True
                         label = get_lookup_verbose_name(self.model, field_name)
-                        html += '<li><b>{0}</b>'.format(label.capitalize())
+                        html += '<li><b>{0}</b>'.format(label)
                         field_error = True
                     elif field_name==NON_FIELD_ERRORS:
                         field_error = False
@@ -927,42 +927,42 @@ class ModelFormWidget(BaseWidget):
             # if it is a function
             if callable(field) and not isinstance(field, models.Model):
                 label = getattr(field, 'short_description') if hasattr(field, 'short_description') else field_name
-                pyforms_field = ControlText( label.capitalize(), readonly=True )
+                pyforms_field = ControlText( label, readonly=True )
                 self._callable_fields.append( field_name )
 
             # if it is read only
             elif field.name in self.readonly:
 
                 if isinstance(field, models.TextField):
-                    pyforms_field = ControlTextArea( label.capitalize(), readonly=True )
+                    pyforms_field = ControlTextArea( label, readonly=True )
                 else:
-                    pyforms_field = ControlText( label.capitalize(), readonly=True )
+                    pyforms_field = ControlText( label, readonly=True )
             
             # if it is AutoField
             elif isinstance(field, models.AutoField):
-                pyforms_field = ControlText( label.capitalize(), readonly=True )
+                pyforms_field = ControlText( label, readonly=True )
                 self._auto_fields.append( field_name )
             
 
             elif isinstance(field, models.Field) and field.choices:
                 pyforms_field = ControlCombo( 
-                    label.capitalize(), 
+                    label, 
                     items=[ (c[1],c[0]) for c in field.choices],
                     default=field.default
                 )
-            elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( label.capitalize(), default=field.default )
-            elif isinstance(field, models.BooleanField):                pyforms_field = ControlCheckBox( label.capitalize(), default=field.default )
-            elif isinstance(field, models.DateTimeField):               pyforms_field = ControlDateTime( label.capitalize(), default=field.default )
-            elif isinstance(field, models.DateField):                   pyforms_field = ControlDate( label.capitalize(), default=field.default )
-            elif isinstance(field, models.DecimalField):                pyforms_field = ControlFloat( label.capitalize(), default=field.default )
-            elif isinstance(field, models.FileField):                   pyforms_field = ControlFileUpload( label.capitalize(), default=field.default )
-            elif isinstance(field, models.FloatField):                  pyforms_field = ControlFloat( label.capitalize(), default=field.default )
-            elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( label.capitalize(), default=field.default )
-            elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( label.capitalize(), default=field.default )
-            elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( label.capitalize(), default=field.default )
+            elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( label, default=field.default )
+            elif isinstance(field, models.BooleanField):                pyforms_field = ControlCheckBox( label, default=field.default )
+            elif isinstance(field, models.DateTimeField):               pyforms_field = ControlDateTime( label, default=field.default )
+            elif isinstance(field, models.DateField):                   pyforms_field = ControlDate( label, default=field.default )
+            elif isinstance(field, models.DecimalField):                pyforms_field = ControlFloat( label, default=field.default )
+            elif isinstance(field, models.FileField):                   pyforms_field = ControlFileUpload( label, default=field.default )
+            elif isinstance(field, models.FloatField):                  pyforms_field = ControlFloat( label, default=field.default )
+            elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( label, default=field.default )
+            elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( label, default=field.default )
+            elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( label, default=field.default )
             elif isinstance(field, models.NullBooleanField):            
                 pyforms_field = ControlCombo( 
-                    label.capitalize(), 
+                    label, 
                     items=[('Unknown', None), ('Yes', True), ('No', False)],
                     default=field.default
                 )
@@ -972,7 +972,7 @@ class ModelFormWidget(BaseWidget):
                 if limit_choices: query = query.filter(**limit_choices)
         
                 pyforms_field = ControlAutoComplete( 
-                    label.capitalize(), 
+                    label, 
                     queryset=query,
                     queryset_filter=self.autocomplete_search,
                     default=field.default
@@ -984,13 +984,13 @@ class ModelFormWidget(BaseWidget):
                 if limit_choices: query = query.filter(**limit_choices)
         
                 pyforms_field = ControlAutoComplete( 
-                    label.capitalize(), 
+                    label, 
                     queryset=query,
                     multiple=True,
                     queryset_filter=self.autocomplete_search
                 )
             else:
-                pyforms_field = ControlText( label.capitalize(), default=field.default )
+                pyforms_field = ControlText( label, default=field.default )
             
             # add the field to the application
             if pyforms_field is not None: 
@@ -1064,7 +1064,7 @@ class ModelFormWidget(BaseWidget):
             for o, objs in objects:
                 html += "<li>"
                 html += "{1}: <b>{0}</b>".format( 
-                    str(o), o.__class__._meta.verbose_name.title()
+                    str(o), o.__class__._meta.verbose_name
                 )
                 if len(objs)>0:
                     html += related_objects_html(objs)
