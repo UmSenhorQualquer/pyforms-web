@@ -14,7 +14,6 @@ class ControlPieChart extends ControlBase{
         var legend = true;
         var data   = this.properties.value;
 
-        console.log(data);
         if(!data || data.length==0){ 
             data = [['Empty',0]];
         };
@@ -85,7 +84,6 @@ class ControlPieChart extends ControlBase{
                 location: 's'
             }
     };
-        console.log(this.chart);
         this.chart.replot(options);
     };
 

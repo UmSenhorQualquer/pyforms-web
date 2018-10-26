@@ -70,6 +70,8 @@ ControlCalendar
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlCheckBox
 ----------------------------
 
@@ -83,6 +85,29 @@ ControlCheckBox
     :exclude-members: init_form, serialize, deserialize
 
 ----------------------------
+
+ControlCheckBoxList
+----------------------------
+
+.. autoclass:: pyforms_web.controls.control_checkboxlist.ControlCheckBoxList
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
+----------------------------
+
+ControlCheckBoxListQuery
+----------------------------
+
+.. autoclass:: pyforms_web.controls.control_checkboxlistquery.ControlCheckBoxListQuery
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
+----------------------------
+
 
 ControlCombo
 ----------------------------

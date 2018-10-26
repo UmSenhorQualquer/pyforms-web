@@ -49,7 +49,13 @@ class ControlCheckBoxList(ControlBase):
 
 
     @property
-    def value(self): return ControlBase.value.fget(self)
+    def value(self): 
+        """
+        Sets and gets the values.
+
+        The values should have the 
+        """
+        return ControlBase.value.fget(self)
 
     @value.setter
     def value(self, value):
