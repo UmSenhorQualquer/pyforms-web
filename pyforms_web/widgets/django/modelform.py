@@ -366,8 +366,8 @@ class ModelFormWidget(BaseWidget):
                 try:
                     field = self.model._meta.get_field(field_name)
                     pyforms_field = getattr(self, field_name)
-                    print(field.default, type(pyforms_field) )
-                    pyforms_field.value = None if field.default==models.fields.NOT_PROVIDED else field.default 
+                    
+                    pyforms_field.value = None if not hasattr(field, 'default') or field.default==models.fields.NOT_PROVIDED else field.default 
                 except FieldDoesNotExist:
                     pass
                 
@@ -990,7 +990,9 @@ class ModelFormWidget(BaseWidget):
                     queryset_filter=self.autocomplete_search
                 )
             else:
-                pyforms_field = ControlText( label, default=field.default )
+                default = None
+                if hasattr(field, 'default'): default = field.default
+                pyforms_field = ControlText( label, default=default )
             
             # add the field to the application
             if pyforms_field is not None: 
