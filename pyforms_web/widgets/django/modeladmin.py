@@ -33,7 +33,7 @@ class ModelAdminWidget(BaseWidget):
 
        from suppliers.models import Suplier
 
-       class SupplierAdminApp(ModelAdmin):
+       class SupplierAdminApp(ModelAdminWidget):
 
             MODEL = Supplier
             TITLE = 'Suppliers'

@@ -34,7 +34,7 @@ from django.utils import timezone
 
 class ModelFormWidget(BaseWidget):
     """
-    When a Pyforms application inherit from this class a form for the model EditFormAdmin.MODEL is created.
+    When a Pyforms application inherit from this class a form for the model ModelFormWidget.MODEL is created.
 
     **Usage example:**
 
@@ -42,7 +42,7 @@ class ModelFormWidget(BaseWidget):
 
        from funding.models import FundingOpportunity
 
-       class EditFundingOpportunitiesApp(EditFormAdmin):
+       class EditFundingOpportunitiesApp(ModelFormWidget):
             
             TITLE = "Edit opportunities"
             MODEL = FundingOpportunity
@@ -103,7 +103,7 @@ class ModelFormWidget(BaseWidget):
         """
         :param str title: Title of the app. By default will assume the value in the class variable TITLE.
         :param django.db.models.Model model: Model with the App will represent. By default will assume the value in the class variable MODEL.
-        :param list(ModelAdmin) inlines: Sub models to show in the interface
+        :param list(ModelAdminWidget) inlines: Sub models to show in the interface
         :param list(str) fieldsets: Organization of the fields
         :param int parent_pk: Parent model key
         :param django.db.models.Model parent_model: Parent model class

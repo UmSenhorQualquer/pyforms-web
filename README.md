@@ -42,7 +42,7 @@ With GUI applications, users would be able to set the parameters using a GUI int
 
 After looking into the several python options for GUI interfaces, PyQt was the one that seemed the best tool for a fast development with the QtDesigner, but after a while developing in Qt, switching between the designer and the python IDE was becoming too costly in terms of time because the interfaces were constantly evolving.
 
-Being a Django developer, I did get inspiration on it for this framework. In the [Django](https://www.djangoproject.com/) Models we just need to define the type of variables and their disposition in the form (in ModelAdmin) to generate a HTML form for data edition.
+Being a Django developer, I did get inspiration on it for this framework. In the [Django](https://www.djangoproject.com/) Models we just need to define the type of variables and their disposition in the form (in ModelAdminWidget) to generate a HTML form for data edition.
 For the GUIs that I wanted to build in my python scripts, I would like to have the same simplicity, so I could focus on the algorithms and not on GUIs developing.
 
 

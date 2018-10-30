@@ -29,7 +29,7 @@ class {model_name}AdminApp(ModelAdminWidget):
     #read only fields
     #READ_ONLY      = [{fields_list}]
     
-    #EDITFORM_CLASS = {model_name}EditFormAdmin    #edit form class
+    #EDITFORM_CLASS = {model_name}ModelFormWidget    #edit form class
     #CONTROL_LIST   = ControlQueryList #Control to be used in to list the values
     
     #AUTHORIZED_GROUPS   = ['superuser'] #groups with authorization to visualize the app
