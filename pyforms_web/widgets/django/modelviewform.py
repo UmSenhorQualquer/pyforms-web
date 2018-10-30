@@ -74,7 +74,7 @@ class ModelViewFormWidget(ModelFormWidget):
     def create_newobject(self):
         pass
 
-    def save_event(self):
+    def save_event(self, obj, new_object):
         pass
 
     def delete_event(self):
