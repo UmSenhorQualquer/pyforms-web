@@ -625,6 +625,9 @@ class ModelFormWidget(BaseWidget):
         Update the obj fields values with the form inputs values
 
         :param django.db.models.Model obj: Object to update the values.
+        
+        Returns:
+            :django.db.models.Mode: Updated object.
         """
 
         # if it is working as an inline edition form #
@@ -704,6 +707,9 @@ class ModelFormWidget(BaseWidget):
         Save related fields
 
         :param django.db.models.Model obj: Parent object to save.
+        
+        Returns:
+            :django.db.models.Mode: Object passed as parameter
         """
 
         for field in self.model._meta.get_fields():
