@@ -121,7 +121,7 @@ class ModelFormWidget(BaseWidget):
                 self.formset = ['alert:No permissions']
                 return 
         else:
-            if not self.has_add_permissions():
+            if not self._has_add_permissions:
                 self.formset = ['alert:No permissions']
                 return 
 
@@ -153,15 +153,18 @@ class ModelFormWidget(BaseWidget):
         #######################################################
 
         # Create the edit buttons buttons #####################
-        if self.has_update_permissions():
+        self._has_update_permissions = self.has_update_permissions()
+        if self._has_update_permissions:
             self._save_btn   = ControlButton(self.SAVE_BTN_LABEL, label_visible=False, default=self.__save_btn_event)
             self.edit_buttons.append( self._save_btn )
         
-        if self.has_add_permissions():
+        self._has_add_permissions = self.has_add_permissions()
+        if self._has_add_permissions:
             self._create_btn = ControlButton(self.CREATE_BTN_LABEL, label_visible=False, default=self.__create_btn_event)
             self.edit_buttons.append( self._create_btn )
             
-        if self.has_remove_permissions():
+        self._has_remove_permissions = self.has_remove_permissions()
+        if self._has_remove_permissions:
             self._remove_btn = ControlButton(self.REMOVE_BTN_LABEL,  css='red basic', label_visible=False, default=self.__remove_btn_event)  
             self.edit_buttons.append( self._remove_btn )
             
@@ -244,10 +247,10 @@ class ModelFormWidget(BaseWidget):
             the end of the fieldsets.
         """
         buttons = []
-        if self.has_update_permissions():   buttons.append('_save_btn')
-        if self.has_add_permissions():      buttons.append('_create_btn')
+        if self._has_update_permissions:   buttons.append('_save_btn')
+        if self._has_add_permissions:      buttons.append('_create_btn')
         if self.has_cancel_btn:             buttons.append('_cancel_btn')
-        if self.has_remove_permissions():   buttons.append('_remove_btn')
+        if self._has_remove_permissions:   buttons.append('_remove_btn')
         return [no_columns(*buttons)]
     
 
@@ -353,7 +356,7 @@ class ModelFormWidget(BaseWidget):
         """
 
         #check if it has permissions to add new registers
-        if not self.has_add_permissions():
+        if not self._has_add_permissions:
             raise Exception('Your user does not have permissions to add')
     
         fields2show = self.get_visible_fields_names()
@@ -376,8 +379,8 @@ class ModelFormWidget(BaseWidget):
         for inline in self.inlines_controls:
             inline.hide()
 
-        if self.has_update_permissions(): self._save_btn.hide()
-        if self.has_remove_permissions(): self._remove_btn.hide()
+        if self._has_update_permissions: self._save_btn.hide()
+        if self._has_remove_permissions: self._remove_btn.hide()
 
     def update_callable_fields(self):
         """
@@ -424,7 +427,7 @@ class ModelFormWidget(BaseWidget):
 
         for field in self.edit_fields:      field.show()
         for field in self.inlines_controls: field.show()
-        if self.has_add_permissions():      self._create_btn.hide()
+        if self._has_add_permissions:      self._create_btn.hide()
 
         self.__update_related_fields()
 
@@ -513,9 +516,9 @@ class ModelFormWidget(BaseWidget):
             obj = self.model_object
             obj.delete()
             self.object_pk = None
-            if self.has_remove_permissions(): self._remove_btn.hide()
-            if self.has_add_permissions():    self._create_btn.show()
-            if self.has_update_permissions(): self._save_btn.hide()
+            if self._has_remove_permissions: self._remove_btn.hide()
+            if self._has_add_permissions:    self._create_btn.show()
+            if self._has_update_permissions: self._save_btn.hide()
             for field in self.inlines_controls: field.hide()
             if self.parent: self.parent.populate_list()
             return True
@@ -788,9 +791,9 @@ class ModelFormWidget(BaseWidget):
             
             elif obj:
                 # it is executing as a single app
-                if self.has_add_permissions():    self._create_btn.hide()
-                if self.has_update_permissions(): self._save_btn.show()
-                if self.has_remove_permissions(): self._remove_btn.show()
+                if self._has_add_permissions:    self._create_btn.hide()
+                if self._has_update_permissions: self._save_btn.show()
+                if self._has_remove_permissions: self._remove_btn.show()
 
                 self.inlines_apps = []
                 for inline in self.inlines:
@@ -1026,7 +1029,7 @@ class ModelFormWidget(BaseWidget):
         """
         Event called by the create button
         """
-        if not self.has_add_permissions():
+        if not self._has_add_permissions:
             raise Exception('You do not have permissions to add objects.')
 
         obj = self.create_newobject()
@@ -1046,7 +1049,7 @@ class ModelFormWidget(BaseWidget):
 
         else:
 
-            if not self.has_update_permissions():
+            if not self._has_update_permissions:
                 raise Exception('You do not have permissions to update the object.')
 
             self.save_form_event(obj)
@@ -1083,7 +1086,7 @@ class ModelFormWidget(BaseWidget):
         if self.object_pk:
             obj = self.model_object
 
-            if not self.has_remove_permissions():
+            if not self._has_remove_permissions:
                 raise Exception('Your user does not have permissions to remove the object')
 
             objects = obj, related_objects(obj)
