@@ -115,9 +115,12 @@ class ModelFormWidget(BaseWidget):
         
         BaseWidget.__init__(self, *args, **kwargs )
 
+        self._has_update_permissions = self.has_update_permissions()
+        self._has_add_permissions    = self.has_add_permissions()
+        self._has_view_permissions   = self.has_view_permissions()
         
         if self.object_pk:
-            if not self.has_view_permissions():
+            if not self._has_view_permissions:
                 self.formset = ['alert:No permissions']
                 return 
         else:
@@ -153,12 +156,11 @@ class ModelFormWidget(BaseWidget):
         #######################################################
 
         # Create the edit buttons buttons #####################
-        self._has_update_permissions = self.has_update_permissions()
+                
         if self._has_update_permissions:
             self._save_btn   = ControlButton(self.SAVE_BTN_LABEL, label_visible=False, default=self.__save_btn_event)
             self.edit_buttons.append( self._save_btn )
         
-        self._has_add_permissions = self.has_add_permissions()
         if self._has_add_permissions:
             self._create_btn = ControlButton(self.CREATE_BTN_LABEL, label_visible=False, default=self.__create_btn_event)
             self.edit_buttons.append( self._create_btn )
@@ -421,7 +423,7 @@ class ModelFormWidget(BaseWidget):
         
         if  pk: self.object_pk = pk
 
-        if not self.has_view_permissions():
+        if not self._has_view_permissions:
             raise Exception('Your user does not have permissions to save')
     
 
@@ -1135,6 +1137,8 @@ class ModelFormWidget(BaseWidget):
         Returns:
             bool: True if has view permissions, False otherwise.
         """
+        if self.model_object is None: return True
+
         if hasattr(self, 'parent') and self.parent and not self.parent.has_view_permissions(self.model_object):
             return False
 
