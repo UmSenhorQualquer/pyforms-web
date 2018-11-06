@@ -606,7 +606,7 @@ class BaseWidget(object):
         
         if len(self._messages)>0: 
             res.update({'messages': self._messages})
-            self._messages = []
+            if self._formLoaded: self._self._messages = []
 
         for key, item in self.controls.items():
 
