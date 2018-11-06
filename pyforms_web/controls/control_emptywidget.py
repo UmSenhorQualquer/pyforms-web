@@ -9,8 +9,10 @@ class ControlEmptyWidget(ControlBase):
     def __init__(self, *args, **kwargs):
         super(ControlEmptyWidget,self).__init__(*args, **kwargs)
         self._parent = kwargs.get('parent', None)
-        self._name = kwargs.get('name', None)
-
+        self._name   = kwargs.get('name', None)
+        if 'default' in kwargs:
+            self.value = kwargs.get('default', None)
+        
     def init_form(self):
         return """new ControlEmptyWidget('{0}', {1})""".format(
             self._name, 
@@ -34,7 +36,8 @@ class ControlEmptyWidget(ControlBase):
 
         if isinstance(self.value, BaseWidget):
             self.value = PyFormsMiddleware.get_instance(self.value.uid)
-            if self.value is not None: self.value.parent = self.parent
+            if self.value is not None:
+                self.value.parent = self.parent
         else:
             self.value = None
         
