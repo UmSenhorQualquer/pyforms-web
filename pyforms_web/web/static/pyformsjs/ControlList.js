@@ -55,7 +55,6 @@ class ControlList extends ControlBase{
 		// END GENERATE THE HEADER
 
 		var data = this.properties.value;
-		var colsalign = this.properties.columns_align;
 		
 		html += "<tbody></div>";
 		if(data!=undefined)
@@ -66,7 +65,7 @@ class ControlList extends ControlBase{
 				var length = 0;
 				if(data[i]) length = data[i].length;
 				for(var j=0; j<length; j++)
-					html += selected?`<td style='${(colsalign)?`text-align:${colsalign[j]}`:''}' class='active' >${data[i][j]}</td>`:`<td style='${(colsalign)?`text-align:${colsalign[j-1]}`:''}' >${data[i][j]}</td>`;
+					html += selected?`<td style='${(colsalign)?`text-align:${colsalign[j]}`:''}' class='active' >${data[i][j]}</td>`:`<td style='${(colsalign)?`text-align:${colsalign[j]}`:''}' >${data[i][j]}</td>`;
 				
 				if(length<titles.length) 
 					for(var j=length; j<titles.length; j++) 
