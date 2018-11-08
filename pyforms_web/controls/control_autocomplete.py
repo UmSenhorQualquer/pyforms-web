@@ -131,6 +131,8 @@ class ControlAutoComplete(ControlBase):
         if self.multiple:
             if value is None:
                 self.value = []
+            elif isinstance(value, list):
+                self.value = value
             else:
                 self.value = [(int(v) if v and v.isdigit() else None) for v in value.split(',')]
         else:

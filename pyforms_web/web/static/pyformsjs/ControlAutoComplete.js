@@ -45,8 +45,13 @@ class ControlAutoComplete extends ControlBase{
 
     get_value(){
         var v = this.jquery().dropdown('get value')
-        if( v.length==0 ) return null;
-        return v==''?null:v
+        if(this.properties.multiple){
+            if( v.length==0 ) return [];
+            return v==''?[]:v.split(',')  
+        }else{
+            if( v.length==0 ) return null;
+            return v==''?null:v
+        }
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -63,4 +68,24 @@ class ControlAutoComplete extends ControlBase{
 
     ////////////////////////////////////////////////////////////////////////////////
 
+
+    update_server(){
+        var current = this.properties.value;
+        var newval  = this.get_value();
+
+        if(!this.properties.multiple)
+            return newval!=current;
+        else{
+            current.sort();
+            newval.sort();
+
+            if(newval.length!=current.length) return true;
+
+            for(var i=0; i<newval.length; i++){
+                if( newval[i]!=(current[i]+'') ) return true;
+            }
+
+            return false;
+        }
+    }
 }

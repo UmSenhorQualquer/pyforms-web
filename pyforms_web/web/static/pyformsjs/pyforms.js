@@ -387,7 +387,7 @@ class PyformsManager{
                     if( res.result=='error' )
                         error_msg(res.msg);
                     else{
-                        var html = "<form class='ui form "+res.css+"' id='app-"+res.app_id+"' >";
+                        var html = "<form onkeypress='return event.keyCode!=13;' class='ui form "+res.css+"' id='app-"+res.app_id+"' >";
                         html += res.code;
                         html += '</form>';
 

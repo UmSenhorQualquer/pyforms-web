@@ -355,13 +355,14 @@ class ControlQueryList extends ControlBase{
 
     ////////////////////////////////////////////////////////////////////////////////
 
-
     set_click_events(){
         var self = this;
 
         $("#"+this.control_id()+" tbody td" ).click(function(){
             if( !$(this).hasClass('active') ){
                 self.properties.selected_row_id = $(this).parent().attr('row-id');
+                //self.jquery().children('td').removeClass('active');
+                //self.jquery().children('tr[row-id='+self.properties.selected_row_id+'] td').addClass('active');
                 self.basewidget.fire_event( self.name, 'item_selection_changed_client_event' );
             }
         });

@@ -55,7 +55,7 @@ class ControlQueryList(ControlBase):
     def init_form(self): return "new ControlQueryList('{0}', {1})".format( self._name, simplejson.dumps(self.serialize(init_form=True)) )
 
     def item_selection_changed_client_event(self):
-        self.mark_to_update_client()
+        #self.mark_to_update_client()
         self.item_selection_changed_event()
 
     def item_selection_changed_event(self): pass
@@ -215,7 +215,7 @@ class ControlQueryList(ControlBase):
                 
         if init_form and self.list_display:
             #configure the headers titles
-            headers         = []
+            headers = []
 
             if self.headers is None:
                 for column_name in self.list_display:
@@ -376,6 +376,8 @@ class ControlQueryList(ControlBase):
         self.filter_by          = properties.get('filter_by',[])
         self._current_page      = int(properties['pages']['current_page'])
         self._selected_row_id   = properties.get('selected_row_id', -1)
+        
+
 
     def serialize_filters(self, list_filter, queryset):
         filters_list = []
