@@ -153,7 +153,9 @@ class ControlAutoComplete(ControlBase):
             value = self._value if isinstance(self._value, list) else [self._value]
             value = [v for v in value if v if v is not None]
 
-            if value:
+            if isinstance(value, ValueNotSet):
+                items = []
+            elif value:
                 queryset = queryset.filter(pk__in=value).distinct()
                 items = [{'name':str(o), 'value':str(o.pk), 'text':str(o)} for o in queryset]
             else:

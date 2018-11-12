@@ -1,5 +1,6 @@
 from pyforms_web.controls.control_base import ControlBase
 import simplejson, collections
+from django.db.models import fields
 
 class ValueNotSet: pass
 
@@ -62,7 +63,9 @@ class ControlCombo(ControlBase):
     def values(self): return self._items.items()
 
     @property
-    def value(self): return self._value
+    def value(self): 
+        if self._value==fields.NOT_PROVIDED: return None
+        return self._value
 
     @value.setter
     def value(self, value):
@@ -87,20 +90,30 @@ class ControlCombo(ControlBase):
                 self.value = val
                 break
     
+    def __convert(self, value):
+        if isinstance(value, bool):
+            if value==True:  value = 'true'
+            if value==False: value = 'false'
+            if value==None:  value = 'null'
+        elif isinstance(value, ValueNotSet):
+            value = 'null'
+        elif value==fields.NOT_PROVIDED:
+            value = 'null'
+        else:
+            value = str(value)
+
+        return value
 
     def serialize(self):
         data = ControlBase.serialize(self)
         items = []
         for key, value in self._items.items():
-            items.append({'text': key, 'value': str(value), 'name': key }) 
+            items.append({'text': key, 'value': self.__convert(value), 'name': key }) 
         
         value = self._value
-        if isinstance(value, bool):
-            if value==True:  value = 'true'
-            if value==False: value = 'false'
-            if value==None:  value = 'null'
         
-        data.update({ 'items': items, 'value': str(value) })
+
+        data.update({ 'items': items, 'value': self.__convert(value) })
         return data
         
 
