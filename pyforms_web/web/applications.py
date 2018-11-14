@@ -20,9 +20,6 @@ class ApplicationsLoader:
             ApplicationsLoader._storage[modulename] = getattr(moduleclass, modules[-1])
         moduleclass = ApplicationsLoader._storage[modulename]
 
-        if not moduleclass.has_permissions(request.user):
-            raise PermissionDenied('The user do not have access to the application')
-
         data = simplejson.loads(request.body)
 
         ## load the constructor parameters sent by the web client and init the app ###
@@ -60,11 +57,8 @@ class ApplicationsLoader:
 
         if app is None: return None
 
-        if not app.has_permissions(request.user):
-            raise PermissionDenied('The user do not have access to the application')
-            
         if not app.has_session_permissions(request.user):
-            raise PermissionDenied('The user do not have access to the application')
+            raise PermissionDenied('The user does not have access to the application')
         
         if app_data is not None: app.deserialize_form(app_data)
 

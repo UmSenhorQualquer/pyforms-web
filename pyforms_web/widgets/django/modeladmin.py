@@ -110,7 +110,7 @@ class ModelAdminWidget(BaseWidget):
         
         ##############################################
         # Check if the add button should be included
-        has_add_permission = self.has_add_permissions() and self.addmodel_class  is not None
+        has_add_permission = self.has_add_permissions() and self.addmodel_class is not None
         
         if has_add_permission:
 

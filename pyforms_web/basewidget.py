@@ -20,7 +20,7 @@ from .utils import make_lambda_func
 from confapp import conf
 
 import uuid, os, inspect, dill, simplejson, filelock
-
+from django.core.exceptions import PermissionDenied
    
 class BaseWidget(object):
     """
@@ -58,6 +58,8 @@ class BaseWidget(object):
                     
                     self.formset = ['_likebtn', '_htmlviewer']
         """
+        
+
         self._formset       = None
         self._splitters     = []
         self._title         = kwargs.get('title', args[0] if len(args)>0 else self.TITLE)
@@ -78,6 +80,10 @@ class BaseWidget(object):
 
         self.parent = kwargs.get('parent_win', None)
         self.is_new_app = True
+
+        if not self.has_session_permissions(PyFormsMiddleware.user()):
+            raise PermissionDenied('The user does not have access to the app [{0}]'.format(self.title))
+
 
         PyFormsMiddleware.add(self)
 
@@ -644,7 +650,7 @@ class BaseWidget(object):
         
         :param User params: User to availuate the permissions.
         """
-        return True
+        return self.has_permissions(user)
 
 
 
