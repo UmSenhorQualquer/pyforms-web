@@ -1130,7 +1130,7 @@ class ModelFormWidget(BaseWidget):
         else:    
             return True
 
-    def has_view_permissions(self, user=None):
+    def has_view_permissions(self):
         """
         The functions returns if the user has permissions to view the queryset or not.
         
@@ -1144,13 +1144,13 @@ class ModelFormWidget(BaseWidget):
 
         queryset = self.model.objects.filter(pk=self.object_pk)
         if  hasattr(queryset, 'has_view_permissions'):
-            if user is None: user = PyFormsMiddleware.user()
+            user = PyFormsMiddleware.user()
             return queryset.has_view_permissions( user )
         else:    
             return True
 
     def has_session_permissions(self, user):
-        return self.has_view_permissions(PyFormsMiddleware.user())
+        return self.has_view_permissions()
 
     def has_remove_permissions(self):
         """

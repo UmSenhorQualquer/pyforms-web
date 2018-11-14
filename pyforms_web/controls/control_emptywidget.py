@@ -23,7 +23,7 @@ class ControlEmptyWidget(ControlBase):
         data = ControlBase.serialize(self)
         if isinstance(self.value, BaseWidget):
             data.update({'value':self.value.uid})
-            self.value.parent = self.parent.uid 
+            self.value.parent = self.parent
         else:
             data.update({'value':None})
 
