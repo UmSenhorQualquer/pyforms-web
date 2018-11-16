@@ -95,7 +95,7 @@ class ModelFormWidget(BaseWidget):
     #: str: Label for the cancel button
     CANCEL_BTN_LABEL   = '<i class="hide icon"></i> Close'
     #: str: Label for the delete button
-    REMOVE_BTN_LABEL   = '<i class="trash outline icon"></i> Remove'
+    REMOVE_BTN_LABEL   = '<i class="trash alternate outline icon"></i> Remove'
     #: str: Label for the popup window for the delete confirmation
     POPUP_REMOVE_TITLE = 'The next objects are going to be affected or removed'
     
