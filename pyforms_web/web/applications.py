@@ -1,5 +1,6 @@
 import datetime, json, dill, os, traceback, inspect, simplejson
 from confapp import conf
+from django.http import HttpRequest
 from pyforms_web.web.middleware import PyFormsMiddleware
 from django.core.exceptions import PermissionDenied
 
@@ -79,9 +80,16 @@ class ApplicationsLoader:
                 traceback.print_exc()
                 app.alert(str(e))
 
+        return ApplicationsLoader.get_data(request)
 
+    @staticmethod
+    def get_data(request):
+        """
+        Function called to collect the pyforms updates to be send to the client
+        :param request: HttpRequest
+        :return dict: Data to send to the client browser
+        """
         data = [r.serialize_form() for r in request.updated_apps.applications if r.is_new_app]
-        
         for m in request.updated_apps.applications: m.commit()
-        
+
         return data

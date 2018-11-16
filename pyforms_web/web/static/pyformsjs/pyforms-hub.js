@@ -100,6 +100,4 @@ function pyforms_checkhash_wrapper(){
 	setTimeout('pyforms_checkhash_flag=true;', 500);
 };
 
-
-$(pyforms_checkhash_wrapper);
 $(window).bind('hashchange', pyforms_checkhash_wrapper);
