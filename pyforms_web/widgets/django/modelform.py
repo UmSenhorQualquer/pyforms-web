@@ -723,6 +723,8 @@ class ModelFormWidget(BaseWidget):
                 values          = getattr(self, field.name).value
                 field_instance  = getattr(obj, field.name)
 
+                values = [] if values is None else values
+
                 objs            = field.related_model.objects.filter(pk__in=values)
                 values_2_remove = field_instance.all().exclude(pk__in=[o.pk for o in objs])
 
