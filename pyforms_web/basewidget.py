@@ -126,8 +126,8 @@ class BaseWidget(object):
 
         self._js = '[{0}]'.format(",".join(self._controls))
         self._html += """
-        <script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1}, {3}, {4}) );</script>
-        """.format(modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data))
+        <script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1}, {3}, {4}) );{extra_code}</script>
+        """.format(modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data), extra_code=';'.join(self._js_code2execute))
         self._formLoaded = True
 
         self._messages = []
@@ -623,7 +623,7 @@ class BaseWidget(object):
                         item._value.release() #release any open video
                 except:
                     pass
-        
+
         return res
 
 
