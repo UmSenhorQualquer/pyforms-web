@@ -419,8 +419,8 @@ class ControlQueryList(ControlBase):
 
                 # Apply the field limits choice ##################################
                 limit_choices = field.get_limit_choices_to()
-                if limit_choices: 
-                    objects = objects.filter(**limit_choices)
+                if limit_choices:
+                    objects = objects.filter(**limit_choices).distinct()
                 ##################################################################
 
                 # Check if the parent window has a function to filter the related fields
