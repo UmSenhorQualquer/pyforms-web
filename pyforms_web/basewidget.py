@@ -27,6 +27,9 @@ class BaseWidget(object):
     The class implements a application form
     """
 
+    # TODO: Implement this
+    URLS = None #: list(str): Django urls to be added to the urls.py file
+
     TITLE = None #: str: Title of the application.
 
     #: int or str: Id of the layout handler function registered in the javascript by the function [pyforms.register_layout_place] or Element DOM id in the HTML where the application should be shown.

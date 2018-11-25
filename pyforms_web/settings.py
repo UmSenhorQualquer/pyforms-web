@@ -7,6 +7,8 @@ PYFORMS_APPS = {}
 
 LAYOUT_NEW_WINDOW = 2
 
+PYFORMS_DEBUG = True
+
 try:
 	import os
 	from django.conf import settings

@@ -1,6 +1,6 @@
 /**
 Function called to show a message. This function can be overriden.
-@param {str} msg - Message.
+@param {string} msg - Message.
 */
 function error_msg(msg){
 	// 
@@ -9,7 +9,7 @@ function error_msg(msg){
 
 /**
 Function called to execute a pyforms application.
-@param {str} application - Full python module path of the Widget to be executed.
+@param {string} application - Full python module path of the Widget to be executed.
 @param {object} constructor_params - Widget parameters.
 @param {object} method_params - Functions and parameters to be executed after the Widget initialization.
 */

@@ -1,0 +1,4 @@
+{% for file_url in cssfiles %}
+    <link rel="stylesheet" type="text/css" href="{{ file_url }}" />{% endfor %}
+{% for file_url in jsfiles %}
+    <script type="application/javascript" src="{{ file_url }}"></script>{% endfor %}

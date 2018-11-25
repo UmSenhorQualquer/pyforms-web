@@ -33,13 +33,12 @@ class PyformsManager{
         this.layout_places = [];
 
         this.applications = [];
+        /*
         $.ajaxSetup({async: false, cache: true});
 
         //$.getStylesheet("/static/video-js.css");
         //$.getScript("/static/video.js");
         //$.getScript("/static/videojs.framebyframe.min.js");
-        
-        
 
         $.getStylesheet("/static/pyforms.css");
         $.getScript("/static/jquery.json-2.4.min.js");
@@ -78,7 +77,7 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/ControlLineChart.js");
         $.getScript("/static/pyformsjs/ControlQueryCombo.js");
         $.getScript("/static/pyformsjs/ControlQueryList.js");
-        $.getScript("/static/pyformsjs/ControlFeed.js");    
+        $.getScript("/static/pyformsjs/ControlFeed.js");
         $.getScript("/static/pyformsjs/ControlQueryCards.js");
         $.getScript("/static/pyformsjs/ControlPassword.js");
         $.getScript("/static/pyformsjs/ControlPlayer.js");
@@ -98,8 +97,6 @@ class PyformsManager{
 
         $.getScript("/static/treant/Treant.js");
         $.getStylesheet("/static/treant/Treant.css");
-
-
 
         $.getScript("/static/timeline/timeline.js");
         $.getScript("/static/timeline/track.js");
@@ -133,10 +130,8 @@ class PyformsManager{
         $.getStylesheet("/static/filer/css/jquery.filer.css");
         $.getStylesheet("/static/filer/css/jquery.filer-dragdropbox-theme.css");
 
-
-
         $.ajaxSetup({async: true, cache: false});
-
+        */
 
         setInterval(this.garbage_collector, 5000); //Run the garbage collector for times to times.
     }
@@ -167,7 +162,7 @@ class PyformsManager{
     /**
     Remove an app from the manager. If the app_index parameter is not defined it will search for the index using the app_id parameter.
 
-    @param {str} app_id - BaseWidget id.
+    @param {string} app_id - BaseWidget id.
     @param {int} app_index - BaseWidget index (optional).
     */
     remove_app(app_id, app_index){
@@ -197,7 +192,7 @@ class PyformsManager{
     ////////////////////////////////////////////////////////////
     /**
     Search an app using the id.
-    @param {str} app_id - BaseWidget id.
+    @param {string} app_id - BaseWidget id.
     */
     find_app(app_id){
         for(var i=0; i<this.applications.length; i++){
@@ -210,7 +205,7 @@ class PyformsManager{
 
     /**
     Search for a control by its id.
-    @param {str} control_id - Control id.
+    @param {string} control_id - Control id.
     */
     find_control(control_id){
         var ids             = this.split_id(control_id);
@@ -224,7 +219,7 @@ class PyformsManager{
 
     /**
     Parse the control id
-    @param {str} control_id - Control id.
+    @param {string} control_id - Control id.
     @returns {list(str)} [widget_id, control_name]
     */
     split_id(control_id){
@@ -319,7 +314,7 @@ class PyformsManager{
     /**
     Register a new layout for the applications.
 
-    @param {str} place_id - App id.
+    @param {string} place_id - App id.
     @param {function} place_generator - Function that will generate the html container for the applications.
     @param {function} place_activator - Function to active the layout when it exists.
     @param {function} place_closer - Function to destroy the layout.

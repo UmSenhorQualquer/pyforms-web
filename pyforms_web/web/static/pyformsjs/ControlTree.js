@@ -62,7 +62,7 @@ class ControlTree extends ControlBase{
 
     /**
     Sets the label of the control.
-    @param {str} value - Label to set.
+    @param {string} value - Label to set.
     */
     set_label(value){}
 

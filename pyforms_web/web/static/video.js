@@ -33073,7 +33073,7 @@
   };
 
   /**
-   * @file bin-utils.js
+   * @file bin-utilities.js
    */
 
   /**
@@ -33148,7 +33148,7 @@
   };
 
   /**
-   * utils to help dump binary data to the console
+   * utilities to help dump binary data to the console
    */
   var hexDump = function hexDump(data) {
     var bytes = Array.prototype.slice.call(data);
@@ -38469,7 +38469,7 @@
   });
 
   /**
-   * @file codec-utils.js
+   * @file codec-utilities.js
    */
 
   /**
@@ -44706,7 +44706,7 @@
       }();
 
       /**
-       * @file bin-utils.js
+       * @file bin-utilities.js
        */
 
       /**

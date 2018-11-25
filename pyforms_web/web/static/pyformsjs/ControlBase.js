@@ -3,8 +3,8 @@ var COLUMNS_CSS_CLASSES = ['','one', 'two', 'three', 'four', 'five', 'six', 'sev
 class ControlBase{
     /**
     ControlBase class implements the basic control functionalities.
-    @param {str} name - Name of the control.
-    @param {str} properties - Properties of the control.
+    @param {string} name - Name of the control.
+    @param {string} properties - Properties of the control.
     */
     constructor(name, properties){
         var self = this;
@@ -19,7 +19,7 @@ class ControlBase{
 
     /**
     Widget id.
-    @returns {str}.
+    @returns {string}.
     */
     app_id(){ 
         return this.basewidget.widget_id; 
@@ -29,7 +29,7 @@ class ControlBase{
 
     /**
     Control id.
-    @returns {str}.
+    @returns {string}.
     */
     control_id(){ 
         return this.basewidget.control_id(this.name); 
@@ -49,7 +49,7 @@ class ControlBase{
 
     /**
     Div id where the control is placed.
-    @returns {str}.
+    @returns {string}.
     */
     place_id(){ 
         return "place-"+this.control_id(); 
@@ -69,7 +69,7 @@ class ControlBase{
 
     /**
     Sets the css classes for the control. Previously added classes will be removed.
-    @param {str} css - String with the css classes to add.
+    @param {string} css - String with the css classes to add.
     */
     set_css(css){
         for(var i=0; i<this.added_classes.length; i++)
@@ -87,7 +87,7 @@ class ControlBase{
 
     /**
     Sets the css classes for the field where the control is. Previously added classes will be removed.
-    @param {str} css - String with the css classes to add.
+    @param {string} css - String with the css classes to add.
     */
     set_field_css(css){
         for(var i=0; i<this.added_fieldclasses.length; i++)
@@ -132,7 +132,7 @@ class ControlBase{
 
     /**
     Sets the label of the control.
-    @param {str} value - Label to set.
+    @param {string} value - Label to set.
     */
     set_label(value){
         $( "#"+this.place_id()+' label' ).first().html(value);

@@ -3,7 +3,7 @@ class ControlQueryList extends ControlBase{
     /**
     Build the filters html
     @param {list(object)} filters - List of filters objects to build.
-    @returns {str}
+    @returns {string}
     */
     build_filters_html(filters){
 
