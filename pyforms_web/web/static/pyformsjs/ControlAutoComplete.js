@@ -5,7 +5,7 @@ class ControlAutoComplete extends ControlBase{
     init_control(){
         var html = "<div id='"+this.place_id()+"' class='field control ControlAutoComplete' ><label>"+this.properties.label+"</label>";
         html += "<div class='ui search dropdown "+(this.properties.multiple?'multiple':'')+" selection' id='"+this.control_id()+"' >"
-        html += '<i class="dropdown icon"></i>';
+        html += '<i class="ui search small icon"></i>';
         html += '<div class="default text">'+this.properties.label+'</div>';
         html += '</div>';
         this.jquery_place().replaceWith(html);
