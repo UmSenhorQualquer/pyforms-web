@@ -22,8 +22,6 @@ from django.http import HttpResponse
 
 class ControlQueryList(ControlBase):
 
-    custom_filter_labels = {}
-
     def __init__(self, *args, **kwargs):
         self.rows_per_page      = kwargs.get('rows_per_page', 10)
         self.n_pages            = kwargs.get('n_pages', 5)
@@ -43,6 +41,8 @@ class ControlQueryList(ControlBase):
         self.filter_by          = []
         self.sort_by            = []
         self._selected_row_id   = -1 #row selected by the mouse
+
+        self.custom_filter_labels = {}
 
         # these informations is needed to serialize the control to the drive
         self._app   = None
