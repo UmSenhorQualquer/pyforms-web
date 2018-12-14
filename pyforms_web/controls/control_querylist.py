@@ -22,6 +22,8 @@ from django.http import HttpResponse
 
 class ControlQueryList(ControlBase):
 
+    custom_filter_labels = {}
+
     def __init__(self, *args, **kwargs):
         self.rows_per_page      = kwargs.get('rows_per_page', 10)
         self.n_pages            = kwargs.get('n_pages', 5)
@@ -393,7 +395,10 @@ class ControlQueryList(ControlBase):
 
             field_properties = {
                 'field_type': 'combo',
-                'label':    get_lookup_verbose_name(model, column_name),
+                'label': self.custom_filter_labels.get(
+                    column_name,
+                    get_lookup_verbose_name(model, column_name),
+                ),
                 'column':   column_name
             }
 
