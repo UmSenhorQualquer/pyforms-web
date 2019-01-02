@@ -57,8 +57,9 @@ class ControlMultipleSelection(ControlBase):
 		for v in value:
 			if len(v.strip())>0:
 				values.append(v)
-		properties.update({'value':values})
 		
-		ControlBase.deserialize(self, properties)
+		if values:
+			properties.update({'value':values})
+			ControlBase.deserialize(self, properties)
 		
 	
