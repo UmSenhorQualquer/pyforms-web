@@ -161,8 +161,11 @@ class ControlQueryList(ControlBase):
             if self.search_field_key and len(self.search_field_key)>0:
                 search_filter = None
                 for s in self.search_fields:
-                    q = Q(**{s: self.search_field_key})
-                    search_filter = (search_filter | q) if search_filter else q
+                    keys_filter = None
+                    for key in self.search_field_key.split():
+                        q = Q(**{s: key})
+                        keys_filter = (keys_filter & q) if keys_filter else q
+                    search_filter = (search_filter | keys_filter) if search_filter else keys_filter
                 qs = qs.filter(search_filter)
 
             # apply orders by
