@@ -371,8 +371,10 @@ class ModelFormWidget(BaseWidget):
                 try:
                     field = self.model._meta.get_field(field_name)
                     pyforms_field = getattr(self, field_name)
-                    
-                    pyforms_field.value = None if not hasattr(field, 'default') or field.default==models.fields.NOT_PROVIDED else field.default 
+
+                    pyforms_field.value = None if not hasattr(field, 'default') or field.default==models.fields.NOT_PROVIDED else field.default
+                    if field.get_internal_type() in ('CharField', 'TextField') and field.blank:
+                        pyforms_field.value = ''
                 except FieldDoesNotExist:
                     pass
                 
