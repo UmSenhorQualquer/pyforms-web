@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.encoding import force_text
 from django.core.exceptions import FieldDoesNotExist
 
+
 def make_lambda_func(func, **kwargs):
     """ Auxiliar function for passing parameters to functions """
     return lambda: func(**kwargs)
@@ -14,7 +15,7 @@ def get_lookup_field(model, lookup):
     parts = lookup.split(LOOKUP_SEP)
     for i, part in enumerate(parts):
         f = model._meta.get_field(part)
-        if (len(parts)-1)==i:
+        if (len(parts) - 1) == i:
             return f
         elif hasattr(f, 'is_relation') and f.is_relation:
             model = f.related_model
@@ -37,7 +38,6 @@ def get_lookup_value(o, lookup):
     #    return values[o]
     return o
 
-        
 
 def get_lookup_verbose_name(model, lookup):
     # will return first non relational field's verbose_name in lookup
@@ -45,10 +45,10 @@ def get_lookup_verbose_name(model, lookup):
     parts = lookup.split(LOOKUP_SEP)
     field = None
     for i, part in enumerate(parts):
-        last_loop = i==(len(parts)-1)
+        last_loop = i == (len(parts) - 1)
         try:
             field = model._meta.get_field(part)
-            
+
             if field.is_relation:
 
                 if last_loop:
@@ -56,10 +56,10 @@ def get_lookup_verbose_name(model, lookup):
                         return force_text(field.related_model._meta.verbose_name).title()
                     else:
                         return force_text(field.verbose_name).title()
-            
+
                 else:
                     model = field.related_model
-                    continue 
+                    continue
 
         except FieldDoesNotExist:
 
@@ -67,13 +67,13 @@ def get_lookup_verbose_name(model, lookup):
 
             # check if is a function
             if callable(field) and not isinstance(field, models.Model):
-                
+
                 if hasattr(field, 'short_description'):
                     return field.short_description.title()
                 else:
                     return part.title()
-            
+
             else:
                 return part.title()
-  
+
         return force_text(field.verbose_name).title()
