@@ -22,21 +22,19 @@ def get_lookup_field(model, lookup):
     return f
 
 
-def get_lookup_value(o, lookup):
+def get_lookup_value(obj, lookup):
     """
     Return the value of a lookup over an object
     """
-    if o is None: return None
-
-    for fieldname in lookup.split(LOOKUP_SEP):
-        o = getattr(o, fieldname)
-
-        if o is None: return None
-
-    #if isinstance(o.__class__, models.Field) and hasattr(o, 'choices'):
-    #    values = dict(getattr(o, 'choices'))
-    #    return values[o]
-    return o
+    value = None
+    if obj:
+        for fieldname in lookup.split(LOOKUP_SEP):
+            try:
+                # works for fields with choices defines
+                value = getattr(obj, 'get_%s_display' % fieldname)
+            except AttributeError:
+                value = getattr(obj, fieldname)
+    return value
 
 
 def get_lookup_verbose_name(model, lookup):
