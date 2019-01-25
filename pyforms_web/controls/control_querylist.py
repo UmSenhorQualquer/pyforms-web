@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from pyforms_web.controls.control_base import ControlBase
 from django.apps import apps
 
@@ -295,8 +297,8 @@ class ControlQueryList(ControlBase):
             return locale.format("%d", col_value, grouping=True)
         elif isinstance(col_value, float ):
             return locale.format("%f", col_value, grouping=True)
-        elif isinstance(col_value, int ):
-            return locale.format("%d", col_value, grouping=True)
+        elif isinstance(col_value, Decimal):
+            return '{0:n}'.format(col_value)
         elif isinstance(col_value, FieldFile ):
             try:
                 return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
