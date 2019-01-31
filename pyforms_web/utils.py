@@ -31,9 +31,11 @@ def get_lookup_value(obj, lookup):
         for fieldname in lookup.split(LOOKUP_SEP):
             try:
                 # works for fields with choices defines
-                value = getattr(obj, 'get_%s_display' % fieldname)
+                obj = getattr(obj, 'get_%s_display' % fieldname)
             except AttributeError:
-                value = getattr(obj, fieldname)
+                obj = getattr(obj, fieldname)
+        else:
+            value = obj
     return value
 
 
