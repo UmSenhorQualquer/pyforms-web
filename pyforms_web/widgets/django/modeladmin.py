@@ -253,7 +253,7 @@ class ModelAdminWidget(BaseWidget):
             'parent_win': self
         }
 
-        if self.INLINES: params.update({'inlines':self.INLINES})
+        if self.INLINES:   params.update({'inlines':self.INLINES})
         if self.FIELDSETS: params.update({'fieldsets':self.FIELDSETS})
         if self.READ_ONLY: params.update({'readonly':self.READ_ONLY})
 
@@ -341,11 +341,10 @@ class ModelAdminWidget(BaseWidget):
 
         for field in self.model._meta.get_fields():
             if isinstance(field, models.ForeignKey):
-                if parent_model == field.related_model:
+                if issubclass(parent_model, field.related_model):
                     self.parent_field = field
                     break
 
-    
     def has_add_permissions(self):
         """
         Function called to check if one has permission to add new objects.
