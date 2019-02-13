@@ -971,8 +971,8 @@ class ModelFormWidget(BaseWidget):
             
 
             elif isinstance(field, models.Field) and field.choices:
-                pyforms_field = ControlCombo( 
-                    label, 
+                pyforms_field = ControlCombo(
+                    label,
                     items=[ (c[1],c[0]) for c in field.choices],
                     default=field.default
                 )
@@ -996,20 +996,19 @@ class ModelFormWidget(BaseWidget):
                 query = field.related_model.objects.all()
                 limit_choices = field.get_limit_choices_to()
                 if limit_choices: query = query.filter(**limit_choices)
-        
-                pyforms_field = ControlAutoComplete( 
+
+                pyforms_field = ControlAutoComplete(
                     label, 
                     queryset=query,
                     queryset_filter=self.autocomplete_search,
                     default=field.default
                 )
-
             elif isinstance(field, models.ManyToManyField):
                 query = field.related_model.objects.all()
                 limit_choices = field.get_limit_choices_to()
                 if limit_choices: query = query.filter(**limit_choices)
-        
-                pyforms_field = ControlAutoComplete( 
+
+                pyforms_field = ControlAutoComplete(
                     label, 
                     queryset=query,
                     multiple=True,
