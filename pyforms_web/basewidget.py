@@ -4,14 +4,9 @@ except:
     pass
 
 from .controls.control_base     import ControlBase
-from .controls.control_file     import ControlFile
-from .controls.control_slider   import ControlSlider
-from .controls.control_text     import ControlText
-from .controls.control_checkbox import ControlCheckBox
 from .controls.control_label    import ControlLabel
 from .controls.control_button   import ControlButton
 
-from .web.applications import ApplicationsLoader
 from .web.middleware   import PyFormsMiddleware
 
 from pyforms_web.organizers import no_columns, segment
@@ -76,7 +71,7 @@ class BaseWidget(object):
 
         self.init_form_result = None
          
-        self._uid =  self.UID if hasattr(self, 'UID') else str(uuid.uuid4())
+        self._uid =  self.UID if hasattr(self, 'UID') and self.UID else str(uuid.uuid4())
 
         self._messages        = []
         self._js_code2execute = [];
@@ -538,8 +533,8 @@ class BaseWidget(object):
 
         lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
         with lock.acquire(timeout=4):
-            with open(app_path, 'wb') as f: 
-                dill.dump(self, f)
+            with open(app_path, 'wb') as f:
+                dill.dump(self, f, protocol=4)
 
     def execute_js(self, code):
         """

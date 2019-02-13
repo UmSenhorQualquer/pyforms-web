@@ -69,11 +69,11 @@ class ModelFormWidget(BaseWidget):
             ]
     """
 
-    MODEL          = None  #: class: Model to manage
-    TITLE          = None  #: str: Title of the application
-    INLINES        = []    #: list(class): Sub models to show in the interface
-    FIELDSETS      = None  #: Formset of the edit form
-    READ_ONLY      = []    #: list(str): List of readonly fields
+    MODEL             = None  #: class: Model to manage
+    TITLE             = None  #: str: Title of the application
+    INLINES           = []    #: list(class): Sub models to show in the interface
+    FIELDSETS         = None  #: Formset of the edit form
+    READ_ONLY         = []    #: list(str): List of readonly fields
 
     #: bool: Flag to show or hide the cancel button
     HAS_CANCEL_BTN_ON_EDIT = True
@@ -109,10 +109,11 @@ class ModelFormWidget(BaseWidget):
         :param django.db.models.Model parent_model: Parent model class
         :param int pk: Model register to manage
         """
+        title = kwargs.get('title') if kwargs.get('title', None) else self.TITLE
 
         self.object_pk = kwargs.get('pk', None)
         self.model     = kwargs.get('model', self.MODEL)
-        
+
         BaseWidget.__init__(self, *args, **kwargs )
 
         self._has_update_permissions = self.has_update_permissions()
@@ -189,6 +190,8 @@ class ModelFormWidget(BaseWidget):
             self.show_edit_form()
         else:
             self.show_create_form()
+
+
 
     #################################################################################
     #### PROPERTIES #################################################################
