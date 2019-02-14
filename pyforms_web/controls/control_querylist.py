@@ -37,6 +37,7 @@ class ControlQueryList(ControlBase):
         self.export_csv_columns = kwargs.get('export_csv_columns', self.list_display)
         self._columns_size      = kwargs.get('columns_size', None)
         self._columns_align     = kwargs.get('columns_align', None)
+        self.item_selection_changed_event = kwargs.get('item_selection_changed_event', self.item_selection_changed_event)
 
 
         self.search_field_key   = None

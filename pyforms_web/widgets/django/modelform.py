@@ -187,7 +187,7 @@ class ModelFormWidget(BaseWidget):
         self.create_model_formfields()
         
         if self.object_pk:
-            self.show_edit_form()
+            self.show_edit_form(pk=self.object_pk)
         else:
             self.show_create_form()
 
@@ -463,7 +463,6 @@ class ModelFormWidget(BaseWidget):
                     except AttributeError:
                         continue
 
-                
                 if callable(field) and not isinstance(field, models.Model):
                     pyforms_field.value = value()
 
@@ -803,7 +802,7 @@ class ModelFormWidget(BaseWidget):
                 if self.POPULATE_PARENT: self.parent.populate_list()
                 
                 self.cancel_btn_event()
-                self.parent.show_edit_form(obj)
+                self.parent.show_edit_form(obj.pk)
                 self.parent.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
             
             elif obj:
