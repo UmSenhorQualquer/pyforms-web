@@ -39,6 +39,9 @@ class ControlQueryList(ControlBase):
         self._columns_align     = kwargs.get('columns_align', None)
         self.item_selection_changed_event = kwargs.get('item_selection_changed_event', self.item_selection_changed_event)
 
+        self.filter_event = kwargs.get('filter_event', self.filter_event)
+        self.page_event = kwargs.get('page_event', self.page_event)
+        self.sort_event = kwargs.get('sort_event', self.sort_event)
 
         self.search_field_key   = None
         self.filter_by          = []
@@ -265,18 +268,26 @@ class ControlQueryList(ControlBase):
         return data
 
         
-    def page_changed_event(self): 
+    def page_changed_event(self):
+        self.page_event()
         self._selected_row_id = -1
         self.mark_to_update_client()
 
-    def sort_changed_event(self): 
+    def sort_changed_event(self):
+        self.sort_event()
         self._selected_row_id = -1
         self.mark_to_update_client()
 
     def filter_changed_event(self):
+        self.filter_event()
         self._selected_row_id = -1
         self._current_page    = 1
         self.mark_to_update_client()
+
+
+    def filter_event(self):pass
+    def page_event(self):pass
+    def sort_event(self):pass
 
     #####################################################################
     #####################################################################

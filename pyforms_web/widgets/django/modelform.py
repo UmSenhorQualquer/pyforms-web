@@ -159,7 +159,7 @@ class ModelFormWidget(BaseWidget):
         # Create the edit buttons buttons #####################
                 
         if self._has_update_permissions:
-            self._save_btn   = ControlButton(self.SAVE_BTN_LABEL, label_visible=False, default=self.__save_btn_event)
+            self._save_btn   = ControlButton(self.SAVE_BTN_LABEL, label_visible=False, default=self.save_btn_event)
             self.edit_buttons.append( self._save_btn )
         
         if self._has_add_permissions:
@@ -254,7 +254,7 @@ class ModelFormWidget(BaseWidget):
         buttons = []
         if self._has_update_permissions:   buttons.append('_save_btn')
         if self._has_add_permissions:      buttons.append('_create_btn')
-        if self.has_cancel_btn:             buttons.append('_cancel_btn')
+        if self.has_cancel_btn:            buttons.append('_cancel_btn')
         if self._has_remove_permissions:   buttons.append('_remove_btn')
         return [no_columns(*buttons)]
     
@@ -462,6 +462,8 @@ class ModelFormWidget(BaseWidget):
                         field = getattr(self.model, field_name)
                     except AttributeError:
                         continue
+
+                print('---', self.title, field_name, type(pyforms_field), value)
 
                 if callable(field) and not isinstance(field, models.Model):
                     pyforms_field.value = value()
@@ -708,6 +710,10 @@ class ModelFormWidget(BaseWidget):
                     
                 setattr(obj, field.name, value)
 
+            elif obj.pk and isinstance(field, models.ManyToManyField):
+                pyforms_field.error = False
+                getattr(obj, field.name).set(value)
+
             # all other fields except the ManyToManyField
             elif not isinstance(field, models.ManyToManyField):
                 pyforms_field.error = False
@@ -728,14 +734,14 @@ class ModelFormWidget(BaseWidget):
         Returns:
             :django.db.models.Mode: Object passed as parameter
         """
-
         for field in self.model._meta.get_fields():
 
             if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
                 values          = getattr(self, field.name).value
                 field_instance  = getattr(obj, field.name)
 
-                values = [] if values is None else values
+                field_instance.set(values)
+                """values = [] if values is None else values
 
                 objs            = field.related_model.objects.filter(pk__in=values)
                 values_2_remove = field_instance.all().exclude(pk__in=[o.pk for o in objs])
@@ -744,7 +750,7 @@ class ModelFormWidget(BaseWidget):
 
                 values_2_add    = objs.exclude(pk__in=[o.pk for o in field_instance.all()])
                 for o in values_2_add: field_instance.add(o)
-                     
+                """
         return obj
 
 
@@ -1051,7 +1057,7 @@ class ModelFormWidget(BaseWidget):
         self.save_form_event(obj)
             
 
-    def __save_btn_event(self):
+    def save_btn_event(self):
         """
         Event called by the save button
         """
