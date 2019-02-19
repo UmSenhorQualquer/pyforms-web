@@ -214,7 +214,10 @@ class ModelFormWidget(BaseWidget):
                 request  = PyFormsMiddleware.get_request()
                 queryset = self.model.get_queryset(request, queryset)
 
-            return queryset.get(pk=self.object_pk)
+            try:
+                return queryset.get(pk=self.object_pk)
+            except self.model.ObjectDoesNotExist:
+                return None
 
     #################################################################################
     #### FUNCTIONS ##################################################################
@@ -712,7 +715,7 @@ class ModelFormWidget(BaseWidget):
 
             elif obj.pk and isinstance(field, models.ManyToManyField):
                 pyforms_field.error = False
-                getattr(obj, field.name).set(value)
+                getattr(obj, field.name).set([] if value is None else value)
 
             # all other fields except the ManyToManyField
             elif not isinstance(field, models.ManyToManyField):
@@ -740,17 +743,8 @@ class ModelFormWidget(BaseWidget):
                 values          = getattr(self, field.name).value
                 field_instance  = getattr(obj, field.name)
 
-                field_instance.set(values)
-                """values = [] if values is None else values
+                field_instance.set([] if values is None else values)
 
-                objs            = field.related_model.objects.filter(pk__in=values)
-                values_2_remove = field_instance.all().exclude(pk__in=[o.pk for o in objs])
-
-                for o in values_2_remove: field_instance.remove(o)
-
-                values_2_add    = objs.exclude(pk__in=[o.pk for o in field_instance.all()])
-                for o in values_2_add: field_instance.add(o)
-                """
         return obj
 
 
