@@ -33,6 +33,9 @@ class BaseWidget(object):
     #: str: Time in milliseconds to refresh the application.
     REFRESH_TIMEOUT = None
 
+    #: list(str): List of django groups authorized to run the application
+    AUTHORIZED_GROUPS = None
+
     #: str: Css classes to add to the form.
     CSS = ''
 
@@ -632,7 +635,7 @@ class BaseWidget(object):
         
         :param User params: User to availuate the permissions.
         """
-        if hasattr(cls, 'AUTHORIZED_GROUPS'):
+        if hasattr(cls, 'AUTHORIZED_GROUPS') and cls.AUTHORIZED_GROUPS is not None:
             if user.is_superuser and 'superuser' in cls.AUTHORIZED_GROUPS: 
                 return True
             if user.groups.filter(name__in=cls.AUTHORIZED_GROUPS).exists():
