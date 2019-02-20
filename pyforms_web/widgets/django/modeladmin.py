@@ -1,30 +1,10 @@
-import dill
-from pyforms_web.basewidget                         import BaseWidget, segment
-from pyforms_web.controls.control_textarea           import ControlTextArea
-from pyforms_web.controls.control_text               import ControlText
-from pyforms_web.controls.control_integer            import ControlInteger
-from pyforms_web.controls.control_float              import ControlFloat
-from pyforms_web.controls.control_combo              import ControlCombo
-from pyforms_web.controls.control_date               import ControlDate
-from pyforms_web.controls.control_datetime           import ControlDateTime
-from pyforms_web.controls.control_button             import ControlButton
-from pyforms_web.controls.control_querylist          import ControlQueryList
-from pyforms_web.controls.control_multipleselection  import ControlMultipleSelection
-from pyforms_web.controls.control_emptywidget        import ControlEmptyWidget
-from pyforms_web.controls.control_fileupload         import ControlFileUpload
-from pyforms_web.controls.control_checkbox           import ControlCheckBox
-
-
-from pyforms_web.web.middleware import PyFormsMiddleware
-from django.core.exceptions import ValidationError, FieldDoesNotExist
-from .utils import get_fieldsets_strings
-import traceback
-from django.conf import settings
-from django.db import models
-import os
-
-
-from .modelform import ModelFormWidget
+from pyforms_web.basewidget                     import BaseWidget, segment
+from pyforms_web.controls.control_button        import ControlButton
+from pyforms_web.controls.control_querylist     import ControlQueryList
+from pyforms_web.controls.control_emptywidget   import ControlEmptyWidget
+from pyforms_web.web.middleware                 import PyFormsMiddleware
+from .modelform                                 import ModelFormWidget
+from django.db                                  import models
 
 class ModelAdminWidget(BaseWidget):
     """
@@ -274,12 +254,13 @@ class ModelAdminWidget(BaseWidget):
                 self._details.hide()
 
 
-    def show_edit_form(self, obj=None):
+    def show_edit_form(self, obj_pk=None):
         """
         Show the edition for for a specific object
 
-        :param django.db.models.Model obj: Object to be edited
+        :param int obj_pk: Primary key of the object to be show in the edit form.
         """
+        obj = self.model.objects.get(pk=obj_pk)
         # if there is no edit permission then does not show the form
         if not self.has_view_permissions(obj): return
 
@@ -437,7 +418,7 @@ class ModelAdminWidget(BaseWidget):
             if self.has_view_permissions(obj):
                 self.object_pk = obj.pk
                 self._list.selected_row_id = None
-                self.show_edit_form(obj)
+                self.show_edit_form(obj.pk)
             else:
                 raise Exception('You do not have permissions to visualize this record.')
 

@@ -431,7 +431,7 @@ class ModelFormWidget(BaseWidget):
         """
         This function prepares the fields to be shown as edit form.
 
-        :param int pk: Primiry key of the object to be show in the edit form.
+        :param int pk: Primary key of the object to be show in the edit form.
 
         Returns:
             :django.db.models.Model object: Returns the object in edition.
