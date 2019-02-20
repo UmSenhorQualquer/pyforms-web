@@ -466,8 +466,6 @@ class ModelFormWidget(BaseWidget):
                     except AttributeError:
                         continue
 
-                print('---', self.title, field_name, type(pyforms_field), value)
-
                 if callable(field) and not isinstance(field, models.Model):
                     pyforms_field.value = value()
 
