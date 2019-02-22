@@ -115,6 +115,7 @@ class ControlQueryList extends ControlBase{
                     choose_button.children('span').html(filter_value);
                     
                     self.collect_filters_values();
+                    self.update_server_flag = true;
                     self.basewidget.fire_event( self.name, 'filter_changed_event' );
                 });
 
@@ -127,6 +128,7 @@ class ControlQueryList extends ControlBase{
                     $(this).hide();
 
                     self.collect_filters_values();
+                    self.update_server_flag = true;
                     self.basewidget.fire_event( self.name, 'filter_changed_event' );
                 });
             }
@@ -224,6 +226,7 @@ class ControlQueryList extends ControlBase{
             $("#"+this.control_id()+"-search").keypress(function (ev) {
                 var keycode = (ev.keyCode ? ev.keyCode : ev.which);
                 if (keycode == '13') {
+                    self.update_server_flag = true;
                     self.properties.search_field_key = $(this).val();
                     self.basewidget.fire_event( self.name, 'filter_changed_event' );
                     return false;
@@ -233,6 +236,8 @@ class ControlQueryList extends ControlBase{
         $( "#"+this.place_id()+" .queryset-filter" ).dropdown({
             onChange: function(value, text, selectedItem){
                 self.collect_filters_values();
+                self.update_server_flag = true;
+
                 self.basewidget.fire_event( self.name, 'filter_changed_event' );
             },
             fullTextSearch: 'exact',
@@ -269,6 +274,8 @@ class ControlQueryList extends ControlBase{
                 };          
             });
 
+
+            self.update_server_flag = true;
             self.basewidget.fire_event( self.name, 'sort_changed_event' );
         });
 
@@ -372,6 +379,7 @@ class ControlQueryList extends ControlBase{
 
         $("#"+this.control_id()+" .pagination .item" ).click(function(){
             if( !$(this).hasClass('active') ){
+                self.update_server_flag = true;
                 self.properties.pages.current_page = $(this).attr('pageindex');
                 self.basewidget.fire_event( self.name, 'page_changed_event' );
             }
