@@ -294,7 +294,11 @@ class ControlQueryList(ControlBase):
 
     def format_list_column(self, col_value): 
 
-        if col_value is None: return ''       
+        if col_value is None:
+            return ''
+
+        if callable(col_value):
+            col_value = col_value()
 
         if isinstance(col_value, datetime.datetime ):
             if not col_value: return ''
