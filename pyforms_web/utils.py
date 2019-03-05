@@ -53,9 +53,11 @@ def get_lookup_verbose_name(model, lookup):
 
                 if last_loop:
                     if not hasattr(field, 'verbose_name'):
-                        return force_text(field.related_model._meta.verbose_name).title()
+                        return force_text(field.related_model._meta.verbose_name)
+                    elif field._verbose_name is None:
+                        return force_text(field.verbose_name).capitalize()
                     else:
-                        return force_text(field.verbose_name).title()
+                        return force_text(field.verbose_name)
 
                 else:
                     model = field.related_model
@@ -76,4 +78,7 @@ def get_lookup_verbose_name(model, lookup):
             else:
                 return part.title()
 
-        return force_text(field.verbose_name).title()
+        if field._verbose_name is None:
+            return force_text(field.verbose_name).capitalize()
+        else:
+            return force_text(field.verbose_name)
