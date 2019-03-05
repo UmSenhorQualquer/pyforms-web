@@ -9,11 +9,13 @@ __maintainer__  = "Ricardo Ribeiro"
 __email__       = "ricardojvr@gmail.com"
 __status__      = "Development"
 
+
+from confapp import conf;
+conf += 'pyforms_web.settings'
+
 #force the load of the local settings if exists
 try:
     import local_settings
     conf += local_settings
 except:
     pass
-
-from confapp import conf; conf += 'pyforms_web.settings'
