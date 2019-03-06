@@ -71,7 +71,7 @@ def get_lookup_verbose_name(model, lookup):
             if callable(field) and not isinstance(field, models.Model):
 
                 if hasattr(field, 'short_description'):
-                    return field.short_description.title()
+                    return field.short_description
                 else:
                     return part.title()
 
