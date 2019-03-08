@@ -216,7 +216,7 @@ class ModelFormWidget(BaseWidget):
 
             try:
                 return queryset.get(pk=self.object_pk)
-            except self.model.ObjectDoesNotExist:
+            except self.model.DoesNotExist:
                 return None
 
     #################################################################################
