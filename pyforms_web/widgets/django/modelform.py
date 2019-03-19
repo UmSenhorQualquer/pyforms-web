@@ -43,13 +43,13 @@ class ModelFormWidget(BaseWidget):
        from funding.models import FundingOpportunity
 
        class EditFundingOpportunitiesApp(ModelFormWidget):
-            
+
             TITLE = "Edit opportunities"
             MODEL = FundingOpportunity
-            
+
             FIELDSETS = [
                 'h2:Opportunity details',
-                segment([ 
+                segment([
                     ('subject','fundingopportunity_published','fundingopportunity_rolling'),
                     ('fundingopportunity_name','fundingopportunity_end'),
                     ('_loi','fundingopportunity_loideadline', 'fundingopportunity_fullproposal'),
@@ -81,15 +81,15 @@ class ModelFormWidget(BaseWidget):
     HAS_CANCEL_BTN_ON_ADD  = True
 
     #: bool: Close the application on remove
-    CLOSE_ON_REMOVE = False 
+    CLOSE_ON_REMOVE = False
     #: bool: Close the application on cancel
     CLOSE_ON_CANCEL = False
 
     #: bool: Call populate_list function of the parent application when object is saved, updated or deleted
     POPULATE_PARENT = True
- 
+
     #: str: Label for the save button
-    SAVE_BTN_LABEL     = '<i class="save icon"></i> Save' 
+    SAVE_BTN_LABEL     = '<i class="save icon"></i> Save'
     #: str: Label for the create button
     CREATE_BTN_LABEL   = '<i class="plus icon"></i> Create'
     #: str: Label for the cancel button
@@ -98,7 +98,7 @@ class ModelFormWidget(BaseWidget):
     REMOVE_BTN_LABEL   = '<i class="trash alternate outline icon"></i> Remove'
     #: str: Label for the popup window for the delete confirmation
     POPUP_REMOVE_TITLE = 'The next objects are going to be affected or removed'
-    
+
     def __init__(self, *args, **kwargs):
         """
         :param str title: Title of the app. By default will assume the value in the class variable TITLE.
@@ -119,15 +119,15 @@ class ModelFormWidget(BaseWidget):
         self._has_update_permissions = self.has_update_permissions()
         self._has_add_permissions    = self.has_add_permissions()
         self._has_view_permissions   = self.has_view_permissions()
-        
+
         if self.object_pk:
             if not self._has_view_permissions:
                 self.formset = ['alert:No permissions']
-                return 
+                return
         else:
             if not self._has_add_permissions:
                 self.formset = ['alert:No permissions']
-                return 
+                return
 
 
         self.fieldsets = self.get_fieldsets(kwargs.get('fieldsets',  self.FIELDSETS))
@@ -135,9 +135,9 @@ class ModelFormWidget(BaseWidget):
         self.has_cancel_btn = kwargs.get('has_cancel_btn',  self.HAS_CANCEL_BTN_ON_ADD if self.object_pk is None else self.HAS_CANCEL_BTN_ON_EDIT)
 
         self.inlines = self.INLINES if len(self.INLINES)>0 else kwargs.get('inlines', self.INLINES)
-        
+
         if self.fieldsets is None: self.fieldsets = self.FIELDSETS
-        
+
         self._auto_fields          = []
         self._callable_fields      = []
         self.edit_fields           = []
@@ -145,36 +145,36 @@ class ModelFormWidget(BaseWidget):
         self.inlines_apps          = []
         self.inlines_controls_name = []
         self.inlines_controls      = []
-        
+
         # used to configure the interface to inline
         # it will filter the dataset by the foreign key
         self.parent_field = None
         self.parent_pk    = kwargs.get('parent_pk', None)
         self.parent_model = kwargs.get('parent_model', None)
-        
+
         if self.parent_model and self.parent_pk:
             self.__set_parent(self.parent_model, self.parent_pk)
         #######################################################
 
         # Create the edit buttons buttons #####################
-                
+
         if self._has_update_permissions:
             self._save_btn   = ControlButton(self.SAVE_BTN_LABEL, label_visible=False, default=self.save_btn_event)
             self.edit_buttons.append( self._save_btn )
-        
+
         if self._has_add_permissions:
             self._create_btn = ControlButton(self.CREATE_BTN_LABEL, label_visible=False, default=self.__create_btn_event)
             self.edit_buttons.append( self._create_btn )
-            
+
         self._has_remove_permissions = self.has_remove_permissions()
         if self._has_remove_permissions:
-            self._remove_btn = ControlButton(self.REMOVE_BTN_LABEL,  css='red basic', label_visible=False, default=self.__remove_btn_event)  
+            self._remove_btn = ControlButton(self.REMOVE_BTN_LABEL,  css='red basic', label_visible=False, default=self.__remove_btn_event)
             self.edit_buttons.append( self._remove_btn )
-            
+
         if self.has_cancel_btn:
             self._cancel_btn = ControlButton(self.CANCEL_BTN_LABEL, css='gray basic', label_visible=False, default=self.cancel_btn_event)
             self.edit_buttons.append( self._cancel_btn )
-            
+
         self.edit_fields += self.edit_buttons
         #######################################################
 
@@ -183,9 +183,9 @@ class ModelFormWidget(BaseWidget):
         if self.parent_model:
             for btn in self.edit_buttons: btn.css +=' tiny'
         #######################################################
-        
+
         self.create_model_formfields()
-        
+
         if self.object_pk:
             self.show_edit_form(pk=self.object_pk)
         else:
@@ -197,12 +197,12 @@ class ModelFormWidget(BaseWidget):
     #### PROPERTIES #################################################################
     #################################################################################
 
-    @property 
+    @property
     def model_object(self):
         """
         django.db.models.Model object: Return the current object in edition.
         """
-        
+
         if self.object_pk is None:
             return None
         else:
@@ -226,7 +226,7 @@ class ModelFormWidget(BaseWidget):
     def get_readonly(self, default):
         """
         The function returns the readonly fields to be set in the form.
-        
+
         :param list(str) default: Default readonly configuration.
 
         Returns:
@@ -237,9 +237,9 @@ class ModelFormWidget(BaseWidget):
     def get_fieldsets(self, default):
         """
         The function returns the fieldsets organization to be set in the form.
-        
+
         :param list(str) default: Default fieldsets configuration.
-        
+
         Returns:
             list(str): fieldsets. Check class variable FIELDSETS to know more about it.
         """
@@ -260,21 +260,21 @@ class ModelFormWidget(BaseWidget):
         if self.has_cancel_btn:            buttons.append('_cancel_btn')
         if self._has_remove_permissions:   buttons.append('_remove_btn')
         return [no_columns(*buttons)]
-    
+
 
     def hide_form(self):
         """
-        This functions hides the create and edit form. 
+        This functions hides the create and edit form.
         """
         if self.parent and hasattr(self.parent, 'hide_form'):
             self.parent.hide_form()
         else:
             for field in self.edit_fields:      field.hide()
             for field in self.inlines_controls: field.hide()
-        
+
     def show_form(self):
         """
-        This shows the create and edit form. 
+        This shows the create and edit form.
         """
         for field in self.edit_fields:      field.show()
         for field in self.inlines_controls: field.show()
@@ -294,11 +294,11 @@ class ModelFormWidget(BaseWidget):
         # close the application on cancel
         if self.CLOSE_ON_CANCEL:
             self.close()
-        # the application has a ModelAdmin app as parent. Call parent hide_form 
+        # the application has a ModelAdmin app as parent. Call parent hide_form
         elif hasattr(self.parent, 'hide_form'):
             self.parent.hide_form()
 
-        
+
 
 
     def autocomplete_search(self, queryset, keyword, control):
@@ -308,7 +308,7 @@ class ModelFormWidget(BaseWidget):
         :param django.db.models.query.QuerySet queryset: Queryset from where to filter the results
         :param str keyword: Keyword for filter the results
         :param pyforms.controls.BaseControl: Control calling the autocomplete
-        
+
         Returns:
             django.db.models.query.QuerySet: Queryset used to update the autocomplete control
         """
@@ -317,11 +317,11 @@ class ModelFormWidget(BaseWidget):
 
         return queryset
 
-    
+
     def get_related_field_queryset(self, field, queryset):
         """
         Function called to manages the query for related fields like ForeignKeys and ManyToMany.
-        
+
         :param django.db.models.fields.Field field: Related django field.
         :param django.db.models.query.QuerySet queryset: Default queryset for the related field.
 
@@ -333,7 +333,7 @@ class ModelFormWidget(BaseWidget):
     def update_related_field(self, field, pyforms_field, queryset):
         """
         Function called update the related fields like ForeignKeys and ManyToMany.
-        
+
         :param django.db.models.fields.Field field: Related django field.
         :param ControlBase pyforms_field: Pyforms field that will be updated.
         :param django.db.models.query.QuerySet queryset: Default queryset for the related field.
@@ -346,7 +346,7 @@ class ModelFormWidget(BaseWidget):
             #Foreign key
             #pyforms_field.clear_items()
             #if field.null:
-            #    pyforms_field.add_item( '', '-1' )           
+            #    pyforms_field.add_item( '', '-1' )
             #for instance in query:
             #    pyforms_field.add_item( str(instance), instance.pk )
 
@@ -356,8 +356,8 @@ class ModelFormWidget(BaseWidget):
             pass
         """
 
-    
-    
+
+
     def show_create_form(self):
         """
         This function prepares the fields to be shown as create form.
@@ -366,7 +366,7 @@ class ModelFormWidget(BaseWidget):
         #check if it has permissions to add new registers
         if not self._has_add_permissions:
             raise Exception('Your user does not have permissions to add')
-    
+
         fields2show = self.get_visible_fields_names()
 
         self.__update_related_fields()
@@ -391,9 +391,9 @@ class ModelFormWidget(BaseWidget):
                         pyforms_field.value = ''
                 except FieldDoesNotExist:
                     pass
-                
+
         for field in self.edit_fields: field.show()
-        
+
         for inline in self.inlines_controls:
             inline.hide()
 
@@ -404,7 +404,7 @@ class ModelFormWidget(BaseWidget):
         """
         Update the callable fields after the form is saved.
         """
-        if not self._callable_fields: return 
+        if not self._callable_fields: return
 
         obj = self.model_object
         if obj is None: return
@@ -417,7 +417,7 @@ class ModelFormWidget(BaseWidget):
         """
         Update the auto number fields after the form is saved.
         """
-        if not self._auto_fields: return 
+        if not self._auto_fields: return
 
         obj = self.model_object
         if obj is None: return
@@ -436,12 +436,12 @@ class ModelFormWidget(BaseWidget):
         Returns:
             :django.db.models.Model object: Returns the object in edition.
         """
-        
+
         if  pk: self.object_pk = pk
 
         if not self._has_view_permissions:
             raise Exception('Your user does not have permissions to save')
-    
+
 
         for field in self.edit_fields:      field.show()
         for field in self.inlines_controls: field.show()
@@ -451,7 +451,7 @@ class ModelFormWidget(BaseWidget):
 
         obj = self.model_object
         fields2show = self.get_visible_fields_names()
-        
+
         for field_name in fields2show:
 
             if hasattr(self, field_name) and hasattr(obj,  field_name):
@@ -473,20 +473,20 @@ class ModelFormWidget(BaseWidget):
 
                     if isinstance(field, models.ManyToManyField):
                         pyforms_field.value = ';'.join([str(o) for o in value.all()])
-                    
+
                     elif isinstance(value, datetime.datetime ):
-                        if not value: 
+                        if not value:
                             pyforms_field.value = ''
                         else:
                             value = timezone.localtime(value)
                             pyforms_field.value = value.strftime('%Y-%m-%d %H:%M')
-                    
+
                     elif isinstance(value, datetime.date ):
-                        if not value: 
+                        if not value:
                             pyforms_field.value = ''
                         else:
                             pyforms_field.value = value.strftime('%Y-%m-%d')
-    
+
                     else:
                         pyforms_field.value = value
 
@@ -497,7 +497,7 @@ class ModelFormWidget(BaseWidget):
                 elif isinstance(field, models.AutoField):
                     pyforms_field.value = value
 
-                elif isinstance(field, models.FileField):                 
+                elif isinstance(field, models.FileField):
                     pyforms_field.value = value.url if value else None
 
                 elif isinstance(field, models.ImageField):
@@ -505,15 +505,15 @@ class ModelFormWidget(BaseWidget):
 
                 elif isinstance(field, models.ForeignKey):
                     pyforms_field.value = value.pk if value else None
-                   
-                elif isinstance(field, models.ManyToManyField):                 
+
+                elif isinstance(field, models.ManyToManyField):
                     pyforms_field.value = [str(o.pk) for o in value.all()]
-                    
+
                 else:
                     pyforms_field.value = value
-                
-                
-            
+
+
+
         self.inlines_apps = []
         for inline in self.inlines:
             pyforms_field = getattr(self, inline.__name__)
@@ -551,7 +551,7 @@ class ModelFormWidget(BaseWidget):
         Function that handles the buttons events of the object delete confirmation popup.
 
         :param BaseWidget popup: Popup application.
-        :param str button: Label of the pressed button. 
+        :param str button: Label of the pressed button.
         """
         if button==self.CANCEL_BTN_LABEL:
             popup.close()
@@ -582,7 +582,7 @@ class ModelFormWidget(BaseWidget):
         Function called to save the object
         It validates the form fields values.
 
-       
+
         :param django.db.models.Model obj: Object to save.
         :param dict kwargs: Any named argument passed to this function will be passed to the Model save method. Example: Model.save(**kwargs).
         """
@@ -599,7 +599,7 @@ class ModelFormWidget(BaseWidget):
     def validate_object(self, obj):
         """
         Function called the model object
-       
+
         :param django.db.models.Model obj: Object to validate.
 
         Returns:
@@ -608,7 +608,7 @@ class ModelFormWidget(BaseWidget):
 
         # Validate the object
         try:
-            
+
             obj.full_clean()
 
         except ValidationError as e:
@@ -618,7 +618,7 @@ class ModelFormWidget(BaseWidget):
             # Found errors, the object was not saved
             html = '<ul class="list">'
             for field_name, messages in e.message_dict.items():
-                
+
                 try:
                     if hasattr(self, field_name):
                         getattr(self, field_name).error = True
@@ -637,7 +637,7 @@ class ModelFormWidget(BaseWidget):
                 if field_error: html += '<ul>'
                 for msg in messages: html += '<li>{0}</li>'.format(msg)
                 if field_error: html += '</ul></li>'
-                
+
             html+= '</ul>'
             raise Exception(html)
 
@@ -649,33 +649,33 @@ class ModelFormWidget(BaseWidget):
         Update the obj fields values with the form inputs values
 
         :param django.db.models.Model obj: Object to update the values.
-        
+
         Returns:
             :django.db.models.Mode: Updated object.
         """
 
         # if it is working as an inline edition form #
         if self.parent_field:
-            setattr(obj, 
-                self.parent_field.name, 
+            setattr(obj,
+                self.parent_field.name,
                 self.parent_model.objects.get(pk=self.parent_pk)
             )
 
         fields2show = self.get_visible_fields_names()
-        
+
         for field in self.model._meta.get_fields():
             # ignore fields that are not in the formset
             if field.name not in fields2show: continue
             # ignore read only fields
             if field.name in self.readonly:   continue
-            
+
             pyforms_field = getattr(self, field.name)
             value         = pyforms_field.value
 
             # if AutoField
             if   isinstance(field, models.AutoField):
                 continue
-            
+
             # if FileField
             elif isinstance(field, models.FileField):
                 getattr(self, field.name).error = False
@@ -691,7 +691,7 @@ class ModelFormWidget(BaseWidget):
                     if os.path.exists(from_path):
                         to_path     = os.path.join(settings.MEDIA_ROOT, field.upload_to, os.path.basename(value) )
                         os.rename(from_path, to_path)
-    
+
                         url = '/'.join([field.upload_to]+[os.path.basename(value) ])
                         if url[0]=='/': url = url[1:]
                         setattr(obj, field.name, url)
@@ -699,7 +699,7 @@ class ModelFormWidget(BaseWidget):
                     setattr(obj, field.name, None)
                 else:
                     setattr(obj, field.name, '')
-            
+
             # if ForeignKey
             elif isinstance(field, models.ForeignKey):
                 if value is not None:
@@ -712,7 +712,7 @@ class ModelFormWidget(BaseWidget):
                         pyforms_field.error = True
                 else:
                     value = None
-                    
+
                 setattr(obj, field.name, value)
 
             elif obj.pk and isinstance(field, models.ManyToManyField):
@@ -725,7 +725,7 @@ class ModelFormWidget(BaseWidget):
 
                 if isinstance(field, models.CharField) and value is None and field.null is False:
                     value = ''
-                    
+
                 setattr(obj, field.name, value)
 
         return obj
@@ -735,7 +735,7 @@ class ModelFormWidget(BaseWidget):
         Save related fields
 
         :param django.db.models.Model obj: Parent object to save.
-        
+
         Returns:
             :django.db.models.Mode: Object passed as parameter
         """
@@ -755,9 +755,9 @@ class ModelFormWidget(BaseWidget):
         Function handling the form save.
         This function, updates the obj with the form values,
         validate the obj fields, and call the save_event function.
-        
+
         :param django.db.models.Model obj: Model object used for the save.
-        
+
         Returns:
             :boolean: It returns True or False if the save was successfully.
         """
@@ -780,13 +780,13 @@ class ModelFormWidget(BaseWidget):
         Function handling the form save.
         This function, updates the obj with the form values,
         validate the obj fields, and call the save_event function.
-        
+
         :param django.db.models.Model obj: Model object used for the save.
-        
+
         Returns:
             :boolean: It returns True or False if the save was successfully.
         """
-        
+
         obj = self.save_object(obj)
         obj = self.save_related_fields(obj)
 
@@ -802,11 +802,11 @@ class ModelFormWidget(BaseWidget):
 
                 # update the parent list
                 if self.POPULATE_PARENT: self.parent.populate_list()
-                
+
                 self.cancel_btn_event()
                 self.parent.show_edit_form(obj.pk)
                 self.parent.success('The object <b>{0}</b> was saved with success!'.format(obj),'Success!')
-            
+
             elif obj:
                 # it is executing as a single app
                 if self._has_add_permissions:    self._create_btn.hide()
@@ -840,13 +840,13 @@ class ModelFormWidget(BaseWidget):
         return True
 
 
-    
 
 
-        
 
 
-    
+
+
+
 
     #################################################################################
     #### PRIVATE FUNCTIONS ##########################################################
@@ -882,13 +882,13 @@ class ModelFormWidget(BaseWidget):
         else:
             fields = []
             for field in self.model._meta.get_fields():
-                
+
                 if field.one_to_many: continue
                 if field.one_to_one and field.name.endswith('_ptr'): continue
 
                 fields.append(field.name)
-        
-        if self.parent_field: 
+
+        if self.parent_field:
             try:
                 fields.remove(self.parent_field.name)
             except ValueError: pass
@@ -898,24 +898,24 @@ class ModelFormWidget(BaseWidget):
 
     def __update_related_fields(self):
         """
-        Update all related fields 
+        Update all related fields
         """
-        fields2show = self.get_visible_fields_names()       
+        fields2show = self.get_visible_fields_names()
         formset     = []
 
         for field in self.model._meta.get_fields():
 
             if not isinstance(
-                field, 
+                field,
                 (models.ForeignKey,models.ManyToManyField)
             ): continue
-    
+
             if field.name not in fields2show: continue #only update this field if is visible
             if field.name in self.readonly:   continue
-            
+
             pyforms_field = getattr(self, field.name)
             queryset = field.related_model.objects.all()
-            
+
             #limit_choices = field.get_limit_choices_to()
             #if limit_choices:
             #    queryset = queryset.filter(**limit_choices)
@@ -925,19 +925,19 @@ class ModelFormWidget(BaseWidget):
             self.update_related_field(field, pyforms_field, queryset)
 
 
-            
+
     def create_model_formfields(self):
         """
         Create the model edition form.
         """
-        fields2show = self.get_visible_fields_names()       
+        fields2show = self.get_visible_fields_names()
         formset     = []
 
         for field_name in fields2show:
 
             # if the field already exists then ignore the creation
             if hasattr(self, field_name): continue
-            
+
             try:
                 field = self.model._meta.get_field(field_name)
             except FieldDoesNotExist:
@@ -964,12 +964,12 @@ class ModelFormWidget(BaseWidget):
                     pyforms_field = ControlTextArea( label, readonly=True )
                 else:
                     pyforms_field = ControlText( label, readonly=True )
-            
+
             # if it is AutoField
             elif isinstance(field, models.AutoField):
                 pyforms_field = ControlText( label, readonly=True )
                 self._auto_fields.append( field_name )
-            
+
 
             elif isinstance(field, models.Field) and field.choices:
                 pyforms_field = ControlCombo(
@@ -987,9 +987,9 @@ class ModelFormWidget(BaseWidget):
             elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( label, default=field.default )
             elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( label, default=field.default )
             elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( label, default=field.default )
-            elif isinstance(field, models.NullBooleanField):            
-                pyforms_field = ControlCombo( 
-                    label, 
+            elif isinstance(field, models.NullBooleanField):
+                pyforms_field = ControlCombo(
+                    label,
                     items=[('Unknown', None), ('Yes', True), ('No', False)],
                     default=field.default
                 )
@@ -999,7 +999,7 @@ class ModelFormWidget(BaseWidget):
                 if limit_choices: query = query.filter(**limit_choices)
 
                 pyforms_field = ControlAutoComplete(
-                    label, 
+                    label,
                     queryset=query,
                     queryset_filter=self.autocomplete_search,
                     default=field.default
@@ -1010,7 +1010,7 @@ class ModelFormWidget(BaseWidget):
                 if limit_choices: query = query.filter(**limit_choices)
 
                 pyforms_field = ControlAutoComplete(
-                    label, 
+                    label,
                     queryset=query,
                     multiple=True,
                     queryset_filter=self.autocomplete_search
@@ -1019,9 +1019,9 @@ class ModelFormWidget(BaseWidget):
                 default = None
                 if hasattr(field, 'default'): default = field.default
                 pyforms_field = ControlText( label, default=default )
-            
+
             # add the field to the application
-            if pyforms_field is not None: 
+            if pyforms_field is not None:
                 setattr(self, field_name, pyforms_field)
                 formset.append(field_name)
                 self.edit_fields.append( pyforms_field )
@@ -1036,11 +1036,11 @@ class ModelFormWidget(BaseWidget):
             setattr(self, inline.__name__, pyforms_field)
             self.inlines_controls_name.append(inline.__name__)
             self.inlines_controls.append( pyforms_field )
-            
-            
+
+
         self.formset = self.fieldsets if self.fieldsets else formset
         self.formset = self.formset + self.get_buttons_row()
-        
+
 
     def __create_btn_event(self):
         """
@@ -1051,7 +1051,7 @@ class ModelFormWidget(BaseWidget):
 
         obj = self.create_newobject()
         self.save_form_event(obj)
-            
+
 
     def save_btn_event(self):
         """
@@ -1060,7 +1060,7 @@ class ModelFormWidget(BaseWidget):
         obj = self.model_object
 
         if obj is None:
-            # The object is None, call the create event 
+            # The object is None, call the create event
             self.__create_btn_event()
             return
 
@@ -1070,28 +1070,28 @@ class ModelFormWidget(BaseWidget):
                 raise Exception('You do not have permissions to update the object.')
 
             self.save_form_event(obj)
-            
-    
+
+
     def __remove_btn_event(self):
         """
         Event called by the remove button
         """
-        
+
         def related_objects(obj):
             objects = []
             for rel in list(obj.__class__._meta.related_objects):
                 f = {rel.field.name: obj}
                 rel_objects = rel.related_model.objects.filter(**f)
-                
+
                 for o in rel_objects:
-                    objects.append( (o, related_objects(o) ) )            
+                    objects.append( (o, related_objects(o) ) )
             return objects
 
         def related_objects_html(objects):
             html = "<ul>"
             for o, objs in objects:
                 html += "<li>"
-                html += "{1}: <b>{0}</b>".format( 
+                html += "{1}: <b>{0}</b>".format(
                     str(o), o.__class__._meta.verbose_name
                 )
                 if len(objs)>0:
@@ -1109,9 +1109,9 @@ class ModelFormWidget(BaseWidget):
             objects = obj, related_objects(obj)
             html = related_objects_html([objects])
 
-            popup = self.warning_popup(html, 
-                self.POPUP_REMOVE_TITLE, 
-                buttons=[self.REMOVE_BTN_LABEL,self.CANCEL_BTN_LABEL], 
+            popup = self.warning_popup(html,
+                self.POPUP_REMOVE_TITLE,
+                buttons=[self.REMOVE_BTN_LABEL,self.CANCEL_BTN_LABEL],
                 handler=self.popup_remove_handler
             )
             popup.button_0.css = 'basic red'
@@ -1130,7 +1130,7 @@ class ModelFormWidget(BaseWidget):
     def has_add_permissions(self):
         """
         The functions returns if the user has permissions to add objects or not.
-        
+
         Returns:
             bool: True if has add permissions, False otherwise.
         """
@@ -1142,13 +1142,13 @@ class ModelFormWidget(BaseWidget):
             return queryset.has_add_permissions(
                 PyFormsMiddleware.user()
             )
-        else:    
+        else:
             return True
 
     def has_view_permissions(self):
         """
         The functions returns if the user has permissions to view the queryset or not.
-        
+
         Returns:
             bool: True if has view permissions, False otherwise.
         """
@@ -1161,7 +1161,7 @@ class ModelFormWidget(BaseWidget):
         if  hasattr(queryset, 'has_view_permissions'):
             user = PyFormsMiddleware.user()
             return queryset.has_view_permissions( user )
-        else:    
+        else:
             return True
 
     def has_session_permissions(self, user):
@@ -1170,7 +1170,7 @@ class ModelFormWidget(BaseWidget):
     def has_remove_permissions(self):
         """
         The functions returns if the user has permissions to remove the current queryset or not.
-        
+
         Returns:
             bool: True if has remove permissions, False otherwise.
         """
@@ -1180,13 +1180,13 @@ class ModelFormWidget(BaseWidget):
         queryset = self.model.objects.filter(pk=self.object_pk)
         if  hasattr(queryset, 'has_remove_permissions'):
             return queryset.has_remove_permissions( PyFormsMiddleware.user() )
-        else:    
+        else:
             return True
 
     def has_update_permissions(self):
         """
         The functions returns if the user has permissions to update the current queryset or not.
-        
+
         Returns:
             bool: True if has update permissions, False otherwise.
         """
@@ -1196,5 +1196,5 @@ class ModelFormWidget(BaseWidget):
         queryset = self.model.objects.filter(pk=self.object_pk)
         if  hasattr(queryset, 'has_update_permissions'):
             return queryset.has_update_permissions( PyFormsMiddleware.user() )
-        else:    
+        else:
             return True

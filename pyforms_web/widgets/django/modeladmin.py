@@ -38,14 +38,14 @@ class ModelAdminWidget(BaseWidget):
 
     CONTROL_LIST    = ControlQueryList #: class: Control to be used in to list the values
     FIELDSETS       = None  #: Formset of the edit form
-    READ_ONLY       = []    #: list(str): List of readonly fields 
+    READ_ONLY       = []    #: list(str): List of readonly fields
 
     LIST_ROWS_PER_PAGE = 10 #: int: number of rows to show per page
     LIST_N_PAGES = 5        #: int: number of pages to show in the list bottom
 
     #: str: Label of the add button
     ADD_BTN_LABEL = '<i class="plus icon"></i> Add'
-    
+
 
     def __init__(self, *args, **kwargs):
         """
@@ -71,7 +71,7 @@ class ModelAdminWidget(BaseWidget):
         BaseWidget.__init__(self, title)
 
         user = PyFormsMiddleware.user()
-        
+
         #######################################################
         self._list = self.CONTROL_LIST(
             'List',
@@ -87,11 +87,11 @@ class ModelAdminWidget(BaseWidget):
         has_details = self.USE_DETAILS_TO_ADD or self.USE_DETAILS_TO_EDIT
         if has_details:
             self._details = ControlEmptyWidget('Details', visible=False)
-        
+
         ##############################################
         # Check if the add button should be included
         has_add_permission = self.has_add_permissions() and self.addmodel_class is not None
-        
+
         if has_add_permission:
 
             self._add_btn = ControlButton(
@@ -113,16 +113,16 @@ class ModelAdminWidget(BaseWidget):
         else:
             self.formset = [
                 '_details' if has_details else None,
-                segment( 
+                segment(
                     self.toolbar,
                     '_list'
                 ),
             ]
-        
+
         self._list.item_selection_changed_event = self.__list_item_selection_changed_event
 
         #if it is a inline app, add the title to the header
-        
+
         if self.parent_model and self.title:
             self.formset = ['h3:'+str(title)]+self.formset
 
@@ -165,24 +165,24 @@ class ModelAdminWidget(BaseWidget):
     def get_queryset(self, request, queryset):
         """
             The function retrives the queryset used to polulate the list.
-            
-            :param django.db.models.query.QuerySet queryset: 
+
+            :param django.db.models.query.QuerySet queryset:
                 Default queryset used to populate the list.
                 This queryset may have already applied the next filters:
-                - If this class is being used as a inline app, the filters to select only the rows related with the parent app are applied. 
+                - If this class is being used as a inline app, the filters to select only the rows related with the parent app are applied.
                 - If the model being managed by this class has a function called get_queryset(request, queryset), the filters applied by this function are applied. (this helps maintaining the visualization rules on the side of the model)
 
             Returns:
                 django.db.models.query.QuerySet: Returns the queryset used to populate the list.
         """
-        
+
         return queryset
 
 
     def get_related_field_queryset(self, request, list_queryset, field, queryset):
         """
         Called to return the main list filters for the ForeignKeys and ManyToMany fields.
-        
+
         :param django.http.request.HttpRequest request: HttpRequest originating the call of this function.
         :param django.db.models.query.QuerySet list_queryset: Queryset of the main list.
         :param django.db.models.fields.Field field: Related django field.
@@ -195,8 +195,8 @@ class ModelAdminWidget(BaseWidget):
             return queryset.list_permissions(request.user)
         else:
             return queryset
-    
-        
+
+
     def hide_form(self):
         """
         Function called to hide the form
@@ -205,18 +205,18 @@ class ModelAdminWidget(BaseWidget):
         # hide details
         if hasattr(self, '_details'): self._details.hide()
 
-        # show the buttons, only if the they exists: 
+        # show the buttons, only if the they exists:
         toolbar = [self.toolbar] if isinstance(self.toolbar, str) else self.toolbar
         if toolbar:
             for o in toolbar:
                 if o and hasattr(self, o):
                     getattr(self, o).show()
-        
+
         self._list.show()
         self._list.selected_row_id = -1
         self.populate_list()
-        
-        
+
+
 
     def show_create_form(self):
         """
@@ -226,7 +226,7 @@ class ModelAdminWidget(BaseWidget):
         if not self.has_add_permissions(): return
 
         params = {
-            'title':'Create', 
+            'title':'Create',
             'model':self.model,
             'parent_model':self.parent_model,
             'parent_pk':self.parent_pk,
@@ -250,7 +250,7 @@ class ModelAdminWidget(BaseWidget):
                         getattr(self, o).hide()
         else:
             self._list.show()
-            if hasattr(self, '_details'): 
+            if hasattr(self, '_details'):
                 self._details.hide()
 
 
@@ -264,11 +264,11 @@ class ModelAdminWidget(BaseWidget):
         # if there is no edit permission then does not show the form
         if not self.has_view_permissions(obj): return
 
-        
+
         # create the edit form a add it to the empty widget details
         # override the function hide_form to make sure the list is shown after the user close the edition form
         params = {
-            'title':'Edit', 
+            'title':'Edit',
             'model':self.model,
             'pk':obj.pk,
             'parent_model':self.parent_model,
@@ -283,12 +283,12 @@ class ModelAdminWidget(BaseWidget):
         editmodel_class = self.get_editmodel_class(obj)
         editform = editmodel_class(**params)
 
-        if hasattr(self, '_details') and self.USE_DETAILS_TO_EDIT: 
+        if hasattr(self, '_details') and self.USE_DETAILS_TO_EDIT:
             self._details.value = editform
             self._list.hide()
             self._details.show()
 
-            # only if the button exists: 
+            # only if the button exists:
             toolbar = [self.toolbar] if isinstance(self.toolbar, str) else self.toolbar
             if toolbar:
                 for o in toolbar:
@@ -296,7 +296,7 @@ class ModelAdminWidget(BaseWidget):
 
         else:
             self._list.show()
-            if hasattr(self, '_details'): 
+            if hasattr(self, '_details'):
                 self._details.hide()
 
 
@@ -312,11 +312,11 @@ class ModelAdminWidget(BaseWidget):
     def set_parent(self, parent_model, parent_pk):
         """
         Function called to set prepare the Application to work as an inline
-        
+
         :param django.db.models.Model parent_model: Model of the parent Edition form
         :param int parent_pk: Primary key of the parent object
         """
-        
+
         self.parent_pk      = parent_pk
         self.parent_model   = parent_model
 
@@ -329,21 +329,21 @@ class ModelAdminWidget(BaseWidget):
     def has_add_permissions(self):
         """
         Function called to check if one has permission to add new objects.
-        
+
         Returns:
             bool: True if has add permission, False otherwise.
         """
         queryset = self.model.objects.all()
         if  hasattr(queryset, 'has_add_permissions'):
             return queryset.has_add_permissions( PyFormsMiddleware.user() )
-        else:    
+        else:
             return True
 
 
     def has_view_permissions(self, obj):
         """
         Function called to check if one has permission to view the current queryset.
-        
+
         :param django.db.models.Model obj: object to view.
 
         Returns:
@@ -352,13 +352,13 @@ class ModelAdminWidget(BaseWidget):
         queryset = self.model.objects.filter(pk=obj.pk)
         if  hasattr(queryset, 'has_view_permissions'):
             return queryset.has_view_permissions( PyFormsMiddleware.user() )
-        else:    
+        else:
             return True
 
     def has_remove_permissions(self, obj):
         """
         Function called to check if one has permission to remove the current queryset.
-        
+
         :param django.db.models.Model obj: object to remove.
 
         Returns:
@@ -369,7 +369,7 @@ class ModelAdminWidget(BaseWidget):
     def has_update_permissions(self, obj):
         """
         Function called to check if one has permission to update the current queryset.
-        
+
         :param django.db.models.Model obj: object to update.
 
         Returns:
@@ -381,7 +381,7 @@ class ModelAdminWidget(BaseWidget):
     def has_export_csv_permissions(self, user):
         """
         Function called to check if one has permission to export the objects to csv.
-        
+
         :param django.contrib.auth.models.User: User to check the permission.
 
         Returns:
@@ -392,7 +392,7 @@ class ModelAdminWidget(BaseWidget):
     def get_export_csv_columns(self, user):
         """
         Function called to get the columns for the csv export.
-        
+
         :param django.contrib.auth.models.User: User to check the permission.
 
         Returns:
@@ -405,7 +405,7 @@ class ModelAdminWidget(BaseWidget):
     #### PRIVATE FUNCTIONS ##########################################################
     #################################################################################
 
-        
+
 
 
     def __list_item_selection_changed_event(self):
@@ -414,7 +414,7 @@ class ModelAdminWidget(BaseWidget):
         """
         obj = self.selected_row_object
         if obj:
-            # if the user has edit permission then 
+            # if the user has edit permission then
             if self.has_view_permissions(obj):
                 self.object_pk = obj.pk
                 self._list.selected_row_id = None
@@ -425,12 +425,12 @@ class ModelAdminWidget(BaseWidget):
 
     def __get_queryset(self):
         """
-        
+
         """
         queryset = self.model.objects.all()
 
         #used to filter the model for inline fields
-        if self.parent_field: 
+        if self.parent_field:
             queryset = queryset.filter(**{self.parent_field.name: self.parent_pk})
 
         # check if the model has a query_set function
@@ -442,8 +442,7 @@ class ModelAdminWidget(BaseWidget):
 
         if hasattr(self.model, 'get_queryset'):
             queryset = self.model.get_queryset(request, queryset)
-        
+
         return self.get_queryset(request, queryset)
 
 
-    
