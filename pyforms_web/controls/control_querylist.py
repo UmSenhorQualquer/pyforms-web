@@ -315,6 +315,9 @@ class ControlQueryList(ControlBase):
             return locale.format("%f", col_value, grouping=True)
         elif isinstance(col_value, Decimal):
             return '{0:n}'.format(col_value)
+        elif type(col_value).__name__ == 'Money':
+            # support django-money MoneyField
+            return '<div style="text-align: right; margin-right: .5rem;">%s</div>' % col_value
         elif isinstance(col_value, FieldFile ):
             try:
                 return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
