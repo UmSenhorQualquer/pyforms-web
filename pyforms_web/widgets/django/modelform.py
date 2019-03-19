@@ -490,6 +490,10 @@ class ModelFormWidget(BaseWidget):
                     else:
                         pyforms_field.value = value
 
+                elif isinstance(field, models.DecimalField) and type(field).__name__ == 'MoneyField':
+                    # support django-money MoneyField
+                    pyforms_field.value = value.amount
+
                 elif isinstance(field, models.AutoField):
                     pyforms_field.value = value
 
