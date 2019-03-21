@@ -384,6 +384,8 @@ class ModelFormWidget(BaseWidget):
                     elif callable(field.default):
                         pyforms_field.value = field.default()
 
+                    elif isinstance(field, models.DecimalField) and type(field).__name__ == 'MoneyField':
+                        pyforms_field.value = field.default.amount
                     else:
                         pyforms_field.value = field.default
 
