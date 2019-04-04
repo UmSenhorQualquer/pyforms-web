@@ -72,7 +72,7 @@ class ControlPlayerJs extends ControlBase{
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    set_value(value){console.log(value);
+    set_value(value){
         this.video.open(value);
     };
 

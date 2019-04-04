@@ -9,11 +9,6 @@
     margin-bottom: 0px !important;
 }
 
-.ControlVisVis{
-
-}
-
-
 .ControlEmptyWidget{
     
 }
@@ -126,6 +121,10 @@ h3.subtitle {
 
 [action]{
     cursor: pointer !important;
+}
+
+.pyforms-segment.overflow{
+    overflow: auto;
 }
 
 .pyforms-segment > .field{
@@ -336,3 +335,8 @@ h3.subtitle {
     right: 2px;
     top:-2px;
 }
+
+
+.ui.modal > .content{
+    background-color: #f1f4f5;
+} 

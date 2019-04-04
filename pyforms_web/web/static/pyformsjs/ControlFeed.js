@@ -11,10 +11,8 @@ class ControlFeed extends ControlBase{
 		this.set_value(this.properties.value);
 
 		if(this.properties.value==undefined || this.properties.value.length==0){
-			this.jquery().html('<div class="ui basic center  very padded segment"><i class="icon ban" ></i></div>');
+			this.jquery().html(this.properties.empty_message);
 		}
-		
-		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -74,12 +72,6 @@ class ControlFeed extends ControlBase{
 				self.properties.action_param = action_param;
 				self.basewidget.fire_event( 'self', action );
 			});
-	};
-
-	////////////////////////////////////////////////////////////////////////////////
-
-	update_server(){
-		return true;
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

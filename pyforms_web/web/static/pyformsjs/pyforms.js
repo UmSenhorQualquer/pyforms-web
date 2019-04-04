@@ -33,13 +33,12 @@ class PyformsManager{
         this.layout_places = [];
 
         this.applications = [];
+        /*
         $.ajaxSetup({async: false, cache: true});
 
         //$.getStylesheet("/static/video-js.css");
         //$.getScript("/static/video.js");
         //$.getScript("/static/videojs.framebyframe.min.js");
-        
-        
 
         $.getStylesheet("/static/pyforms.css");
         $.getScript("/static/jquery.json-2.4.min.js");
@@ -51,6 +50,7 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/ControlTextArea.js");
         $.getScript("/static/pyformsjs/ControlBreadcrumb.js");
         $.getScript("/static/pyformsjs/ControlButton.js");
+        $.getScript("/static/pyformsjs/ControlBarsChart.js");
         $.getScript("/static/pyformsjs/ControlFile.js");
         $.getScript("/static/pyformsjs/ControlFileUpload.js");
         $.getScript("/static/pyformsjs/ControlDir.js");
@@ -74,9 +74,10 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/ControlEmail.js");
         $.getScript("/static/pyformsjs/ControlItemsList.js");
         $.getScript("/static/pyformsjs/ControlList.js");
+        $.getScript("/static/pyformsjs/ControlLineChart.js");
         $.getScript("/static/pyformsjs/ControlQueryCombo.js");
         $.getScript("/static/pyformsjs/ControlQueryList.js");
-        $.getScript("/static/pyformsjs/ControlFeed.js");    
+        $.getScript("/static/pyformsjs/ControlFeed.js");
         $.getScript("/static/pyformsjs/ControlQueryCards.js");
         $.getScript("/static/pyformsjs/ControlPassword.js");
         $.getScript("/static/pyformsjs/ControlPlayer.js");
@@ -90,9 +91,12 @@ class PyformsManager{
         $.getScript("/static/pyformsjs/ControlEmptyWidget.js");
         $.getScript("/static/pyformsjs/ControlMenu.js");
         $.getScript("/static/pyformsjs/ControlTree.js");
+        $.getScript("/static/pyformsjs/ControlOrganogram.js");
         $.getScript("/static/pyformsjs/ControlWorkflow.js");
         $.getScript("/static/pyformsjs/BaseWidget.js");
 
+        $.getScript("/static/treant/Treant.js");
+        $.getStylesheet("/static/treant/Treant.css");
 
         $.getScript("/static/timeline/timeline.js");
         $.getScript("/static/timeline/track.js");
@@ -126,10 +130,8 @@ class PyformsManager{
         $.getStylesheet("/static/filer/css/jquery.filer.css");
         $.getStylesheet("/static/filer/css/jquery.filer-dragdropbox-theme.css");
 
-
-
         $.ajaxSetup({async: true, cache: false});
-
+        */
 
         setInterval(this.garbage_collector, 5000); //Run the garbage collector for times to times.
     }
@@ -160,7 +162,7 @@ class PyformsManager{
     /**
     Remove an app from the manager. If the app_index parameter is not defined it will search for the index using the app_id parameter.
 
-    @param {str} app_id - BaseWidget id.
+    @param {string} app_id - BaseWidget id.
     @param {int} app_index - BaseWidget index (optional).
     */
     remove_app(app_id, app_index){
@@ -190,7 +192,7 @@ class PyformsManager{
     ////////////////////////////////////////////////////////////
     /**
     Search an app using the id.
-    @param {str} app_id - BaseWidget id.
+    @param {string} app_id - BaseWidget id.
     */
     find_app(app_id){
         for(var i=0; i<this.applications.length; i++){
@@ -203,7 +205,7 @@ class PyformsManager{
 
     /**
     Search for a control by its id.
-    @param {str} control_id - Control id.
+    @param {string} control_id - Control id.
     */
     find_control(control_id){
         var ids             = this.split_id(control_id);
@@ -217,7 +219,7 @@ class PyformsManager{
 
     /**
     Parse the control id
-    @param {str} control_id - Control id.
+    @param {string} control_id - Control id.
     @returns {list(str)} [widget_id, control_name]
     */
     split_id(control_id){
@@ -251,6 +253,7 @@ class PyformsManager{
             var jsondata =  $.toJSON(data2send);
             var self = this;
             
+            $.ajaxSetup({async: false, cache: true});
             $.ajax({
                 method: 'post',
                 cache: false,
@@ -262,17 +265,16 @@ class PyformsManager{
                     if( res.result=='error' )
                         error_msg(res.msg);
                     else{
-                        $.ajaxSetup({async: false, cache: true});
                         for(var i=0; i<res.length; i++){
                             self.open_application(res[i]);                      
                         };
-                        $.ajaxSetup({async: true, cache: true});
                     };
                 }
             }).fail(function(xhr){
                 error_msg(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
             }).always(function(){
                 if(show_loading) basewidget.not_loading();
+                $.ajaxSetup({async: true, cache: true});
             });
 
             // check if there are more events to process ///////////////////////////
@@ -312,7 +314,7 @@ class PyformsManager{
     /**
     Register a new layout for the applications.
 
-    @param {str} place_id - App id.
+    @param {string} place_id - App id.
     @param {function} place_generator - Function that will generate the html container for the applications.
     @param {function} place_activator - Function to active the layout when it exists.
     @param {function} place_closer - Function to destroy the layout.
@@ -385,7 +387,7 @@ class PyformsManager{
                     if( res.result=='error' )
                         error_msg(res.msg);
                     else{
-                        var html = "<form class='ui form "+res.css+"' id='app-"+res.app_id+"' >";
+                        var html = "<form onsubmit='return false;' class='ui form "+res.css+"' id='app-"+res.app_id+"' >";
                         html += res.code;
                         html += '</form>';
 

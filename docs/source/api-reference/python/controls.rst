@@ -20,6 +20,8 @@ ControlBase
 ControlAutoComplete
 ----------------------------
 
+.. image:: /_static/imgs/controls/autocomplete.png
+
 .. autoclass:: pyforms_web.controls.control_autocomplete.ControlAutoComplete
     :members:
     :undoc-members:
@@ -68,6 +70,8 @@ ControlCalendar
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
 ControlCheckBox
 ----------------------------
 
@@ -81,6 +85,29 @@ ControlCheckBox
     :exclude-members: init_form, serialize, deserialize
 
 ----------------------------
+
+ControlCheckBoxList
+----------------------------
+
+.. autoclass:: pyforms_web.controls.control_checkboxlist.ControlCheckBoxList
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
+----------------------------
+
+ControlCheckBoxListQuery
+----------------------------
+
+.. autoclass:: pyforms_web.controls.control_checkboxlistquery.ControlCheckBoxListQuery
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
+----------------------------
+
 
 ControlCombo
 ----------------------------
@@ -272,6 +299,35 @@ ControlLabel
     :show-inheritance:
     :exclude-members: init_form, serialize, deserialize
 
+----------------------------
+
+ControlLineChart
+----------------------------
+
+.. image:: /_static/imgs/controls/linechart.png
+    :align: center
+
+
+.. autoclass:: pyforms_web.controls.control_linechart.ControlLineChart
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
+
+
+----------------------------
+
+
+ControlList
+----------------------------
+
+.. autoclass:: pyforms_web.controls.control_list.ControlList
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
 
 ----------------------------
 
@@ -320,6 +376,19 @@ ControlPassword
     :align: center
 
 .. autoclass:: pyforms_web.controls.control_password.ControlPassword
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
+----------------------------
+
+
+
+ControlPieChart
+----------------------------
+
+.. autoclass:: pyforms_web.controls.control_piechart.ControlPieChart
     :members:
     :undoc-members:
     :show-inheritance:

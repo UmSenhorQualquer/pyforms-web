@@ -7,6 +7,8 @@ class ControlList(ControlBase):
         self._select_entire_row = kwargs.get('select_entire_row',True)
         self._read_only         = kwargs.get('readonly',True)
         self._selected_index    = kwargs.get('selected_row_index',-1)
+        self._columns_size      = kwargs.get('columns_size', None)
+        self._columns_align     = kwargs.get('columns_align', [])
 
         if 'row_double_click_event' in kwargs:
             self.row_double_click_event = kwargs['row_double_click_event']
@@ -53,6 +55,22 @@ class ControlList(ControlBase):
         self._read_only = value
 
     @property
+    def columns_size(self): return self._columns_size
+
+    @columns_size.setter
+    def columns_size(self, value):
+        self.mark_to_update_client()
+        self._columns_size = value
+
+    @property
+    def columns_align(self): return self._columns_align
+
+    @columns_align.setter
+    def columns_align(self, value):
+        self.mark_to_update_client()
+        self._columns_align = value
+
+    @property
     def selected_row_index(self): return self._selected_index
 
     @selected_row_index.setter
@@ -73,6 +91,8 @@ class ControlList(ControlBase):
         data = ControlBase.serialize(self)
 
         data.update({
+            'columns_align':        self.columns_align,
+            'columns_size':         self.columns_size,
             'horizontal_headers':   self.horizontal_headers,
             'read_only':            1 if self._read_only else 0,
             'selected_index':       self._selected_index,
@@ -81,9 +101,5 @@ class ControlList(ControlBase):
         return data
 
     def deserialize(self, properties):
-        ControlBase.deserialize(self,properties)
-
-        self.horizontal_headers = properties['horizontal_headers']
-        self._read_only         = properties['read_only']==1
-        self._selected_index    = properties['selected_index']
-        self._select_entire_row = properties['select_entire_row']==1
+        self._selected_index = properties['selected_index']
+        

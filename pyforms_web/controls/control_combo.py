@@ -1,5 +1,6 @@
 from pyforms_web.controls.control_base import ControlBase
 import simplejson, collections
+from django.db.models import fields
 
 class ValueNotSet: pass
 
@@ -8,11 +9,15 @@ class ControlCombo(ControlBase):
 
     def __init__(self, *args, **kwargs):
         self._init_form_called = False
-        
+
+        self._types = []
         self._items = collections.OrderedDict()
         items = kwargs.get('items', [])
         for item in items:
             self.add_item(*item)
+
+        if not items and 'default' in kwargs:
+            del kwargs['default']
 
         super(ControlCombo, self).__init__(*args, **kwargs)
         
@@ -25,9 +30,12 @@ class ControlCombo(ControlBase):
         
         # The value for the item was not set, so it will use the label as a value 
         if isinstance(value, ValueNotSet):
-            self._items[label] = label
+            value = label
         else:
-            self._items[label] = str(value)
+            value = value
+
+        self._types.append(type(value))
+        self._items[label] = value
 
         if hasattr(self, '_parent'):
             self.mark_to_update_client()
@@ -43,6 +51,7 @@ class ControlCombo(ControlBase):
 
     def clear_items(self):
         self._items = collections.OrderedDict()
+        self._types = []
         self._value = None
 
         self.mark_to_update_client()
@@ -54,14 +63,16 @@ class ControlCombo(ControlBase):
     def values(self): return self._items.items()
 
     @property
-    def value(self): return self._value
+    def value(self): 
+        if self._value==fields.NOT_PROVIDED: return None
+        return self._value
 
     @value.setter
     def value(self, value):
-        for key, val in self._items.items():
+        for i, (key, val) in enumerate(self._items.items()):
             if str(value)==str(val):
                 if str(self._value)!=str(value): 
-                    self._value = str(val)
+                    self._value = self._types[i](val)
                     self.mark_to_update_client()
                     if self._init_form_called:
                         
@@ -79,19 +90,30 @@ class ControlCombo(ControlBase):
                 self.value = val
                 break
     
+    def __convert(self, value):
+        if isinstance(value, bool):
+            if value==True:  value = 'true'
+            if value==False: value = 'false'
+            if value==None:  value = 'null'
+        elif isinstance(value, ValueNotSet):
+            value = 'null'
+        elif value==fields.NOT_PROVIDED:
+            value = 'null'
+        else:
+            value = str(value)
+
+        return value
 
     def serialize(self):
         data = ControlBase.serialize(self)
         items = []
         for key, value in self._items.items():
-            items.append({'text': key, 'value': value, 'name': key }) 
+            items.append({'text': key, 'value': self.__convert(value), 'name': key }) 
         
         value = self._value
-        if value==True:  value = 'true'
-        if value==False: value = 'false'
-        if value==None:  value = 'null'
         
-        data.update({ 'items': items, 'value': value })
+
+        data.update({ 'items': items, 'value': self.__convert(value) })
         return data
         
 

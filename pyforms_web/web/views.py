@@ -120,3 +120,19 @@ def autocomplete_search(request, app_id, fieldname, keyword=None):
     data  = {'success': len(items)>0, 'results': items}
 
     return HttpResponse(simplejson.dumps(data), "application/json")
+
+
+@never_cache
+@csrf_exempt
+def controllist_queryset_export_csv(request, app_id, fieldname):
+    app   = ApplicationsLoader.get_instance(request, app_id)
+    
+    if app.has_export_csv_permissions(request.user):
+        field = getattr(app, fieldname)
+        if field.export_csv:
+            return field.export_csv_http_response()
+        else:
+            return HttpResponse("It is not possible to export this queryset!")
+    else:
+        return HttpResponse("You have no permissions to export the queryset!")
+    

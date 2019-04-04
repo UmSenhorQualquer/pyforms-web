@@ -178,7 +178,6 @@ class TimelineWidget{
     }
 
     add_event(title, begin, end, color, track_idx){
-        console.log((track_idx-this.tracks.length+1));
         if( track_idx>=this.tracks.length ){
             for(var i=0; i<(track_idx-this.tracks.length+1); i++)
                 this.add_track('');

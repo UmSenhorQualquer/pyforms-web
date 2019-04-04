@@ -15,7 +15,10 @@ class ControlDateTime(ControlBase):
 
     @value.setter
     def value(self, value):
-        
+
+        # covers usage like `DateTimeField(default=timezone.now)`
+        value = value() if callable(value) else value
+
         try:
             if isinstance(value, str) and len(value.strip())==0:
                 value = None

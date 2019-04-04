@@ -259,3 +259,68 @@ Use the ModelViewFormWidget widget to create a view only form.
         ]
 
         ...
+
+
+
+Object access permissions
+______________________________________
+
+It is possible to restrict the objects a user has access in the widgets above using the Models Queryset manager.
+The idea here is to define the access rules in the Model side, instead of defining the rules in the Visualization side. These way the Model can be ported from application to application maintaining the access rules.
+
+Example: 
+
+.. code:: python
+
+    from django.db import models
+    
+    class OrderQuerySet(models.QuerySet):
+        """
+        ORDER QUERYSET MANAGER DEFINITION
+        """
+
+        def list_permissions(self, user):
+            """
+            The function filters the queryset to return only the objects the user has permissions to list.
+            """
+            ...
+            return self
+
+        def has_add_permissions(self, user):
+            """
+            The function returns a Boolean indicating if the user can add or not a new object.
+            """
+            ...
+            return True
+
+        def has_view_permissions(self, user):
+            """
+            The function returns a boolean indicating if the user has view permissions to the current queryset.
+            """
+            ...
+            return self
+
+        def has_update_permissions(self, user):
+            """
+            The function filters the queryset to return only the objects the user has permissions to update.
+            """
+            ...
+            return self
+
+        def has_remove_permissions(self, user):
+            """
+            The function filters the queryset to return only the objects the user has permissions to remove.
+            """
+            ...
+            return self
+
+
+
+    
+    class Order(models.Model):
+        """
+        MODEL DEFINITION
+        """
+        ...
+
+        objects = OrderQuerySet.as_manager()

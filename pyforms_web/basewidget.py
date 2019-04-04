@@ -4,14 +4,9 @@ except:
     pass
 
 from .controls.control_base     import ControlBase
-from .controls.control_file     import ControlFile
-from .controls.control_slider   import ControlSlider
-from .controls.control_text     import ControlText
-from .controls.control_checkbox import ControlCheckBox
 from .controls.control_label    import ControlLabel
 from .controls.control_button   import ControlButton
 
-from .web.applications import ApplicationsLoader
 from .web.middleware   import PyFormsMiddleware
 
 from pyforms_web.organizers import no_columns, segment
@@ -20,12 +15,15 @@ from .utils import make_lambda_func
 from confapp import conf
 
 import uuid, os, inspect, dill, simplejson, filelock
-
+from django.core.exceptions import PermissionDenied
    
 class BaseWidget(object):
     """
     The class implements a application form
     """
+
+    # TODO: Implement this
+    URLS = None #: list(str): Django urls to be added to the urls.py file
 
     TITLE = None #: str: Title of the application.
 
@@ -34,6 +32,9 @@ class BaseWidget(object):
     
     #: str: Time in milliseconds to refresh the application.
     REFRESH_TIMEOUT = None
+
+    #: list(str): List of django groups authorized to run the application
+    AUTHORIZED_GROUPS = None
 
     #: str: Css classes to add to the form.
     CSS = ''
@@ -58,6 +59,8 @@ class BaseWidget(object):
                     
                     self.formset = ['_likebtn', '_htmlviewer']
         """
+        
+
         self._formset       = None
         self._splitters     = []
         self._title         = kwargs.get('title', args[0] if len(args)>0 else self.TITLE)
@@ -71,13 +74,17 @@ class BaseWidget(object):
 
         self.init_form_result = None
          
-        self._uid =  self.UID if hasattr(self, 'UID') else str(uuid.uuid4())
+        self._uid =  self.UID if hasattr(self, 'UID') and self.UID else str(uuid.uuid4())
 
         self._messages        = []
         self._js_code2execute = [];
 
         self.parent = kwargs.get('parent_win', None)
         self.is_new_app = True
+
+        if not self.has_session_permissions(PyFormsMiddleware.user()):
+            raise PermissionDenied('The user does not have access to the app [{0}]'.format(self.title))
+
 
         PyFormsMiddleware.add(self)
 
@@ -120,8 +127,8 @@ class BaseWidget(object):
 
         self._js = '[{0}]'.format(",".join(self._controls))
         self._html += """
-        <script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1}, {3}, {4}) );</script>
-        """.format(modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data))
+        <script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1}, {3}, {4}) );{extra_code}</script>
+        """.format(modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data), extra_code=';'.join(self._js_code2execute))
         self._formLoaded = True
 
         self._messages = []
@@ -529,8 +536,8 @@ class BaseWidget(object):
 
         lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
         with lock.acquire(timeout=4):
-            with open(app_path, 'wb') as f: 
-                dill.dump(self, f)
+            with open(app_path, 'wb') as f:
+                dill.dump(self, f, protocol=4)
 
     def execute_js(self, code):
         """
@@ -539,6 +546,7 @@ class BaseWidget(object):
         :param str code: Javascript code to execute.
         """
         self._js_code2execute.append(code)
+        self.mark_to_update_client()
 
     
 
@@ -605,7 +613,7 @@ class BaseWidget(object):
         
         if len(self._messages)>0: 
             res.update({'messages': self._messages})
-            self._messages = []
+            if self._formLoaded: self._messages = []
 
         for key, item in self.controls.items():
 
@@ -616,7 +624,7 @@ class BaseWidget(object):
                         item._value.release() #release any open video
                 except:
                     pass
-        
+
         return res
 
 
@@ -627,7 +635,7 @@ class BaseWidget(object):
         
         :param User params: User to availuate the permissions.
         """
-        if hasattr(cls, 'AUTHORIZED_GROUPS'):
+        if hasattr(cls, 'AUTHORIZED_GROUPS') and cls.AUTHORIZED_GROUPS is not None:
             if user.is_superuser and 'superuser' in cls.AUTHORIZED_GROUPS: 
                 return True
             if user.groups.filter(name__in=cls.AUTHORIZED_GROUPS).exists():
@@ -643,7 +651,7 @@ class BaseWidget(object):
         
         :param User params: User to availuate the permissions.
         """
-        return True
+        return self.has_permissions(user)
 
 
 
@@ -801,14 +809,14 @@ class PopupWindow(BaseWidget):
         
         self._label = ControlLabel(default=msg)
         #self._label.css = msg_type
-       
+        buttons_formset = []
+            
         if buttons:
-            buttons_formset = []
             for i, b in enumerate(buttons):
                 name = 'button_{0}'.format(i)
                 setattr(self, name, ControlButton(b))
                 getattr(self, name ).value = make_lambda_func(handler, popup=self, button=b)
                 buttons_formset.append(name)
     
-        self.formset = ['_label'] + [no_columns(buttons_formset)]
+        self.formset = ['_label'] + ([no_columns(buttons_formset)] if buttons_formset else [])
        

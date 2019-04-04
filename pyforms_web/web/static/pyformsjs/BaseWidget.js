@@ -1,10 +1,10 @@
 class BaseWidget{
     /**
     BaseWidget class handles the communication with the server python application.
-    @param {str} widget_id - BaseWidget id.
-    @param {str} widget_name - BaseWidget name.
+    @param {string} widget_id - BaseWidget id.
+    @param {string} widget_name - BaseWidget name.
     @param {list(ControlBase)} controls - List of the BaseWidget controls.
-    @param {str} parent_id - Parent widget id.
+    @param {string} parent_id - Parent widget id.
     @param {object} data - Object instance with the application data.
     */
     constructor(widget_id, widget_name, controls, parent_id, data){
@@ -89,7 +89,7 @@ class BaseWidget{
 
     /**
     Returns a control.
-    @param {str} name - Control name.
+    @param {string} name - Control name.
     @returns {ControlBase}
     */
     find_control(name){
@@ -104,7 +104,7 @@ class BaseWidget{
 
     /**
     Returns the BaseWidget id.
-    @returns {str}
+    @returns {string}
     */
     control_id(name){
         return this.widget_id+'-'+name;
@@ -114,8 +114,8 @@ class BaseWidget{
 
     /**
     Fire an application event.
-    @param {str} dom_id - Python object name.
-    @param {str} event - Event name.
+    @param {string} dom_id - Python object name.
+    @param {string} event - Event name.
     @param {bool} show_loading - Flag to activate the loading.
     */
     fire_event(dom_in, event, show_loading){

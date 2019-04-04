@@ -1,7 +1,6 @@
 class ControlDate extends ControlBase{
 
 	get_value(){ 
-		//if(this.jquery().length==0) return this.properties.value;
 		return this.jquery().datepicker('getDate');
 	};
 
@@ -20,6 +19,12 @@ class ControlDate extends ControlBase{
             this.jquery().val(this.formatdate(new Date(value)));
         else
             this.jquery().val('');
+    }
+
+    serialize(){
+		var d = this.get_value();
+		this.properties.value = d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+ ("0" + d.getDate()).slice(-2);
+        return this.properties;
     }
 
 	////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,6 @@
 import datetime, json, dill, os, traceback, inspect, simplejson
 from confapp import conf
+from django.http import HttpRequest
 from pyforms_web.web.middleware import PyFormsMiddleware
 from django.core.exceptions import PermissionDenied
 
@@ -19,9 +20,6 @@ class ApplicationsLoader:
             moduleclass = __import__( '.'.join(modules[:-1]) , fromlist=[modules[-1]] )
             ApplicationsLoader._storage[modulename] = getattr(moduleclass, modules[-1])
         moduleclass = ApplicationsLoader._storage[modulename]
-
-        if not moduleclass.has_permissions(request.user):
-            raise PermissionDenied('The user do not have access to the application')
 
         data = simplejson.loads(request.body)
 
@@ -60,11 +58,8 @@ class ApplicationsLoader:
 
         if app is None: return None
 
-        if not app.has_permissions(request.user):
-            raise PermissionDenied('The user do not have access to the application')
-            
         if not app.has_session_permissions(request.user):
-            raise PermissionDenied('The user do not have access to the application')
+            raise PermissionDenied('The user does not have access to the application')
         
         if app_data is not None: app.deserialize_form(app_data)
 
@@ -85,9 +80,16 @@ class ApplicationsLoader:
                 traceback.print_exc()
                 app.alert(str(e))
 
+        return ApplicationsLoader.get_data(request)
 
+    @staticmethod
+    def get_data(request):
+        """
+        Function called to collect the pyforms updates to be send to the client
+        :param request: HttpRequest
+        :return dict: Data to send to the client browser
+        """
         data = [r.serialize_form() for r in request.updated_apps.applications if r.is_new_app]
-        
         for m in request.updated_apps.applications: m.commit()
-        
+
         return data

@@ -15,7 +15,7 @@ Pyforms **Web** is a software layer, part of the Pyforms main library. This laye
 <!-- Posicione esta tag onde você deseja que o widget apareça. -->
 <div class="g-follow" data-annotation="bubble" data-height="24" data-rel="publisher"></div>
 
-Pyforms is a Python 3 cross-enviroment framework that aims the boost the developement productivity. The library provides an API in Python to develop applications that can be executed in Windows GUI mode, Web mode, or in Terminal mode.
+Pyforms is a Python 3 cross-enviroment framework that aims the boost the development productivity. The library provides an API in Python to develop applications that can be executed in Windows GUI mode, Web mode, or in Terminal mode.
 
 [More @ ![Diagram](https://raw.githubusercontent.com/UmSenhorQualquer/pyforms-web/v4/docs/source/_static/imgs/rtd.png)](https://pyforms.readthedocs.io)
 
@@ -42,7 +42,7 @@ With GUI applications, users would be able to set the parameters using a GUI int
 
 After looking into the several python options for GUI interfaces, PyQt was the one that seemed the best tool for a fast development with the QtDesigner, but after a while developing in Qt, switching between the designer and the python IDE was becoming too costly in terms of time because the interfaces were constantly evolving.
 
-Being a Django developer, I did get inspiration on it for this framework. In the [Django](https://www.djangoproject.com/) Models we just need to define the type of variables and their disposition in the form (in ModelAdmin) to generate a HTML form for data edition.
+Being a Django developer, I did get inspiration on it for this framework. In the [Django](https://www.djangoproject.com/) Models we just need to define the type of variables and their disposition in the form (in ModelAdminWidget) to generate a HTML form for data edition.
 For the GUIs that I wanted to build in my python scripts, I would like to have the same simplicity, so I could focus on the algorithms and not on GUIs developing.
 
 
@@ -81,7 +81,7 @@ class ComputerVisionAlgorithm(BaseWidget):
         self._runbutton  = ControlButton('Run')
 
         #Define the function that will be called when a file is selected
-        self._videofile.changed     = self.__videoFileSelectionEvent
+        self._videofile.changed_event     = self.__videoFileSelectionEvent
         #Define the event that will be called when the run button is processed
         self._runbutton.value       = self.__runEvent
         #Define the event called before showing the image in the player

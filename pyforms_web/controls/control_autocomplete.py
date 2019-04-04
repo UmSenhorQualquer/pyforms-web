@@ -8,8 +8,39 @@ class ValueNotSet: pass
 
 
 class ControlAutoComplete(ControlBase):
+    """
+    This control implements an auto complete text box.
+    The control gets its values from a url or from a queryset.
+
+    :param str items_url: (Mandatory) Configure the Combo to get its items from an URL. Default=None.
+    :param function autocomplete_search: Set the function to query the items in the case we are using the url mode. Default=self.autocomplete_search.
+    :param str queryset: Set the queryset to which the autocomplete will get the values. Default=None.
+    :param boolean multiple: Allow multiple choices. Default=False.
+    :param function queryset_filter: 
+        Function to filter the queryset. Default=self.queryset_filter.
+        
+        ..code: python 
+            
+            def queryset_filter(self, qs, keyword, control):
+                return qs
+
+    In the case you are using a Model queryset to retrieve the values you can define the fields to lookup for using the staticmethod **autocomplete_search_fields**
+    as it is shown inthe example bellow.
+
+    .. code: python
+
+        class MyModel(models.Model):
+            name = models.CharField(u"Name", max_length=50)
+
+            @staticmethod
+            def autocomplete_search_fields():
+                return ("id__iexact", "name__icontains",)
+    
+    """
+
 
     def __init__(self, *args, **kwargs):
+
         self._init_form_called = False
         super(ControlAutoComplete, self).__init__(*args, **kwargs)
         
@@ -20,7 +51,7 @@ class ControlAutoComplete(ControlBase):
         # set the queryset to which the autocomplete will get the values
         self.queryset = kwargs.get('queryset', None)
         # function to filter the queryset
-        self.queryset_filter = kwargs.get('queryset_filter', self.queryset_filter)
+        self.queryset_filter = kwargs.get('queryset_filter', None)
 
         # allow multiple choices
         self.multiple = kwargs.get('multiple', False)
@@ -29,8 +60,8 @@ class ControlAutoComplete(ControlBase):
         self._init_form_called = True
         return "new ControlAutoComplete('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
-    def queryset_filter(self, qs, keyword, control):
-        return qs
+    #def queryset_filter(self, qs, keyword, control):
+    #    return qs
 
     @property
     def queryset(self):
@@ -59,9 +90,12 @@ class ControlAutoComplete(ControlBase):
 
         if queryset:
 
-            queryset = self.queryset_filter(queryset, keyword, self)
-
+            if self.queryset_filter:
+                queryset = self.queryset_filter(queryset, keyword, self)
+                
             if keyword:
+
+                
                 model = queryset.model
      
                 if hasattr(model, 'autocomplete_search_fields'):
@@ -69,7 +103,8 @@ class ControlAutoComplete(ControlBase):
                     for search_field in model.autocomplete_search_fields():
                         or_filter.add( Q(**{search_field:keyword}), Q.OR)
                     queryset = queryset.filter(or_filter)
-                else:
+                
+                elif not self.queryset_filter:
                     queryset = queryset.filter(pk=keyword)
 
             try:
@@ -91,16 +126,18 @@ class ControlAutoComplete(ControlBase):
     """
     
     def deserialize(self, data):
-        super(ControlAutoComplete,self).deserialize(data)
-
-        value = data.get('value')
+        value = data.get('value', None)
+        
         if self.multiple:
             if value is None:
                 self.value = []
+            elif isinstance(value, list):
+                self.value = value
             else:
                 self.value = [(int(v) if v and v.isdigit() else None) for v in value.split(',')]
         else:
             self.value = int(value) if value and value.isdigit() else None
+
 
     def serialize(self):
         data = super(ControlAutoComplete,self).serialize()
@@ -116,7 +153,9 @@ class ControlAutoComplete(ControlBase):
             value = self._value if isinstance(self._value, list) else [self._value]
             value = [v for v in value if v if v is not None]
 
-            if value:
+            if isinstance(value, ValueNotSet):
+                items = []
+            elif value:
                 queryset = queryset.filter(pk__in=value).distinct()
                 items = [{'name':str(o), 'value':str(o.pk), 'text':str(o)} for o in queryset]
             else:

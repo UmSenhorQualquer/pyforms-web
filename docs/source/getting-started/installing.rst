@@ -31,7 +31,7 @@ Edit the django project **settings.py** file to include the next configurations.
 
     INSTALLED_APPS = [
         'orquestra',
-        'pyforms_web.web'
+        'pyforms_web.web',
         'jfu',
         'sorl.thumbnail',
         ...
@@ -65,7 +65,7 @@ Edit the django project **urls.py** file to include the next urls configurations
 Create a pyforms settings file
 ================================
 
-In the django project root folder (same folder of the manage.py file) create the loca_settings.py file with the next content.
+In the django project root folder (same folder of the manage.py file) create the local_settings.py file with the next content.
 
 .. code:: python
 

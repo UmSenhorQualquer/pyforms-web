@@ -54,7 +54,7 @@ class ModelViewFormWidget(ModelFormWidget):
 
         :param str title: Title of the app. By default will assume the value in the class variable TITLE.
         :param django.db.models.Model model: Model with the App will represent. By default will assume the value in the class variable MODEL.
-        :param list(ModelAdmin) inlines: Sub models to show in the interface
+        :param list(ModelAdminWidget) inlines: Sub models to show in the interface
         :param list(str) fieldsets: Organization of the fields
         :param int parent_pk: Parent model key
         :param django.db.models.Model parent_model: Parent model class
@@ -74,7 +74,7 @@ class ModelViewFormWidget(ModelFormWidget):
     def create_newobject(self):
         pass
 
-    def save_event(self):
+    def save_event(self, obj, new_object):
         pass
 
     def delete_event(self):
