@@ -490,7 +490,13 @@ class ModelFormWidget(BaseWidget):
                             pyforms_field.value = value.strftime('%Y-%m-%d')
 
                     else:
-                        pyforms_field.value = value
+                        if field.choices:
+                            for v, l in field.choices:
+                                if v==value:
+                                    pyforms_field.value = l
+                                    break
+                        else:
+                            pyforms_field.value = value
 
                 elif isinstance(field, models.DecimalField) and type(field).__name__ == 'MoneyField':
                     # support django-money MoneyField
