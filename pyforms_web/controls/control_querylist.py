@@ -223,10 +223,11 @@ class ControlQueryList(ControlBase):
             if init_form:
                 filters_list = self.serialize_filters(self.list_filter, queryset)
                 data.update({ 'filters_list': filters_list });
-                
-        if init_form and self.list_display and queryset:
+
+        if init_form and self.list_display and (queryset or self.headers):
             #configure the headers titles
             headers = []
+
 
             if self.headers is None:
                 for column_name in self.list_display:

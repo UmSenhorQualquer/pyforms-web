@@ -31,6 +31,7 @@ class ModelAdminWidget(BaseWidget):
     INLINES         = []    #: list(class): Sub models to show in the interface
     LIST_FILTER     = None  #: list(str): List of filters fields
     LIST_DISPLAY    = None  #: list(str): List of fields to display in the table
+    LIST_HEADERS    = None  #: list(str): Table columns headers. It will override the LIST_DISPLAY
     SEARCH_FIELDS   = None  #: list(str): Fields to be used in the search
 
     EXPORT_CSV         = False #: boolean: Flag to activate the export of data to csv. The value of this flag is overwritten by the function has_export_csv_permissions
@@ -75,6 +76,7 @@ class ModelAdminWidget(BaseWidget):
         #######################################################
         self._list = self.CONTROL_LIST(
             'List',
+            headers      = self.LIST_HEADERS  if self.LIST_HEADERS  else None,
             list_display = self.LIST_DISPLAY  if self.LIST_DISPLAY  else [],
             list_filter  = self.LIST_FILTER   if self.LIST_FILTER   else [],
             search_fields= self.SEARCH_FIELDS if self.SEARCH_FIELDS else [],
@@ -93,7 +95,6 @@ class ModelAdminWidget(BaseWidget):
         has_add_permission = self.has_add_permissions() and self.addmodel_class is not None
 
         if has_add_permission:
-
             self._add_btn = ControlButton(
                 self.ADD_BTN_LABEL,
                 label_visible=False,
