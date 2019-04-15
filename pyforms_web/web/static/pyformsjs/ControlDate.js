@@ -23,7 +23,10 @@ class ControlDate extends ControlBase{
 
     serialize(){
 		var d = this.get_value();
-		this.properties.value = d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+ ("0" + d.getDate()).slice(-2);
+		if(d==null)
+			this.properties.value = null;
+		else
+			this.properties.value = d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+ ("0" + d.getDate()).slice(-2);
         return this.properties;
     }
 
