@@ -27,7 +27,7 @@ class ControlCombo extends ControlBase{
 
 	set_value(value){
 		this.flag_exec_on_change_event = false;
-		this.jquery().dropdown('set exactly', [value]);
+		this.jquery().dropdown('set exactly', [String(value)]);
 		this.flag_exec_on_change_event = true;
 	};
 
@@ -35,7 +35,7 @@ class ControlCombo extends ControlBase{
 
 	get_value(){
 		var value = this.jquery().dropdown('get value');
-		if( value.length==0 ) return null;
+		if(value=='None') return null;
         if(value=='true')  return true;
 		if(value=='false') return false;
 		if(value=='null')  return null;

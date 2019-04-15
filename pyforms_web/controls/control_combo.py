@@ -70,9 +70,10 @@ class ControlCombo(ControlBase):
     @value.setter
     def value(self, value):
         for i, (key, val) in enumerate(self._items.items()):
-            if str(value)==str(val):
-                if str(self._value)!=str(value): 
-                    self._value = self._types[i](val)
+            value = self._types[i](value) if value is not None else None
+            if value==val:
+                if self._value!=value:
+                    self._value = value
                     self.mark_to_update_client()
                     if self._init_form_called:
                         
@@ -91,17 +92,24 @@ class ControlCombo(ControlBase):
                 break
     
     def __convert(self, value):
+        if value == fields.NOT_PROVIDED:
+            return None
+
+        if isinstance(value, ValueNotSet):
+            return None
+        """
         if isinstance(value, bool):
             if value==True:  value = 'true'
             if value==False: value = 'false'
             if value==None:  value = 'null'
+
         elif isinstance(value, ValueNotSet):
             value = 'null'
         elif value==fields.NOT_PROVIDED:
             value = 'null'
         else:
             value = str(value)
-
+        """
         return value
 
     def serialize(self):
@@ -111,7 +119,6 @@ class ControlCombo(ControlBase):
             items.append({'text': key, 'value': self.__convert(value), 'name': key }) 
         
         value = self._value
-        
 
         data.update({ 'items': items, 'value': self.__convert(value) })
         return data
