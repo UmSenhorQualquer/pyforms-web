@@ -980,11 +980,12 @@ class ModelFormWidget(BaseWidget):
 
 
             elif isinstance(field, models.Field) and field.choices:
-
-                print(field.get_choices(include_blank=field.blank,))
                 pyforms_field = ControlCombo(
                     label,
-                    items=[ (c[1],c[0]) for c in field.get_choices(include_blank=field.blank)],
+                    items=[
+                        (c[1], c[0])
+                        for c in field.get_choices(include_blank=field.blank)
+                    ],
                     default=field.default
                 )
             elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( label, default=field.default )
