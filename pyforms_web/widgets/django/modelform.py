@@ -734,6 +734,9 @@ class ModelFormWidget(BaseWidget):
                 if isinstance(field, models.CharField) and value is None and field.null is False:
                     value = ''
 
+                if value == '' and field.null:
+                    value = None
+
                 setattr(obj, field.name, value)
 
         return obj
