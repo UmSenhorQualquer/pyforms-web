@@ -27,8 +27,10 @@ def get_lookup_value(obj, lookup):
     Return the value of a lookup over an object
     """
     value = None
-    if obj:
+    if obj is not None:
         for fieldname in lookup.split(LOOKUP_SEP):
+            if obj is None:
+                return None
             try:
                 # works for fields with choices defines
                 obj = getattr(obj, 'get_%s_display' % fieldname)
