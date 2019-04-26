@@ -78,7 +78,7 @@ class ControlCombo(ControlBase):
     @value.setter
     def value(self, value):
         for i, (key, val) in enumerate(self._items.items()):
-            value = self._types[i](value) if value is not None else None
+            value = None if value is None or value=='' else self._types[i](value)
             if value == val:
                 if self._value != value:
                     self._value = value
