@@ -54,6 +54,7 @@ JSFILES_DEBUG = [
     "/static/pyformsjs/ControlTree.js",
     "/static/pyformsjs/ControlOrganogram.js",
     "/static/pyformsjs/ControlWorkflow.js",
+    "/static/pyformsjs/ControlSearch.js",
     "/static/pyformsjs/BaseWidget.js",
     "/static/pyformsjs/pyforms.js",
     "/static/pyformsjs/pyforms-hub.js",

@@ -425,7 +425,7 @@ class BaseWidget(object):
         """
         self.message(msg, title, msg_type='error')
 
-    def message_popup(self, msg, title='', buttons=None, handler=None, msg_type='success'):
+    def message_popup(self, msg, title='', buttons=None, handler=None, msg_type=''):
         """
         Show a popup message window
         
@@ -442,7 +442,7 @@ class BaseWidget(object):
                 ...
 
         """
-        self._active_popup_msg = PopupWindow(title, msg, buttons, handler, msg_type='success', parent_win=self)
+        self._active_popup_msg = PopupWindow(title, msg, buttons, handler, msg_type=msg_type, parent_win=self)
         return self._active_popup_msg
     def success_popup(self, msg, title='', buttons=None, handler=None):
         """
@@ -453,7 +453,7 @@ class BaseWidget(object):
         :param list(str) buttons: List of buttons labels to create in the popup window.
         :param method handler: Method that will handle the press of the buttons.
         """
-        return self.message_popup(msg, title, buttons, handler, msg_type='success')
+        return self.message_popup(msg, title, buttons, handler, msg_type='positive')
     def info_popup(self, msg, title='', buttons=None, handler=None):
         """
         Show a popup info message window
@@ -483,7 +483,7 @@ class BaseWidget(object):
         :param list(str) buttons: List of buttons labels to create in the popup window.
         :param method handler: Method that will handle the press of the buttons.
         """
-        return self.message_popup(msg, title, buttons, handler, msg_type='alert')
+        return self.message_popup(msg, title, buttons, handler, msg_type='error')
 
     
     ##########################################################################
@@ -810,13 +810,13 @@ class PopupWindow(BaseWidget):
         BaseWidget.__init__(self, title, parent_win=parent_win)
         
         self._label = ControlLabel(default=msg)
-        #self._label.css = msg_type
+        self._label.field_css = msg_type
         buttons_formset = []
             
         if buttons:
             for i, b in enumerate(buttons):
                 name = 'button_{0}'.format(i)
-                setattr(self, name, ControlButton(b))
+                setattr(self, name, ControlButton(b, label_visible=False))
                 getattr(self, name ).value = make_lambda_func(handler, popup=self, button=b)
                 buttons_formset.append(name)
     

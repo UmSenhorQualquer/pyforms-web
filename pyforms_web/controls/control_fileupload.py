@@ -10,10 +10,13 @@ class ControlFileUpload(ControlBase):
 
 	@property
 	def filepath(self):
-		return os.path.join( settings.MEDIA_ROOT, self.value[len(settings.MEDIA_URL):] )
+		if self.value:
+			return os.path.join( settings.MEDIA_ROOT, self.value[len(settings.MEDIA_URL):] )
+		else:
+			return None
 
 	def serialize(self):
-		data 	  = super(ControlFileUpload, self).serialize()
+		data = super(ControlFileUpload, self).serialize()
 		if self.value:
 			try:
 				file_data = {

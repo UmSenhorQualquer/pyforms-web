@@ -18,7 +18,7 @@ class ControlFile extends ControlBase{
 	init_control(){
 		var value = this.properties.value?this.properties.value:'';
 		var html = "<div class='field control ControlFile' id='"+this.place_id()+"' >";
-		html += "<label>"+this.properties.label+"</label>";
+		if(this.properties.label_visible) html += "<label>"+this.properties.label+"</label>";
 		html += "<input type='text' class='filename' name='"+this.name+"' id='"+this.control_id()+"' value='"+value+"'  placeholder='"+this.properties.label+"' />";
 		html += "</div>";
 		
