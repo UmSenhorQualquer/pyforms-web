@@ -6,6 +6,7 @@ class ControlMultipleChecks extends ControlBase{
         this.flag_exec_on_change_event = false;
         if(value==null || value==undefined || value.length==0){
             $("#"+this.place_id()+' .ui.checkbox').checkbox('uncheck');
+            this.flag_exec_on_change_event = true;
             return;
         };
         for(var i=0; i<this.properties.items.length; i++){
@@ -38,6 +39,7 @@ class ControlMultipleChecks extends ControlBase{
     ////////////////////////////////////////////////////////////////////////////////
 
     init_control(){
+
         var html = "<div class='field control ControlMultipleChecks' id='"+this.place_id()+"' >";
         if(this.properties.label_visible) html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
            
@@ -59,7 +61,7 @@ class ControlMultipleChecks extends ControlBase{
         this.jquery_place().replaceWith(html);
         this.set_value(this.properties.value);
 
-        this.flag_exec_on_change_event = true;
+        var self = this;
         $("#"+this.place_id()+' .ui.checkbox').checkbox({
             onChange:function(){
                 if(self.flag_exec_on_change_event)

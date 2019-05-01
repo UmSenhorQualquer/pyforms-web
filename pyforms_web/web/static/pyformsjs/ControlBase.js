@@ -135,7 +135,7 @@ class ControlBase{
     @param {string} value - Label to set.
     */
     set_label(value){
-        $( "#"+this.place_id()+' label' ).first().html(value);
+        $( `#${this.place_id()} label[for='${this.control_id()}']` ).first().html(value);
     }
 
     ////////////////////////////////////////////////////////////////////////////////

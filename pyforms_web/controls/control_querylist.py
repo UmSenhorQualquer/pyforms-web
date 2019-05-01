@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from pyforms_web.controls.control_base import ControlBase
 from django.apps import apps
 
@@ -35,12 +37,18 @@ class ControlQueryList(ControlBase):
         self.export_csv_columns = kwargs.get('export_csv_columns', self.list_display)
         self._columns_size      = kwargs.get('columns_size', None)
         self._columns_align     = kwargs.get('columns_align', None)
+        self.item_selection_changed_event = kwargs.get('item_selection_changed_event', self.item_selection_changed_event)
 
+        self.filter_event = kwargs.get('filter_event', self.filter_event)
+        self.page_event = kwargs.get('page_event', self.page_event)
+        self.sort_event = kwargs.get('sort_event', self.sort_event)
 
         self.search_field_key   = None
         self.filter_by          = []
         self.sort_by            = []
         self._selected_row_id   = -1 #row selected by the mouse
+
+        self.custom_filter_labels = {}
 
         # these informations is needed to serialize the control to the drive
         self._app   = None
@@ -159,8 +167,11 @@ class ControlQueryList(ControlBase):
             if self.search_field_key and len(self.search_field_key)>0:
                 search_filter = None
                 for s in self.search_fields:
-                    q = Q(**{s: self.search_field_key})
-                    search_filter = (search_filter | q) if search_filter else q
+                    keys_filter = None
+                    for key in self.search_field_key.split():
+                        q = Q(**{s: key})
+                        keys_filter = (keys_filter & q) if keys_filter else q
+                    search_filter = (search_filter | keys_filter) if search_filter else keys_filter
                 qs = qs.filter(search_filter)
 
             # apply orders by
@@ -212,10 +223,11 @@ class ControlQueryList(ControlBase):
             if init_form:
                 filters_list = self.serialize_filters(self.list_filter, queryset)
                 data.update({ 'filters_list': filters_list });
-                
-        if init_form and self.list_display and queryset:
+
+        if init_form and self.list_display and (queryset or self.headers):
             #configure the headers titles
             headers = []
+
 
             if self.headers is None:
                 for column_name in self.list_display:
@@ -257,25 +269,37 @@ class ControlQueryList(ControlBase):
         return data
 
         
-    def page_changed_event(self): 
+    def page_changed_event(self):
+        self.page_event()
         self._selected_row_id = -1
         self.mark_to_update_client()
 
-    def sort_changed_event(self): 
+    def sort_changed_event(self):
+        self.sort_event()
         self._selected_row_id = -1
         self.mark_to_update_client()
 
     def filter_changed_event(self):
+        self.filter_event()
         self._selected_row_id = -1
         self._current_page    = 1
         self.mark_to_update_client()
+
+
+    def filter_event(self):pass
+    def page_event(self):pass
+    def sort_event(self):pass
 
     #####################################################################
     #####################################################################
 
     def format_list_column(self, col_value): 
 
-        if col_value is None: return ''       
+        if col_value is None:
+            return ''
+
+        if callable(col_value):
+            col_value = col_value()
 
         if isinstance(col_value, datetime.datetime ):
             if not col_value: return ''
@@ -290,8 +314,11 @@ class ControlQueryList(ControlBase):
             return locale.format("%d", col_value, grouping=True)
         elif isinstance(col_value, float ):
             return locale.format("%f", col_value, grouping=True)
-        elif isinstance(col_value, int ):
-            return locale.format("%d", col_value, grouping=True)
+        elif isinstance(col_value, Decimal):
+            return '{0:n}'.format(col_value)
+        elif type(col_value).__name__ == 'Money':
+            # support django-money MoneyField
+            return '<div style="text-align: right; margin-right: .5rem;">%s</div>' % col_value
         elif isinstance(col_value, FieldFile ):
             try:
                 return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
@@ -393,7 +420,10 @@ class ControlQueryList(ControlBase):
 
             field_properties = {
                 'field_type': 'combo',
-                'label':    get_lookup_verbose_name(model, column_name),
+                'label': self.custom_filter_labels.get(
+                    column_name,
+                    get_lookup_verbose_name(model, column_name),
+                ),
                 'column':   column_name
             }
 
