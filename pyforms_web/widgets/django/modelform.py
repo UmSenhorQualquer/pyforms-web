@@ -848,6 +848,9 @@ class ModelFormWidget(BaseWidget):
                 if self.POPULATE_PARENT and self.parent:
                     self.parent.populate_list()
 
+        for inline in self.inlines_apps:
+            inline.populate_list()
+
         return True
 
 
