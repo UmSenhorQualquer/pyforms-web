@@ -142,6 +142,9 @@ class ControlAutoComplete(ControlBase):
     def serialize(self):
         data = super(ControlAutoComplete,self).serialize()
 
+        if self._value==models.fields.NOT_PROVIDED:
+            self._value = ValueNotSet
+
         if self.multiple:
             if self.value is None:
                 data.update({'value': []})
@@ -150,13 +153,13 @@ class ControlAutoComplete(ControlBase):
 
         queryset = self.queryset
         if queryset:
-            value = self._value if isinstance(self._value, list) else [self._value]
-            value = [v for v in value if v if v is not None]
 
-            if isinstance(value, ValueNotSet):
+            if isinstance(self._value, ValueNotSet):
                 items = []
-            elif value:
-                queryset = queryset.filter(pk__in=value).distinct()
+            elif self._value:
+                values = self._value if isinstance(self._value, list) else [self._value]
+                values = [v for v in values if v if v is not None]
+                queryset = queryset.filter(pk__in=values).distinct()
                 items = [{'name':str(o), 'value':str(o.pk), 'text':str(o)} for o in queryset]
             else:
                 items = []
