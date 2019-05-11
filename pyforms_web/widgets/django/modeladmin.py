@@ -32,6 +32,9 @@ class ModelAdminWidget(BaseWidget):
     LIST_FILTER     = None  #: list(str): List of filters fields
     LIST_DISPLAY    = None  #: list(str): List of fields to display in the table
     LIST_HEADERS    = None  #: list(str): Table columns headers. It will override the LIST_DISPLAY
+    LIST_COLS_SIZES = None  #: list(str): Table columns sizes. Should use style units.
+    LIST_COLS_ALIGN = None  #: list(str): Table columns alignments. Should use style units.
+
     SEARCH_FIELDS   = None  #: list(str): Fields to be used in the search
 
     EXPORT_CSV         = False #: boolean: Flag to activate the export of data to csv. The value of this flag is overwritten by the function has_export_csv_permissions
@@ -83,7 +86,9 @@ class ModelAdminWidget(BaseWidget):
             rows_per_page= self.LIST_ROWS_PER_PAGE,
             n_pages      = self.LIST_N_PAGES,
             export_csv   = self.has_export_csv_permissions(user),
-            export_csv_columns = self.get_export_csv_columns(user)
+            export_csv_columns = self.get_export_csv_columns(user),
+            columns_size=self.LIST_COLS_SIZES  if self.LIST_COLS_SIZES  else None,
+            columns_align=self.LIST_COLS_ALIGN if self.LIST_COLS_ALIGN else None,
         )
 
         has_details = self.USE_DETAILS_TO_ADD or self.USE_DETAILS_TO_EDIT
