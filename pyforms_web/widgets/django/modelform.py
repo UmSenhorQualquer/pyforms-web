@@ -687,20 +687,37 @@ class ModelFormWidget(BaseWidget):
             # if FileField
             elif isinstance(field, models.FileField):
                 getattr(self, field.name).error = False
-                value = getattr(self, field.name).value
-                if value:
+
+                # get the temporary path of the file
+                tmp_filepath = getattr(self, field.name).value
+
+                if tmp_filepath:
+                    # get the temporary filename
+                    tmp_filename = os.path.basename(tmp_filepath)
+
+                    # in case the upload_to is callable get
+                    if callable(field.upload_to):
+                        # in the case the upload_to property it is a function
+                        filepath = field.upload_to(obj, tmp_filename)
+                        filename = os.path.basename(filepath)
+                        dirpath  = os.path.dirname(filepath)
+                    else:
+                        dirpath = field.upload_to
+                        filename = tmp_filename
+
                     try:
-                        os.makedirs(os.path.join(settings.MEDIA_ROOT, field.upload_to))
+                        os.makedirs(os.path.join(settings.MEDIA_ROOT, dirpath))
                     except os.error as e:
                         pass
 
-                    paths = [p for p in value.split('/') if len(p)>0][1:]
-                    from_path   = os.path.join(settings.MEDIA_ROOT,*paths)
+                    paths     = [p for p in value.split(os.path.sep) if len(p)>0][1:]
+                    from_path = os.path.join(settings.MEDIA_ROOT,*paths)
+
                     if os.path.exists(from_path):
-                        to_path     = os.path.join(settings.MEDIA_ROOT, field.upload_to, os.path.basename(value) )
+                        to_path = os.path.join(settings.MEDIA_ROOT, dirpath, filename)
                         os.rename(from_path, to_path)
 
-                        url = '/'.join([field.upload_to]+[os.path.basename(value) ])
+                        url = '/'.join([dirpath]+[filename])
                         if url[0]=='/': url = url[1:]
                         setattr(obj, field.name, url)
                 elif field.null:

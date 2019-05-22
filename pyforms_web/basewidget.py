@@ -567,8 +567,8 @@ class BaseWidget(object):
         """
         widgets = []
 
-        if hasattr(self, 'parent') and isinstance(self.parent, (str,str)):
-            self.parent = PyFormsMiddleware.get_instance(self.parent)
+        #if hasattr(self, 'parent') and isinstance(self.parent, str):
+        #    self.parent = PyFormsMiddleware.get_instance(self.parent)
     
 
         for key, value in params.items():
@@ -624,6 +624,9 @@ class BaseWidget(object):
                         item._value.release() #release any open video
                 except:
                     pass
+
+        if self.parent:
+            self._parent_win_id = self.parent.uid
 
         return res
 
@@ -771,6 +774,18 @@ class BaseWidget(object):
     def refresh_timeout(self, value): self._refresh_timeout = value
 
     
+    @property
+    def parent(self):
+        if hasattr(self, '_parent_win_id'):
+            return PyFormsMiddleware.get_instance(self._parent_win_id)
+        else:
+            return self._parent_win
+
+    @parent.setter
+    def parent(self, value):
+        if hasattr(self, '_parent_win_id'):
+            del self._parent_win_id
+        self._parent_win = value
 
     ############################################################################
     ############ WEB Properties ################################################
