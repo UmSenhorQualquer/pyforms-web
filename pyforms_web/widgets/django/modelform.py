@@ -116,9 +116,7 @@ class ModelFormWidget(BaseWidget):
 
         BaseWidget.__init__(self, *args, **kwargs )
 
-        self._has_update_permissions = self.has_update_permissions()
-        self._has_add_permissions    = self.has_add_permissions()
-        self._has_view_permissions   = self.has_view_permissions()
+        self.update_permissions_variables()
 
         if self.object_pk:
             if not self._has_view_permissions:
@@ -166,7 +164,6 @@ class ModelFormWidget(BaseWidget):
             self._create_btn = ControlButton(self.CREATE_BTN_LABEL, label_visible=False, default=self.__create_btn_event)
             self.edit_buttons.append( self._create_btn )
 
-        self._has_remove_permissions = self.has_remove_permissions()
         if self._has_remove_permissions:
             self._remove_btn = ControlButton(self.REMOVE_BTN_LABEL,  css='red basic', label_visible=False, default=self.__remove_btn_event)
             self.edit_buttons.append( self._remove_btn )
@@ -222,6 +219,20 @@ class ModelFormWidget(BaseWidget):
     #################################################################################
     #### FUNCTIONS ##################################################################
     #################################################################################
+
+    def update_permissions_variables(self):
+        if self.object_pk:
+            self._has_update_permissions = self.has_update_permissions()
+        else:
+            self._has_update_permissions = False
+
+        self._has_add_permissions = self.has_add_permissions()
+        self._has_view_permissions = self.has_view_permissions()
+
+        if self.object_pk:
+            self._has_remove_permissions = self.has_remove_permissions()
+        else:
+            self._has_remove_permissions = False
 
     def get_readonly(self, default):
         """
@@ -520,8 +531,6 @@ class ModelFormWidget(BaseWidget):
                 else:
                     pyforms_field.value = value
 
-
-
         self.inlines_apps = []
         for inline in self.inlines:
             pyforms_field = getattr(self, inline.__name__)
@@ -530,6 +539,20 @@ class ModelFormWidget(BaseWidget):
             self.inlines_apps.append(app)
             pyforms_field.value = app
             pyforms_field.show()
+
+        self.update_permissions_variables()
+
+        if hasattr(self, '_save_btn'):
+            if self._has_update_permissions:
+                self._save_btn.show()
+            else:
+                self._save_btn.hide()
+
+        if hasattr(self, '_remove_btn'):
+            if self._has_remove_permissions:
+                self._remove_btn.show()
+            else:
+                self._remove_btn.hide()
 
         return obj
 

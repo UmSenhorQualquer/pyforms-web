@@ -37,8 +37,8 @@ class ControlEmptyWidget extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	deserialize(data){
-		
-		if(data.clear_widget==1){
+
+		if(data.clear_widget){
 			pyforms.remove_app( this.properties.child_widget_id );
 			this.jquery_place().html('');
 			if( data.child_widget_id===undefined ) delete this.properties.child_widget_id;

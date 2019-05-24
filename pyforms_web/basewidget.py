@@ -786,6 +786,7 @@ class BaseWidget(object):
         if hasattr(self, '_parent_win_id'):
             del self._parent_win_id
         self._parent_win = value
+        self.mark_to_update_client()
 
     ############################################################################
     ############ WEB Properties ################################################

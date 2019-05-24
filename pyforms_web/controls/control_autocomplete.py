@@ -172,8 +172,16 @@ class ControlAutoComplete(ControlBase):
         data.update({'items_url': self.items_url, 'items':items, 'multiple':self.multiple})
 
         return data
-        
 
+    @property
+    def objects(self):
+        """
+        Return the selected objects.
+        """
+        if self.queryset:
+            return self.queryset.filter(pk__in=self.value if self.multiple else [self.value])
+        else:
+            return False
 
     @property
     def parent(self):

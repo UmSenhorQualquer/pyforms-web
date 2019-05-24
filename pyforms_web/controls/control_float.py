@@ -1,5 +1,6 @@
 from pyforms_web.controls.control_base import ControlBase
 import simplejson
+from decimal import Decimal
 
 class ControlFloat(ControlBase):
 
@@ -9,8 +10,15 @@ class ControlFloat(ControlBase):
 			simplejson.dumps(self.serialize()) 
 		)
 
-	@property
-	def value(self): return ControlBase.value.fget(self)
 
-	@value.setter
-	def value(self, value): ControlBase.value.fset(self, value)
+	def deserialize(self, properties):
+		"""
+        Serialize the control data.
+
+        :param dict properties: Serialized data to load.
+        """
+		super().deserialize(properties)
+
+		self.value = float(
+			properties.get('value', None)
+		)

@@ -223,7 +223,7 @@ class ControlBase(object):
     @value.setter
     def value(self, value):
         oldvalue = self._value
-        if oldvalue!=value: 
+        if oldvalue!=value:
             self._value = value
             self.mark_to_update_client()
             self.changed_event()

@@ -21,11 +21,14 @@ class ControlEmptyWidget(ControlBase):
 
     def serialize(self):
         data = ControlBase.serialize(self)
+
         if isinstance(self.value, BaseWidget):
-            data.update({'value':self.value.uid})
+            data.update({
+                'value':self.value.uid
+            })
             self.value.parent = self.parent
         else:
-            data.update({'value':None})
+            data.update({'value':None, 'clear_widget': True})
 
         return data
 
@@ -35,7 +38,7 @@ class ControlEmptyWidget(ControlBase):
         #self._visible = properties.get('visible',True)
 
         if isinstance(self.value, BaseWidget):
-            self.value = PyFormsMiddleware.get_instance(self.value.uid)
+            self.value = PyFormsMiddleware.get_instance(self._value.uid)
             if self.value is not None:
                 self.value.parent = self.parent
         else:
@@ -43,18 +46,13 @@ class ControlEmptyWidget(ControlBase):
         
 
 
-    def mark_to_update_client(self):
-         self._update_client = True
-         request = PyFormsMiddleware.get_request()
-         if self.parent is not None and request is not None and hasattr(request,'updated_apps'):
-            request.updated_apps.add_top(self.parent)
-
     @property
-    def value(self): return ControlBase.value.fget(self)
+    def value(self):
+        return ControlBase.value.fget(self)
 
     @value.setter
     def value(self, value):
         ControlBase.value.fset(self, value)
-        if value: 
+        if value:
             value.LAYOUT_POSITION = self.place_id
             
