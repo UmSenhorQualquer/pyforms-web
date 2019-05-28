@@ -2,22 +2,9 @@ name: pyforms-web-environment
 channels:
   - defaults
 dependencies:
-  - python=3.5
+  - python=3.6
   - pip:
-    - sphinx
-    - sphinx-autobuild
     - sphinx-rtd-theme
     - sphinx-js
     - recommonmark
-    - django-jfu-pyforms
-    - orquestra
-    - numpy
-    - opencv-python
-    - django>2.0
-    - simplejson
-    - sorl-thumbnail
-    - dill
-    - filelock
-    - Pillow
-    - python-dateutil
-    - confapp
+    - pyforms-web
