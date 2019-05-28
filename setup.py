@@ -44,14 +44,14 @@ setup(
     packages=find_packages(),
     package_data={
         'pyforms_web':
-        list( find_files('pyforms_web','web/static/', '*.*') )
+        list( find_files('pyforms_web', 'web/static/', '*.*') ) + list(find_files('pyforms_web', 'web/templates/', '*.html'))
     },
     install_requires=[
         'django-jfu-pyforms',
         'orquestra',
         'numpy',
-        'opencv-python',
-        'django>2.0',
+        'opencv-python~=3.4',
+        'django>2.2',
         'simplejson',
         'sorl-thumbnail',
         'dill',

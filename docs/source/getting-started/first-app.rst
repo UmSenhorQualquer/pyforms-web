@@ -62,6 +62,12 @@ Create the file **my_module_name/apps/site_crawl.py** and add the next code to i
         ORQUESTRA_MENU_ICON  = 'browser'
         ORQUESTRA_MENU_ORDER = 0
 
+In the **my_module_name/apps/__init__.py** add the next code:
+
+.. code:: python
+
+    from .site_crawl import SiteCrawlApp
+
 
 You have created the most basic application. Access to http://localhost:8000 using your browser and visualize it.
 
