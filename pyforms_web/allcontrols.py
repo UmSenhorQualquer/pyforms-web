@@ -12,6 +12,7 @@ from .controls.control_combo                  import ControlCombo
 from .controls.control_date                   import ControlDate
 from .controls.control_datetime               import ControlDateTime
 from .controls.control_dir                    import ControlDir
+from .controls.control_decimal                import ControlDecimal
 from .controls.control_email                  import ControlEmail
 from .controls.control_emptywidget            import ControlEmptyWidget
 from .controls.control_feed                   import ControlFeed

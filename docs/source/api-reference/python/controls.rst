@@ -151,6 +151,17 @@ ControlDateTime
 
 ----------------------------
 
+ControlDecimal
+----------------------------
+
+.. autoclass:: pyforms_web.controls.control_decimal.ControlDecimal
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :exclude-members: init_form, serialize, deserialize
+
+----------------------------
+
 ControlDir
 ----------------------------
 

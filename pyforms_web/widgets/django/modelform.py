@@ -3,18 +3,15 @@ from pyforms_web.controls.control_textarea           import ControlTextArea
 from pyforms_web.controls.control_text               import ControlText
 from pyforms_web.controls.control_integer            import ControlInteger
 from pyforms_web.controls.control_float              import ControlFloat
+from pyforms_web.controls.control_decimal            import ControlDecimal
 from pyforms_web.controls.control_combo              import ControlCombo
 from pyforms_web.controls.control_autocomplete       import ControlAutoComplete
 from pyforms_web.controls.control_date               import ControlDate
 from pyforms_web.controls.control_datetime           import ControlDateTime
 from pyforms_web.controls.control_button             import ControlButton
-from pyforms_web.controls.control_querylist          import ControlQueryList
 from pyforms_web.controls.control_emptywidget        import ControlEmptyWidget
 from pyforms_web.controls.control_fileupload         import ControlFileUpload
 from pyforms_web.controls.control_checkbox           import ControlCheckBox
-from pyforms_web.controls.control_multipleselectionquery  import ControlMultipleSelectionQuery
-
-import collections
 from pyforms_web.web.middleware import PyFormsMiddleware
 from django.core.exceptions import ValidationError, FieldDoesNotExist, NON_FIELD_ERRORS
 from .utils import get_fieldsets_strings
@@ -22,7 +19,6 @@ import traceback
 from django.conf import settings
 from django.db import models
 import os
-from django.db.models import Q
 from confapp import conf
 
 from pyforms_web.utils import get_lookup_verbose_name
@@ -703,6 +699,7 @@ class ModelFormWidget(BaseWidget):
             pyforms_field = getattr(self, field.name)
             value         = pyforms_field.value
 
+
             # if AutoField
             if   isinstance(field, models.AutoField):
                 continue
@@ -1038,7 +1035,7 @@ class ModelFormWidget(BaseWidget):
             elif isinstance(field, models.BooleanField):                pyforms_field = ControlCheckBox( label, default=field.default )
             elif isinstance(field, models.DateTimeField):               pyforms_field = ControlDateTime( label, default=field.default )
             elif isinstance(field, models.DateField):                   pyforms_field = ControlDate( label, default=field.default )
-            elif isinstance(field, models.DecimalField):                pyforms_field = ControlFloat( label, default=field.default )
+            elif isinstance(field, models.DecimalField):                pyforms_field = ControlDecimal( label, default=field.default )
             elif isinstance(field, models.FileField):                   pyforms_field = ControlFileUpload( label, default=field.default )
             elif isinstance(field, models.FloatField):                  pyforms_field = ControlFloat( label, default=field.default )
             elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( label, default=field.default )
