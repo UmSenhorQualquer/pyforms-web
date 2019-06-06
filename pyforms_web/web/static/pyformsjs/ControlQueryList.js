@@ -135,6 +135,16 @@ class ControlQueryList extends ControlBase{
         }
     }
 
+    pad(number, size){
+        var s = String(number);
+        while (s.length < (size || 2)) {s = "0" + s;}
+        return s;
+    }
+
+    formatdate(date){
+        return date.getFullYear()+'-'+this.pad(date.getMonth()+1,2)+'-'+this.pad(date.getDate(),2);
+    }
+
     collect_filters_values(){
         var filters = this.properties.filters_list;
         this.properties.filter_by = [];
@@ -151,8 +161,15 @@ class ControlQueryList extends ControlBase{
                     var end   = $(`#${this.control_id()}-filter-${filter.column} .end`).val();
                     var filter_value = begin?`${filter.column}__gte=${begin}`:'';
                     filter_value += (begin && end)?`&`:'';
-                    filter_value += end?`${filter.column}__lte=${end}`:'';
 
+                    if( end ){
+                        end = new Date(end);
+                        end.setDate( end.getDate()+1 );
+                    }else{
+                        end = undefined;
+                    }
+
+                    filter_value += end?`${filter.column}__lte=${this.formatdate(end)}`:'';
                     break;
             }
 

@@ -16,8 +16,5 @@ class ControlDecimal(ControlBase):
 
         :param dict properties: Serialized data to load.
         """
-		super().deserialize(properties)
-
 		str_val = properties.get('value', None)
-
 		self.value = decimal.Decimal(str_val) if str_val else None

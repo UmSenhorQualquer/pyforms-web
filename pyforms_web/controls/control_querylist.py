@@ -1,26 +1,16 @@
+import locale, csv, itertools, simplejson, datetime
+
 from decimal import Decimal
-
-from pyforms_web.controls.control_base import ControlBase
-from django.apps import apps
-
-from pyforms_web.web.middleware import PyFormsMiddleware
-from django.core.exceptions import FieldDoesNotExist
-
-from django.utils.dateparse import parse_datetime
-from django.db.models import Q
-import simplejson, datetime
-from django.utils import timezone
-from django.conf import settings
 from django.db import models
-from datetime import timedelta
-from calendar import monthrange
+from django.apps import apps
+from django.db.models import Q
 from django.utils import timezone
-import locale, csv, itertools
-
-from pyforms_web.utils import get_lookup_verbose_name, get_lookup_value, get_lookup_field
-from django.db.models.fields.files import FieldFile
-
 from django.http import HttpResponse
+from django.db.models.fields.files import FieldFile
+from pyforms_web.web.middleware import PyFormsMiddleware
+from pyforms_web.controls.control_base import ControlBase
+from pyforms_web.utils import get_lookup_verbose_name, get_lookup_value, get_lookup_field
+
 
 class ControlQueryList(ControlBase):
 
@@ -209,10 +199,10 @@ class ControlQueryList(ControlBase):
         
 
     def serialize(self, init_form=False):
-        data            = ControlBase.serialize(self)
-        queryset        = self.value
+        data     = ControlBase.serialize(self)
+        queryset = self.value
     
-        rows            = []
+        rows = []
         
         if self._update_list and queryset:
             row_start = self.rows_per_page*(self._current_page-1)
