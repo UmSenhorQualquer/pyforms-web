@@ -288,6 +288,12 @@ class ControlQueryList(ControlBase):
         if col_value is None:
             return ''
 
+        if type(col_value).__name__ == "ManyRelatedManager":
+            # format a ManyToManyField for LIST_DISPLAY
+            # TODO should we limit when there are a lot of objects?
+            # or should the user remove that column from LIST_DISPLAY?
+            return "<br>".join(str(obj) for obj in col_value.all())
+
         if callable(col_value):
             col_value = col_value()
 
