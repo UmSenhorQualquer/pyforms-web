@@ -425,10 +425,10 @@ class ControlQueryList(ControlBase):
 
             if isinstance(field, models.BooleanField):
                 field_properties.update({
-                    'items': [ ("{0}=true".format(column_name), 'True'), ("{0}=false".format(column_name), 'False')]
+                    'items': [ ("{0}=true".format(column_name), 'Yes'), ("{0}=false".format(column_name), 'No')]
                 })
-            
-            if isinstance(field, models.Field) and field.choices:
+
+            elif isinstance(field, models.Field) and field.choices:
                 field_properties.update({
                     'items': [ ("{0}={1}".format(column_name, c[0]),c[1]) for c in field.choices]
                 })
