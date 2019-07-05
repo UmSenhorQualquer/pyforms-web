@@ -64,7 +64,6 @@ class ModelFormWidget(BaseWidget):
                 ])
             ]
     """
-
     MODEL             = None  #: class: Model to manage
     TITLE             = None  #: str: Title of the application
     INLINES           = []    #: list(class): Sub models to show in the interface
@@ -915,7 +914,7 @@ class ModelFormWidget(BaseWidget):
 
         for field in self.model._meta.get_fields():
             if isinstance(field, models.ForeignKey):
-                if parent_model == field.related_model:
+                if issubclass(parent_model, field.related_model):
                     self.parent_field = field
                     break
 
