@@ -26,7 +26,8 @@ from pyforms_web.utils import get_lookup_verbose_name
 import datetime
 from django.utils import timezone
 
-
+import string
+import random
 
 class ModelFormWidget(BaseWidget):
     """
@@ -735,6 +736,14 @@ class ModelFormWidget(BaseWidget):
 
                     if os.path.exists(from_path):
                         to_path = os.path.join(settings.MEDIA_ROOT, dirpath, filename)
+
+
+                        while os.path.exists(to_path):
+                            name, ext = os.path.splitext(filename)
+                            sufix = ''.join([random.choice(string.ascii_uppercase + string.digits) for _ in range(3)])
+                            filename = name+'_'+sufix+ext
+                            to_path = os.path.join(settings.MEDIA_ROOT, dirpath, filename)
+
                         os.rename(from_path, to_path)
 
                         url = '/'.join([dirpath]+[filename])
