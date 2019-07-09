@@ -139,6 +139,16 @@ class ControlBase{
     }
 
     ////////////////////////////////////////////////////////////////////////////////
+
+    /**
+    Sets the label of the control.
+    @param {string} value - Label to set.
+    */
+    set_required(){
+        this.jquery_place().addClass('required');
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
     
     /**
     Enable the control.
@@ -265,6 +275,8 @@ class ControlBase{
         this.set_label(this.properties.label);
 
         if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
+
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////

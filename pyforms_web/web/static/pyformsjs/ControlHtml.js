@@ -10,8 +10,9 @@ class ControlHtml extends ControlBase{
 			this.jquery().html(this.properties.value); 
 		else
 			this.jquery().html(''); 
-		
-		
+
+		if(this.properties.required) this.set_required();
+
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

@@ -87,6 +87,7 @@ class ControlWorkflow extends ControlBase{
 				}
 				return true;
 			} });
+		if(this.properties.required) this.set_required();
 		
 	};
 

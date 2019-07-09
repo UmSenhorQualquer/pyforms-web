@@ -9,6 +9,7 @@ class ControlCheckBoxList extends ControlBase{
 
     init_control(){
         this.set_value(this.properties.value);
+		if(this.properties.required) this.set_required();
         
     };
 

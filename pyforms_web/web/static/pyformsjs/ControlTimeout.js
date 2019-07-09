@@ -17,6 +17,7 @@ class ControlTimeout extends ControlBase{
 
 		this.set_value(this.properties.value);
 		if (this.properties.play=='True') this.update_progress_bar(true);
+		if(this.properties.required) this.set_required();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

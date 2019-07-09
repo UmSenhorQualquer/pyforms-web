@@ -31,7 +31,8 @@ class ControlMenu extends ControlBase{
 		this.jquery_place().replaceWith(html);
 		this.jquery_place().accordion({exclusive: false});
 
-		
+
+		if(this.properties.required) this.set_required();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

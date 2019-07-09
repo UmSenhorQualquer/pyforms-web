@@ -82,6 +82,7 @@ class ControlQueryCards extends ControlBase{
 			self.basewidget.fire_event( self.name, 'sort_changed_event' );
 		});
 
+		if(this.properties.required) this.set_required();
 
 		
 

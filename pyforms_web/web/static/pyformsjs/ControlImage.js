@@ -29,6 +29,7 @@ class ControlImage extends ControlBase{
 		html += "</div>";
 		html += "</div>";
 		this.jquery_place().replaceWith(html);
+		if(this.properties.required) this.set_required();
 
 		
 	};

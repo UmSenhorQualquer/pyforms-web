@@ -32,7 +32,8 @@ class ControlSlider extends ControlBase{
 		this.jquery().change(function(){ 
 			$( "#value"+self.control_id() ).html( $(this).val() ); 
 			self.basewidget.fire_event( self.name, 'update_control_event' );
-		});		
+		});
+		if(this.properties.required) this.set_required();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

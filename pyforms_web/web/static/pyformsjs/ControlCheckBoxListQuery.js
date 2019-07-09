@@ -9,6 +9,7 @@ class ControlCheckBoxListQuery extends ControlCheckBoxList{
 
     init_control(){
         this.set_value(this.properties.value);
+		if(this.properties.required) this.set_required();
     };
 
     ////////////////////////////////////////////////////////////////////////////////

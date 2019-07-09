@@ -17,6 +17,7 @@ class ControlOrganogram extends ControlBase{
 
         var x = conf.concat(this.properties.value);
         this.graph = new Treant( chart_config );
+		if(this.properties.required) this.set_required();
     };
 
     ////////////////////////////////////////////////////////////////////////////////

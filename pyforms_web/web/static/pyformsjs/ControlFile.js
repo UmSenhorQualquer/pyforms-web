@@ -43,7 +43,9 @@ class ControlFile extends ControlBase{
 			self.basewidget.fire_event( self.name, 'open_file_browser' );
 		});
 		
-		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
+		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
+
+		if(this.properties.required) this.set_required();
 	};
 
 

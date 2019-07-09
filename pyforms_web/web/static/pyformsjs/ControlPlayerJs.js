@@ -31,6 +31,7 @@ class ControlPlayerJs extends ControlBase{
                 draws_url: self.properties.draws_url
             });
         });
+		if(this.properties.required) this.set_required();
     };
 
     ////////////////////////////////////////////////////////////////////////////////

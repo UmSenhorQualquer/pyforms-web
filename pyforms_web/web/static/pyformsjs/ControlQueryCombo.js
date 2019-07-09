@@ -25,7 +25,8 @@ class ControlQueryCombo extends ControlBase{
 		this.set_value(this.properties.value);
 
 		
-		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
+		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
+		if(this.properties.required) this.set_required();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

@@ -35,6 +35,7 @@ class ControlBreadcrumb extends ControlBase{
 			self.properties.action_param = action_param;
 			self.basewidget.fire_event( self.name, 'pressed' );
 		});
+		if(this.properties.required) this.set_required();
 
 	};
 

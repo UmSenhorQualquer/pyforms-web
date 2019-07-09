@@ -61,6 +61,7 @@ class ControlBarsChart extends ControlBase{
                 self.basewidget.fire_event( self.name, 'remote_data_selected_event' );
             }
         );
+		if(this.properties.required) this.set_required();
     };
 
 

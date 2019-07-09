@@ -295,6 +295,7 @@ class ControlQueryList extends ControlBase{
             self.update_server_flag = true;
             self.basewidget.fire_event( self.name, 'sort_changed_event' );
         });
+		if(this.properties.required) this.set_required();
 
 
         

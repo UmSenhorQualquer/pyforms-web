@@ -14,6 +14,7 @@ class ControlItemsList extends ControlBase{
 		html += "</div>";
 		this.jquery_place().replaceWith(html);
 		this.set_value(this.properties.value);
+		if(this.properties.required) this.set_required();
 		
 		
 	};

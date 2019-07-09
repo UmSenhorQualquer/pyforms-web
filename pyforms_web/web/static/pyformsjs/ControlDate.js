@@ -51,7 +51,8 @@ class ControlDate extends ControlBase{
 			self.basewidget.fire_event( self.name, 'update_control_event' );
 		});
 
-		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
+		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
+		if(this.properties.required) this.set_required();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

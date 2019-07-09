@@ -22,6 +22,7 @@ class ControlSimpleLabel extends ControlBase{
         html += '</p>';
         html += '</div>';
         this.jquery_place().replaceWith(html);
+		if(this.properties.required) this.set_required();
 
        
     };

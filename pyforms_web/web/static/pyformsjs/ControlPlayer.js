@@ -39,7 +39,8 @@ class ControlPlayer extends ControlBase{
         var self = this;
         $( "#timeline"+this.control_id() ).change(
             function(){ self.basewidget.fire_event( self.name, 'refresh' ); }
-        );  
+        );
+		if(this.properties.required) this.set_required();
     };
 
     ////////////////////////////////////////////////////////////////////////////////

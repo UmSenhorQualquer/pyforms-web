@@ -70,7 +70,8 @@ class ControlMultipleChecks extends ControlBase{
         });
 
         if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
-        
+
+		if(this.properties.required) this.set_required();
     };
 
     ////////////////////////////////////////////////////////////////////////////////

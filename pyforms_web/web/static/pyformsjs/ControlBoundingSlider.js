@@ -29,7 +29,8 @@ class ControlBoundingSlider extends ControlBase{
 			slide: function( event, ui ) { $( "#value-"+self.control_id() ).html( ui.value ); },
 			stop:  function(){ self.basewidget.fire_event( self.name, 'update_control_event' )}, 
 			min: this.properties.min, max: this.properties.max, values: this.properties.value 
-		});	
+		});
+		if(this.properties.required) this.set_required();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////

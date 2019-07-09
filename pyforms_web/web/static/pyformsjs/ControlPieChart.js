@@ -65,6 +65,7 @@ class ControlPieChart extends ControlBase{
     
         chart.themeEngine.newTheme('simple', temp);
         chart.activateTheme('simple');
+		if(this.properties.required) this.set_required();
 
         
     };

@@ -21,6 +21,7 @@ class ControlButton extends ControlBase{
 			else
 				self.basewidget.fire_event( self.name, 'pressed' );
 		});
+		if(this.properties.required) this.set_required();
 
 	};
 

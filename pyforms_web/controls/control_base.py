@@ -29,6 +29,7 @@ class ControlBase(object):
 
         self._help          = kwargs.get('helptext', None)
         self._value         = kwargs.get('default',  None)
+        self._required      = kwargs.get('required', False)
         self._label         = kwargs.get('label', args[0] if len(args)>0 else '')
         self._visible       = kwargs.get('visible', True)
         self._error         = kwargs.get('error', False)
@@ -127,7 +128,8 @@ class ControlBase(object):
             'visible':  self._visible,
             'error':    self._error,
             'enabled':  self._enabled,
-            'label_visible': self._label_visible
+            'label_visible': self._label_visible,
+            'required': self._required
         }
         if self._css is not None: 
             res.update({'css':self._css})

@@ -64,6 +64,7 @@ class ControlSearch extends ControlBase {
             placeholder: false,
             forceSelection: false
         });
+		if(this.properties.required) this.set_required();
     };
 
     ////////////////////////////////////////////////////////////////////////////////

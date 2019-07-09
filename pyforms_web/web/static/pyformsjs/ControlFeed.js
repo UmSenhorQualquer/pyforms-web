@@ -30,6 +30,7 @@ class ControlFeed extends ControlBase {
                 }
             }
         });
+		if(this.properties.required) this.set_required();
     }
 
     ////////////////////////////////////////////////////////////////////////////////

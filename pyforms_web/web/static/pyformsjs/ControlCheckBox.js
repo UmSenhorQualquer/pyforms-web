@@ -39,7 +39,8 @@ class ControlCheckBox extends ControlBase{
 		this.jquery().click(function(){ self.basewidget.fire_event( self.name, 'update_control_event' ); });
 
 		if(!this.properties.visible) this.hide(undefined, true);
-		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
+		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
+		if(this.properties.required) this.set_required();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
