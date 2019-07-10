@@ -996,7 +996,7 @@ class ModelFormWidget(BaseWidget):
                 except AttributeError:
                     continue
 
-            required = not field.blank
+            required = not field.blank and not field.has_default()
 
             if not (callable(field) and not isinstance(field, models.Model)):
                 label = get_lookup_verbose_name(self.model, field_name)
