@@ -2,6 +2,7 @@ import datetime
 from datetime import date
 from pyforms_web.controls.control_base import ControlBase
 import simplejson
+from django.db.models.fields import NOT_PROVIDED
 
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
@@ -41,6 +42,6 @@ class ControlDate(ControlBase):
     def serialize(self):
         data = ControlBase.serialize(self)
 
-        if self.value:
+        if self.value and self.value != NOT_PROVIDED:
             data.update({'value': self.value.isoformat()}  )
         return data
