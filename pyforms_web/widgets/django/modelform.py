@@ -1208,7 +1208,7 @@ class ModelFormWidget(BaseWidget):
         """
         if self.model_object is None: return True
 
-        if hasattr(self, 'parent') and self.parent and not self.parent.has_view_permissions(self.model_object):
+        if hasattr(self, 'parent') and self.parent and not isinstance(self.parent, ModelFormWidget) and not self.parent.has_view_permissions(self.model_object):
             return False
 
         queryset = self.model.objects.filter(pk=self.object_pk)
@@ -1228,7 +1228,7 @@ class ModelFormWidget(BaseWidget):
         Returns:
             bool: True if has remove permissions, False otherwise.
         """
-        if hasattr(self, 'parent') and self.parent and not self.parent.has_remove_permissions(self.model_object):
+        if hasattr(self, 'parent') and self.parent and not isinstance(self.parent, ModelFormWidget) and not self.parent.has_remove_permissions(self.model_object):
             return False
 
         queryset = self.model.objects.filter(pk=self.object_pk)
@@ -1244,7 +1244,7 @@ class ModelFormWidget(BaseWidget):
         Returns:
             bool: True if has update permissions, False otherwise.
         """
-        if hasattr(self, 'parent') and self.parent and not self.parent.has_update_permissions(self.model_object):
+        if hasattr(self, 'parent') and self.parent and not isinstance(self.parent, ModelFormWidget) and not self.parent.has_update_permissions(self.model_object):
             return False
 
         queryset = self.model.objects.filter(pk=self.object_pk)
