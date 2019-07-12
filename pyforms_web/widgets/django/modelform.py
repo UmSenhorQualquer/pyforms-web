@@ -677,7 +677,7 @@ class ModelFormWidget(BaseWidget):
         :param django.db.models.Model obj: Object to update the values.
 
         Returns:
-            :django.db.models.Mode: Updated object.
+            :django.db.models.Model: Updated object.
         """
 
         # if it is working as an inline edition form #
