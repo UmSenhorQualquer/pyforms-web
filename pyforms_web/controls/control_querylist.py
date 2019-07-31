@@ -26,6 +26,7 @@ class ControlQueryList(ControlBase):
         self.search_fields      = kwargs.get('search_fields', [])
         self.export_csv         = kwargs.get('export_csv', False)
         self.export_csv_columns = kwargs.get('export_csv_columns', self.list_display)
+        self.export_csv_headers = kwargs.get('export_csv_headers', {})
         self._columns_size      = kwargs.get('columns_size', None)
         self._columns_align     = kwargs.get('columns_align', None)
         self.item_selection_changed_event = kwargs.get('item_selection_changed_event', self.item_selection_changed_event)
@@ -90,6 +91,15 @@ class ControlQueryList(ControlBase):
         writer = csv.writer(response, delimiter=";")
 
         queryset = self.value
+
+        headers = []
+        for column_name in self.export_csv_columns:
+            try:
+                header = self.export_csv_headers[column_name]
+            except KeyError:
+                header = get_lookup_verbose_name(queryset.model, column_name)
+            headers.append(header)
+        writer.writerow(headers)
 
         for o in queryset:
             row = [
@@ -226,7 +236,6 @@ class ControlQueryList(ControlBase):
             if self.headers is None:
                 for column_name in self.list_display:
                     label = get_lookup_verbose_name(queryset.model, column_name)
-                    
                     headers.append({
                         'label':  label,
                         'column': column_name
