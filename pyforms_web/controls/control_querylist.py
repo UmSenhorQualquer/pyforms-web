@@ -5,6 +5,7 @@ from django.db import models
 from django.apps import apps
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.html import strip_tags
 from django.http import HttpResponse
 from django.db.models.fields.files import FieldFile
 from pyforms_web.web.middleware import PyFormsMiddleware
@@ -25,6 +26,7 @@ class ControlQueryList(ControlBase):
         self.search_fields      = kwargs.get('search_fields', [])
         self.export_csv         = kwargs.get('export_csv', False)
         self.export_csv_columns = kwargs.get('export_csv_columns', self.list_display)
+        self.export_csv_headers = kwargs.get('export_csv_headers', {})
         self._columns_size      = kwargs.get('columns_size', None)
         self._columns_align     = kwargs.get('columns_align', None)
         self.item_selection_changed_event = kwargs.get('item_selection_changed_event', self.item_selection_changed_event)
@@ -90,8 +92,20 @@ class ControlQueryList(ControlBase):
 
         queryset = self.value
 
+        headers = []
+        for column_name in self.export_csv_columns:
+            try:
+                header = self.export_csv_headers[column_name]
+            except KeyError:
+                header = get_lookup_verbose_name(queryset.model, column_name)
+            headers.append(header)
+        writer.writerow(headers)
+
         for o in queryset:
-            row = [self.format_list_column(get_lookup_value(o, col)) for col in self.export_csv_columns] 
+            row = [
+                strip_tags(self.format_list_column(get_lookup_value(o, col), raw=True))
+                for col in self.export_csv_columns
+            ] 
             writer.writerow(row)
             
         return response 
@@ -222,7 +236,6 @@ class ControlQueryList(ControlBase):
             if self.headers is None:
                 for column_name in self.list_display:
                     label = get_lookup_verbose_name(queryset.model, column_name)
-                    
                     headers.append({
                         'label':  label,
                         'column': column_name
@@ -283,7 +296,7 @@ class ControlQueryList(ControlBase):
     #####################################################################
     #####################################################################
 
-    def format_list_column(self, col_value): 
+    def format_list_column(self, col_value, raw=False): 
 
         if col_value is None:
             return ''
@@ -292,41 +305,54 @@ class ControlQueryList(ControlBase):
             # format a ManyToManyField for LIST_DISPLAY
             # TODO should we limit when there are a lot of objects?
             # or should the user remove that column from LIST_DISPLAY?
-            return "<br>".join(str(obj) for obj in col_value.all())
+            objects = [str(obj) for obj in col_value.all()]
+            if raw:
+                return ", ".join(objects)
+            else:
+                return "<br>".join(objects)
 
         if callable(col_value):
             col_value = col_value()
 
-        if isinstance(col_value, datetime.datetime ):
+        if isinstance(col_value, datetime.datetime):
             if not col_value: return ''
             col_value = timezone.localtime(col_value)
             return col_value.strftime('%Y-%m-%d %H:%M')
-        elif isinstance(col_value, datetime.date ):
+        elif isinstance(col_value, datetime.date):
             if not col_value: return ''
             return col_value.strftime('%Y-%m-%d')
-        elif isinstance(col_value, bool ):
-            return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
-        elif isinstance(col_value, int ):
+        elif isinstance(col_value, bool):
+            if raw:
+                return str(col_value)
+            else:
+                return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
+        elif isinstance(col_value, int):
             return locale.format("%d", col_value, grouping=True)
-        elif isinstance(col_value, float ):
+        elif isinstance(col_value, float):
             return locale.format("%f", col_value, grouping=True)
         elif isinstance(col_value, Decimal):
             return '{0:n}'.format(col_value)
         elif type(col_value).__name__ == 'Money':
             # support django-money MoneyField
-            return '<div style="text-align: right; margin-right: .5rem;">%s</div>' % col_value
-        elif isinstance(col_value, FieldFile ):
+            if raw:
+                return str(col_value)
+            else:
+                return '<div style="text-align: right; margin-right: .5rem;">%s</div>' % col_value
+        elif isinstance(col_value, FieldFile):
+            if raw:
+                return str(col_value.name)
             try:
                 return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
             except ValueError:
                 return ''
-        elif isinstance(col_value, models.Model ):
+        elif isinstance(col_value, models.Model):
             return col_value.__str__()
         elif callable(col_value):
             v = col_value()
 
             if hasattr(col_value, 'boolean') and getattr(col_value, 'boolean'):
-                v = '<i class="check circle green icon"></i>' if v else '<i class="minus circle red icon"></i>'
+                if not raw:
+                    v = '<i class="check circle green icon"></i>' if v else '<i class="minus circle red icon"></i>'
 
             return '' if v is None else str(v)
         else:
@@ -335,16 +361,16 @@ class ControlQueryList(ControlBase):
     def format_filter_column(self, col_value):
         
 
-        if isinstance(col_value, datetime.datetime ):
+        if isinstance(col_value, datetime.datetime):
             if not col_value: return ''
             col_value = timezone.localtime(col_value)
             return col_value.strftime('%Y-%m-%d %H:%M')
-        elif isinstance(col_value, datetime.date ):
+        elif isinstance(col_value, datetime.date):
             if not col_value: return ''
             return col_value.strftime('%Y-%m-%d')
-        elif isinstance(col_value, bool ):
+        elif isinstance(col_value, bool):
             return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
-        elif isinstance(col_value, models.Model ):
+        elif isinstance(col_value, models.Model):
             return col_value.__str__()
         elif callable(col_value):
             return str(col_value())

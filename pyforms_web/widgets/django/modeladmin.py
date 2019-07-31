@@ -39,6 +39,7 @@ class ModelAdminWidget(BaseWidget):
 
     EXPORT_CSV         = False #: boolean: Flag to activate the export of data to csv. The value of this flag is overwritten by the function has_export_csv_permissions
     EXPORT_CSV_COLUMNS = None #: list(str): List of fields to export to the csv file. By default it will assume the fields in the LIST_DISPLAY variable
+    EXPORT_CSV_HEADERS = {} #: dict(str: str): Provide custom header labels to fields listed in EXPORT_CSV_COLUMNS, e.g. {'date': 'Procedure Date'}
 
     CONTROL_LIST    = ControlQueryList #: class: Control to be used in to list the values
     FIELDSETS       = None  #: Formset of the edit form
@@ -87,6 +88,7 @@ class ModelAdminWidget(BaseWidget):
             n_pages      = self.LIST_N_PAGES,
             export_csv   = self.has_export_csv_permissions(user),
             export_csv_columns = self.get_export_csv_columns(user),
+            export_csv_headers = self.EXPORT_CSV_HEADERS,
             columns_size=self.LIST_COLS_SIZES  if self.LIST_COLS_SIZES  else None,
             columns_align=self.LIST_COLS_ALIGN if self.LIST_COLS_ALIGN else None,
         )

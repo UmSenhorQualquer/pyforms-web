@@ -35,7 +35,7 @@ def get_lookup_value(obj, lookup):
                 # works for fields with choices defines
                 obj = getattr(obj, 'get_%s_display' % fieldname)
             except AttributeError:
-                obj = getattr(obj, fieldname)
+                obj = getattr(obj, fieldname, None)
         else:
             value = obj
     return value
