@@ -78,13 +78,17 @@ class ControlCombo(ControlBase):
     @value.setter
     def value(self, value):
         for i, (key, val) in enumerate(self._items.items()):
-            value = None if value is None or value=='' else self._types[i](value)
-            if value == val:
-                if self._value != value:
-                    self._value = value
+
+            if value is None or value=='':
+                v = None
+            else:
+                v = self._types[i](value) if self._types[i]!=type(None) else value
+
+            if v == val:
+                if self._value != v:
+                    self._value = v
                     self.mark_to_update_client()
                     if self._init_form_called:
-
                         self.changed_event()
                     break
 
