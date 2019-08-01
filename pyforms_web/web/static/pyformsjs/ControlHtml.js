@@ -6,6 +6,7 @@ class ControlHtml extends ControlBase{
 		var html = '<div id="'+this.place_id()+'" class="field control ControlHtml">'
 		if(this.properties.label_visible) html += '<label>'+this.properties.label+'</label>';
 		html += '<div id="'+this.control_id()+'"></div>';
+		html += "</div>";
 
 		this.jquery_place().replaceWith(html);
 
