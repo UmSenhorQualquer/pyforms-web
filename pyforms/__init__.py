@@ -21,10 +21,15 @@ except:
     pass
 
 
-if conf.PYFORMS_MODE == 'GUI':
+try:
 
-    from pyforms_gui.appmanager import start_app
+    if conf.PYFORMS_MODE == 'GUI':
 
-elif conf.PYFORMS_MODE == 'TERMINAL':
+        from pyforms_gui.appmanager import start_app
 
-    from pyforms_terminal.appmanager import start_app
+    elif conf.PYFORMS_MODE == 'TERMINAL':
+
+        from pyforms_terminal.appmanager import start_app
+
+except:
+    pass
