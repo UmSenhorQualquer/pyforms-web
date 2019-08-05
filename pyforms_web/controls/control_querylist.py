@@ -55,7 +55,7 @@ class ControlQueryList(ControlBase):
     def init_form(self): return "new ControlQueryList('{0}', {1})".format( self._name, simplejson.dumps(self.serialize(init_form=True)) )
 
     def item_selection_changed_client_event(self):
-        #self.mark_to_update_client()
+        self.mark_to_update_client()  # what are the implications of enabling this???
         self.item_selection_changed_event()
 
     def item_selection_changed_event(self): pass
