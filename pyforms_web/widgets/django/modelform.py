@@ -996,6 +996,9 @@ class ModelFormWidget(BaseWidget):
                 except AttributeError:
                     continue
 
+            if hasattr(field, "field"):
+                # follow relationships,e.g. ManyToManyRel
+                field = field.field
 
 
             if not (callable(field) and not isinstance(field, models.Model)):
