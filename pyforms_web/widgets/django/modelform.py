@@ -1000,10 +1000,10 @@ class ModelFormWidget(BaseWidget):
                 # follow relationships,e.g. ManyToManyRel
                 field = field.field
 
+            required = not field.blank and not field.has_default()
 
             if not (callable(field) and not isinstance(field, models.Model)):
                 label = get_lookup_verbose_name(self.model, field_name)
-                required = not field.blank and not field.has_default()
 
             # if it is a function
             if callable(field) and not isinstance(field, models.Model):
