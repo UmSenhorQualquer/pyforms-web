@@ -55,6 +55,7 @@ JSFILES_DEBUG = [
     "/static/pyformsjs/ControlOrganogram.js",
     "/static/pyformsjs/ControlWorkflow.js",
     "/static/pyformsjs/ControlSearch.js",
+    "/static/pyformsjs/ControlCodeMirror.js",
     "/static/pyformsjs/BaseWidget.js",
     "/static/pyformsjs/pyforms.js",
     "/static/pyformsjs/pyforms-hub.js",
@@ -67,7 +68,6 @@ JSFILES_PROD  = [
 def pyforms_dependencies():
     return {
         'cssfiles': [
-            "/static/pyforms.css",
             "/static/treant/Treant.css",
             "/static/jquery.flowchart/jquery.flowchart.min.css",
             "/static/datetimepicker/jquery.datetimepicker.min.css",
@@ -75,7 +75,9 @@ def pyforms_dependencies():
             "/static/filer/css/jquery.filer.css",
             "/static/filer/css/jquery.filer-dragdropbox-theme.css",
             "/static/semantic-ui/semantic.css",
-            "/static/jquery-ui/jquery-ui.min.css"
+            "/static/jquery-ui/jquery-ui.min.css",
+            "/static/codemirror/codemirror.css",
+            "/static/pyforms.css",
         ],
         'jsfiles': [
             "/static/jquery.min.js",
@@ -108,5 +110,11 @@ def pyforms_dependencies():
             "/static/filer/js/jquery.filer.js",
             "/static/jquery-ui/jquery-ui.min.js",
             "/static/semantic-ui/semantic.min.js",
+            "/static/codemirror/codemirror.js",
+            "/static/codemirror/xml.js",
+            "/static/codemirror/css.js",
+            "/static/codemirror/javascript.js",
+            "/static/codemirror/htmlmixed.js",
+            "/static/codemirror/autorefresh.js",
         ] + (JSFILES_DEBUG if conf.PYFORMS_DEBUG else JSFILES_PROD)
     }

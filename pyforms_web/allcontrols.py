@@ -48,6 +48,7 @@ from .controls.control_img                    import ControlImg
 from .controls.control_tree                   import ControlTree
 from .controls.control_search                 import ControlSearch
 from .controls.control_playerjs               import ControlPlayerJs
+from .controls.control_codemirror              import ControlCodeMirror
 
 try:
     from .controls.control_image              import ControlImage

@@ -74,7 +74,7 @@ class BaseWidget(object):
 
         self.init_form_result = None
          
-        self._uid =  self.UID if hasattr(self, 'UID') and self.UID else str(uuid.uuid4())
+        self._uid =  self.UID if hasattr(self, 'UID') and self.UID else 'a'+str(uuid.uuid4())
 
         self._messages        = []
         self._js_code2execute = [];
@@ -190,6 +190,7 @@ class BaseWidget(object):
         tab_id = uuid.uuid4()
 
         for index, (key, item) in enumerate( sorted(formsetdict.items()) ):
+            if item is None: continue
             active = 'active' if index==0 else ''
             tabs_body += "<div class='ui bottom attached {3} tab segment' data-tab='{4}-{5}'  id='{0}-tab{1}' >{2}</div>".format(tab_id, index, self.generate_panel(item), active, tab_id, index)
             tabs_head += "<div class='{1} item' data-tab='{2}-{3}' >{0}</div>".format(key[key.find(':')+1:], active, tab_id, index)

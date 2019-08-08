@@ -13,7 +13,7 @@ class ControlQueryCombo(ControlBase):
         self._model = None
         self._query = None
         self.allow_none = kwargs.get('allow_none', False)
-        self._column = kwargs.get('display_column', 'pk')
+        self._column    = kwargs.get('display_column', 'pk')
         ####################################################################
 
         self.queryset = kwargs.get('queryset', None)
@@ -60,7 +60,7 @@ class ControlQueryCombo(ControlBase):
             self._model = value.model._meta.label.split('.')[-1]
             self._query = value.query
             self._app   = value.model._meta.app_label
-            self.value  = None
+            self.value  = None if self.allow_none else (value[0].pk if value.count()>0 else None)
         else:
             self._model = None
             self._query = None

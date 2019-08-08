@@ -52,6 +52,7 @@ FILES = [
     os.path.join("static","pyformsjs","ControlTree.js"),
     os.path.join("static","pyformsjs","ControlOrganogram.js"),
     os.path.join("static","pyformsjs","ControlWorkflow.js"),
+    os.path.join("static","pyformsjs","ControlCodeMirror.js"),
     os.path.join("static","pyformsjs","BaseWidget.js"),
     os.path.join("static","pyformsjs","pyforms.js"),
     os.path.join("static","pyformsjs","pyforms-hub.js"),

@@ -22,7 +22,7 @@ class ControlBase(object):
         :param bool readonly: Set the control as read only. Default = False.
         :param bool label_visible: Hide or show the label. Default = True.
         """
-        self.uid            = uuid.uuid4()
+        self.uid            = 'c'+str(uuid.uuid4())
         self._name          = ""    # variable name. It is updated in runtime
         self._parent        = None  # parent basewidget. It is updated in runtime
         self._update_client = False # flag that indicate if the Control should be updated
