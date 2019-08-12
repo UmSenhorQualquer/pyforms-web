@@ -31,6 +31,7 @@ class ControlBase(object):
         self._value         = kwargs.get('default',  None)
         self._required      = kwargs.get('required', False)
         self._label         = kwargs.get('label', args[0] if len(args)>0 else '')
+        self._placeholder   = kwargs.get('placeholder', '')
         self._visible       = kwargs.get('visible', True)
         self._error         = kwargs.get('error', False)
         self._css           = kwargs.get('css', None)
@@ -125,6 +126,7 @@ class ControlBase(object):
             'value':    self.value,
             'label':    str(self._label if self._label else ''),
             'help':     str(self._help if self._help else ''),
+            'placeholder': str(self._placeholder),
             'visible':  self._visible,
             'error':    self._error,
             'enabled':  self._enabled,
