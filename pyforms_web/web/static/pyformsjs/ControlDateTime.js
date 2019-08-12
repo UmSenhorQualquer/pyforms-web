@@ -1,6 +1,6 @@
 class ControlDateTime extends ControlBase{
 
-    get_value(){ 
+    get_value(){
         //if(this.jquery().length==0) return this.properties.value;
         return this.jquery().datetimepicker('getValue');
     }
@@ -26,10 +26,10 @@ class ControlDateTime extends ControlBase{
 
     init_control(){
 
-        var html = "<div id='"+this.place_id()+"' class='field control ControlDateTime' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value='' /></div>";
+        var html = "<div id='"+this.place_id()+"' class='field control ControlDateTime' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.placeholder+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' value='' /></div>";
         this.jquery_place().replaceWith(html);
         this.set_value(this.properties.value);
-        
+
         this.jquery().datetimepicker({
             format:'Y-m-d H:i',
             formatTime:'H:i',
@@ -37,7 +37,7 @@ class ControlDateTime extends ControlBase{
         });
 
         var self = this;
-        
+
         this.jquery().change(function(){
             self.basewidget.fire_event( self.name, 'update_control_event' );
         });

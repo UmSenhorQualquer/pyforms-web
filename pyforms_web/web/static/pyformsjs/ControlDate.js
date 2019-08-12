@@ -1,6 +1,6 @@
 class ControlDate extends ControlBase{
 
-	get_value(){ 
+	get_value(){
 		return this.jquery().datepicker('getDate');
 	};
 
@@ -33,12 +33,12 @@ class ControlDate extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field control ControlDate' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' /></div>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlDate' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.placeholder+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' /></div>";
 		this.jquery_place().replaceWith(html);
 		this.set_value(this.properties.value);
-		
+
 		this.jquery().datepicker({
-			dateFormat: "yy-mm-dd", 
+			dateFormat: "yy-mm-dd",
 			changeMonth: true,
 			changeYear: true,
 			yearRange: "1900:3000"
@@ -59,4 +59,3 @@ class ControlDate extends ControlBase{
 
 
 }
-	
