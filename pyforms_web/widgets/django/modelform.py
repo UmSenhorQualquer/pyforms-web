@@ -1075,7 +1075,12 @@ class ModelFormWidget(BaseWidget):
             else:
                 default = None
                 if hasattr(field, 'default'): default = field.default
-                pyforms_field = ControlText( label, default=default, required=required )
+                pyforms_field = ControlText(
+                    label,
+                    default=default,
+                    required=required,
+                    helptext=field.help_text,
+                )
 
             # add the field to the application
             if pyforms_field is not None:
