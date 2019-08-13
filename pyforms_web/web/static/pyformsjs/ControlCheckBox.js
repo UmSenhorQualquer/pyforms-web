@@ -25,16 +25,16 @@ class ControlCheckBox extends ControlBase{
 			html += "<div style='height: 3px' ></div>";
 		html += `<div class='ui ${this.properties.checkbox_type} checkbox' title='${this.properties.help}' >`;
 		html += "<input name='"+this.name+"' id='"+this.control_id()+"' type='checkbox' value='true' class='hidden' />";
-		html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
+		html += "<label for='"+this.control_id()+"'>"+this.properties.label+this.get_help_tag(this.properties.help)+"</label>";
 		html += "</div></div>";
 		this.jquery_place().replaceWith(html);
-		
+
 		if( this.properties.value)
 			this.jquery().prop('checked', true);
 		else
 			this.jquery().prop('checked', false);
 
-		
+
 		var self = this;
 		this.jquery().click(function(){ self.basewidget.fire_event( self.name, 'update_control_event' ); });
 
