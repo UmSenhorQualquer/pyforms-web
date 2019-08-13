@@ -105,19 +105,14 @@ class ControlBase{
 
     /**
     Get the help text as a tag.
-    @param {string} msg - popup message.
     @returns {string}.
     */
-    get_help_tag(msg){
-        console.log(msg);
+    get_help_tag(){
+        var msg = this.properties.help;
         if (msg && msg.trim().length) {
-            return `<span
-                data-inverted=""
-                data-tooltip="${msg}"
-                data-position="top center"
-            >
-            <i class="help circle icon"></i>
-            </span>`;
+            // style taken from mandatory asterisk
+            var style = 'style="margin: -0.2em 0em 0em 0.2em;"'
+            return `<i class="help circle icon" title="${msg}" ${style}></i>`;
         } else return "";
 
     }
