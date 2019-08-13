@@ -78,7 +78,7 @@ params = dict([
     ('output_info', 'compiled_code'),
 ])
 
-print("Closure Compiler Service API ...", end=" ")
+print("Closure Compiler Service API ...", end=" ", flush=True)
 
 with urlopen(
     url="https://closure-compiler.appspot.com/compile",
