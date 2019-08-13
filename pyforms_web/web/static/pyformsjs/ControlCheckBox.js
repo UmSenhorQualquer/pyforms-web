@@ -23,10 +23,10 @@ class ControlCheckBox extends ControlBase{
 			html += "<div style='height: 31px' ></div>";
 		else
 			html += "<div style='height: 3px' ></div>";
-		html += `<div class='ui ${this.properties.checkbox_type} checkbox' title='${this.properties.help}' >`;
+		html += `<div class='ui ${this.properties.checkbox_type} checkbox' >`;
 		html += "<input name='"+this.name+"' id='"+this.control_id()+"' type='checkbox' value='true' class='hidden' />";
-		html += "<label for='"+this.control_id()+"'>"+this.properties.label+this.get_help_tag(this.properties.help)+"</label>";
-		html += "</div></div>";
+		html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
+		html += "</div><span>"+this.get_help_tag()+"</span></div>";
 		this.jquery_place().replaceWith(html);
 
 		if( this.properties.value)
