@@ -1008,20 +1008,20 @@ class ModelFormWidget(BaseWidget):
             # if it is a function
             if callable(field) and not isinstance(field, models.Model):
                 label = getattr(field, 'short_description') if hasattr(field, 'short_description') else field_name
-                pyforms_field = ControlText( label, readonly=True, required=required )
+                pyforms_field = ControlText( label, readonly=True, required=required, helptext=field.help_text )
                 self._callable_fields.append( field_name )
 
             # if it is read only
             elif field.name in self.readonly:
 
                 if isinstance(field, models.TextField):
-                    pyforms_field = ControlTextArea( label, readonly=True, required=required )
+                    pyforms_field = ControlTextArea( label, readonly=True, required=required, helptext=field.help_text )
                 else:
-                    pyforms_field = ControlText( label, readonly=True, required=required )
+                    pyforms_field = ControlText( label, readonly=True, required=required, helptext=field.help_text )
 
             # if it is AutoField
             elif isinstance(field, models.AutoField):
-                pyforms_field = ControlText( label, readonly=True, required=required )
+                pyforms_field = ControlText( label, readonly=True, required=required, helptext=field.help_text )
                 self._auto_fields.append( field_name )
 
 
@@ -1032,23 +1032,23 @@ class ModelFormWidget(BaseWidget):
                         (c[1], c[0])
                         for c in field.get_choices(include_blank=field.blank)
                     ],
-                    default=field.default, required=required
+                    default=field.default, required=required, helptext=field.help_text
                 )
-            elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( label, default=field.default, required=required )
+            elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( label, default=field.default, required=required, helptext=field.help_text )
             elif isinstance(field, models.BooleanField):                pyforms_field = ControlCheckBox( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.DateTimeField):               pyforms_field = ControlDateTime( label, default=field.default, required=required )
-            elif isinstance(field, models.DateField):                   pyforms_field = ControlDate( label, default=field.default, required=required )
-            elif isinstance(field, models.DecimalField):                pyforms_field = ControlDecimal( label, default=field.default, required=required )
-            elif isinstance(field, models.FileField):                   pyforms_field = ControlFileUpload( label, default=field.default, required=required )
-            elif isinstance(field, models.FloatField):                  pyforms_field = ControlFloat( label, default=field.default, required=required )
-            elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( label, default=field.default, required=required )
-            elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( label, default=field.default, required=required )
-            elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( label, default=field.default, required=required )
+            elif isinstance(field, models.DateTimeField):               pyforms_field = ControlDateTime( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.DateField):                   pyforms_field = ControlDate( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.DecimalField):                pyforms_field = ControlDecimal( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.FileField):                   pyforms_field = ControlFileUpload( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.FloatField):                  pyforms_field = ControlFloat( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( label, default=field.default, required=required, helptext=field.help_text )
             elif isinstance(field, models.NullBooleanField):
                 pyforms_field = ControlCombo(
                     label,
                     items=[('Unknown', None), ('Yes', True), ('No', False)],
-                    default=field.default, required=required
+                    default=field.default, required=required, helptext=field.help_text
                 )
             elif isinstance(field, models.ForeignKey):
                 query = field.related_model.objects.all()
@@ -1059,7 +1059,7 @@ class ModelFormWidget(BaseWidget):
                     label,
                     queryset=query,
                     queryset_filter=self.autocomplete_search,
-                    default=field.default, required=required
+                    default=field.default, required=required, helptext=field.help_text
                 )
             elif isinstance(field, models.ManyToManyField):
                 query = field.related_model.objects.all()
@@ -1070,7 +1070,7 @@ class ModelFormWidget(BaseWidget):
                     label,
                     queryset=query,
                     multiple=True,
-                    queryset_filter=self.autocomplete_search, required=required
+                    queryset_filter=self.autocomplete_search, required=required, helptext=field.help_text
                 )
             else:
                 default = None

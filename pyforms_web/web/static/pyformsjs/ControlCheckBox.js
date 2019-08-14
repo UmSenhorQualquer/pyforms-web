@@ -26,7 +26,7 @@ class ControlCheckBox extends ControlBase{
 		html += `<div class='ui ${this.properties.checkbox_type} checkbox' >`;
 		html += "<input name='"+this.name+"' id='"+this.control_id()+"' type='checkbox' value='true' class='hidden' />";
 		html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
-		html += "</div><span>"+this.get_help_tag()+"</span></div>";
+		html += "</div></div>";
 		this.jquery_place().replaceWith(html);
 
 		if( this.properties.value)

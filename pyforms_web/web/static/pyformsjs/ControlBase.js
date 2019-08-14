@@ -107,14 +107,15 @@ class ControlBase{
     Get the help text as a tag.
     @returns {string}.
     */
-    get_help_tag(){
+    init_help(){
+
         var msg = this.properties.help;
         if (msg && msg.trim().length) {
             // style taken from mandatory asterisk
             var style = 'style="margin: -0.2em 0em 0em 0.2em;"'
-            return `<i class="help circle icon" title="${msg}" ${style}></i>`;
-        } else return "";
-
+            var html  = `<i class="help circle icon" title="${msg}" ${style}></i>`;
+            $( `#${this.place_id()} label[for='${this.control_id()}']` ).first().append(html);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -371,6 +372,9 @@ class ControlBase{
 
         if(this.properties.field_css)
             this.set_field_css(this.properties.field_css);
+
+        if(this.properties.help)
+            this.init_help();
     }
 
     ////////////////////////////////////////////////////////////////////////////////
