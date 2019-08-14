@@ -16,11 +16,15 @@ class ControlInteger(ControlBase):
     @value.setter
     def value(self, value):
         try:
+
             if value is not None:
-                try:
-                    value = int(value)
-                except:
-                    raise Exception('The value is not a number')
+                if isinstance(value, str) and len(value) == 0:
+                    value = None
+                else:
+                    try:
+                        value = int(value)
+                    except:
+                        raise Exception('The value is not a number')
 
             ControlBase.value.fset(self, value)
             self.error = False

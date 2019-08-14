@@ -3,7 +3,7 @@ class ControlTextArea extends ControlBase {
     init_control() {
         var html = `<div id='${this.place_id()}' class='field control ControlTextArea' >
 		    <label>${this.properties.label}</label>
-		    <textarea placeholder='${this.properties.label}' type='text' 
+		    <textarea placeholder='${this.properties.placeholder}' type='text'
 		    rows='${this.properties.rows}' cols='${this.properties.cols}'
 		    name='${this.name}' id='${this.control_id()}' ></textarea>
 		</div>`;
@@ -24,4 +24,3 @@ class ControlTextArea extends ControlBase {
 
 }
 
-	

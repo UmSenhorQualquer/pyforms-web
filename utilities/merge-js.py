@@ -1,5 +1,6 @@
 import os
-import httplib2, urllib, sys
+from urllib.request import urlopen
+from urllib.parse import urlencode
 
 
 FILES = [
@@ -70,25 +71,29 @@ for filename in FILES:
 
 #content = js_minify(content).replace(';', ';\n')
 
-
-from httplib2 import Http
-from urllib.parse import urlencode
-
 params = dict([
     ('js_code', content),
     ('compilation_level', 'SIMPLE_OPTIMIZATIONS'),
     ('output_format', 'text'),
     ('output_info', 'compiled_code'),
 ])
-headers = { "Content-type": "application/x-www-form-urlencoded" }
 
-h = Http()
-resp, content = h.request(
-    "https://closure-compiler.appspot.com/compile", "POST",
-    urlencode(params),
-    headers=headers
-)
+print("Closure Compiler Service API ...", end=" ", flush=True)
 
+with urlopen(
+    url="https://closure-compiler.appspot.com/compile",
+    data=urlencode(params).encode("utf-8"),
+) as response:
+    print(response.status, response.reason)
 
-with open(exportfile,'wb') as outfile:
-    outfile.write(content)
+    if int(response.getheader('Content-Length', 0)) <= 1:
+        exit("ERROR: Check your js source files for syntax errors.")
+
+    content = response.read()
+
+    print("Writing output to '%s'" % exportfile)
+
+    with open(exportfile,'wb') as outfile:
+        outfile.write(content)
+
+print("Done")

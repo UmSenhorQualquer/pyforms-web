@@ -1,25 +1,25 @@
 class ControlCombo extends ControlBase{
 
-	
+
 
 	init_control(){
 		var html = "<div id='"+this.place_id()+"' class='field control ControlCombo' ><label>"+this.properties.label+"</label>";
 		html += "<div class='ui search dropdown selection' id='"+this.control_id()+"' >"
 		html += '<i class="dropdown icon"></i>';
-		html += '<div class="default text">'+this.properties.label+'</div>';
+		html += '<div class="default text">'+this.properties.placeholder+'</div>';
 		html += '</div>';
-		
+
 		var self = this;
 		this.jquery_place().replaceWith(html);
 		this.jquery().dropdown();
 		this.jquery().dropdown('setup menu', { values: this.properties.items });
 		this.set_value(this.properties.value);
-		
+
 		this.jquery().dropdown('setting', 'onChange', function(){
 			if(self.flag_exec_on_change_event)
 				self.basewidget.fire_event( self.name, 'update_control_event' );
 		});
-		
+
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 		if(this.properties.required) this.set_required();
 	};
@@ -47,14 +47,14 @@ class ControlCombo extends ControlBase{
 
 	deserialize(data){
 		this.properties = $.extend(this.properties, data);
-		
+
 		this.jquery().dropdown('setup menu', { values: this.properties.items });
 		this.set_value(this.properties.value);
 
 		if(this.properties.error)
-			this.jquery_place().addClass('error'); 
+			this.jquery_place().addClass('error');
 		else
-			this.jquery_place().removeClass('error'); 
+			this.jquery_place().removeClass('error');
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
