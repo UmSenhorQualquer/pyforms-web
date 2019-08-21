@@ -22,5 +22,22 @@ class ControlTextArea extends ControlBase {
 
     ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+    Enable the control.
+    */
+    enable(){
+        this.jquery().removeAttr('readonly');
+        this.jquery().removeClass('disabled');
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    /**
+    Disable the control.
+    */
+    disable(){
+        this.jquery().attr('readonly', 'readonly');
+        this.jquery().addClass('disabled');
+    }
 }
 
