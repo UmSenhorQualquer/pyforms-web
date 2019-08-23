@@ -14,8 +14,8 @@ with open('pyforms_web/__init__.py', 'r') as fd:
     license = re.search(
         r'^__license__\s*=\s*[\'"]([^\'"]*)[\'"]', content, re.MULTILINE).group(1)
 
-if not version: raise RuntimeError('Cannot find version information')
-if not license: raise RuntimeError('Cannot find license information')
+if version is None: raise RuntimeError('Cannot find version information')
+if license is None: raise RuntimeError('Cannot find license information')
 
 
 def find_files(package_name,directory, pattern):
