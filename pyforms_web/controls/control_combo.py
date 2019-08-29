@@ -80,7 +80,7 @@ class ControlCombo(ControlBase):
         for i, (key, val) in enumerate(self._items.items()):
 
             if value is None or value=='':
-                v = None
+                v = value
             else:
                 v = self._types[i](value) if self._types[i]!=type(None) else value
 
