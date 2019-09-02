@@ -302,6 +302,9 @@ class BaseWidget(object):
         """
         if formset is None:
             return ''
+        elif 'notifications-area' == formset:
+            return "<div class='notifications-area field'></div>"
+
         elif '=' in formset:
             index = list( formset ).index('=')
             return "<div id='{splitter_id}' class='horizontalSplitter' ><div>{top}</div><div>{bottom}</div></div>".format(
