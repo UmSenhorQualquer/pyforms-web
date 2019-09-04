@@ -175,7 +175,12 @@ class BaseWidget{
                     for(var i=0; i<msg.messages.length; i++) html += '<li>'+msg.messages[i]+'</li>';
                     html    += '</ul>';
                 };
-                $(html).prependTo(this.jquery()).find('.close').on('click', function(){
+
+                var destination = this.jquery().find('.notifications-area');
+                if( destination.length==0 )
+                    destination = this.jquery()
+
+                $(html).prependTo(destination).find('.close').on('click', function(){
                     $(this).closest('.message').transition({animation:'fade',onComplete:function(){$(this).remove();} });
                 });
             };

@@ -49,6 +49,7 @@ FILES = [
     os.path.join("static","pyformsjs","ControlSimpleLabel.js"),
     os.path.join("static","pyformsjs","ControlTimeout.js"),
     os.path.join("static","pyformsjs","ControlEmptyWidget.js"),
+    os.path.join("static","pyformsjs","ControlSearch.js"),
     os.path.join("static","pyformsjs","ControlMenu.js"),
     os.path.join("static","pyformsjs","ControlTree.js"),
     os.path.join("static","pyformsjs","ControlOrganogram.js"),

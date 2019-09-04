@@ -42,7 +42,8 @@ On this page it is shown examples of Widgets formsets configurations.
                 '_list',
                 '_label'
             ]
-        }
+        },
+        'notifications-area'
    ]
 
 Configuration options
@@ -130,6 +131,12 @@ Use the prefixes [h1:,h2:,h3:,h4:,h5:,h1-right:,h2-right:,h3-right:,h4-right:,h5
        'h3:PERSONAL INFORMATION',
        ...
    ]
+
+
+Notifications area
+**********************
+By default the application's messages are shown on the top of each application, but it is possible to define
+a new position to these messages by including the code 'notifications-area' on the formset.
 
 
 2 segments side by side

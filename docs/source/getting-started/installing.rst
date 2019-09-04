@@ -105,14 +105,38 @@ django-allauth is a reusable Django app that allows for both local and social au
 To make it work with Orquestra follow the instructions described `@django-allauth documentation 
 <http://django-allauth.readthedocs.io/en/latest/installation.html>`_.
 
+Typical django-allauth configuration
+______________________________________
+
+.. code:: shell
+
+    pip install django-allauth
+
+
 Add the next configuration to your Django project setttings.
 
 .. code:: python
 
-   ...
+    ...
 
-   LOGIN_URL = '/accounts/login/'
-   LOGIN_REDIRECT_URL = '/'
+    INSTALLED_APPS = [
+        ...
+        'allauth',
+        'allauth.account',
+        'allauth.socialaccount',
+        'allauth.socialaccount.providers.google',
+        'allauth.socialaccount.providers.facebook',
+        'django.contrib.sites',
+        ...
+    ]
+
+    AUTHENTICATION_BACKENDS = [
+        'django.contrib.auth.backends.ModelBackend',
+        'allauth.account.auth_backends.AuthenticationBackend',
+    ]
+
+    LOGIN_URL = '/accounts/login/'
+    LOGIN_REDIRECT_URL = '/'
 
 Add the next configuration to the **local_settings.py** file to configure **orquestra** to require always authentication before accessing the applications.
 

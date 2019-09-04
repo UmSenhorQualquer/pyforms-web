@@ -39,6 +39,9 @@ class BaseWidget(object):
     #: str: Css classes to add to the form.
     CSS = ''
 
+    #: str: Static files to include in the page
+    STATIC_FILES = []
+
     def __init__(self, *args, **kwargs):
         """
         :param str title: Title of the app. By default will assume the value in the class variable TITLE.
@@ -299,6 +302,9 @@ class BaseWidget(object):
         """
         if formset is None:
             return ''
+        elif 'notifications-area' == formset:
+            return "<div class='notifications-area field'></div>"
+
         elif '=' in formset:
             index = list( formset ).index('=')
             return "<div id='{splitter_id}' class='horizontalSplitter' ><div>{top}</div><div>{bottom}</div></div>".format(

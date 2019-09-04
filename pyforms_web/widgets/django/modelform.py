@@ -26,7 +26,8 @@ from pyforms_web.utils import get_lookup_verbose_name
 import datetime
 from django.utils import timezone
 
-
+import string
+import random
 
 class ModelFormWidget(BaseWidget):
     """
@@ -734,6 +735,14 @@ class ModelFormWidget(BaseWidget):
 
                     if os.path.exists(from_path):
                         to_path = os.path.join(settings.MEDIA_ROOT, dirpath, filename)
+
+
+                        while os.path.exists(to_path):
+                            name, ext = os.path.splitext(filename)
+                            sufix = ''.join([random.choice(string.ascii_uppercase + string.digits) for _ in range(3)])
+                            filename = name+'_'+sufix+ext
+                            to_path = os.path.join(settings.MEDIA_ROOT, dirpath, filename)
+
                         os.rename(from_path, to_path)
 
                         url = '/'.join([dirpath]+[filename])
@@ -1000,7 +1009,7 @@ class ModelFormWidget(BaseWidget):
                 # follow relationships,e.g. ManyToManyRel
                 field = field.field
 
-            required = not field.blank and not field.has_default()
+            required = (not field.blank and not field.has_default()) if not callable(field) else False
 
             if not (callable(field) and not isinstance(field, models.Model)):
                 label = get_lookup_verbose_name(self.model, field_name)
@@ -1008,7 +1017,7 @@ class ModelFormWidget(BaseWidget):
             # if it is a function
             if callable(field) and not isinstance(field, models.Model):
                 label = getattr(field, 'short_description') if hasattr(field, 'short_description') else field_name
-                pyforms_field = ControlText( label, readonly=True, required=required, helptext=field.help_text )
+                pyforms_field = ControlText( label, readonly=True)
                 self._callable_fields.append( field_name )
 
             # if it is read only
