@@ -191,6 +191,16 @@ class ModelFormWidget(BaseWidget):
     #################################################################################
 
     @property
+    def parent_object(self):
+        if self.parent_pk and self.parent_model:
+            try:
+                return self.parent_model.objects.get(pk=self.parent_pk)
+            except self.parent_object.DoesNotExist:
+                return None
+        else:
+            return None
+
+    @property
     def model_object(self):
         """
         django.db.models.Model object: Return the current object in edition.
