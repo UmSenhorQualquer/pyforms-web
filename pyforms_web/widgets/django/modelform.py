@@ -402,7 +402,10 @@ class ModelFormWidget(BaseWidget):
                         pyforms_field.value = field.default()
 
                     elif isinstance(field, models.DecimalField) and type(field).__name__ == 'MoneyField':
-                        pyforms_field.value = field.default.amount
+                        if field.default:
+                            pyforms_field.value = field.default.amount
+                        else:
+                            pyforms_field.value = field.default
                     else:
                         pyforms_field.value = field.default
 
@@ -541,7 +544,7 @@ class ModelFormWidget(BaseWidget):
         for inline in self.inlines:
             pyforms_field = getattr(self, inline.__name__)
             pyforms_field._name = inline.__name__
-            app = inline(parent_model=self.model, parent_pk=self.object_pk)
+            app = inline(parent_model=self.model, parent_pk=self.object_pk, parent_win=self)
             self.inlines_apps.append(app)
             pyforms_field.value = app
             pyforms_field.show()
@@ -951,6 +954,7 @@ class ModelFormWidget(BaseWidget):
         else:
             fields = []
             for field in self.model._meta.get_fields():
+                print(field)
 
                 if field.one_to_many: continue
                 if field.one_to_one and field.name.endswith('_ptr'): continue

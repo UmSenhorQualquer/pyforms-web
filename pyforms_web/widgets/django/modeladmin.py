@@ -73,7 +73,7 @@ class ModelAdminWidget(BaseWidget):
         if self.parent_model and self.parent_pk:
             self.set_parent(self.parent_model, self.parent_pk)
 
-        BaseWidget.__init__(self, title)
+        BaseWidget.__init__(self, title, *args, **kwargs)
 
         user = PyFormsMiddleware.user()
 
