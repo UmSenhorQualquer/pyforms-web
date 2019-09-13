@@ -108,7 +108,7 @@ class ModelFormWidget(BaseWidget):
         title = kwargs.get('title') if kwargs.get('title', None) else self.TITLE
 
         self.object_pk = kwargs.get('pk', None)
-        self.model     = kwargs.get('model', self.MODEL)
+        self.model     = self.MODEL if self.MODEL else kwargs.get('model')
 
         BaseWidget.__init__(self, *args, **kwargs )
 
@@ -954,8 +954,6 @@ class ModelFormWidget(BaseWidget):
         else:
             fields = []
             for field in self.model._meta.get_fields():
-                print(field)
-
                 if field.one_to_many: continue
                 if field.one_to_one and field.name.endswith('_ptr'): continue
 
