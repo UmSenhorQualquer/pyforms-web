@@ -105,12 +105,12 @@ class ModelFormWidget(BaseWidget):
         :param django.db.models.Model parent_model: Parent model class
         :param int pk: Model register to manage
         """
-        title = kwargs.get('title') if kwargs.get('title', None) else self.TITLE
+        title = kwargs.get('title') if 'title' in kwargs else self.TITLE
 
         self.object_pk = kwargs.get('pk', None)
         self.model     = self.MODEL if self.MODEL else kwargs.get('model')
 
-        BaseWidget.__init__(self, *args, **kwargs )
+        BaseWidget.__init__(self, title, *args, **kwargs )
 
         self.update_permissions_variables()
 

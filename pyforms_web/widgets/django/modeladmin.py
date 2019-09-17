@@ -60,9 +60,9 @@ class ModelAdminWidget(BaseWidget):
         :param int parent_pk: (optional) Used to generate the inline interface. Primary key of the parent model
         :param Model parent_model: (optional) Used to generate the inline interface. Parent model
         """
-        title                = kwargs.get('title') if kwargs.get('title', None) else self.TITLE
-        self.model           = kwargs.get('model') if kwargs.get('model', None) else self.MODEL
-        self.editmodel_class = kwargs.get('editform_class') if kwargs.get('editform_class', None) else self.EDITFORM_CLASS
+        title                = kwargs.get('title') if 'title' in kwargs else self.TITLE
+        self.model           = kwargs.get('model') if 'model' in kwargs else self.MODEL
+        self.editmodel_class = kwargs.get('editform_class') if 'editform_class' in kwargs else self.EDITFORM_CLASS
         self.addmodel_class  = kwargs.get('addform_class', self.ADDFORM_CLASS if self.ADDFORM_CLASS else self.editmodel_class)
 
         # Set the class to behave as inline ModelAdmin ########
