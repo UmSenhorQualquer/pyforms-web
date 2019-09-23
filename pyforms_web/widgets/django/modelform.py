@@ -1029,6 +1029,7 @@ class ModelFormWidget(BaseWidget):
                         (c[1], c[0])
                         for c in field.get_choices(include_blank=field.blank)
                     ],
+                    set_blank_to_null = field.null,
                     default=field.default, required=required
                 )
             elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( label, default=field.default, required=required )
