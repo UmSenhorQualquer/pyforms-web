@@ -2,7 +2,9 @@ class ControlFloat extends ControlBase{
 
 	
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field control ControlFloat' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' /></div>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlFloat' >" +
+			"<label for='"+this.control_id()+"'>"+this.properties.label+"</label>" +
+			"<input placeholder='"+this.properties.label+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' /></div>";
 		this.jquery_place().replaceWith(html);
 
 		this.set_value(this.properties.value);

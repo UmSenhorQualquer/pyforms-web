@@ -8,7 +8,7 @@ class ControlMenu extends ControlBase{
 
 	init_control(){
 		var html = '<div id="'+this.place_id()+'" class="field control ControlMenu">';
-		if(this.properties.label) html += '<label>'+this.properties.label+'</label>';
+		if(this.properties.label) html += '<label for=\'"+this.control_id()+"\'>'+this.properties.label+'</label>';
 		html += '<div id="'+this.control_id()+'" class="ui vertical accordion menu">';
 
 		menu = this.properties.value;

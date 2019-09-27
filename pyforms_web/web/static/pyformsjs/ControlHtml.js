@@ -4,7 +4,7 @@ class ControlHtml extends ControlBase{
 
 	init_control(){
 		var html = '<div id="'+this.place_id()+'" class="field control ControlHtml">'
-		if(this.properties.label_visible) html += '<label>'+this.properties.label+'</label>';
+		if(this.properties.label_visible) html += '<label for=\'"+this.control_id()+"\'>'+this.properties.label+'</label>';
 		html += '<div id="'+this.control_id()+'"></div>';
 		html += "</div>";
 

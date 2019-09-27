@@ -13,6 +13,67 @@ from pyforms_web.controls.control_base import ControlBase
 from pyforms_web.utils import get_lookup_verbose_name, get_lookup_value, get_lookup_field
 
 
+def format_list_column(col_value, raw=False):
+    if col_value is None:
+        return ''
+
+    if type(col_value).__name__ == "ManyRelatedManager":
+        # format a ManyToManyField for LIST_DISPLAY
+        # TODO should we limit when there are a lot of objects?
+        # or should the user remove that column from LIST_DISPLAY?
+        objects = [str(obj) for obj in col_value.all()]
+        if raw:
+            return ", ".join(objects)
+        else:
+            return "<br>".join(objects)
+
+    if callable(col_value):
+        col_value = col_value()
+
+    if isinstance(col_value, datetime.datetime):
+        if not col_value: return ''
+        col_value = timezone.localtime(col_value)
+        return col_value.strftime('%Y-%m-%d %H:%M')
+    elif isinstance(col_value, datetime.date):
+        if not col_value: return ''
+        return col_value.strftime('%Y-%m-%d')
+    elif isinstance(col_value, bool):
+        if raw:
+            return str(col_value)
+        else:
+            return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
+    elif isinstance(col_value, int):
+        return locale.format("%d", col_value, grouping=True)
+    elif isinstance(col_value, float):
+        return locale.format("%f", col_value, grouping=True)
+    elif isinstance(col_value, Decimal):
+        return '{0:n}'.format(col_value)
+    elif type(col_value).__name__ == 'Money':
+        # support django-money MoneyField
+        if raw:
+            return str(col_value)
+        else:
+            return '<div style="text-align: right; margin-right: .5rem;">%s</div>' % col_value
+    elif isinstance(col_value, FieldFile):
+        if raw:
+            return str(col_value.name)
+        try:
+            return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
+        except ValueError:
+            return ''
+    elif isinstance(col_value, models.Model):
+        return col_value.__str__()
+    elif callable(col_value):
+        v = col_value()
+
+        if hasattr(col_value, 'boolean') and getattr(col_value, 'boolean'):
+            if not raw:
+                v = '<i class="check circle green icon"></i>' if v else '<i class="minus circle red icon"></i>'
+
+        return '' if v is None else str(v)
+    else:
+        return col_value
+
 class ControlQueryList(ControlBase):
 
     def __init__(self, *args, **kwargs):
@@ -103,7 +164,7 @@ class ControlQueryList(ControlBase):
 
         for o in queryset:
             row = [
-                strip_tags(self.format_list_column(get_lookup_value(o, col), raw=True))
+                strip_tags(format_list_column(get_lookup_value(o, col), raw=True))
                 for col in self.export_csv_columns
             ] 
             writer.writerow(row)
@@ -296,67 +357,7 @@ class ControlQueryList(ControlBase):
     #####################################################################
     #####################################################################
 
-    def format_list_column(self, col_value, raw=False): 
 
-        if col_value is None:
-            return ''
-
-        if type(col_value).__name__ == "ManyRelatedManager":
-            # format a ManyToManyField for LIST_DISPLAY
-            # TODO should we limit when there are a lot of objects?
-            # or should the user remove that column from LIST_DISPLAY?
-            objects = [str(obj) for obj in col_value.all()]
-            if raw:
-                return ", ".join(objects)
-            else:
-                return "<br>".join(objects)
-
-        if callable(col_value):
-            col_value = col_value()
-
-        if isinstance(col_value, datetime.datetime):
-            if not col_value: return ''
-            col_value = timezone.localtime(col_value)
-            return col_value.strftime('%Y-%m-%d %H:%M')
-        elif isinstance(col_value, datetime.date):
-            if not col_value: return ''
-            return col_value.strftime('%Y-%m-%d')
-        elif isinstance(col_value, bool):
-            if raw:
-                return str(col_value)
-            else:
-                return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
-        elif isinstance(col_value, int):
-            return locale.format("%d", col_value, grouping=True)
-        elif isinstance(col_value, float):
-            return locale.format("%f", col_value, grouping=True)
-        elif isinstance(col_value, Decimal):
-            return '{0:n}'.format(col_value)
-        elif type(col_value).__name__ == 'Money':
-            # support django-money MoneyField
-            if raw:
-                return str(col_value)
-            else:
-                return '<div style="text-align: right; margin-right: .5rem;">%s</div>' % col_value
-        elif isinstance(col_value, FieldFile):
-            if raw:
-                return str(col_value.name)
-            try:
-                return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
-            except ValueError:
-                return ''
-        elif isinstance(col_value, models.Model):
-            return col_value.__str__()
-        elif callable(col_value):
-            v = col_value()
-
-            if hasattr(col_value, 'boolean') and getattr(col_value, 'boolean'):
-                if not raw:
-                    v = '<i class="check circle green icon"></i>' if v else '<i class="minus circle red icon"></i>'
-
-            return '' if v is None else str(v)
-        else:
-            return col_value
 
     def format_filter_column(self, col_value):
         
@@ -388,7 +389,7 @@ class ControlQueryList(ControlBase):
 
             rows = []
             for o in queryset[first_row:last_row]:
-                row = [o.pk] + [self.format_list_column(get_lookup_value(o, col)) for col in list_display] 
+                row = [o.pk] + [format_list_column(get_lookup_value(o, col)) for col in list_display]
                 rows.append(row)
             
             return rows
