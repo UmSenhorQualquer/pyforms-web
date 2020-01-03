@@ -1,19 +1,12 @@
 from django.http                    import HttpResponse
-from django.shortcuts               import render_to_response
-from django.template                import RequestContext
 from django.views.decorators.cache  import never_cache
 from django.views.decorators.csrf   import csrf_exempt
-from django.middleware.csrf         import get_token
 from pyforms_web.web                import ApplicationsLoader
-from confapp                        import conf
-import json, simplejson, os, re
+import simplejson, os
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
-from pyforms_web.widgets.django import ModelFormWidget
-
 from django.core.exceptions import PermissionDenied
-from django.utils.text import slugify
 
 @csrf_exempt
 def upload_files(request):
