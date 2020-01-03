@@ -22,8 +22,8 @@ class ControlList(ControlBase):
         :param list(str) columns_size: List of css with the size value of each column. Default = None.
         :param list(str) columns_align: List of css alignment values for each column. Default = [].
 
-        :param func row_double_click_event: Reference to a function called when the row is double clicked.
-        :param func item_selection_changed_event: Reference to a function called when the selection of an item change.
+        :param function row_double_click_event: Reference to a function called when the row is double clicked.
+        :param function item_selection_changed_event: Reference to a function called when the selection of an item change.
 
         """
         self._titles            = kwargs.get('horizontal_headers',[])
