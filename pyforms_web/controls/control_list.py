@@ -1,8 +1,31 @@
 from pyforms_web.controls.control_base import ControlBase
 import simplejson
+
 class ControlList(ControlBase):
 
     def __init__(self, *args, **kwargs):
+        """
+        :param str label: Control label.
+        :param str default: Set the value. Default = None.
+        :param bool visible: Set the control visible or hidden. Default = True.
+        :param bool error: Mark the control as having and error. Default = False.
+        :param str css: Extra css classes to add to the control.
+        :param str field_css: Extra css classes to add to the field dive that encapsulates the control.
+        :param str style: Extra style to add to the control.
+        :param str field_style: Extra style to add to the field div that encapsulates the control.
+        :param bool enabled: Set the control enabled or disabled. Default = True.
+        :param bool readonly: Set the control as read only. Default = True.
+
+        :param list(str) horizontal_headers: List of headers.
+        :param bool select_entire_row: Flag to select the entire row or individual cells. Default = False.
+        :param int selected_row_index: Default selected row. Default = -1.
+        :param list(str) columns_size: List of css with the size value of each column. Default = None.
+        :param list(str) columns_align: List of css alignment values for each column. Default = [].
+
+        :param func row_double_click_event: Reference to a function called when the row is double clicked.
+        :param func item_selection_changed_event: Reference to a function called when the selection of an item change.
+
+        """
         self._titles            = kwargs.get('horizontal_headers',[])
         self._select_entire_row = kwargs.get('select_entire_row',True)
         self._read_only         = kwargs.get('readonly',True)
