@@ -33,7 +33,6 @@ Edit the django project **settings.py** file to include the next configurations.
         'orquestra',
         'pyforms_web.web',
         'jfu',
-        'sorl.thumbnail',
         ...
     ]
 
@@ -125,7 +124,6 @@ Add the next configuration to your Django project setttings.
         'allauth.account',
         'allauth.socialaccount',
         'allauth.socialaccount.providers.google',
-        'allauth.socialaccount.providers.facebook',
         'django.contrib.sites',
         ...
     ]
@@ -138,6 +136,17 @@ Add the next configuration to your Django project setttings.
     LOGIN_URL = '/accounts/login/'
     LOGIN_REDIRECT_URL = '/'
 
+Edit the urls.py file to add the next code.
+
+.. code:: python
+
+    from django.conf.urls import url
+
+    urlpatterns = [
+        url(r'^accounts/', include('allauth.urls')),
+        ...
+    ]
+
 Add the next configuration to the **local_settings.py** file to configure **orquestra** to require always authentication before accessing the applications.
 
 .. code:: python
@@ -147,3 +156,9 @@ Add the next configuration to the **local_settings.py** file to configure **orqu
 .. note::
    
    Do not forget to apply the db migrations to your project.
+
+Initialize allauth configuration by adding a new register to the sites.Site model, using the next command.
+
+.. code:: shell
+
+   python manage.py loaddata conf-allauth-site
