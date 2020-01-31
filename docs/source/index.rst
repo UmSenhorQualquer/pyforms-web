@@ -83,6 +83,8 @@ The next code produces the next web application.
    getting-started/first-app
    getting-started/db-apps
    getting-started/formset
+   getting-started/apps-inheritance
+   getting-started/advance-db
 
 .. toctree::
    :maxdepth: 4
