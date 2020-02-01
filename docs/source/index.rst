@@ -83,6 +83,7 @@ The next code produces the next web application.
    getting-started/first-app
    getting-started/db-apps
    getting-started/formset
+   getting-started/apps-permissions
    getting-started/apps-inheritance
    getting-started/advance-db
 
@@ -90,8 +91,8 @@ The next code produces the next web application.
    :maxdepth: 4
    :caption: Orquestra
 
-   orquestra
-
+   orquestra/index
+   
 .. toctree::
    :maxdepth: 4
    :caption: API

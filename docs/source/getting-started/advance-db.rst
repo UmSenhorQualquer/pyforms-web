@@ -1,6 +1,6 @@
-********************************
-Play with django model and apps
-********************************
+******************************************
+From SQL to Django models' apps
+******************************************
 
 This example demonstrates how to start from a raw database and end up with the forms to manage it in few steps.
 

@@ -2,6 +2,8 @@
 Orquestra
 **********
 
+.. image:: /_static/imgs/orquestra.jpg
+
 Orquestra is an application layout responsible for rendering applications' layout.
 
 .. note::
