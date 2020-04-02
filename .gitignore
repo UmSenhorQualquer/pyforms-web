@@ -12,3 +12,5 @@ PyForms_Web\.egg-info/
 build/
 
 dist/
+
+tutorials/tutorial_inheritance/apps-cache/

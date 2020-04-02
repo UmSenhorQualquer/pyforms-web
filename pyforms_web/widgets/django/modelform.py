@@ -808,9 +808,10 @@ class ModelFormWidget(BaseWidget):
         Returns:
             :django.db.models.Mode: Object passed as parameter
         """
+        readonly = self.get_readonly(self.readonly)
         for field in self.model._meta.get_fields():
 
-            if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
+            if isinstance(field, models.ManyToManyField) and hasattr(self, field.name) and field.name not in readonly:
                 values          = getattr(self, field.name).value
                 field_instance  = getattr(obj, field.name)
 
