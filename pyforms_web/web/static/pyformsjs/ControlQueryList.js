@@ -159,17 +159,22 @@ class ControlQueryList extends ControlBase{
                 case "date-range":
                     var begin = $(`#${this.control_id()}-filter-${filter.column} .begin`).val();
                     var end   = $(`#${this.control_id()}-filter-${filter.column} .end`).val();
-                    var filter_value = begin?`${filter.column}__gte=${begin}`:'';
-                    filter_value += (begin && end)?`&`:'';
 
-                    if( end ){
-                        end = new Date(end);
-                        end.setDate( end.getDate()+1 );
+                    if(begin && end){
+                        filter_value = `${filter.column}__range=${begin},${end}`;
                     }else{
-                        end = undefined;
-                    }
+                        var filter_value = begin?`${filter.column}__gte=${begin}`:'';
+                        filter_value += (begin && end)?`&`:'';
 
-                    filter_value += end?`${filter.column}__lte=${this.formatdate(end)}`:'';
+                        if( end ){
+                            end = new Date(end);
+                            end.setDate( end.getDate()+1 );
+                        }else{
+                            end = undefined;
+                        }
+
+                        filter_value += end?`${filter.column}__lte=${this.formatdate(end)}`:'';
+                    }
                     break;
             }
 
@@ -179,6 +184,7 @@ class ControlQueryList extends ControlBase{
                     var cols = fs[j].split('=', 2);
                     var key  = cols[0];
                     var filter_value = cols[1];
+                    if( key.endsWith('__range') ) filter_value = filter_value.split(',', 2);
                     if( filter_value=='true')  filter_value = true;
                     if( filter_value=='null')  filter_value = null;
                     if( filter_value=='false') filter_value = false;

@@ -3,7 +3,7 @@ from confapp import conf
 from pyforms.controls import ControlDecimal
 from pyforms.controls import ControlButton
 from pyforms.controls import ControlList
-import random
+import random, time
 from decimal import Decimal
 
 class AppOne(BaseWidget):
@@ -35,3 +35,4 @@ class AppOne(BaseWidget):
 
     def btn_evt(self):
         self._table.value = self.generate()
+        time.sleep(3)

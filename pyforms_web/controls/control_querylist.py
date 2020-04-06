@@ -224,6 +224,8 @@ class ControlQueryList(ControlBase):
             qs          = model.objects.all()
             qs.query    = self._query
 
+
+
             # apply filters
             for f in self.filter_by: 
                 qs = qs.filter(**f)
@@ -257,9 +259,10 @@ class ControlQueryList(ControlBase):
 
     @value.setter
     def value(self, value):
-        
-        if self._query!=value.query: 
+
+        if str(self._query) != str(value.query):
             if value is not None:
+
                 if len(value.query.order_by)==0 and value.model._meta.ordering:
                     value = value.order_by(*value.model._meta.ordering)
 
@@ -274,10 +277,12 @@ class ControlQueryList(ControlBase):
         
 
     def serialize(self, init_form=False):
-        data     = ControlBase.serialize(self)
+        data     = super().serialize()
         queryset = self.value
     
         rows = []
+
+
         
         if self._update_list and queryset:
             row_start = self.rows_per_page*(self._current_page-1)

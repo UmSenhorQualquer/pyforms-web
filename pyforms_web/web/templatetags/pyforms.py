@@ -116,5 +116,23 @@ def pyforms_dependencies():
             "/static/codemirror/javascript.js",
             "/static/codemirror/htmlmixed.js",
             "/static/codemirror/autorefresh.js",
+            "https://cdn.jsdelivr.net/npm/@editorjs/header@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/list@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/quote@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/code@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/embed@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/table@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/link@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/warning@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/marker@latest",
+            "https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest",
+            "/static/jquery.selection.js",
         ] + (JSFILES_DEBUG if conf.PYFORMS_DEBUG else JSFILES_PROD)
     }
+
+
+
+
