@@ -14,7 +14,7 @@ class ControlDir extends ControlBase{
 		function reload_folder(){
 			var folder = get_current_folder();
 			$( "#dialog-content-"+self.control_id()).load(
-				'/pyforms/filesbrowser/?filter-folders=true&p='+folder+'&control-id='+self.control_id(),
+				PYFORMS_SERVER_URL+'/pyforms/filesbrowser/?filter-folders=true&p='+folder+'&control-id='+self.control_id(),
 				function(){
 					$( "#dialog"+self.control_id() ).modal('show');
 				}

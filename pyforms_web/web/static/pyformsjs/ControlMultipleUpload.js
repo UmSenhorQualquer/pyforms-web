@@ -9,7 +9,7 @@ class ControlMultipleUpload extends ControlBase{
 		var self = this;
 		this.jquery().filer({
 			uploadFile:{
-				url:'/pyforms/upload-files/',
+				url:PYFORMS_SERVER_URL+'/pyforms/upload-files/',
 				data:{app_id:this.app_id(), control_id:this.name},
 				type: 'POST',
 				enctype: 'multipart/form-data', //Request enctype {String}

@@ -29,7 +29,7 @@ class ControlFile extends ControlBase{
 		function reload_folder(){
 			var folder = get_current_folder();
 			$( "#dialog-content-"+self.control_id()).load(
-				'/pyforms/filesbrowser/?p='+folder+'&control-id='+self.control_id(),
+				PYFORMS_SERVER_URL+'/pyforms/filesbrowser/?p='+folder+'&control-id='+self.control_id(),
 				function(){
 					$( "#dialog"+self.control_id() ).modal('show');
 				}

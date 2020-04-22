@@ -1,5 +1,5 @@
 /**
-Function called to show a message. This function can be overriden.
+Function called to show a message. This function can be overwritten.
 @param {string} msg - Message.
 */
 function error_msg(msg){
@@ -27,7 +27,7 @@ function run_application(application, constructor_params, method_params){
 		cache: false,
 		dataType: "json",
 		data: data2send,
-		url: '/pyforms/app/register/'+application+'/?nocache='+$.now(),
+		url: PYFORMS_SERVER_URL+'/pyforms/app/register/'+application+'/?nocache='+$.now(),
 		contentType: "application/json; charset=utf-8",
 		success: function(res){
 			if( res.result=='error' )
