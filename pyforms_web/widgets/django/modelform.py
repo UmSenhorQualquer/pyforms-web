@@ -718,7 +718,7 @@ class ModelFormWidget(BaseWidget):
                 continue
 
             # if FileField
-            elif isinstance(field, models.FileField):
+            elif isinstance(field, (models.FileField, models.ImageField) ):
                 getattr(self, field.name).error = False
 
                 # get the temporary path of the file
@@ -748,7 +748,6 @@ class ModelFormWidget(BaseWidget):
 
                     if os.path.exists(from_path):
                         to_path = os.path.join(settings.MEDIA_ROOT, dirpath, filename)
-
 
                         while os.path.exists(to_path):
                             name, ext = os.path.splitext(filename)

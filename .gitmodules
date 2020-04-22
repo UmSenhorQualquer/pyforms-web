@@ -1,3 +1,6 @@
 [submodule "orquestra"]
 	path = orquestra
 	url = https://github.com/UmSenhorQualquer/orquestra.git
+[submodule "layouts-libs/orquestra-simple"]
+	path = layouts-libs/orquestra-simple
+	url = https://github.com/UmSenhorQualquer/orquestra-simple.git
