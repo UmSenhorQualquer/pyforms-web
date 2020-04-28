@@ -7,6 +7,7 @@ class ControlLineChart extends ControlBase{
 		this.update_it = false;
 
 		var html =  "<div id='"+this.place_id()+"' class='field control ControlLineChart' >";
+		if(this.properties.label_visible) html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
 		html += 	"<div id='chart-container-"+this.control_id()+"' title='"+this.properties.help+"'   >";
 		html += 	"<div id='"+this.control_id()+"' ></div>";
 		html += 	"</div>";
