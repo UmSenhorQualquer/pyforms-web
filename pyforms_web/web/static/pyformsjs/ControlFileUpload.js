@@ -2,8 +2,8 @@ class ControlFileUpload extends ControlBase{
 
 	init_control(){
 		var html = "<div class='field control ControlFileUpload' id='"+this.place_id()+"' >"
-		if(this.properties.label_visible) html += "<label>"+this.properties.label+"</label>";
-		html += '<input type="file" name="'+this.name+'" id="'+this.control_id()+'" placeholder="'+this.properties.label+'" >';
+		if(this.properties.label_visible) html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
+		html += '<input type="file" name="'+this.name+'" id="'+this.control_id()+'" placeholder="'+this.properties.placeholder+'" >';
 		html += "</div>";
 		
 		this.jquery_place().replaceWith(html);

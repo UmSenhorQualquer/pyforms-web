@@ -599,8 +599,14 @@ class ModelFormWidget(BaseWidget):
             if self.delete_event():
                 self.success('The object was deleted with success!','Success!')
                 popup.close()
-                if self.CLOSE_ON_REMOVE: self.close()
-            else:
+                if self.CLOSE_ON_REMOVE:
+                    self.close()
+                # update the parent list
+                if self.POPULATE_PARENT and self.parent:
+                    self.parent.populate_list()
+                    if not self.CLOSE_ON_REMOVE:
+                        self.parent.hide_form()
+        else:
                 popup.warning('The object was not deleted!','Warning!')
 
 
@@ -743,8 +749,9 @@ class ModelFormWidget(BaseWidget):
                     except os.error as e:
                         pass
 
-                    paths     = [p for p in value.split(os.path.sep) if len(p)>0][1:]
+                    paths = [p for p in value.split(os.path.sep) if len(p)>0][1:]
                     from_path = os.path.join(settings.MEDIA_ROOT,*paths)
+
 
                     if os.path.exists(from_path):
                         to_path = os.path.join(settings.MEDIA_ROOT, dirpath, filename)
@@ -760,6 +767,7 @@ class ModelFormWidget(BaseWidget):
                         url = '/'.join([dirpath]+[filename])
                         if url[0]=='/': url = url[1:]
                         setattr(obj, field.name, url)
+                        getattr(self, field.name).value = to_path[len(settings.BASE_DIR):]
                 elif field.null:
                     setattr(obj, field.name, None)
                 else:
@@ -851,6 +859,7 @@ class ModelFormWidget(BaseWidget):
         validate the obj fields, and call the save_event function.
 
         :param django.db.models.Model obj: Model object used for the save.
+        :param Boolean new_object: Flag indicating if it is an Add or Update.
 
         Returns:
             :boolean: It returns True or False if the save was successfully.
@@ -1204,12 +1213,6 @@ class ModelFormWidget(BaseWidget):
                 handler=self.popup_remove_handler
             )
             popup.button_0.css = 'basic red'
-
-            # update the parent list
-            if self.POPULATE_PARENT and self.parent:
-                self.parent.populate_list()
-
-
 
 
 
