@@ -20,8 +20,6 @@ class ControlLabel extends ControlBase{
         html += '</div>';
         this.jquery_place().replaceWith(html);
 		if(this.properties.required) this.set_required();
-
-       
     };
 
     ////////////////////////////////////////////////////////////////////////////////

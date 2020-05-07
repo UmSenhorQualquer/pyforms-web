@@ -112,8 +112,7 @@ class ControlBase{
         var msg = this.properties.help;
         if (msg && msg.trim().length) {
             // style taken from mandatory asterisk
-            var style = 'style="margin: -0.2em 0em 0em 0.2em;"'
-            var html  = `<i class="help circle icon" title="${msg}" ${style}></i>`;
+            var html  = `<i class="help circle icon" title="${msg}" style="margin: -0.2em 0em 0em 0.2em;"></i>`;
             $( `#${this.place_id()} label[for='${this.control_id()}']` ).first().append(html);
         }
     }

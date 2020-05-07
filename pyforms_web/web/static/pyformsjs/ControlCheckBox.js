@@ -5,7 +5,6 @@ class ControlCheckBox extends ControlBase{
 			this.jquery().prop('checked', true);
 		else
 			this.jquery().prop('checked', false);
-
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +24,7 @@ class ControlCheckBox extends ControlBase{
 			html += "<div style='height: 3px' ></div>";
 		html += `<div class='ui ${this.properties.checkbox_type} checkbox' >`;
 		html += "<input name='"+this.name+"' id='"+this.control_id()+"' type='checkbox' value='true' class='hidden' />";
-		html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
+		html += `<label title='${this.properties.help}' for='${this.control_id()}'>${this.properties.label}</label>`;
 		html += "</div></div>";
 		this.jquery_place().replaceWith(html);
 
@@ -45,6 +44,13 @@ class ControlCheckBox extends ControlBase{
 
 	////////////////////////////////////////////////////////////////////////////////
 
+	set_label(value){
+		var label = value;
+		
+		if(this.properties.help)
+			label = label + `<i class="help circle icon" title="${this.properties.help}" style="margin: -0.2em 0em 0em 0.2em;"></i>`;
+        $( `#${this.place_id()} label[for='${this.control_id()}']` ).first().html(label);
+    }
 
 
 }
