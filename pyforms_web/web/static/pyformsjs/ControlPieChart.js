@@ -20,7 +20,9 @@ class ControlPieChart extends ControlBase{
         };
 
         var chart = jQuery.jqplot(this.control_id(), [data], 
-            { 
+            {
+                seriesColors:['#f2711c', '#fbbd08', '#b5cc18', '#21ba45', '#00b5ad',
+                    '#2185d0', '#6435c9', '#a333c8', '#e03997', '#a5673f', '#767676', '#1b1c1d', '#DB2828'],
                 seriesDefaults: {
                     // Make this a pie chart.
                     renderer: jQuery.jqplot.PieRenderer, 

@@ -22,11 +22,22 @@ class ControlLineChart extends ControlBase{
 		};
 
 		var chart = $.jqplot(this.control_id(), data, {
-			grid:{ borderColor: 'transparent', shadow: false, drawBorder: false, shadowColor: 'transparent', background: 'transparent'},
+			seriesColors:['#f2711c', '#fbbd08', '#b5cc18', '#21ba45', '#00b5ad',
+                    '#2185d0', '#6435c9', '#a333c8', '#e03997', '#a5673f', '#767676', '#1b1c1d', '#DB2828'],
+			grid:{
+				borderColor: 'transparent',
+				shadow: false,
+				drawBorder: false,
+				shadowColor: 'transparent',
+				background: 'transparent'
+			},
 	 		title:self.label,
 	 		seriesDefaults:{
 				showMarker:true, showLine:true, lineWidth:1,
-				markerOptions:{ size: 4 }
+				markerOptions:{ size: 4 },
+				rendererOptions: {
+				  smooth: true
+				}
 			},
 			legend: {
 				show: legend.length>0,				
