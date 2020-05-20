@@ -137,7 +137,13 @@ class ControlQueryList(ControlBase):
             end_page = total_n_pages
             if ( end_page-(self.n_pages) )>=1: start_page = (end_page-(self.n_pages-1))
 
-        return [int(start_page-1) if int(start_page)>1 else -1] + list(range(int(start_page), int(end_page)+1)) + [ int(end_page+1) if int(end_page)<int(total_n_pages) else -1]
+        if (end_page-start_page<=1):
+            return [start_page]
+        else:
+            return [
+               int(start_page-1) if int(start_page)>1 else -1] + list(range(int(start_page),
+               int(end_page)+1)) + [ int(end_page+1) if int(end_page)<int(total_n_pages) else -1
+            ]
 
 
     def export_csv_event(self):
