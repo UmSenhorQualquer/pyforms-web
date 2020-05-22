@@ -14,6 +14,7 @@ class BaseWidget{
         this.events_queue = [];
         this.parent_id  = parent_id;
         this.layout_position = data.layout_position;
+        this.timeouts_loops = [];
 
         // variables used to verify if the loading layer needs to be shown or not
         this.loading_begin   = undefined;
@@ -204,6 +205,19 @@ class BaseWidget{
                 clearInterval(this.timeout_loop);
                 this.timeout_loop = null;
             }
+        };
+
+        //add auto refresh
+        var timeouts = data['timeouts'];
+        if(timeouts.length>0){
+            for(var i=0; i<timeouts.length; i++){
+                var self = this;
+                var milliseconds = timeouts[i][0];
+                var evt_name =  timeouts[i][1];
+                this.timeouts_loops.push(
+                    setTimeout(function(){ self.fire_event('self', evt_name) }, milliseconds)
+                );
+            }
         }
     }
     ////////////////////////////////////////////////////////////
@@ -328,6 +342,8 @@ class BaseWidget{
     */
     close(){
         clearTimeout(this.timeout_loop);
+        for(var i=0; i<this.timeouts_loops.length; i++)
+            clearTimeout(this.timeouts_loops[i]);
         this.close_sub_apps();
         this.jquery().remove();
     }

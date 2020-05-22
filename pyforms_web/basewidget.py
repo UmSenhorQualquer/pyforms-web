@@ -82,6 +82,10 @@ class BaseWidget(object):
         self._messages        = []
         self._js_code2execute = [];
 
+        # This variables stores the configured timeouts to execute.
+        # the format should be [(milliseconds, name of the function to call), ...]
+        self._timeouts = []
+
         self.parent = kwargs.get('parent_win', None)
         self.is_new_app = True
 
@@ -490,6 +494,10 @@ class BaseWidget(object):
         """
         return self.message_popup(msg, title, buttons, handler, msg_type='error')
 
+
+    def add_timeout(self, milliseconds, call_function):
+        self._timeouts.append( (milliseconds, call_function.__name__) )
+        self.mark_to_update_client()
     
     ##########################################################################
     ############ WEB functions ###############################################
@@ -613,9 +621,11 @@ class BaseWidget(object):
             'title':            self.title,
             'close_widget':     self._close_widget,
             'js-code':          list(self._js_code2execute),
-            'refresh_timeout':  self.refresh_timeout
+            'refresh_timeout':  self.refresh_timeout,
+            'timeouts':         self._timeouts
         }
-        
+
+        self._timeouts = []
         self._js_code2execute = []
         
         if len(self._messages)>0: 

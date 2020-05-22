@@ -52,5 +52,23 @@ class ControlCheckBox extends ControlBase{
         $( `#${this.place_id()} label[for='${this.control_id()}']` ).first().html(label);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+
+    /**
+    Sets the css classes for the control. Previously added classes will be removed.
+    @param {string} css - String with the css classes to add.
+    */
+    set_css(css){
+        for(var i=0; i<this.added_classes.length; i++)
+            this.jquery_place().children('.ui.checkbox').removeClass(this.added_classes[i]);
+
+        var classes = css.split(" ");
+
+        for(var i=0; i<classes.length; i++)
+            this.jquery_place().children('.ui.checkbox').addClass(classes[i]);
+
+        this.added_classes = classes;
+    }
+
 
 }
