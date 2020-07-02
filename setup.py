@@ -50,7 +50,7 @@ setup(
         'django-jfu-pyforms',
         'orquestra',
         'numpy',
-        'opencv-python~=3.4',
+        'opencv-python~=4.2',
         'django>2.1',
         'simplejson',
         'dill',

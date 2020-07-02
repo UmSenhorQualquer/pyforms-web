@@ -805,6 +805,13 @@ class BaseWidget(object):
         self._parent_win = value
         self.mark_to_update_client()
 
+    @property
+    def form_loaded(self):
+        """
+        Return True if the Widget already executed the init_form() function or not.
+        """
+        return self._formLoaded
+
     ############################################################################
     ############ WEB Properties ################################################
     ############################################################################
@@ -816,7 +823,9 @@ class BaseWidget(object):
         Return the form javascript
         """
         return self._js
-    
+
+
+
     
     
    
