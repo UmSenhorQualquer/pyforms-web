@@ -33,6 +33,7 @@ Edit the django project **settings.py** file to include the next configurations.
         'orquestra',
         'pyforms_web.web',
         'jfu',
+        'sorl.thumbnail',
         ...
     ]
 
