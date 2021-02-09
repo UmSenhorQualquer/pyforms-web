@@ -5,7 +5,8 @@ import simplejson
 class ControlCheckBoxList(ControlBase):
 
     def __init__(self, *args, **kwargs):
-        self._headers           = kwargs.get('headers',[])
+        self._headers           = kwargs.get('horizontal_headers',[])
+        self._headers           = kwargs.get('headers', self._headers)
         self._select_entire_row = kwargs.get('select_entire_row',True)
         self._read_only         = kwargs.get('readonly',True)
         self._selected_index    = kwargs.get('selected_row_index',-1)

@@ -141,10 +141,10 @@ Edit the urls.py file to add the next code.
 
 .. code:: python
 
-    from django.conf.urls import url
+    from django.urls import path
 
     urlpatterns = [
-        url(r'^accounts/', include('allauth.urls')),
+        path(r'^accounts/', include('allauth.urls')),
         ...
     ]
 
