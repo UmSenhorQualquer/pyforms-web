@@ -492,7 +492,7 @@ class BaseWidget(object):
         :param list(str) buttons: List of buttons labels to create in the popup window.
         :param method handler: Method that will handle the press of the buttons.
         """
-        return self.message_popup(msg, title, buttons, handler, msg_type='error')
+        return self.message_popup(msg, title, buttons, handler, msg_type='negative')
 
 
     def add_timeout(self, milliseconds, call_function):

@@ -37,17 +37,22 @@ class ControlCheckBoxList extends ControlBase{
 
     load_table(){
         var html = "<div id='"+this.place_id()+"' class='field control'>";
-        if(this.properties.label_visible) html += '<label for=\'"+this.control_id()+"\'>'+this.properties.label+'</label>';
+
+        if(this.properties.label_visible)
+            html += `<label for="${this.control_id()}">${this.properties.label}</label>`;
         html += "<table class='ui selectable celled table "+this.properties.css+" ControlCheckBoxList' id='"+this.control_id()+"' >";
         html += "<thead>";
         html += "<tr>";
         var titles = this.properties.headers;
-        for(var i=0; i<titles.length; i++) html += "<th>"+titles[i]+"</th>";
+        var columns_styles = this.properties.columns_styles;
+        for(var i=0; i<titles.length; i++)
+            html += `<th ${(columns_styles)?`style='${columns_styles[i]}'`:''} >${titles[i]}</th>`;
         html += "</tr>";
         html += "</thead>";
         html += "<tbody>";
         var data = this.properties.value;
-        
+
+
         if(data!=undefined)
             for(var i=0; i<data.length; i++){
                 html += "<tr>";
