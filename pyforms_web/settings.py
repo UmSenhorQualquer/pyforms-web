@@ -45,6 +45,7 @@ PYFORMS_JSFILES_DEBUG = [
     "ControlDateTime.js",
     "ControlImage.js",
     "ControlImg.js",
+    "ControlDrawInImg.js",
     "ControlHtml.js",
     "ControlEmail.js",
     "ControlItemsList.js",
