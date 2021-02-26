@@ -1,10 +1,18 @@
 class ImageAnnotator {
 
-	constructor(canvas, ctx, img) {
-		this.canvas = canvas;
-		this.ctx = ctx;
+	constructor(canvas_id) {
+		this.canvas = document.getElementById(canvas_id);
+		this.canvas.annotator = this;
+		this.canvas.onwheel = this.onwheel;
+		this.canvas.onmousemove = this.onmousemove;
+		this.canvas.onmousedown = this.onmousedown;
+		this.canvas.onmouseup = this.onmouseup;
+		this.canvas.ondblclick = this.ondblclick;
+
+		this.ctx = this.canvas.getContext("2d");
+
 		this.img = new window.Image();
-		this.img.parent = this;
+		this.img.annotator = this;
 		this.img.onload = this.on_load;
 
 		this.x = 0;
@@ -19,14 +27,117 @@ class ImageAnnotator {
 		this.objects = [];
 	}
 
-	on_load(){
-		var self = (this instanceof ImageAnnotator)?this:this.parent;
-		self.update();
+	add_object(obj){
+		obj.annotator = this;
+		this.objects.push(obj)
+		obj.update();
+	}
+
+	onwheel(evt){
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
+		self.do_zoom(evt.deltaY)
+		self.draw();
+		return false;
+	};
+
+	image_coordinates(x, y){ // x and y are mouse coordinates
+		var xx = (x - this.x )/this.zoom;
+		var yy = (y - this.y )/this.zoom;
+		return [xx, yy];
+	}
+
+	ondblclick(evt){
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
+
+		var coords = self.image_coordinates(evt.offsetX, evt.offsetY);
+
+		self.add_object( new Circle(coords[0], coords[1], 50) );
 		self.draw();
 	}
 
+	onmouseup(evt){
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
+		self.edit_radius = false;
+		self.edit_center = false;
+		self.active_idx = undefined;
+		self.draw();
+	}
+
+	onmousedown(evt){
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
+
+		for(var i=0; i<self.objects.length; i++){
+			var circle = self.objects[i];
+			var choice = circle.is_mouse_hover(evt.offsetX, evt.offsetY);
+
+			switch (choice){
+				case 1:
+					self.edit_center = true;
+					self.edit_radius = false;
+					self.active_idx = i;
+					self.draw();
+					return
+					break;
+				case 2:
+					self.edit_radius = true;
+					self.edit_center = false;
+					self.active_idx = i;
+					self.draw();
+					return;
+					break;
+			}
+		};
+		self.edit_center = false;
+		self.edit_radius = false;
+		this.active_idx = undefined;
+		self.draw();
+	}
+
+	onmousemove(evt){
+
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
+
+		if( evt.which ){
+			if( self.edit_radius || self.edit_center ){
+
+				var circle = self.objects[self.active_idx];
+
+				if( self.edit_center){
+					circle.move_to(evt.offsetX, evt.offsetY);
+					self.draw();
+					return;
+				}
+
+				if( self.edit_radius ){
+					circle.screen_set_radius(circle.screen_distance_to_center(evt.offsetX, evt.offsetY));
+					self.draw();
+					return;
+				}
+
+			}else{
+				self.move(evt.movementX, evt.movementY)
+			}
+		}else {
+
+			for(var i=0; i<self.objects.length; i++) {
+				var circle = self.objects[i];
+				switch (circle.is_mouse_hover(evt.offsetX, evt.offsetY)) {
+					case 1:
+						document.body.style.cursor = 'move';
+						return
+						break;
+					case 2:
+						document.body.style.cursor = 'col-resize';
+						return;
+						break;
+				}
+				document.body.style.cursor = 'default';
+			}
+		}
+	}
+
 	update(){
-		var self = (this instanceof ImageAnnotator)?this:this.parent;
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
 
 		var aspect_ratio = self.img.width / self.img.height;
 		var width = self.canvas.width*self.zoom;
@@ -36,25 +147,34 @@ class ImageAnnotator {
 		}else{
 			height = ((self.canvas.width*self.img.height)/self.img.width)*self.zoom;
 		}
+
 		this.x = self.canvas.width/2-width/2+self.xshift;
 		this.y = self.canvas.height/2-height/2+self.yshift;
 		this.width = width;
 		this.height = height;
+
+		for(var i=0; i<self.objects.length; i++) {
+			self.objects[i].update();
+		}
 	}
 
 	draw(){
-		var self = (this instanceof ImageAnnotator)?this:this.parent;
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
 
 		self.ctx.clearRect(0, 0, self.canvas.width, self.canvas.height);
 		self.ctx.drawImage(self.img, self.x, self.y, self.width, self.height);
 
 		for(var i=0; i<self.objects.length; i++) {
-			self.objects[i].draw(self.ctx);
+			self.objects[i].draw(
+				self.ctx,
+				i==self.active_idx && self.edit_center,
+				i==self.active_idx && self.edit_radius
+			);
 		}
 	}
 
 	move(x, y){
-		var self = (this instanceof ImageAnnotator)?this:this.parent;
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
 		self.xshift += x;
 		self.yshift += y;
 		if( self.xshift>self.canvas.width ){
@@ -79,7 +199,7 @@ class ImageAnnotator {
 	}
 
 	do_zoom(deltaY){
-		var self = (this instanceof ImageAnnotator)?this:this.parent;
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
 
 		self.zoom += deltaY * -0.01;
 
@@ -98,26 +218,32 @@ class ImageAnnotator {
 		self.draw();
 	}
 
+	on_load(){
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
+		self.update();
+		self.draw();
+	}
+
 	set_value(value){
 		this.img.src = value;
 	}
 }
 
+
+
+
 class Circle{
 
-	constructor(annotator, x, y, radius)
+	constructor(x, y, radius)
 	{
-		this.annotator = annotator;
-		this.x = x;
-		this.y = y;
-		this.radius = radius;
+		this.annotator = undefined; // pointer to the annotator object.
+		this.x = x; // x coordinate of the circle in relation to the image.
+		this.y = y; // y coordinate of the circle in relation to the image.
+		this.radius = radius; // radius of the circle in relation to the image.
 
-		this._x = x;
-		this._y = y;
-		this._radius = radius;
-
-		this.ref_x = 0;
-		this.ref_y = 0;
+		this._x = x; // x coordinate of the circle in relation to the canvas.
+		this._y = y; // y coordinate of the circle in relation to the canvas.
+		this._radius = radius; // radius of the circle in relation to the canvas.
 	}
 
 	update(){
@@ -126,11 +252,20 @@ class Circle{
 		this._radius = this.radius * this.annotator.zoom;
 	}
 
-	move(x, y){
-		this._x = this.x + x;
-		this._y = this.y + y;
-		this.ref_x = x;
-		this.ref_y = y;
+	move_to(x, y){ // x, y are coordinates of the mouse.
+		this._x = x;
+		this._y = y;
+		this.x = (x - this.annotator.x)/this.annotator.zoom;
+		this.y = (y - this.annotator.y)/this.annotator.zoom;
+	}
+
+	screen_distance_to_center(x, y){ // x, y are coordinates of the mouse.
+		return Math.sqrt(Math.pow(this._x-x, 2) + Math.pow(this._y-y, 2) )
+	}
+
+	screen_set_radius(radius){
+		this._radius = radius;
+		this.radius = radius / this.annotator.zoom;
 	}
 
 	draw(ctx, center_active, radius_active, xx, yy, zoom){
@@ -145,7 +280,24 @@ class Circle{
 		ctx.strokeStyle = radius_active?'#ff0000':'#000000';
 		ctx.stroke();
 	}
+
+	is_mouse_hover(x, y){
+		var dist = this.screen_distance_to_center(x, y);
+
+		if( dist<=5){
+			// Hover the center.
+			return 1;
+		}
+
+		if( (this._radius-2)<=dist && dist<=(this._radius+2) ){
+			// Hover the radius.
+			return 2;
+		}
+	}
 }
+
+
+
 
 class ControlDrawInImg extends ControlBase{
 
@@ -155,34 +307,25 @@ class ControlDrawInImg extends ControlBase{
 		var html = `<div id='${this.place_id()}' class='field control ControlDrawInImg' >`;
 		if(this.properties.label_visible)
 			html += `<label for='${this.control_id()}'>${this.properties.label}</label>`;
-		html += `<canvas id='${this.control_id()}' width='300' height='150' style='border:1px solid #d3d3d3;'>`;
+		html += `<canvas id='${this.control_id()}' style='border:1px solid #d3d3d3;'>`;
 
 		this.jquery_place().replaceWith(html);
 
-
-		this.zoom = 1;
-		this.xshift = 0;
-		this.yshift = 0;
-		this.active_idx = undefined;
-		this.edit_center = false;
-		this.edit_radius = false;
-
-		this.canvas = document.getElementById(this.control_id());
-		this.canvas.control = this;
-		this.canvas.onwheel = this.onwheel;
-		this.canvas.onmousemove = this.onmousemove;
-		this.canvas.onmousedown = this.onmousedown;
-		this.canvas.onmouseup = this.onmouseup;
-		this.canvas.ondblclick = this.ondblclick;
-
-		this.ctx = this.canvas.getContext("2d");
+		var width = this.jquery_place().width();
+		var height = this.jquery_place().height();
+		if( height < 500 ) height = 500;
+		this.jquery().attr('width', width);
+		this.jquery().attr('height', height);
 
 
-		this.annotator = new ImageAnnotator(this.canvas, this.ctx, this.img);
-
-		this.annotator.objects.push( new Circle(this.annotator, 100, 50, 20) )
-
+		this.annotator = new ImageAnnotator(this.control_id());
 		this.set_value(this.properties.value);
+
+		for(var i=0; i<this.properties.circles.length; i++){
+			var circle = this.properties.circles[i];
+			this.annotator.add_object(new Circle(circle[0], circle[1], circle[2]) )
+		}
+
 		if(this.properties.required) this.set_required();
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -191,128 +334,6 @@ class ControlDrawInImg extends ControlBase{
 		return this.properties.value;
 	};
 
-	ondblclick(evt){
-		var self = (this instanceof ControlDrawInImg)?this:this.control;
-
-		var x = self.annotator.x;
-		var y = self.annotator.y;
-
-		self.annotator.objects.push( new Circle(evt.offsetX-x, evt.offsetY-y, 20) );
-		self.draw();
-	}
-
-	onmouseup(evt){
-		var self = (this instanceof ControlDrawInImg)?this:this.control;
-		self.edit = false;
-	}
-
-	onmousedown(evt){
-		var self = (this instanceof ControlDrawInImg)?this:this.control;
-
-		var x = self.annotator.x;
-		var y = self.annotator.y;
-
-		for(var i=0; i<self.annotator.objects.length; i++){
-			var circle = self.annotator.objects[i];
-			var xx = circle.x*self.zoom+x;
-			var yy = circle.y*self.zoom+y;
-
-			var dist = Math.sqrt(Math.pow(xx-evt.offsetX, 2) + Math.pow(yy-evt.offsetY, 2) )
-			if( dist<=5){
-				self.edit_center = true;
-				self.edit_radius = false;
-				self.active_idx = i;
-				self.draw();
-				return
-			}
-
-			var radius = self.zoom*circle.radius;
-			if( (radius-2)<=dist && dist<=(radius+2) ){
-				self.edit_radius = true;
-				self.edit_center = false;
-				self.active_idx = i;
-				self.draw();
-				return;
-			}
-		};
-		self.edit_center = false;
-		self.edit_radius = false;
-		this.active_idx = undefined;
-		self.draw();
-	}
-
-	onmousemove(evt){
-		var self = (this instanceof ControlDrawInImg)?this:this.control;
-
-
-		if( evt.which ){
-			if( self.edit_radius || self.edit_center ){
-
-				var x = self.annotator.x;
-				var y = self.annotator.y;
-
-				var circle = self.annotator.objects[self.active_idx];
-				var xx = circle.x*self.zoom+x;
-				var yy = circle.x*self.zoom+y;
-				var dist = Math.sqrt(Math.pow(xx-evt.offsetX, 2) + Math.pow(yy-evt.offsetY, 2) )
-				var radius = self.zoom*circle.radius;
-
-				if( self.edit_center){
-					circle.x = (evt.offsetX-x)/self.zoom;
-					circle.y = (evt.offsetY-y)/self.zoom;
-					self.draw();
-					return;
-				}
-
-				if( self.edit_radius ){
-					circle.radius = dist/self.zoom;
-					self.draw();
-					return;
-				}
-
-			}else{
-				self.annotator.move(evt.movementX, evt.movementY)
-			}
-		}else {
-
-			var x = self.annotator.x;
-			var y = self.annotator.y;
-
-			for(var i=0; i<self.annotator.objects.length; i++) {
-				var circle = self.annotator.objects[i];
-				circle.set_move(x, y);
-			}
-
-			for(var i=0; i<self.annotator.objects.length; i++){
-				var circle = self.annotator.objects[i];
-				var xx = circle.x*self.zoom+x;
-				var yy = circle.y*self.zoom+y;
-				var dist = Math.sqrt(Math.pow(xx-evt.offsetX, 2) + Math.pow(yy-evt.offsetY, 2) )
-				var radius = self.zoom*circle.radius;
-
-				if( dist<=5){
-					document.body.style.cursor = 'move';
-					return;
-				}
-
-				if( (radius-2)<=dist && dist<=(radius+2) ){
-					document.body.style.cursor = 'col-resize';
-					return;
-				}
-			};
-			document.body.style.cursor = 'default';
-			console.log(document.body.style.cursor);
-
-		}
-	}
-
-	onwheel(evt){
-		var self = (this instanceof ControlDrawInImg)?this:this.control;
-
-		self.annotator.do_zoom(evt.deltaY)
-		self.annotator.draw();
-		return false;
-	};
 
 
 	////////////////////////////////////////////////////////////////////////////////
