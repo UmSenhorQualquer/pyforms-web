@@ -272,12 +272,12 @@ class Circle{
 
 		ctx.beginPath();
 		ctx.arc(this._x, this._y, 1, 0, 2 * Math.PI);
-		ctx.strokeStyle = center_active?'#ff0000':'#000000';
+		ctx.strokeStyle = center_active?'#ff0000':'#00FF00';
 		ctx.stroke();
 
 		ctx.beginPath();
 		ctx.arc(this._x, this._y, this._radius, 0, 2 * Math.PI);
-		ctx.strokeStyle = radius_active?'#ff0000':'#000000';
+		ctx.strokeStyle = radius_active?'#ff0000':'#00FF00';
 		ctx.stroke();
 	}
 
