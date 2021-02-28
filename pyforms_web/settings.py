@@ -1,6 +1,4 @@
-
-PYFORMS_WEB_APPS_TIMEOUT   = 3600 *48
-
+PYFORMS_APPS_IN_MEMORY = True # Between the user requests to the server, the app is stored in memory instead of the disk
 
 PYFORMS_APPS = {}
 

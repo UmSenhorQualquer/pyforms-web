@@ -539,20 +539,7 @@ class BaseWidget(object):
         """
         for key, item in self.controls.items(): item.commit()
 
-        user = PyFormsMiddleware.user()
-        # save the modifications
-        userpath = os.path.join(
-            conf.PYFORMS_WEB_APPS_CACHE_DIR,
-            '{0}-{1}'.format(user.pk, user.username) 
-        )
-        if not os.path.exists(userpath): os.makedirs(userpath)
-
-        app_path = os.path.join(userpath, "{0}.app".format(self.uid) )
-
-        lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
-        with lock.acquire(timeout=4):
-            with open(app_path, 'wb') as f:
-                dill.dump(self, f, protocol=4)
+        PyFormsMiddleware.commit_instance(self)
 
     def execute_js(self, code):
         """

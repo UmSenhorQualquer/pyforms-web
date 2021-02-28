@@ -1,6 +1,6 @@
 
 var PYFORMS_SERVER_URL = '';//'http://localhost:8000';
-var PYFORMS_CHECKER_LOOP_INTERVAL = 1000;
+var PYFORMS_CHECKER_LOOP_INTERVAL = 700;
 
 (function($) {
   $.getStylesheet = function(href) {
@@ -152,7 +152,7 @@ class PyformsManager{
             var jsondata =  $.toJSON(data2send);
             var self = this;
             
-            $.ajaxSetup({async: false, cache: true});
+            $.ajaxSetup({async: true, cache: true});
             $.ajax({
                 method: 'post',
                 cache: false,
@@ -161,11 +161,12 @@ class PyformsManager{
                 data: jsondata,
                 contentType: "application/json; charset=utf-8",
                 success: function(res){
+                    console.debug(res);
                     if( res.result=='error' )
                         error_msg(res.msg);
                     else{
                         for(var i=0; i<res.length; i++){
-                            self.open_application(res[i]);                      
+                            self.open_application(res[i]);
                         };
                     };
                 }
@@ -276,6 +277,7 @@ class PyformsManager{
         };
 
         if(!found_place){
+            $.ajaxSetup({async: false, cache: true});
             $.ajax({
                 method:     'get',
                 cache:      false,
@@ -296,6 +298,7 @@ class PyformsManager{
             }).fail(function(xhr){
                 error_msg(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
             }).always(function(){
+                $.ajaxSetup({async: true, cache: true});
                 pyforms.garbage_collector();
             });
         };

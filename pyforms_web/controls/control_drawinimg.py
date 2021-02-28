@@ -17,6 +17,10 @@ class ControlDrawInImg(ControlBase):
         self._circles.append( (x, y, radius) )
         self.mark_to_update_client()
 
+    @property
+    def circles(self):
+        return self._circles
+
     def serialize(self):
         res = super().serialize()
         if self.value is None: 
@@ -28,3 +32,8 @@ class ControlDrawInImg(ControlBase):
             'circles': self._circles
         })
         return res
+
+    def deserialize(self, properties):
+        super().deserialize(properties)
+        print(properties)
+        self._circles = properties.get('circles', [])

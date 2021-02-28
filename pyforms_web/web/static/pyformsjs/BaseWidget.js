@@ -280,7 +280,8 @@ class BaseWidget{
     Activate the load.
     */
     loading(){
-        //$("#app-"+this.widget_id).addClass('loading');
+        //console.debug('loading');
+        //this.jquery().addClass('loading');
         if(this.loading_begin==undefined) this.loading_begin = Date.now();
         this.loading_counter++;
         if(this.loading_counter==1){
@@ -295,7 +296,8 @@ class BaseWidget{
     Deactivate the loading.
     */
     not_loading(){
-        //$("#app-"+this.widget_id).removeClass('loading');
+        //console.debug('not_loading');
+        //this.jquery().removeClass('loading');
 
         this.loading_counter--;
         pyforms.checker_loop();

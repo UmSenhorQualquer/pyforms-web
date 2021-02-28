@@ -1,6 +1,6 @@
 class ImageAnnotator {
 
-	constructor(canvas_id) {
+	constructor(canvas_id, update_evt) {
 		this.canvas = document.getElementById(canvas_id);
 		this.canvas.annotator = this;
 		this.canvas.onwheel = this.onwheel;
@@ -24,8 +24,12 @@ class ImageAnnotator {
 		this.xshift = 0;
 		this.yshift = 0;
 
+		this.update_evt = update_evt;
+
 		this.objects = [];
 	}
+
+
 
 	add_object(obj){
 		obj.annotator = this;
@@ -57,6 +61,13 @@ class ImageAnnotator {
 
 	onmouseup(evt){
 		var self = (this instanceof ImageAnnotator)?this:this.annotator;
+
+		if( self.edit_center ){
+			if( self.update_evt ) self.update_evt();
+		}
+		if( self.edit_radius ){
+			if( self.update_evt ) self.update_evt();
+		}
 		self.edit_radius = false;
 		self.edit_center = false;
 		self.active_idx = undefined;
@@ -139,19 +150,16 @@ class ImageAnnotator {
 	update(){
 		var self = (this instanceof ImageAnnotator)?this:this.annotator;
 
-		var aspect_ratio = self.img.width / self.img.height;
-		var width = self.canvas.width*self.zoom;
-		var height = self.canvas.height*self.zoom;
-		if( aspect_ratio<1 ){
-			width = ((self.canvas.height*self.img.width)/self.img.height)*self.zoom;
-		}else{
-			height = ((self.canvas.width*self.img.height)/self.img.width)*self.zoom;
-		}
+		var width = self.img.width*self.zoom;
+		var height = self.img.height*self.zoom;
 
 		this.x = self.canvas.width/2-width/2+self.xshift;
 		this.y = self.canvas.height/2-height/2+self.yshift;
 		this.width = width;
 		this.height = height;
+
+		console.debug(self.img.width , self.img.height)
+		console.debug(width, height, this.x, this.y)
 
 		for(var i=0; i<self.objects.length; i++) {
 			self.objects[i].update();
@@ -220,6 +228,28 @@ class ImageAnnotator {
 
 	on_load(){
 		var self = (this instanceof ImageAnnotator)?this:this.annotator;
+
+		var aspect_ratio = self.img.width / self.img.height;
+		var width = self.canvas.width;
+		var height = self.canvas.height;
+		if( aspect_ratio>1 ){
+			if( (self.canvas.width/self.canvas.height)>1 ){
+ 				width = (self.canvas.height*self.canvas.width)/self.img.height;
+ 				self.zoom = width / self.img.width;
+			}else{
+				height = (self.canvas.width*self.canvas.height)/self.img.width;
+ 				self.zoom = width / self.img.width;
+			}
+		}else{
+			if( (self.canvas.width/self.canvas.height)>1 ){
+				height = (self.canvas.width*self.canvas.height)/self.img.width;
+ 				self.zoom = height / self.img.height;
+			}else{
+				width = (self.canvas.height*self.canvas.width)/self.img.height;
+ 				self.zoom = width / self.img.width;
+			}
+		}
+
 		self.update();
 		self.draw();
 	}
@@ -318,7 +348,9 @@ class ControlDrawInImg extends ControlBase{
 		this.jquery().attr('height', height);
 
 
-		this.annotator = new ImageAnnotator(this.control_id());
+		this.annotator = new ImageAnnotator(this.control_id(), this.annotator_has_updated);
+		this.annotator.control = this;
+
 		this.set_value(this.properties.value);
 
 		for(var i=0; i<this.properties.circles.length; i++){
@@ -329,12 +361,26 @@ class ControlDrawInImg extends ControlBase{
 		if(this.properties.required) this.set_required();
 	};
 	////////////////////////////////////////////////////////////////////////////////
-		
-	get_value(){ 
-		return this.properties.value;
-	};
 
 
+	serialize(){
+        var data = super.serialize();
+        data.circles = [];
+		for(var i=0; i<this.annotator.objects.length; i++){
+			var circle = this.annotator.objects[i];
+			data.circles.push([circle.x, circle.y, circle.radius])
+		}
+		return data;
+    }
+
+    update_server(){
+		return true;
+	}
+
+
+	annotator_has_updated(){
+		this.control.basewidget.fire_event( this.control.name, 'update_control_event' );
+	}
 
 	////////////////////////////////////////////////////////////////////////////////
 
