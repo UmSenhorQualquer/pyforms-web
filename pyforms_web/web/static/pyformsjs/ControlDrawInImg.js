@@ -29,7 +29,10 @@ class ImageAnnotator {
 		this.objects = [];
 	}
 
-
+	clear(){
+		this.objects = [];
+		this.update();
+	}
 
 	add_object(obj){
 		obj.annotator = this;
@@ -264,12 +267,13 @@ class ImageAnnotator {
 
 class Circle{
 
-	constructor(x, y, radius)
+	constructor(x, y, radius, text)
 	{
 		this.annotator = undefined; // pointer to the annotator object.
 		this.x = x; // x coordinate of the circle in relation to the image.
 		this.y = y; // y coordinate of the circle in relation to the image.
 		this.radius = radius; // radius of the circle in relation to the image.
+		this.text = text;
 
 		this._x = x; // x coordinate of the circle in relation to the canvas.
 		this._y = y; // y coordinate of the circle in relation to the canvas.
@@ -304,6 +308,13 @@ class Circle{
 		ctx.arc(this._x, this._y, 1, 0, 2 * Math.PI);
 		ctx.strokeStyle = center_active?'#ff0000':'#00FF00';
 		ctx.stroke();
+
+		if(this.text){
+			ctx.font = "12px Arial";
+			ctx.fillStyle = radius_active?'#ff0000':'#00FF00';
+			ctx.textAlign = "center";
+			ctx.fillText(this.text, this._x, this._y-5);
+		}
 
 		ctx.beginPath();
 		ctx.arc(this._x, this._y, this._radius, 0, 2 * Math.PI);
@@ -355,20 +366,32 @@ class ControlDrawInImg extends ControlBase{
 
 		for(var i=0; i<this.properties.circles.length; i++){
 			var circle = this.properties.circles[i];
-			this.annotator.add_object(new Circle(circle[0], circle[1], circle[2]) )
+			this.annotator.add_object(new Circle(circle[0], circle[1], circle[2], circle[3]) )
 		}
 
 		if(this.properties.required) this.set_required();
 	};
 	////////////////////////////////////////////////////////////////////////////////
 
+	deserialize(data) {
+		super.deserialize(data);
+
+		this.annotator.clear()
+		for(var i=0; i<this.properties.circles.length; i++){
+			var circle = this.properties.circles[i];
+			console.debug(circle);
+			this.annotator.add_object(new Circle(circle[0], circle[1], circle[2], circle[3]) )
+		}
+		this.annotator.update();
+		this.annotator.draw();
+	}
 
 	serialize(){
         var data = super.serialize();
         data.circles = [];
 		for(var i=0; i<this.annotator.objects.length; i++){
 			var circle = this.annotator.objects[i];
-			data.circles.push([circle.x, circle.y, circle.radius])
+			data.circles.push([circle.x, circle.y, circle.radius, circle.text])
 		}
 		return data;
     }

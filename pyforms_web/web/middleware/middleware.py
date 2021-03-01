@@ -92,7 +92,8 @@ class PyFormsMiddleware(object):
     def remove_instance(cls, app_id):
         user = cls.user()
         cls._users.setdefault(user.pk, {})
-        del cls._users[user.pk][app.uid]
+        if app_id in cls._users[user.pk]:
+            del cls._users[user.pk][app_id]
         """
         app_path = os.path.join(
             conf.PYFORMS_WEB_APPS_CACHE_DIR,
