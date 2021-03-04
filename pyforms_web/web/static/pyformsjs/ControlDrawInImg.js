@@ -9,6 +9,12 @@ class ImageAnnotator {
 		this.canvas.onmouseup = this.onmouseup;
 		this.canvas.ondblclick = this.ondblclick;
 
+		this.canvas.onmouseleave = this.onmouseleave;
+		this.canvas.onmouseenter = this.onmouseenter;
+
+		document.onkeydown = this.keydown;
+		document.annotator = this;
+
 		this.ctx = this.canvas.getContext("2d");
 
 		this.img = new window.Image();
@@ -20,6 +26,8 @@ class ImageAnnotator {
 		this.width = 0;
 		this.height = 0;
 
+		this.mouse_is_hover = false;
+
 		this.zoom = 1;
 		this.xshift = 0;
 		this.yshift = 0;
@@ -27,6 +35,34 @@ class ImageAnnotator {
 		this.update_evt = update_evt;
 
 		this.objects = [];
+	}
+
+	onmouseleave(evt){
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
+		self.mouse_is_hover = false;
+	}
+
+	onmouseenter(evt){
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
+		self.mouse_is_hover = true;
+	}
+
+	keydown(event) {
+		var self = (this instanceof ImageAnnotator)?this:this.annotator;
+		if( !self.mouse_is_hover ) return true;
+
+		var key = event.keyCode || event.charCode;
+		if( key == 8 ){
+			if (self.active_idx) {
+			  self.objects.splice(self.active_idx, 1);
+			  self.edit_radius = false;
+			  self.edit_center = false;
+			  self.active_idx = undefined;
+			  //self.update();
+			  self.draw();
+			  self.update_evt();
+			}
+		}
 	}
 
 	clear(){
@@ -60,6 +96,7 @@ class ImageAnnotator {
 
 		self.add_object( new Circle(coords[0], coords[1], 50) );
 		self.draw();
+		self.update_evt();
 	}
 
 	onmouseup(evt){
@@ -73,7 +110,7 @@ class ImageAnnotator {
 		}
 		self.edit_radius = false;
 		self.edit_center = false;
-		self.active_idx = undefined;
+		//self.active_idx = undefined;
 		self.draw();
 	}
 
@@ -161,9 +198,6 @@ class ImageAnnotator {
 		this.width = width;
 		this.height = height;
 
-		console.debug(self.img.width , self.img.height)
-		console.debug(width, height, this.x, this.y)
-
 		for(var i=0; i<self.objects.length; i++) {
 			self.objects[i].update();
 		}
@@ -178,7 +212,7 @@ class ImageAnnotator {
 		for(var i=0; i<self.objects.length; i++) {
 			self.objects[i].draw(
 				self.ctx,
-				i==self.active_idx && self.edit_center,
+				i==self.active_idx,
 				i==self.active_idx && self.edit_radius
 			);
 		}
@@ -379,7 +413,6 @@ class ControlDrawInImg extends ControlBase{
 		this.annotator.clear()
 		for(var i=0; i<this.properties.circles.length; i++){
 			var circle = this.properties.circles[i];
-			console.debug(circle);
 			this.annotator.add_object(new Circle(circle[0], circle[1], circle[2], circle[3]) )
 		}
 		this.annotator.update();
