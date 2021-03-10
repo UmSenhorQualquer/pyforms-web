@@ -878,4 +878,4 @@ class PopupWindow(BaseWidget):
                     getattr(self, name).css = buttons_css[i]
                 buttons_formset.append(name)
     
-        self.formset = [f'h5:{msg}', '-'] + ([no_columns(buttons_formset)] if buttons_formset else [])
+        self.formset = [f'h5:{msg}'] + (['-', no_columns(buttons_formset)] if buttons_formset else [])
