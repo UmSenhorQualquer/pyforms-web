@@ -1,4 +1,4 @@
-PYFORMS_APPS_IN_MEMORY = True # Between the user requests to the server, the app is stored in memory instead of the disk
+PYFORMS_APPS_IN_MEMORY = False # Between the user requests to the server, the app is stored in memory instead of the disk
 
 PYFORMS_APPS = {}
 
