@@ -75,6 +75,7 @@ class ControlBase{
         for(var i=0; i<this.added_classes.length; i++)
             this.jquery().removeClass(this.added_classes[i]);
 
+        if( css===undefined || css.length==0 ) return;
         var classes = css.split(" ");
 
         for(var i=0; i<classes.length; i++)

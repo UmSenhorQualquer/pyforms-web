@@ -161,7 +161,7 @@ class PyformsManager{
                 data: jsondata,
                 contentType: "application/json; charset=utf-8",
                 success: function(res){
-                    console.debug(res);
+
                     if( res.result=='error' )
                         error_msg(res.msg);
                     else{
