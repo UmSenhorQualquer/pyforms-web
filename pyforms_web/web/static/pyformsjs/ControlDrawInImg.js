@@ -354,6 +354,11 @@ class Circle{
 		ctx.arc(this._x, this._y, this._radius, 0, 2 * Math.PI);
 		ctx.strokeStyle = radius_active?'#ff0000':'#00FF00';
 		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.rect(this._x-this._radius*1.2, this._y-this._radius*1.2, 2*this._radius*1.2, 2*this._radius*1.2);
+		ctx.strokeStyle = 'rgba(225,0,0,0.5)';
+		ctx.stroke();
 	}
 
 	is_mouse_hover(x, y){
