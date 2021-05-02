@@ -5,10 +5,12 @@ import simplejson
 class ControlCheckBoxList(ControlBase):
 
     def __init__(self, *args, **kwargs):
-        self._headers           = kwargs.get('headers',[])
+        self._headers           = kwargs.get('horizontal_headers',[])
+        self._headers           = kwargs.get('headers', self._headers)
         self._select_entire_row = kwargs.get('select_entire_row',True)
         self._read_only         = kwargs.get('readonly',True)
         self._selected_index    = kwargs.get('selected_row_index',-1)
+        self._columns_sizes = kwargs.get('columns_styles', None)
 
         if 'row_double_click_event' in kwargs:
             self.row_double_click_event = kwargs['row_double_click_event']
@@ -37,7 +39,23 @@ class ControlCheckBoxList(ControlBase):
         if not isinstance(self._value, list): return 0
         return len(self._value)
 
+    @property
+    def columns_styles(self):
+        return self._columns_sizes
 
+    @columns_styles.setter
+    def columns_styles(self, value):
+        self.mark_to_update_client()
+        self._columns_sizes = value
+
+    @property
+    def columns_align(self):
+        return self._columns_align
+
+    @columns_align.setter
+    def columns_align(self, value):
+        self.mark_to_update_client()
+        self._columns_align = value
    
     @property
     def selected_row_index(self): return self._selected_index
@@ -66,6 +84,7 @@ class ControlCheckBoxList(ControlBase):
         data = ControlBase.serialize(self)
 
         data.update({
+            'columns_styles':   self.columns_styles,
             'headers':        self.headers,
             'selected_index': self._selected_index,
         })

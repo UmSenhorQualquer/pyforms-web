@@ -1,6 +1,6 @@
 
-
-var PYFORMS_CHECKER_LOOP_INTERVAL = 1000;
+var PYFORMS_SERVER_URL = '';//'http://localhost:8000';
+var PYFORMS_CHECKER_LOOP_INTERVAL = 700;
 
 (function($) {
   $.getStylesheet = function(href) {
@@ -28,110 +28,9 @@ class PyformsManager{
 
     constructor(){
         this.loop_checks  = [];
-        this.loop         = undefined;
-
+        this.loop = undefined;
         this.layout_places = [];
-
-        this.applications = [];
-        /*
-        $.ajaxSetup({async: false, cache: true});
-
-        //$.getStylesheet("/static/video-js.css");
-        //$.getScript("/static/video.js");
-        //$.getScript("/static/videojs.framebyframe.min.js");
-
-        $.getStylesheet("/static/pyforms.css");
-        $.getScript("/static/jquery.json-2.4.min.js");
-        $.getScript("/static/base64.js");
-        $.getScript("/static/gmaps.min.js");
-        $.getScript("/static/pyformsjs/ControlBase.js");
-        $.getScript("/static/pyformsjs/ControlAutoComplete.js");
-        $.getScript("/static/pyformsjs/ControlText.js");
-        $.getScript("/static/pyformsjs/ControlTextArea.js");
-        $.getScript("/static/pyformsjs/ControlBreadcrumb.js");
-        $.getScript("/static/pyformsjs/ControlButton.js");
-        $.getScript("/static/pyformsjs/ControlBarsChart.js");
-        $.getScript("/static/pyformsjs/ControlFile.js");
-        $.getScript("/static/pyformsjs/ControlFileUpload.js");
-        $.getScript("/static/pyformsjs/ControlDir.js");
-        $.getScript("/static/pyformsjs/ControlMultipleChecks.js");
-        $.getScript("/static/pyformsjs/ControlMultipleSelection.js");
-        $.getScript("/static/pyformsjs/ControlSlider.js");
-        $.getScript("/static/pyformsjs/ControlCheckBox.js");
-        $.getScript("/static/pyformsjs/ControlCheckBoxList.js");
-        $.getScript("/static/pyformsjs/ControlCheckBoxListQuery.js");
-        $.getScript("/static/pyformsjs/ControlTemplate.js");
-        $.getScript("/static/pyformsjs/ControlCombo.js");
-        $.getScript("/static/pyformsjs/ControlInteger.js");
-        $.getScript("/static/pyformsjs/ControlFloat.js");
-        $.getScript("/static/pyformsjs/ControlCalendar.js");
-        $.getScript("/static/pyformsjs/ControlPieChart.js");
-        $.getScript("/static/pyformsjs/ControlDate.js");
-        $.getScript("/static/pyformsjs/ControlDateTime.js");
-        $.getScript("/static/pyformsjs/ControlImage.js");
-        $.getScript("/static/pyformsjs/ControlImg.js");
-        $.getScript("/static/pyformsjs/ControlHtml.js");
-        $.getScript("/static/pyformsjs/ControlEmail.js");
-        $.getScript("/static/pyformsjs/ControlItemsList.js");
-        $.getScript("/static/pyformsjs/ControlList.js");
-        $.getScript("/static/pyformsjs/ControlLineChart.js");
-        $.getScript("/static/pyformsjs/ControlQueryCombo.js");
-        $.getScript("/static/pyformsjs/ControlQueryList.js");
-        $.getScript("/static/pyformsjs/ControlFeed.js");
-        $.getScript("/static/pyformsjs/ControlQueryCards.js");
-        $.getScript("/static/pyformsjs/ControlPassword.js");
-        $.getScript("/static/pyformsjs/ControlPlayer.js");
-        $.getScript("/static/pyformsjs/ControlPlayerJs.js");
-        $.getScript("/static/pyformsjs/ControlProgress.js");
-        $.getScript("/static/pyformsjs/ControlBoundingSlider.js");
-        $.getScript("/static/pyformsjs/ControlVisVis.js");
-        $.getScript("/static/pyformsjs/ControlLabel.js");
-        $.getScript("/static/pyformsjs/ControlSimpleLabel.js");
-        $.getScript("/static/pyformsjs/ControlTimeout.js");
-        $.getScript("/static/pyformsjs/ControlEmptyWidget.js");
-        $.getScript("/static/pyformsjs/ControlMenu.js");
-        $.getScript("/static/pyformsjs/ControlTree.js");
-        $.getScript("/static/pyformsjs/ControlOrganogram.js");
-        $.getScript("/static/pyformsjs/ControlWorkflow.js");
-        $.getScript("/static/pyformsjs/BaseWidget.js");
-
-        $.getScript("/static/treant/Treant.js");
-        $.getStylesheet("/static/treant/Treant.css");
-
-        $.getScript("/static/timeline/timeline.js");
-        $.getScript("/static/timeline/track.js");
-        $.getScript("/static/timeline/event.js");
-        $.getScript("/static/timeline/graph.js");
-        $.getScript("/static/canvas-video-player.js");
-        $.getScript("/static/jquery.flowchart/jquery.panzoom.min.js");
-        $.getScript("/static/jquery.flowchart/jquery.mousewheel.min.js");
-        $.getScript("/static/jquery.flowchart/jquery.flowchart.min.js");
-        $.getStylesheet("/static/jquery.flowchart/jquery.flowchart.min.css");
-
-        $.getScript("/static/datetimepicker/jquery.datetimepicker.full.min.js");
-        $.getStylesheet("/static/datetimepicker/jquery.datetimepicker.min.css");
-
-        $.getScript("/static/jqplot/jquery.jqplot.js");
-        $.getScript("/static/jqplot/plugins/jqplot.cursor.js");
-        $.getScript("/static/jqplot/plugins/jqplot.logAxisRenderer.js");
-        $.getScript("/static/jqplot/plugins/jqplot.canvasTextRenderer.js");
-        $.getScript("/static/jqplot/plugins/jqplot.canvasAxisLabelRenderer.js");
-        $.getScript("/static/jqplot/plugins/jqplot.blockRenderer.js");
-        $.getScript("/static/jqplot/plugins/jqplot.enhancedLegendRenderer.js");
-        $.getScript("/static/jqplot/plugins/jqplot.logAxisRenderer.js");
-        $.getScript("/static/jqplot/plugins/jqplot.dateAxisRenderer.js");
-        $.getScript("/static/jqplot/plugins/jqplot.categoryAxisRenderer.js");
-        $.getScript("/static/jqplot/plugins/jqplot.barRenderer.js");
-        $.getScript("/static/jqplot/plugins/jqplot.pointLabels.js");
-        $.getScript("/static/jqplot/plugins/jqplot.pieRenderer.js");
-        $.getStylesheet("/static/jqplot/jquery.jqplot.css");
-
-        $.getScript("/static/filer/js/jquery.filer.js");
-        $.getStylesheet("/static/filer/css/jquery.filer.css");
-        $.getStylesheet("/static/filer/css/jquery.filer-dragdropbox-theme.css");
-
-        $.ajaxSetup({async: true, cache: false});
-        */
+        this.applications  = [];
 
         setInterval(this.garbage_collector, 5000); //Run the garbage collector for times to times.
     }
@@ -178,7 +77,7 @@ class PyformsManager{
                 method: 'get',
                 cache: false,
                 dataType: "json",
-                url: '/pyforms/app/remove/'+app.widget_id+'/?nocache='+$.now(),
+                url: PYFORMS_SERVER_URL+'/pyforms/app/remove/'+app.widget_id+'/?nocache='+$.now(),
                 contentType: "application/json; charset=utf-8"
             }).always(function(){
                 app.close();
@@ -253,20 +152,21 @@ class PyformsManager{
             var jsondata =  $.toJSON(data2send);
             var self = this;
             
-            $.ajaxSetup({async: false, cache: true});
+            $.ajaxSetup({async: true, cache: true});
             $.ajax({
                 method: 'post',
                 cache: false,
                 dataType: "json",
-                url: '/pyforms/app/update/'+basewidget.widget_id+'/?nocache='+$.now(),
+                url: PYFORMS_SERVER_URL+'/pyforms/app/update/'+basewidget.widget_id+'/?nocache='+$.now(),
                 data: jsondata,
                 contentType: "application/json; charset=utf-8",
                 success: function(res){
+
                     if( res.result=='error' )
                         error_msg(res.msg);
                     else{
                         for(var i=0; i<res.length; i++){
-                            self.open_application(res[i]);                      
+                            self.open_application(res[i]);
                         };
                     };
                 }
@@ -365,7 +265,7 @@ class PyformsManager{
 
         
         var application_id  = app_data['uid'];
-        var application_url = "/pyforms/app/open/"+application_id+"/";
+        var application_url = PYFORMS_SERVER_URL+"/pyforms/app/open/"+application_id+"/";
         var application_title = app_data['title'];
         var found_place = false;
         for(var i=0; i<this.layout_places.length; i++){
@@ -377,6 +277,7 @@ class PyformsManager{
         };
 
         if(!found_place){
+            $.ajaxSetup({async: false, cache: true});
             $.ajax({
                 method:     'get',
                 cache:      false,
@@ -397,6 +298,7 @@ class PyformsManager{
             }).fail(function(xhr){
                 error_msg(xhr.status+" "+xhr.statusText+": "+xhr.responseText);
             }).always(function(){
+                $.ajaxSetup({async: true, cache: true});
                 pyforms.garbage_collector();
             });
         };

@@ -75,6 +75,7 @@ class ControlBase{
         for(var i=0; i<this.added_classes.length; i++)
             this.jquery().removeClass(this.added_classes[i]);
 
+        if( css===undefined || css.length==0 ) return;
         var classes = css.split(" ");
 
         for(var i=0; i<classes.length; i++)
@@ -112,8 +113,7 @@ class ControlBase{
         var msg = this.properties.help;
         if (msg && msg.trim().length) {
             // style taken from mandatory asterisk
-            var style = 'style="margin: -0.2em 0em 0em 0.2em;"'
-            var html  = `<i class="help circle icon" title="${msg}" ${style}></i>`;
+            var html  = `<i class="help circle icon" title="${msg}" style="margin: -0.2em 0em 0em 0.2em;"></i>`;
             $( `#${this.place_id()} label[for='${this.control_id()}']` ).first().append(html);
         }
     }

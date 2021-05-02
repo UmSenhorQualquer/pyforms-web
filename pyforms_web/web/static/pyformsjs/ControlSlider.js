@@ -20,7 +20,7 @@ class ControlSlider extends ControlBase{
 
 	init_control(){
 		var html = 	"<div id='"+this.place_id()+"' class='field control ControlSlider' title='"+this.properties.help+"' >";
-		html += 	"<label>"+this.properties.label;
+		html += 	"<label for='"+this.control_id()+"'>"+this.properties.label;
 		html += 	" <div id='value"+this.control_id()+"' class='ui basic label'>"+this.properties.value+"</div>";
 		html += 	"</label>";
 		html += 	"<input style='width:100%;' type='range' name='"+this.name+"' value='"+this.properties.value+"' id='"+this.control_id()+"' min='"+this.properties.min+"' max='"+this.properties.max+"'>";

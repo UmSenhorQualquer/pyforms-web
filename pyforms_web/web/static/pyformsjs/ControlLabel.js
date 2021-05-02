@@ -9,19 +9,18 @@ class ControlLabel extends ControlBase{
     ////////////////////////////////////////////////////////////////////////////////
 
     init_control(){
+        console.debug(this.properties);
         var html = '<div class="ui field '+this.properties.css+' message control ControlLabel" id="'+this.place_id()+'"  >';
         html += '<div class="header">';
         html += this.properties.label;
         html += '</div>';
-        html += '<p id="'+this.control_id()+'" >';
+        html += `<p id="${this.control_id()}">`;
         if(this.properties.value!=null || this.properties.value!=undefined)
             html += this.properties.value;
         html += '</p>';
         html += '</div>';
         this.jquery_place().replaceWith(html);
 		if(this.properties.required) this.set_required();
-
-       
     };
 
     ////////////////////////////////////////////////////////////////////////////////

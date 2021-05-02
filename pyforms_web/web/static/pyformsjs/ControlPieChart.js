@@ -5,7 +5,8 @@ class ControlPieChart extends ControlBase{
 
     init_control(){
         var html =  "<div id='"+this.place_id()+"' class='field control ControlPieChart' >";
-        html +=     "<div id='chart-container-"+this.control_id()+"' title='"+this.properties.help+"'   >";
+        if(this.properties.label_visible) html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
+		html +=     "<div id='chart-container-"+this.control_id()+"' title='"+this.properties.help+"'   >";
         html +=     "<div id='"+this.control_id()+"' ></div>";
         html +=     "</div>";
         html +=     "</div>";
@@ -19,7 +20,9 @@ class ControlPieChart extends ControlBase{
         };
 
         var chart = jQuery.jqplot(this.control_id(), [data], 
-            { 
+            {
+                seriesColors:['#f2711c', '#fbbd08', '#b5cc18', '#21ba45', '#00b5ad',
+                    '#2185d0', '#6435c9', '#a333c8', '#e03997', '#a5673f', '#767676', '#1b1c1d', '#DB2828'],
                 seriesDefaults: {
                     // Make this a pie chart.
                     renderer: jQuery.jqplot.PieRenderer, 

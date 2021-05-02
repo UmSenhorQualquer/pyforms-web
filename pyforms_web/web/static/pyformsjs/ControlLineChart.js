@@ -7,6 +7,7 @@ class ControlLineChart extends ControlBase{
 		this.update_it = false;
 
 		var html =  "<div id='"+this.place_id()+"' class='field control ControlLineChart' >";
+		if(this.properties.label_visible) html += "<label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
 		html += 	"<div id='chart-container-"+this.control_id()+"' title='"+this.properties.help+"'   >";
 		html += 	"<div id='"+this.control_id()+"' ></div>";
 		html += 	"</div>";
@@ -19,12 +20,24 @@ class ControlLineChart extends ControlBase{
 		if(data.length==0 || data[0].length==0 ){ 
 			data = [[[0,0]]];
 		};
+
 		var chart = $.jqplot(this.control_id(), data, {
-			grid:{ borderColor: 'transparent', shadow: false, drawBorder: false, shadowColor: 'transparent', background: 'transparent'},
+			seriesColors:['#f2711c', '#fbbd08', '#b5cc18', '#21ba45', '#00b5ad',
+                    '#2185d0', '#6435c9', '#a333c8', '#e03997', '#a5673f', '#767676', '#1b1c1d', '#DB2828'],
+			grid:{
+				borderColor: 'transparent',
+				shadow: false,
+				drawBorder: false,
+				shadowColor: 'transparent',
+				background: 'transparent'
+			},
 	 		title:self.label,
 	 		seriesDefaults:{
-				showMarker:false, showLine:true, lineWidth:1,
-				markerOptions:{ size: 6 }
+				showMarker:true, showLine:true, lineWidth:1,
+				markerOptions:{ size: 4 },
+				rendererOptions: {
+				  smooth: true
+				}
 			},
 			legend: {
 				show: legend.length>0,				
@@ -33,12 +46,9 @@ class ControlLineChart extends ControlBase{
 				location: 'e'
 			},
 			axes:{
-				/*xaxis:{
-					renderer: 		$.jqplot.DateAxisRenderer, 
-					labelRenderer: 	$.jqplot.CanvasAxisLabelRenderer,
-					tickRenderer: 	$.jqplot.CanvasAxisTickRenderer,
-					tickOptions: {angle: -45}
-				}*/
+				xaxis:{
+					renderer:$.jqplot.DateAxisRenderer
+				}
 			},
 			cursor:{
 				style: 'pointer',

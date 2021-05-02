@@ -40,6 +40,7 @@ class ControlCombo extends ControlBase{
         if(value=='true')  return true;
 		if(value=='false') return false;
 		if(value=='null')  return null;
+		if(value=='')  return ''; // required for Charfield with choices and blank option
 		return value;
 	};
 

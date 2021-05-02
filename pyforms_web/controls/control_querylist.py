@@ -13,6 +13,67 @@ from pyforms_web.controls.control_base import ControlBase
 from pyforms_web.utils import get_lookup_verbose_name, get_lookup_value, get_lookup_field
 
 
+def format_list_column(col_value, raw=False):
+    if col_value is None:
+        return ''
+
+    if type(col_value).__name__ == "ManyRelatedManager":
+        # format a ManyToManyField for LIST_DISPLAY
+        # TODO should we limit when there are a lot of objects?
+        # or should the user remove that column from LIST_DISPLAY?
+        objects = [str(obj) for obj in col_value.all()]
+        if raw:
+            return ", ".join(objects)
+        else:
+            return "<br>".join(objects)
+
+    if callable(col_value):
+        col_value = col_value()
+
+    if isinstance(col_value, datetime.datetime):
+        if not col_value: return ''
+        col_value = timezone.localtime(col_value)
+        return col_value.strftime('%Y-%m-%d %H:%M')
+    elif isinstance(col_value, datetime.date):
+        if not col_value: return ''
+        return col_value.strftime('%Y-%m-%d')
+    elif isinstance(col_value, bool):
+        if raw:
+            return str(col_value)
+        else:
+            return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
+    elif isinstance(col_value, int):
+        return locale.format("%d", col_value, grouping=True)
+    elif isinstance(col_value, float):
+        return locale.format("%f", col_value, grouping=True)
+    elif isinstance(col_value, Decimal):
+        return '{0:n}'.format(col_value)
+    elif type(col_value).__name__ == 'Money':
+        # support django-money MoneyField
+        if raw:
+            return str(col_value)
+        else:
+            return '<div style="text-align: right; margin-right: .5rem;">%s</div>' % col_value
+    elif isinstance(col_value, FieldFile):
+        if raw:
+            return str(col_value.name)
+        try:
+            return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
+        except ValueError:
+            return ''
+    elif isinstance(col_value, models.Model):
+        return col_value.__str__()
+    elif callable(col_value):
+        v = col_value()
+
+        if hasattr(col_value, 'boolean') and getattr(col_value, 'boolean'):
+            if not raw:
+                v = '<i class="check circle green icon"></i>' if v else '<i class="minus circle red icon"></i>'
+
+        return '' if v is None else str(v)
+    else:
+        return col_value
+
 class ControlQueryList(ControlBase):
 
     def __init__(self, *args, **kwargs):
@@ -76,7 +137,13 @@ class ControlQueryList(ControlBase):
             end_page = total_n_pages
             if ( end_page-(self.n_pages) )>=1: start_page = (end_page-(self.n_pages-1))
 
-        return [int(start_page-1) if int(start_page)>1 else -1] + list(range(int(start_page), int(end_page)+1)) + [ int(end_page+1) if int(end_page)<int(total_n_pages) else -1]
+        if (end_page-start_page<=1):
+            return [start_page]
+        else:
+            return [
+               int(start_page-1) if int(start_page)>1 else -1] + list(range(int(start_page),
+               int(end_page)+1)) + [ int(end_page+1) if int(end_page)<int(total_n_pages) else -1
+            ]
 
 
     def export_csv_event(self):
@@ -103,7 +170,7 @@ class ControlQueryList(ControlBase):
 
         for o in queryset:
             row = [
-                strip_tags(self.format_list_column(get_lookup_value(o, col), raw=True))
+                strip_tags(format_list_column(get_lookup_value(o, col), raw=True))
                 for col in self.export_csv_columns
             ] 
             writer.writerow(row)
@@ -163,6 +230,8 @@ class ControlQueryList(ControlBase):
             qs          = model.objects.all()
             qs.query    = self._query
 
+
+
             # apply filters
             for f in self.filter_by: 
                 qs = qs.filter(**f)
@@ -196,9 +265,10 @@ class ControlQueryList(ControlBase):
 
     @value.setter
     def value(self, value):
-        
-        if self._query!=value.query: 
+
+        if str(self._query) != str(value.query):
             if value is not None:
+
                 if len(value.query.order_by)==0 and value.model._meta.ordering:
                     value = value.order_by(*value.model._meta.ordering)
 
@@ -213,10 +283,12 @@ class ControlQueryList(ControlBase):
         
 
     def serialize(self, init_form=False):
-        data     = ControlBase.serialize(self)
+        data     = super().serialize()
         queryset = self.value
     
         rows = []
+
+
         
         if self._update_list and queryset:
             row_start = self.rows_per_page*(self._current_page-1)
@@ -296,67 +368,7 @@ class ControlQueryList(ControlBase):
     #####################################################################
     #####################################################################
 
-    def format_list_column(self, col_value, raw=False): 
 
-        if col_value is None:
-            return ''
-
-        if type(col_value).__name__ == "ManyRelatedManager":
-            # format a ManyToManyField for LIST_DISPLAY
-            # TODO should we limit when there are a lot of objects?
-            # or should the user remove that column from LIST_DISPLAY?
-            objects = [str(obj) for obj in col_value.all()]
-            if raw:
-                return ", ".join(objects)
-            else:
-                return "<br>".join(objects)
-
-        if callable(col_value):
-            col_value = col_value()
-
-        if isinstance(col_value, datetime.datetime):
-            if not col_value: return ''
-            col_value = timezone.localtime(col_value)
-            return col_value.strftime('%Y-%m-%d %H:%M')
-        elif isinstance(col_value, datetime.date):
-            if not col_value: return ''
-            return col_value.strftime('%Y-%m-%d')
-        elif isinstance(col_value, bool):
-            if raw:
-                return str(col_value)
-            else:
-                return '<i class="check circle green icon"></i>' if col_value else '<i class="minus circle red icon"></i>'
-        elif isinstance(col_value, int):
-            return locale.format("%d", col_value, grouping=True)
-        elif isinstance(col_value, float):
-            return locale.format("%f", col_value, grouping=True)
-        elif isinstance(col_value, Decimal):
-            return '{0:n}'.format(col_value)
-        elif type(col_value).__name__ == 'Money':
-            # support django-money MoneyField
-            if raw:
-                return str(col_value)
-            else:
-                return '<div style="text-align: right; margin-right: .5rem;">%s</div>' % col_value
-        elif isinstance(col_value, FieldFile):
-            if raw:
-                return str(col_value.name)
-            try:
-                return '<a href="{0}" target="_blank" click="return false;" >{1}</a>'.format(col_value.url, col_value.name)
-            except ValueError:
-                return ''
-        elif isinstance(col_value, models.Model):
-            return col_value.__str__()
-        elif callable(col_value):
-            v = col_value()
-
-            if hasattr(col_value, 'boolean') and getattr(col_value, 'boolean'):
-                if not raw:
-                    v = '<i class="check circle green icon"></i>' if v else '<i class="minus circle red icon"></i>'
-
-            return '' if v is None else str(v)
-        else:
-            return col_value
 
     def format_filter_column(self, col_value):
         
@@ -388,7 +400,7 @@ class ControlQueryList(ControlBase):
 
             rows = []
             for o in queryset[first_row:last_row]:
-                row = [o.pk] + [self.format_list_column(get_lookup_value(o, col)) for col in list_display] 
+                row = [o.pk] + [format_list_column(get_lookup_value(o, col)) for col in list_display]
                 rows.append(row)
             
             return rows

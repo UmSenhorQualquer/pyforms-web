@@ -10,6 +10,7 @@ class ValueNotSet:
 
 
 class ControlCombo(ControlBase):
+
     def __init__(self, *args, **kwargs):
         self._init_form_called = False
 
@@ -21,6 +22,16 @@ class ControlCombo(ControlBase):
 
         if not items and "default" in kwargs:
             del kwargs["default"]
+
+        self._set_blank_to_null = kwargs.get('set_blank_to_null', False)
+        """
+        The flag _set_blank_to_null was created to solve an issue with Django fields:
+            - If the field is set with blank=True and null=False,
+            and the user select the django.db.models.fields.BLANK_CHOICE_DASH it will set the 
+            ControlCombo the value as an empty string.
+            - If the field is set with blank=True and null=True, and the user select the BLANK_CHOICE_DASH then the
+            ControlCombo will assume the value None.
+        """
 
         super(ControlCombo, self).__init__(*args, **kwargs)
 
@@ -77,14 +88,15 @@ class ControlCombo(ControlBase):
 
     @value.setter
     def value(self, value):
+
         for i, (key, val) in enumerate(self._items.items()):
 
-            if value is None or value=='':
-                v = None
+            if value is None or value == '':
+                v = value if not self._set_blank_to_null else None
             else:
                 v = self._types[i](value) if self._types[i]!=type(None) else value
 
-            if v == val:
+            if v == val or (self._set_blank_to_null and val=='' and v==None):
                 if self._value != v:
                     self._value = v
                     self.mark_to_update_client()

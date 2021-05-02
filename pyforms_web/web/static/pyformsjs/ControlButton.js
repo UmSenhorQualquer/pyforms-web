@@ -5,7 +5,7 @@ class ControlButton extends ControlBase{
 
 	init_control(){
 		var html = "<div class='field control ControlButton' id='"+this.place_id()+"'>";
-		if(this.properties.label_visible) html += '<label>&nbsp;</label>';
+		if(this.properties.label_visible) html += '<label for=\'"+this.control_id()+"\'>&nbsp;</label>';
 		html +=(!this.properties.labeled)?"<button type='button'":"<div ";
 		html +=" title='"+this.properties.help+"' id='"+this.control_id()+"' class='ui button' >";
 		html += this.properties.label;

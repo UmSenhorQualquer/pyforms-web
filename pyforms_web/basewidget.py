@@ -82,6 +82,10 @@ class BaseWidget(object):
         self._messages        = []
         self._js_code2execute = [];
 
+        # This variables stores the configured timeouts to execute.
+        # the format should be [(milliseconds, name of the function to call), ...]
+        self._timeouts = []
+
         self.parent = kwargs.get('parent_win', None)
         self.is_new_app = True
 
@@ -430,7 +434,7 @@ class BaseWidget(object):
         """
         self.message(msg, title, msg_type='error')
 
-    def message_popup(self, msg, title='', buttons=None, handler=None, msg_type=''):
+    def message_popup(self, msg, title='', buttons=None, handler=None, msg_type='', buttons_css=[]):
         """
         Show a popup message window
         
@@ -439,6 +443,7 @@ class BaseWidget(object):
         :param list(str) buttons: List of buttons labels to create in the popup window.
         :param str msg_type: Message box css class.
         :param method handler: Method that will handle the press of the buttons.
+        :param buttons_css handler: CSS class of the buttons.
     
         .. code:: python
            
@@ -447,9 +452,18 @@ class BaseWidget(object):
                 ...
 
         """
-        self._active_popup_msg = PopupWindow(title, msg, buttons, handler, msg_type=msg_type, parent_win=self)
+        self._active_popup_msg = PopupWindow(
+            title,
+            msg,
+            buttons,
+            handler,
+            msg_type=msg_type,
+            parent_win=self,
+            buttons_css=buttons_css
+        )
         return self._active_popup_msg
-    def success_popup(self, msg, title='', buttons=None, handler=None):
+
+    def success_popup(self, msg, title='', buttons=None, handler=None, buttons_css=[]):
         """
         Show a popup success message window
         
@@ -457,9 +471,11 @@ class BaseWidget(object):
         :param str title: Message title.
         :param list(str) buttons: List of buttons labels to create in the popup window.
         :param method handler: Method that will handle the press of the buttons.
+        :param buttons_css handler: CSS class of the buttons.
         """
-        return self.message_popup(msg, title, buttons, handler, msg_type='positive')
-    def info_popup(self, msg, title='', buttons=None, handler=None):
+        return self.message_popup(msg, title, buttons, handler, msg_type='positive', buttons_css=buttons_css)
+
+    def info_popup(self, msg, title='', buttons=None, handler=None, buttons_css=[]):
         """
         Show a popup info message window
         
@@ -467,9 +483,11 @@ class BaseWidget(object):
         :param str title: Message title.
         :param list(str) buttons: List of buttons labels to create in the popup window.
         :param method handler: Method that will handle the press of the buttons.
+        :param buttons_css handler: CSS class of the buttons.
         """
-        return self.message_popup(msg, title, buttons, handler, msg_type='info')
-    def warning_popup(self, msg, title='', buttons=None, handler=None):
+        return self.message_popup(msg, title, buttons, handler, msg_type='info', buttons_css=buttons_css)
+
+    def warning_popup(self, msg, title='', buttons=None, handler=None, buttons_css=[]):
         """
         Show a popup warning message window
         
@@ -477,9 +495,11 @@ class BaseWidget(object):
         :param str title: Message title.
         :param list(str) buttons: List of buttons labels to create in the popup window.
         :param method handler: Method that will handle the press of the buttons.
+        :param buttons_css handler: CSS class of the buttons.
         """
-        return self.message_popup(msg, title, buttons, handler, msg_type='warning')
-    def alert_popup(self, msg, title='', buttons=None, handler=None):
+        return self.message_popup(msg, title, buttons, handler, msg_type='warning', buttons_css=buttons_css)
+
+    def alert_popup(self, msg, title='', buttons=None, handler=None, buttons_css=[]):
         """
         Show a popup alert message window
         
@@ -487,9 +507,14 @@ class BaseWidget(object):
         :param str title: Message title.
         :param list(str) buttons: List of buttons labels to create in the popup window.
         :param method handler: Method that will handle the press of the buttons.
+        :param buttons_css handler: CSS class of the buttons.
         """
-        return self.message_popup(msg, title, buttons, handler, msg_type='error')
+        return self.message_popup(msg, title, buttons, handler, msg_type='negative', buttons_css=buttons_css)
 
+
+    def add_timeout(self, milliseconds, call_function):
+        self._timeouts.append( (milliseconds, call_function.__name__) )
+        self.mark_to_update_client()
     
     ##########################################################################
     ############ WEB functions ###############################################
@@ -531,20 +556,7 @@ class BaseWidget(object):
         """
         for key, item in self.controls.items(): item.commit()
 
-        user = PyFormsMiddleware.user()
-        # save the modifications
-        userpath = os.path.join(
-            conf.PYFORMS_WEB_APPS_CACHE_DIR,
-            '{0}-{1}'.format(user.pk, user.username) 
-        )
-        if not os.path.exists(userpath): os.makedirs(userpath)
-
-        app_path = os.path.join(userpath, "{0}.app".format(self.uid) )
-
-        lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
-        with lock.acquire(timeout=4):
-            with open(app_path, 'wb') as f:
-                dill.dump(self, f, protocol=4)
+        PyFormsMiddleware.commit_instance(self)
 
     def execute_js(self, code):
         """
@@ -613,9 +625,11 @@ class BaseWidget(object):
             'title':            self.title,
             'close_widget':     self._close_widget,
             'js-code':          list(self._js_code2execute),
-            'refresh_timeout':  self.refresh_timeout
+            'refresh_timeout':  self.refresh_timeout,
+            'timeouts':         self._timeouts
         }
-        
+
+        self._timeouts = []
         self._js_code2execute = []
         
         if len(self._messages)>0: 
@@ -795,6 +809,13 @@ class BaseWidget(object):
         self._parent_win = value
         self.mark_to_update_client()
 
+    @property
+    def form_loaded(self):
+        """
+        Return True if the Widget already executed the init_form() function or not.
+        """
+        return self._formLoaded
+
     ############################################################################
     ############ WEB Properties ################################################
     ############################################################################
@@ -806,7 +827,9 @@ class BaseWidget(object):
         Return the form javascript
         """
         return self._js
-    
+
+
+
     
     
    
@@ -827,19 +850,32 @@ class BaseWidget(object):
 class PopupWindow(BaseWidget):
     LAYOUT_POSITION = conf.LAYOUT_NEW_WINDOW
 
-    def __init__(self, title, msg, buttons, handler, msg_type, parent_win=None):
+    def __init__(self, title, msg, buttons, handler, msg_type, parent_win=None, buttons_css=[]):
+
+        if msg_type=='positive':
+            title = f'<i class="ui icon check"></i>{title}'
+        elif msg_type=='negative':
+            title = f'<i class="ui icon minus circle"></i>{title}'
+        elif msg_type=='warning':
+            title = f'<i class="ui icon exclamation"></i>{title}'
+        elif msg_type == 'info':
+            title = f'<i class="ui icon info"></i>{title}'
+
         BaseWidget.__init__(self, title, parent_win=parent_win)
-        
-        self._label = ControlLabel(default=msg)
-        self._label.field_css = msg_type
+
+
+
+        #self._label = ControlLabel(default=msg)
+        #self._label.field_css = msg_type
         buttons_formset = []
             
         if buttons:
             for i, b in enumerate(buttons):
                 name = 'button_{0}'.format(i)
-                setattr(self, name, ControlButton(b, label_visible=False))
+                setattr(self, name, ControlButton(b, label_visible=False, css=buttons_css))
                 getattr(self, name ).value = make_lambda_func(handler, popup=self, button=b)
+                if len(buttons_css)>i:
+                    getattr(self, name).css = buttons_css[i]
                 buttons_formset.append(name)
     
-        self.formset = ['_label'] + ([no_columns(buttons_formset)] if buttons_formset else [])
-       
+        self.formset = [f'h5:{msg}'] + (['-', no_columns(buttons_formset)] if buttons_formset else [])

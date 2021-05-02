@@ -1,5 +1,6 @@
 import os
 from django.conf import settings
+from django.db.models import NOT_PROVIDED
 from pyforms_web.controls.control_base import ControlBase
 import simplejson
 
@@ -17,7 +18,8 @@ class ControlFileUpload(ControlBase):
 
 	def serialize(self):
 		data = super(ControlFileUpload, self).serialize()
-		if self.value:
+
+		if self.value and self.value!=NOT_PROVIDED:
 			try:
 				file_data = {
 					'name': os.path.basename(self.value),

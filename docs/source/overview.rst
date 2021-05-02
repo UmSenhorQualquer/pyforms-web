@@ -2,6 +2,8 @@
 Overview
 **********
 
+|
+
 Pyforms Web
 ============
 
@@ -28,7 +30,6 @@ Pyforms
     :width: 50%
     :align: center
 
-|
 
 Orquestra
 ==========
@@ -42,8 +43,6 @@ Orquestra implements a layout environment to accommodate Pyforms applications. T
 .. image:: /_static/imgs/orquestra.svg
     :width: 50%
     :align: center
-
-|
 
 
 Developer

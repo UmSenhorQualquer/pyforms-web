@@ -3,7 +3,7 @@ class ControlQueryCombo extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field control ControlQueryCombo' ><label>"+this.properties.label+"</label>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlQueryCombo' ><label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
 		html += "<select class='ui search dropdown' id='"+this.control_id()+"' ></select></div>";
 
 		this.jquery_place().replaceWith(html);

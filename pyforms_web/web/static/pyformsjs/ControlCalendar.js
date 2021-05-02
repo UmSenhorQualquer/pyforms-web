@@ -4,7 +4,7 @@ class ControlCalendar extends ControlBase{
 
 	init_control(){
 		
-		var html = "<div id='"+this.place_id()+"' class='field control ControlCalendar' ><label>"+this.properties.label+"</label>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlCalendar' ><label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
 		html += this.create_calendar();
 		html += "</div>";
 		

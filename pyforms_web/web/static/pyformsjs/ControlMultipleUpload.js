@@ -1,7 +1,7 @@
 class ControlMultipleUpload extends ControlBase{
 
 	init_control(){
-		var html = "<div class='field control ControlMultipleUpload' id='"+this.place_id()+"' ><label>"+this.properties.label+"</label>";
+		var html = "<div class='field control ControlMultipleUpload' id='"+this.place_id()+"' ><label for='"+this.control_id()+"'>"+this.properties.label+"</label>";
 		html += '<input type="file" name="'+this.name+'" id="'+this.control_id()+'" placeholder="'+this.properties.label+'" >';
 		html += "</div>";
 		
@@ -9,7 +9,7 @@ class ControlMultipleUpload extends ControlBase{
 		var self = this;
 		this.jquery().filer({
 			uploadFile:{
-				url:'/pyforms/upload-files/',
+				url:PYFORMS_SERVER_URL+'/pyforms/upload-files/',
 				data:{app_id:this.app_id(), control_id:this.name},
 				type: 'POST',
 				enctype: 'multipart/form-data', //Request enctype {String}

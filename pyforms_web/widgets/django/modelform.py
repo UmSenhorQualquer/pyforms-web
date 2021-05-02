@@ -28,7 +28,8 @@ from pyforms_web.utils import get_lookup_verbose_name
 import datetime
 from django.utils import timezone
 
-
+import string
+import random
 
 class ModelFormWidget(BaseWidget):
     """
@@ -106,12 +107,12 @@ class ModelFormWidget(BaseWidget):
         :param django.db.models.Model parent_model: Parent model class
         :param int pk: Model register to manage
         """
-        title = kwargs.get('title') if kwargs.get('title', None) else self.TITLE
+        title = kwargs.get('title') if 'title' in kwargs else self.TITLE
 
         self.object_pk = kwargs.get('pk', None)
-        self.model     = kwargs.get('model', self.MODEL)
+        self.model     = self.MODEL if self.MODEL else kwargs.get('model')
 
-        BaseWidget.__init__(self, *args, **kwargs )
+        BaseWidget.__init__(self, title, *args, **kwargs )
 
         self.update_permissions_variables()
 
@@ -190,6 +191,16 @@ class ModelFormWidget(BaseWidget):
     #################################################################################
     #### PROPERTIES #################################################################
     #################################################################################
+
+    @property
+    def parent_object(self):
+        if self.parent_pk and self.parent_model:
+            try:
+                return self.parent_model.objects.get(pk=self.parent_pk)
+            except self.parent_object.DoesNotExist:
+                return None
+        else:
+            return None
 
     @property
     def model_object(self):
@@ -393,7 +404,10 @@ class ModelFormWidget(BaseWidget):
                         pyforms_field.value = field.default()
 
                     elif isinstance(field, models.DecimalField) and type(field).__name__ == 'MoneyField':
-                        pyforms_field.value = field.default.amount
+                        if field.default:
+                            pyforms_field.value = field.default.amount
+                        else:
+                            pyforms_field.value = field.default
                     else:
                         pyforms_field.value = field.default
 
@@ -532,7 +546,7 @@ class ModelFormWidget(BaseWidget):
         for inline in self.inlines:
             pyforms_field = getattr(self, inline.__name__)
             pyforms_field._name = inline.__name__
-            app = inline(parent_model=self.model, parent_pk=self.object_pk)
+            app = inline(parent_model=self.model, parent_pk=self.object_pk, parent_win=self)
             self.inlines_apps.append(app)
             pyforms_field.value = app
             pyforms_field.show()
@@ -587,8 +601,14 @@ class ModelFormWidget(BaseWidget):
             if self.delete_event():
                 self.success('The object was deleted with success!','Success!')
                 popup.close()
-                if self.CLOSE_ON_REMOVE: self.close()
-            else:
+                if self.CLOSE_ON_REMOVE:
+                    self.close()
+                # update the parent list
+                if self.POPULATE_PARENT and self.parent:
+                    self.parent.populate_list()
+                    if not self.CLOSE_ON_REMOVE:
+                        self.parent.hide_form()
+        else:
                 popup.warning('The object was not deleted!','Warning!')
 
 
@@ -717,7 +737,7 @@ class ModelFormWidget(BaseWidget):
                     setattr(obj, field.name, None)
 
             # if FileField
-            elif isinstance(field, models.FileField):
+            elif isinstance(field, (models.FileField, models.ImageField) ):
                 getattr(self, field.name).error = False
 
                 # get the temporary path of the file
@@ -742,16 +762,25 @@ class ModelFormWidget(BaseWidget):
                     except os.error as e:
                         pass
 
-                    paths     = [p for p in value.split(os.path.sep) if len(p)>0][1:]
+                    paths = [p for p in value.split(os.path.sep) if len(p)>0][1:]
                     from_path = os.path.join(settings.MEDIA_ROOT,*paths)
+
 
                     if os.path.exists(from_path):
                         to_path = os.path.join(settings.MEDIA_ROOT, dirpath, filename)
+
+                        while os.path.exists(to_path):
+                            name, ext = os.path.splitext(filename)
+                            sufix = ''.join([random.choice(string.ascii_uppercase + string.digits) for _ in range(3)])
+                            filename = name+'_'+sufix+ext
+                            to_path = os.path.join(settings.MEDIA_ROOT, dirpath, filename)
+
                         os.rename(from_path, to_path)
 
                         url = '/'.join([dirpath]+[filename])
                         if url[0]=='/': url = url[1:]
                         setattr(obj, field.name, url)
+                        getattr(self, field.name).value = to_path[len(settings.BASE_DIR):]
                 elif field.null:
                     setattr(obj, field.name, None)
                 else:
@@ -799,9 +828,10 @@ class ModelFormWidget(BaseWidget):
         Returns:
             :django.db.models.Mode: Object passed as parameter
         """
+        readonly = self.get_readonly(self.readonly)
         for field in self.model._meta.get_fields():
 
-            if isinstance(field, models.ManyToManyField) and hasattr(self, field.name):
+            if isinstance(field, models.ManyToManyField) and hasattr(self, field.name) and field.name not in readonly:
                 values          = getattr(self, field.name).value
                 field_instance  = getattr(obj, field.name)
 
@@ -842,6 +872,7 @@ class ModelFormWidget(BaseWidget):
         validate the obj fields, and call the save_event function.
 
         :param django.db.models.Model obj: Model object used for the save.
+        :param Boolean new_object: Flag indicating if it is an Add or Update.
 
         Returns:
             :boolean: It returns True or False if the save was successfully.
@@ -945,7 +976,6 @@ class ModelFormWidget(BaseWidget):
         else:
             fields = []
             for field in self.model._meta.get_fields():
-
                 if field.one_to_many: continue
                 if field.one_to_one and field.name.endswith('_ptr'): continue
 
@@ -1045,19 +1075,24 @@ class ModelFormWidget(BaseWidget):
                         (c[1], c[0])
                         for c in field.get_choices(include_blank=field.blank)
                     ],
+                    set_blank_to_null = field.null,
                     default=field.default, required=required, helptext=field.help_text
                 )
-            elif isinstance(field, models.BigIntegerField):  pyforms_field = ControlInteger( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.BooleanField):     pyforms_field = ControlCheckBox( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.TimeField):        pyforms_field = ControlTime(label, default=field.default, required=required, helptext=field.help_text)
-            elif isinstance(field, models.DateTimeField):    pyforms_field = ControlDateTime( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.DateField):        pyforms_field = ControlDate( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.DecimalField):     pyforms_field = ControlDecimal( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.FileField):        pyforms_field = ControlFileUpload( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.FloatField):       pyforms_field = ControlFloat( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.ImageField):       pyforms_field = ControlFileUpload( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.IntegerField):     pyforms_field = ControlInteger( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.TextField):        pyforms_field = ControlTextArea( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.BigIntegerField):     pyforms_field = ControlInteger( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.BooleanField):        pyforms_field = ControlCheckBox( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.DateTimeField):       pyforms_field = ControlDateTime( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.DateField):           pyforms_field = ControlDate( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.DecimalField):        pyforms_field = ControlDecimal( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.FileField):           pyforms_field = ControlFileUpload( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.FloatField):          pyforms_field = ControlFloat( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.ImageField):          pyforms_field = ControlFileUpload( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.IntegerField):        pyforms_field = ControlInteger( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.PositiveIntegerField):   pyforms_field = ControlInteger(label, default=field.default, required=required, helptext=field.help_text)
+            elif isinstance(field, models.PositiveSmallIntegerField):
+                pyforms_field = ControlInteger(label, default=field.default, required=required,
+                                               helptext=field.help_text)
+            elif isinstance(field, models.SmallIntegerField):   pyforms_field = ControlInteger(label, default=field.default, required=required, helptext=field.help_text)
+            elif isinstance(field, models.TextField):           pyforms_field = ControlTextArea( label, default=field.default, required=required, helptext=field.help_text )
             elif isinstance(field, models.NullBooleanField):
                 pyforms_field = ControlCombo(
                     label,
@@ -1191,12 +1226,6 @@ class ModelFormWidget(BaseWidget):
                 handler=self.popup_remove_handler
             )
             popup.button_0.css = 'basic red'
-
-            # update the parent list
-            if self.POPULATE_PARENT and self.parent:
-                self.parent.populate_list()
-
-
 
 
 

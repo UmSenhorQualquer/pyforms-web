@@ -4,6 +4,7 @@ import threading, os, dill, filelock
 
 class PyFormsMiddleware(object):
     _request = {}
+    _users = {}
 
     USER = None
 
@@ -43,40 +44,72 @@ class PyFormsMiddleware(object):
     
     @classmethod
     def get_instance(cls, app_id):
-        user=cls.user()
-        
-        app_path = os.path.join(
-            conf.PYFORMS_WEB_APPS_CACHE_DIR,
-            '{0}-{1}'.format(user.pk, user.username),
-            "{0}.app".format(app_id)
-        )
+        user = cls.user()
 
-        if os.path.isfile(app_path): 
-            lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
-            with lock.acquire(timeout=10):
-                with open(app_path, 'rb') as f: 
-                    return dill.load(f)
+        if conf.PYFORMS_APPS_IN_MEMORY:
+            cls._users.setdefault(user.pk, {})
+            return cls._users[user.pk].get(app_id, None)
         else:
-            return None
+            app_path = os.path.join(
+                conf.PYFORMS_WEB_APPS_CACHE_DIR,
+                '{0}-{1}'.format(user.pk, user.username),
+                "{0}.app".format(app_id)
+            )
+
+            if os.path.isfile(app_path):
+                lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
+                with lock.acquire(timeout=10):
+                    with open(app_path, 'rb') as f:
+                        return dill.load(f)
+            else:
+                return None
+
+
+    @classmethod
+    def commit_instance(cls, app):
+        user = cls.user()
+
+        if conf.PYFORMS_APPS_IN_MEMORY:
+            cls._users.setdefault(user.pk, {})
+            cls._users[user.pk][app.uid] = app
+        else:
+            # save the modifications
+            userpath = os.path.join(
+                conf.PYFORMS_WEB_APPS_CACHE_DIR,
+                '{0}-{1}'.format(user.pk, user.username)
+            )
+            if not os.path.exists(userpath): os.makedirs(userpath)
+
+            app_path = os.path.join(userpath, "{0}.app".format(app.uid))
+
+            lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
+            with lock.acquire(timeout=4):
+                with open(app_path, 'wb') as f:
+                    dill.dump(app, f, protocol=4)
+
 
     @classmethod
     def remove_instance(cls, app_id):
-        user=cls.user()
-        app_path = os.path.join(
-            conf.PYFORMS_WEB_APPS_CACHE_DIR,
-            '{0}-{1}'.format(user.pk, user.username),
-            "{0}.app".format(app_id)
-        )
-        if os.path.isfile(app_path):
-            lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
-            with lock.acquire(timeout=10): 
-                os.remove(app_path)
-            return True
+        user = cls.user()
+
+        if conf.PYFORMS_APPS_IN_MEMORY:
+            cls._users.setdefault(user.pk, {})
+            if app_id in cls._users[user.pk]:
+                del cls._users[user.pk][app_id]
+                return True
+            else:
+                return False
         else:
-            return False
-        
 
-
-    ##################################################################################################
-    ##################################################################################################
-    ##################################################################################################
+            app_path = os.path.join(
+                conf.PYFORMS_WEB_APPS_CACHE_DIR,
+                '{0}-{1}'.format(user.pk, user.username),
+                "{0}.app".format(app_id)
+            )
+            if os.path.isfile(app_path):
+                lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
+                with lock.acquire(timeout=10):
+                    os.remove(app_path)
+                return True
+            else:
+                return False

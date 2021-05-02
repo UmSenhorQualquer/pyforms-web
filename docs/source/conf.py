@@ -53,7 +53,7 @@ extensions = [
     'sphinx_js'
 ]
 
-js_source_path = '../../pyforms_web/web/static/pyformsjs'
+js_source_path = os.path.join( os.path.dirname(os.path.realpath(__file__)),  '../../pyforms_web/web/static/pyformsjs')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

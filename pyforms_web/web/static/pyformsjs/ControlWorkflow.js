@@ -3,7 +3,7 @@ class ControlWorkflow extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field control ControlWorkflow ui segment' ><label>"+this.properties.label+"</label><div id='"+this.control_id()+"' ></div></div>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlWorkflow ui segment' ><label for='"+this.control_id()+"'>"+this.properties.label+"</label><div id='"+this.control_id()+"' ></div></div>";
 		this.jquery_place().replaceWith(html);
 
 		var self = this;

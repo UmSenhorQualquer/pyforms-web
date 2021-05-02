@@ -1,8 +1,3 @@
-.. Pyforms Web documentation master file, created by
-   sphinx-quickstart on Thu Dec 14 16:30:21 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Pyforms Web documentation!
 ===========================
 
@@ -88,7 +83,16 @@ The next code produces the next web application.
    getting-started/first-app
    getting-started/db-apps
    getting-started/formset
+   getting-started/apps-permissions
+   getting-started/apps-inheritance
+   getting-started/advance-db
 
+.. toctree::
+   :maxdepth: 4
+   :caption: Orquestra
+
+   orquestra/index
+   
 .. toctree::
    :maxdepth: 4
    :caption: API
