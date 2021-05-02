@@ -14,3 +14,5 @@ build/
 dist/
 
 tutorials/tutorial_inheritance/apps-cache/
+
+tutorials/tutorial_advance_db/apps-cache/

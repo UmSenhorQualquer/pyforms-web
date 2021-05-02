@@ -12,6 +12,8 @@ from pyforms_web.controls.control_button             import ControlButton
 from pyforms_web.controls.control_emptywidget        import ControlEmptyWidget
 from pyforms_web.controls.control_fileupload         import ControlFileUpload
 from pyforms_web.controls.control_checkbox           import ControlCheckBox
+from pyforms_web.controls.control_time           import ControlTime
+
 from pyforms_web.web.middleware import PyFormsMiddleware
 from django.core.exceptions import ValidationError, FieldDoesNotExist, NON_FIELD_ERRORS
 from .utils import get_fieldsets_strings
@@ -722,6 +724,17 @@ class ModelFormWidget(BaseWidget):
             # if AutoField
             if   isinstance(field, models.AutoField):
                 continue
+
+            # if TimeField
+            elif isinstance(field, models.TimeField):
+                pyforms_field.error = False
+                if pyforms_field.value:
+                    setattr(obj, field.name, ':'.join([
+                        str(pyforms_field.value // 60),
+                        str(pyforms_field.value % 60)
+                    ]))
+                else:
+                    setattr(obj, field.name, None)
 
             # if FileField
             elif isinstance(field, (models.FileField, models.ImageField) ):

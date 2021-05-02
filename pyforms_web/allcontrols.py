@@ -45,6 +45,7 @@ from .controls.control_timeout                import ControlTimeout
 from .controls.control_visvis                 import ControlVisVis
 from .controls.control_workflow               import ControlWorkflow 
 from .controls.control_img                    import ControlImg
+from .controls.control_time                   import ControlTime
 from .controls.control_tree                   import ControlTree
 from .controls.control_search                 import ControlSearch
 from .controls.control_playerjs               import ControlPlayerJs
