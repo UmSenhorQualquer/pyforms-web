@@ -51,6 +51,7 @@ JSFILES_DEBUG = [
     "/static/pyformsjs/ControlTimeout.js",
     "/static/pyformsjs/ControlEmptyWidget.js",
     "/static/pyformsjs/ControlMenu.js",
+    "/static/pyformsjs/ControlTime.js",
     "/static/pyformsjs/ControlTree.js",
     "/static/pyformsjs/ControlOrganogram.js",
     "/static/pyformsjs/ControlWorkflow.js",

@@ -12,6 +12,8 @@ from pyforms_web.controls.control_button             import ControlButton
 from pyforms_web.controls.control_emptywidget        import ControlEmptyWidget
 from pyforms_web.controls.control_fileupload         import ControlFileUpload
 from pyforms_web.controls.control_checkbox           import ControlCheckBox
+from pyforms_web.controls.control_time           import ControlTime
+
 from pyforms_web.web.middleware import PyFormsMiddleware
 from django.core.exceptions import ValidationError, FieldDoesNotExist, NON_FIELD_ERRORS
 from .utils import get_fieldsets_strings
@@ -703,6 +705,17 @@ class ModelFormWidget(BaseWidget):
             if   isinstance(field, models.AutoField):
                 continue
 
+            # if TimeField
+            elif isinstance(field, models.TimeField):
+                pyforms_field.error = False
+                if pyforms_field.value:
+                    setattr(obj, field.name, ':'.join([
+                        str(pyforms_field.value // 60),
+                        str(pyforms_field.value % 60)
+                    ]))
+                else:
+                    setattr(obj, field.name, None)
+
             # if FileField
             elif isinstance(field, models.FileField):
                 getattr(self, field.name).error = False
@@ -1034,16 +1047,17 @@ class ModelFormWidget(BaseWidget):
                     ],
                     default=field.default, required=required, helptext=field.help_text
                 )
-            elif isinstance(field, models.BigIntegerField):             pyforms_field = ControlInteger( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.BooleanField):                pyforms_field = ControlCheckBox( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.DateTimeField):               pyforms_field = ControlDateTime( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.DateField):                   pyforms_field = ControlDate( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.DecimalField):                pyforms_field = ControlDecimal( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.FileField):                   pyforms_field = ControlFileUpload( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.FloatField):                  pyforms_field = ControlFloat( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.ImageField):                  pyforms_field = ControlFileUpload( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.IntegerField):                pyforms_field = ControlInteger( label, default=field.default, required=required, helptext=field.help_text )
-            elif isinstance(field, models.TextField):                   pyforms_field = ControlTextArea( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.BigIntegerField):  pyforms_field = ControlInteger( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.BooleanField):     pyforms_field = ControlCheckBox( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.TimeField):        pyforms_field = ControlTime(label, default=field.default, required=required, helptext=field.help_text)
+            elif isinstance(field, models.DateTimeField):    pyforms_field = ControlDateTime( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.DateField):        pyforms_field = ControlDate( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.DecimalField):     pyforms_field = ControlDecimal( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.FileField):        pyforms_field = ControlFileUpload( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.FloatField):       pyforms_field = ControlFloat( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.ImageField):       pyforms_field = ControlFileUpload( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.IntegerField):     pyforms_field = ControlInteger( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.TextField):        pyforms_field = ControlTextArea( label, default=field.default, required=required, helptext=field.help_text )
             elif isinstance(field, models.NullBooleanField):
                 pyforms_field = ControlCombo(
                     label,
