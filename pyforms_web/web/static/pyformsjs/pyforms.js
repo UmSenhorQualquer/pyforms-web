@@ -149,7 +149,8 @@ class PyformsManager{
             if(show_loading) basewidget.loading();
             data2send = basewidget.serialize_data(data2send);
             
-            var jsondata =  $.toJSON(data2send);
+            //var jsondata =  $.toJSON(data2send);
+	        var jsondata =  JSON.stringify(data2send);
             var self = this;
             
             $.ajaxSetup({async: true, cache: true});

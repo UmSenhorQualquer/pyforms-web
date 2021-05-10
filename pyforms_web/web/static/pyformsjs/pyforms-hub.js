@@ -19,7 +19,8 @@ function run_application(application, constructor_params, method_params){
 	if(method_params) 		data2send['method'] 	 = method_params;
 	if(constructor_params) 	data2send['constructor'] = constructor_params;
 	
-	data2send = $.toJSON(data2send);
+	//data2send = $.toJSON(data2send);
+	data2send = JSON.stringify(data2send);
 
 	$.ajaxSetup({async: false, cache: true});
     $.ajax({
