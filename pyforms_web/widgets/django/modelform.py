@@ -411,7 +411,7 @@ class ModelFormWidget(BaseWidget):
                     else:
                         pyforms_field.value = field.default
 
-                    if field.get_internal_type() in ('CharField', 'TextField') and field.blank:
+                    if field.get_internal_type() in ('CharField', 'TextField', 'JSONField') and field.blank:
                         pyforms_field.value = ''
                 except FieldDoesNotExist:
                     pass
@@ -1057,7 +1057,7 @@ class ModelFormWidget(BaseWidget):
             # if it is read only
             elif field.name in self.readonly:
 
-                if isinstance(field, models.TextField):
+                if isinstance(field, (models.TextField, models.JSONField)):
                     pyforms_field = ControlTextArea( label, readonly=True, required=required, helptext=field.help_text )
                 else:
                     pyforms_field = ControlText( label, readonly=True, required=required, helptext=field.help_text )
