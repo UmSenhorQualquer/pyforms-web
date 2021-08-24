@@ -14,9 +14,6 @@ class ControlProgress(ControlBase):
                 
     def init_form(self): return "new ControlProgress('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
-
-
-
     @property
     def min(self): return self._min
     @min.setter
@@ -30,4 +27,11 @@ class ControlProgress(ControlBase):
     def max(self, value): 
         if self._max!=value: self.mark_to_update_client()
         self._max = value
-        
+
+    def serialize(self):
+        res = super().serialize()
+        res.update({
+            'max': self.max,
+            'min': self.min
+        })
+        return res

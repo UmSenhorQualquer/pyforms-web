@@ -16,7 +16,7 @@ from confapp import conf
 
 import uuid, os, inspect, dill, simplejson, filelock
 from django.core.exceptions import PermissionDenied
-   
+
 class BaseWidget(object):
     """
     The class implements a application form
@@ -28,8 +28,8 @@ class BaseWidget(object):
     TITLE = None #: str: Title of the application.
 
     #: int or str: Id of the layout handler function registered in the javascript by the function [pyforms.register_layout_place] or Element DOM id in the HTML where the application should be shown.
-    LAYOUT_POSITION = None 
-    
+    LAYOUT_POSITION = None
+
     #: str: Time in milliseconds to refresh the application.
     REFRESH_TIMEOUT = None
 
@@ -54,15 +54,15 @@ class BaseWidget(object):
            class FeedViewerApp(BaseWidget):
 
                 TITLE = 'Feed viewer'
-                 
+
                 def __init__(self, *args, **kwargs):
-                    
+
                     self._likebtn    = ControlButton(label_visible=False, labeled=True)
                     self._htmlviewer = ControlTemplate('Html', template=self.VIEWER_TEMPLATE)
-                    
+
                     self.formset = ['_likebtn', '_htmlviewer']
         """
-        
+
 
         self._formset       = None
         self._splitters     = []
@@ -76,7 +76,7 @@ class BaseWidget(object):
         self._close_widget  = False
 
         self.init_form_result = None
-         
+
         self._uid =  self.UID if hasattr(self, 'UID') and self.UID else 'a'+str(uuid.uuid4())
 
         self._messages        = []
@@ -89,6 +89,10 @@ class BaseWidget(object):
         self.parent = kwargs.get('parent_win', None)
         self.is_new_app = True
 
+        self.streaming_func = None
+        self.start_streaming = False
+        self.abort_streaming = False
+
         if not self.has_session_permissions(PyFormsMiddleware.user()):
             raise PermissionDenied('The user does not have access to the app [{0}]'.format(self.title))
 
@@ -97,7 +101,7 @@ class BaseWidget(object):
 
 
 
-    
+
     ############################################################################
     ############ FUNCTIONS #####################################################
     ############################################################################
@@ -107,7 +111,7 @@ class BaseWidget(object):
         Generate the application Form. Return the dict:
 
         .. code:: python
-        
+
            {
                 'code': ...,           # HTML code that will initialize the application.
                 'title': ...,          # Title of the application.
@@ -117,13 +121,13 @@ class BaseWidget(object):
            }
 
         """
-        
+
         self._html = ''
         self._js = ''
         self._controls = [c.init_form() for c in self.controls.values()]
-        if self._formset != None: 
+        if self._formset != None:
             self._html += self.generate_panel(self._formset)
-            
+
 
         parent_code = 'undefined'
         if parent: parent_code = "'{0}'".format(parent.uid)
@@ -146,13 +150,13 @@ class BaseWidget(object):
             'code': self._html,
             'title': self._title,
             'css': self._css,
-            'app_id':self.uid, 
+            'app_id':self.uid,
             'refresh_timeout':  self.refresh_timeout
         }
 
-       
+
         return res
-        
+
 
 
 
@@ -231,15 +235,15 @@ class BaseWidget(object):
 
 
     def generate_panel(self, formset):
-        """  
-        Generate a panel for the application form with all the controls: 
-        
+        """
+        Generate a panel for the application form with all the controls:
+
         :param list formset: formset configuration, used to generate the panel.
-        
+
         **Example:**
 
         .. code-block:: python
-            
+
            [
                 no_columns('_toggle_btn','_copy_btn', '_css_btn'),
                 ' ',
@@ -279,9 +283,9 @@ class BaseWidget(object):
 
         - **tuple**: displays the controls horizontally.
 
-        - **list**: displays the controls vertically.   
+        - **list**: displays the controls vertically.
 
-        - **dict**: displays the controls in Tabs.  
+        - **dict**: displays the controls in Tabs.
 
             - Use [a:,b:,c:] prefix to sort the tabs.
 
@@ -292,7 +296,7 @@ class BaseWidget(object):
         - **Empty column**: Use ' ', or the prefix 'empty:' + size of the column (ex: one, two, ..., sixteen) to add a empty column.
 
         - **segment**: Wraps the formset around a segment (Semantic UI segment).
-            
+
             - Call the parameter **css**, to add extra classes to the segment.
 
         - **no_columns**: Do not apply the fields columns alignments.
@@ -302,7 +306,7 @@ class BaseWidget(object):
         - **Message**: By using the prefixes [msg:,info:,warning:,alert:] you will wrap a free message on message box.
 
         - **Headers**: Use the prefixes [h1:,h2:,h3:,h4:,h5:,h1-right:,h2-right:,h3-right:,h4-right:,h5-right:] on free text.
-        
+
         """
         if formset is None:
             return ''
@@ -338,7 +342,7 @@ class BaseWidget(object):
         elif isinstance(formset, list):
             layout  = ""
             for row in formset:
-                if row == ' ': 
+                if row == ' ':
                     layout += "<div class='field-empty-space' ></div>"
                 else:
                     layout += self.generate_panel( row )
@@ -349,13 +353,13 @@ class BaseWidget(object):
 
         else:
             return self.generate_control(formset)
-  
 
 
-    
+
+
     def save_form(self, data={}, path=None):
         """
-        Called to save the form  
+        Called to save the form
 
         TODO
         """
@@ -363,12 +367,12 @@ class BaseWidget(object):
 
     def load_form(self, data, path=None):
         """
-        Called to load a form  
-        
+        Called to load a form
+
         TODO
         """
         pass
-    
+
     def save_window(self):
         pass
 
@@ -377,8 +381,8 @@ class BaseWidget(object):
 
     def load_form_filename(self, filename):
         """
-        Load the forms from a file  
-        
+        Load the forms from a file
+
         TODO
         """
         pass
@@ -404,7 +408,7 @@ class BaseWidget(object):
     def success(self,   msg, title=None):
         """
         Write a success message
-        
+
         :param str msg: Message to show.
         :param str title: Message title.
         """
@@ -412,7 +416,7 @@ class BaseWidget(object):
     def info(self,      msg, title=None):
         """
         Write a info message
-        
+
         :param str msg: Message to show.
         :param str title: Message title.
         """
@@ -420,7 +424,7 @@ class BaseWidget(object):
     def warning(self,   msg, title=None):
         """
         Write a warning message
-        
+
         :param str msg: Message to show.
         :param str title: Message title.
         """
@@ -428,7 +432,7 @@ class BaseWidget(object):
     def alert(self,     msg, title=None):
         """
         Write a alert message
-        
+
         :param str msg: Message to show.
         :param str title: Message title.
         """
@@ -437,16 +441,16 @@ class BaseWidget(object):
     def message_popup(self, msg, title='', buttons=None, handler=None, msg_type='', buttons_css=[]):
         """
         Show a popup message window
-        
+
         :param str msg: Message to show.
         :param str title: Message title.
         :param list(str) buttons: List of buttons labels to create in the popup window.
         :param str msg_type: Message box css class.
         :param method handler: Method that will handle the press of the buttons.
         :param buttons_css handler: CSS class of the buttons.
-    
+
         .. code:: python
-           
+
            # Handler
            def button_pressed_btn(popup=[Popup instance], button=[Label of the pressed button]):
                 ...
@@ -466,7 +470,7 @@ class BaseWidget(object):
     def success_popup(self, msg, title='', buttons=None, handler=None, buttons_css=[]):
         """
         Show a popup success message window
-        
+
         :param str msg: Message to show.
         :param str title: Message title.
         :param list(str) buttons: List of buttons labels to create in the popup window.
@@ -478,7 +482,7 @@ class BaseWidget(object):
     def info_popup(self, msg, title='', buttons=None, handler=None, buttons_css=[]):
         """
         Show a popup info message window
-        
+
         :param str msg: Message to show.
         :param str title: Message title.
         :param list(str) buttons: List of buttons labels to create in the popup window.
@@ -490,7 +494,7 @@ class BaseWidget(object):
     def warning_popup(self, msg, title='', buttons=None, handler=None, buttons_css=[]):
         """
         Show a popup warning message window
-        
+
         :param str msg: Message to show.
         :param str title: Message title.
         :param list(str) buttons: List of buttons labels to create in the popup window.
@@ -502,7 +506,7 @@ class BaseWidget(object):
     def alert_popup(self, msg, title='', buttons=None, handler=None, buttons_css=[]):
         """
         Show a popup alert message window
-        
+
         :param str msg: Message to show.
         :param str title: Message title.
         :param list(str) buttons: List of buttons labels to create in the popup window.
@@ -515,11 +519,11 @@ class BaseWidget(object):
     def add_timeout(self, milliseconds, call_function):
         self._timeouts.append( (milliseconds, call_function.__name__) )
         self.mark_to_update_client()
-    
+
     ##########################################################################
     ############ WEB functions ###############################################
     ##########################################################################
-    
+
 
     def __get_fields_class(self, row):
         """
@@ -552,7 +556,7 @@ class BaseWidget(object):
 
     def commit(self):
         """
-        Save all the application updates to a file, so it can be used in the next session. 
+        Save all the application updates to a file, so it can be used in the next session.
         """
         for key, item in self.controls.items(): item.commit()
 
@@ -561,13 +565,13 @@ class BaseWidget(object):
     def execute_js(self, code):
         """
         This function executes a javascript remotely on the client side.
-        
+
         :param str code: Javascript code to execute.
         """
         self._js_code2execute.append(code)
         self.mark_to_update_client()
 
-    
+
 
     def mark_to_update_client(self):
         """
@@ -581,23 +585,23 @@ class BaseWidget(object):
     def deserialize_form(self, params):
         """
         Load the json parameters sent by the client side
-        
+
         :param dict params: Data to load.
         """
         widgets = []
 
         #if hasattr(self, 'parent') and isinstance(self.parent, str):
         #    self.parent = PyFormsMiddleware.get_instance(self.parent)
-    
+
 
         for key, value in params.items():
             control = self.controls.get(key, None)
-            if control!=None: 
+            if control!=None:
                 if control.__class__.__name__=='ControlEmptyWidget':
                     widgets.append( (control, params[key]) )
                 else:
                     control.deserialize(params[key])
-        
+
         for control, data in widgets: control.deserialize(data)
 
         if 'event' in params.keys():
@@ -608,9 +612,9 @@ class BaseWidget(object):
                 func()
             elif control=='self':
                 func = getattr(self, params['event']['event'])
-                func()                  
+                func()
 
-                    
+
 
     def serialize_form(self):
         """
@@ -620,19 +624,23 @@ class BaseWidget(object):
             dict: Data representings the current state of the application.
         """
         res = {
-            'uid':              self.uid, 
+            'uid':              self.uid,
             'layout_position':  self.LAYOUT_POSITION if hasattr(self, 'LAYOUT_POSITION') else 5,
             'title':            self.title,
             'close_widget':     self._close_widget,
             'js-code':          list(self._js_code2execute),
             'refresh_timeout':  self.refresh_timeout,
-            'timeouts':         self._timeouts
+            'timeouts':         self._timeouts,
+			'start_streaming':  self.start_streaming,
+			'abort_streaming':  self.abort_streaming
         }
+        self.start_streaming = False
+        self.abort_streaming = False
 
         self._timeouts = []
         self._js_code2execute = []
-        
-        if len(self._messages)>0: 
+
+        if len(self._messages)>0:
             res.update({'messages': self._messages})
             if self._formLoaded: self._messages = []
 
@@ -651,16 +659,27 @@ class BaseWidget(object):
 
         return res
 
+    def stream_status(self):
+        for _ in self.streaming_func():
+            yield simplejson.dumps(self.serialize_form())
+        self.abort_streaming = True
+        yield simplejson.dumps(self.serialize_form())
+
+    def stream(self, func):
+        self.streaming_func = func
+        self.start_streaming = True
+        self.abort_streaming = True
+        self.mark_to_update_client()
 
     @classmethod
     def has_permissions(cls, user):
         """
         This class method, verifies if a user has permissions to execute the application
-        
+
         :param User params: User to availuate the permissions.
         """
         if hasattr(cls, 'AUTHORIZED_GROUPS') and cls.AUTHORIZED_GROUPS is not None:
-            if user.is_superuser and 'superuser' in cls.AUTHORIZED_GROUPS: 
+            if user.is_superuser and 'superuser' in cls.AUTHORIZED_GROUPS:
                 return True
             if user.groups.filter(name__in=cls.AUTHORIZED_GROUPS).exists():
                 return True
@@ -668,11 +687,11 @@ class BaseWidget(object):
             return True
 
         return False
-        
+
     def has_session_permissions(self, user):
         """
         It verifies if a user has permissions to execute the application during the runtime.
-        
+
         :param User params: User to availuate the permissions.
         """
         return self.has_permissions(user)
@@ -685,8 +704,8 @@ class BaseWidget(object):
 
     def before_close_event(self):
         """
-        Function called before the Form is closed.  
-        
+        Function called before the Form is closed.
+
         TODO
         """
         pass
@@ -707,7 +726,7 @@ class BaseWidget(object):
     ############ Properties ####################################################
     ############################################################################
 
-    
+
     @property
     def controls(self):
         """
@@ -723,12 +742,12 @@ class BaseWidget(object):
         return result
 
     @property
-    def form(self): 
+    def form(self):
         """
         Return the basewidget html. The html is based on the 'basewidget-template.html' template
         """
-        return render_to_string( 
-            os.path.join('pyforms', 'basewidget-template.html'), 
+        return render_to_string(
+            os.path.join('pyforms', 'basewidget-template.html'),
             {'application_html': self._html, 'application_id': self.uid}
         )
 
@@ -745,8 +764,8 @@ class BaseWidget(object):
     @property
     def mainmenu(self):
         """
-        Return and set the mainmenu  
-        
+        Return and set the mainmenu
+
         TODO
         """
         return None
@@ -780,21 +799,21 @@ class BaseWidget(object):
     @property
     def visible(self):
         """
-        Return a boolean indicating if the form is visible or not 
+        Return a boolean indicating if the form is visible or not
         """
         return True
 
     @property
     def refresh_timeout(self):
         """
-        Return a boolean indicating if the form is visible or not 
+        Return a boolean indicating if the form is visible or not
         """
         return self._refresh_timeout
 
     @refresh_timeout.setter
     def refresh_timeout(self, value): self._refresh_timeout = value
 
-    
+
     @property
     def parent(self):
         if hasattr(self, '_parent_win_id'):
@@ -819,8 +838,8 @@ class BaseWidget(object):
     ############################################################################
     ############ WEB Properties ################################################
     ############################################################################
-    
-        
+
+
     @property
     def js(self):
         """
@@ -830,12 +849,12 @@ class BaseWidget(object):
 
 
 
-    
-    
-   
-    
-    
-    
+
+
+
+
+
+
 
 
 
@@ -868,7 +887,7 @@ class PopupWindow(BaseWidget):
         #self._label = ControlLabel(default=msg)
         #self._label.field_css = msg_type
         buttons_formset = []
-            
+
         if buttons:
             for i, b in enumerate(buttons):
                 name = 'button_{0}'.format(i)
@@ -877,5 +896,5 @@ class PopupWindow(BaseWidget):
                 if len(buttons_css)>i:
                     getattr(self, name).css = buttons_css[i]
                 buttons_formset.append(name)
-    
+
         self.formset = [f'h5:{msg}'] + (['-', no_columns(buttons_formset)] if buttons_formset else [])

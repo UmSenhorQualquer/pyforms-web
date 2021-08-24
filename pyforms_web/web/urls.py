@@ -1,8 +1,9 @@
-from django.conf.urls 				import url
-from pyforms_web.web.views 	import update_app, remove_app
-from pyforms_web.web.views 	import register_app, open_app, upload_files
-from pyforms_web.web.views 	import autocomplete_search
-from pyforms_web.web.views  import controllist_queryset_export_csv
+from django.conf.urls 	   import url
+from pyforms_web.web.views import update_app, remove_app
+from pyforms_web.web.views import register_app, open_app, upload_files
+from pyforms_web.web.views import autocomplete_search
+from pyforms_web.web.views import controllist_queryset_export_csv
+from pyforms_web.web.views import field_stream, app_stream
 
 
 urlpatterns = [
@@ -12,6 +13,8 @@ urlpatterns = [
 	url(r'^app/remove/(?P<app_id>[a-zA-Z._\- 0-9]+)/', 		 remove_app		),
 	url(r'^export-csv/(?P<app_id>[a-zA-Z._\- 0-9]+)/(?P<fieldname>[a-zA-Z._\- 0-9]+)/', controllist_queryset_export_csv	),
 	url(r'^autocomplete/(?P<app_id>[a-zA-Z._\- 0-9]+)/(?P<fieldname>[a-zA-Z._\- 0-9]+)/(?P<keyword>[a-zA-Z._\- 0-9]+)/',     autocomplete_search	),
-	url(r'^autocomplete/(?P<app_id>[a-zA-Z._\- 0-9]+)/(?P<fieldname>[a-zA-Z._\- 0-9]+)/',     autocomplete_search	),
+	url(r'^autocomplete/(?P<app_id>[a-zA-Z._\- 0-9]+)/(?P<fieldname>[a-zA-Z._\- 0-9]+)/', autocomplete_search),
+	url(r'^field-stream/(?P<app_id>[a-zA-Z._\- 0-9]+)/(?P<fieldname>[a-zA-Z._\- 0-9]+)/', field_stream),
+	url(r'^app-stream/(?P<app_id>[a-zA-Z._\- 0-9]+)/', app_stream),
 	url(r'^upload-files/', upload_files	),
 ]

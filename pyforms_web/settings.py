@@ -17,7 +17,9 @@ except:
 	PYFORMS_WEB_LOCKFILE 	   = 'lockfile.txt'
 
 PYFORMS_JSFILES_DEBUG = [
+    #"MultiInheritance.js",
     "ControlBase.js",
+    "BaseControlStreaming.js",
     "ControlAutoComplete.js",
     "ControlText.js",
     "ControlTextArea.js",

@@ -1,6 +1,14 @@
-class ControlTextArea extends ControlBase {
+
+class ControlTextArea extends BaseControlStreaming {
+
+    xmlhttp = undefined;
+
+    constructor(name, properties){
+        super(name, properties);
+    }
 
     init_control() {
+
         var html = `<div id='${this.place_id()}' class='field control ControlTextArea' >
 		    <label for='${this.control_id()}'>${this.properties.label}</label>
 		    <textarea placeholder='${this.properties.placeholder}' type='text'
@@ -16,7 +24,7 @@ class ControlTextArea extends ControlBase {
             self.basewidget.fire_event(this.name, 'update_control_event');
         });
 
-        if (this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
+        if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 		if(this.properties.required) this.set_required();
     };
 
@@ -38,6 +46,11 @@ class ControlTextArea extends ControlBase {
     disable(){
         this.jquery().attr('readonly', 'readonly');
         this.jquery().addClass('disabled');
+    }
+
+    stream_update(oEvent){
+        super.stream_update(oEvent);
+        this.jquery()[0].scrollTop = this.jquery()[0].scrollHeight
     }
 }
 

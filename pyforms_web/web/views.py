@@ -1,4 +1,4 @@
-from django.http                    import HttpResponse
+from django.http                    import HttpResponse, StreamingHttpResponse
 from django.views.decorators.cache  import never_cache
 from django.views.decorators.csrf   import csrf_exempt
 from pyforms_web.web                import ApplicationsLoader
@@ -96,6 +96,26 @@ def remove_app(request, app_id):
     return HttpResponse(simplejson.dumps(data), "application/json")
 
 
+def app_stream(request, app_id, keyword=None):
+    app = ApplicationsLoader.get_instance(request, app_id)
+
+    response = StreamingHttpResponse(
+        app.stream_status(),
+        content_type='text/event-stream',
+        status=200)
+    response['Cache-Control'] = 'no-cache'
+    return response
+
+def field_stream(request, app_id, fieldname, keyword=None):
+    app = ApplicationsLoader.get_instance(request, app_id)
+    field = getattr(app, fieldname)
+
+    response = StreamingHttpResponse(
+        field.streaming_func(),
+        content_type='text/event-stream',
+        status=200)
+    response['Cache-Control'] = 'no-cache'
+    return response
 
 
 @never_cache

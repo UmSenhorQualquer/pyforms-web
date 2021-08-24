@@ -139,8 +139,8 @@ class ControlBase{
     */
     set_value(value){
         if(this.jquery().length>0)
-            if(this.properties.value!=null)
-                this.jquery().val(this.properties.value);
+            if(value!=null)
+                this.jquery().val(value);
             else
                 this.jquery().val('');
     }

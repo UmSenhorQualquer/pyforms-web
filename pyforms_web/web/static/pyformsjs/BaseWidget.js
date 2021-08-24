@@ -15,6 +15,8 @@ class BaseWidget{
         this.parent_id  = parent_id;
         this.layout_position = data.layout_position;
         this.timeouts_loops = [];
+        this.xmlhttp = undefined;
+        this.stream_length = 0;
 
         // variables used to verify if the loading layer needs to be shown or not
         this.loading_begin   = undefined;
@@ -219,9 +221,38 @@ class BaseWidget{
                 );
             }
         }
+
+        // streaming
+        if(data['abort_streaming']) {
+            if( this.xmlhttp ){
+                this.xmlhttp.abort()
+                this.stream_length = 0;
+            }
+            this.xmlhttp = undefined;
+        }
+        if(data['start_streaming']){
+            console.debug('start_streaming')
+            this.xmlhttp = new XMLHttpRequest();
+            this.xmlhttp.addEventListener('load', this.stream_end);
+            this.xmlhttp.addEventListener('progress', (evt) => this.stream_update(evt), false);
+            this.xmlhttp.open("get", `/pyforms/app-stream/${this.widget_id}/`, true);
+            this.xmlhttp.send();
+        }
     }
     ////////////////////////////////////////////////////////////
 
+    stream_end(){
+        this.stream_length = 0;
+    }
+
+    stream_update(oEvent){
+        const data =  oEvent.target.responseText.substring(this.stream_length)
+        console.debug(this.stream_length, data)
+        //console.debug(JSON.parse(data))
+        this.deserialize(JSON.parse(data));
+        this.stream_length = oEvent.target.responseText.length;
+    }
+    ////////////////////////////////////////////////////////////
     /**
     Serializes the application to send to the server.
     @returns {object}.
