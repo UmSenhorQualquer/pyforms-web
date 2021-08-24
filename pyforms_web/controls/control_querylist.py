@@ -37,6 +37,9 @@ def format_list_column(col_value, raw=False):
     elif isinstance(col_value, datetime.date):
         if not col_value: return ''
         return col_value.strftime('%Y-%m-%d')
+    elif isinstance(col_value, datetime.time):
+        if not col_value: return ''
+        return str(col_value)
     elif isinstance(col_value, bool):
         if raw:
             return str(col_value)
