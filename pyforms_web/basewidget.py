@@ -1,3 +1,5 @@
+import time
+
 try:
     from .controls.control_player import ControlPlayer
 except:
@@ -661,9 +663,12 @@ class BaseWidget(object):
 
     def stream_status(self):
         for _ in self.streaming_func():
+            time.sleep(0.1)
             yield simplejson.dumps(self.serialize_form())
         self.abort_streaming = True
+        time.sleep(0.1)
         yield simplejson.dumps(self.serialize_form())
+
 
     def stream(self, func):
         self.streaming_func = func
