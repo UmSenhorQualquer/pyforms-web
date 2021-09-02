@@ -32,6 +32,9 @@ class ControlList(ControlBase):
         self._selected_index    = kwargs.get('selected_row_index',-1)
         self._columns_style     = kwargs.get('columns_style', None)
         self._columns_align     = kwargs.get('columns_align', [])
+        self._columns_size     = kwargs.get('columns_size', [])
+
+        kwargs.setdefault('label_visible', False)
 
         if 'row_double_click_event' in kwargs:
             self.row_double_click_event = kwargs['row_double_click_event']
@@ -102,10 +105,30 @@ class ControlList(ControlBase):
         self._selected_index = -1
         ControlBase.value.fset(self, value)
 
+    @property
+    def columns_size(self):
+        return self._columns_size
+
+    @columns_size.setter
+    def columns_size(self, value):
+        self.mark_to_update_client()
+        self._columns_size = value
+
+    @property
+    def columns_align(self):
+        return self._columns_align
+
+    @columns_align.setter
+    def columns_align(self, value):
+        self.mark_to_update_client()
+        self._columns_align = value
+
     def serialize(self):
         data = ControlBase.serialize(self)
 
         data.update({
+            'columns_align':   self.columns_align,
+            'columns_size':    self.columns_size,
             'columns_style':        self.columns_style,
             'horizontal_headers':   self.horizontal_headers,
             'read_only':            1 if self._read_only else 0,
@@ -116,4 +139,3 @@ class ControlList(ControlBase):
 
     def deserialize(self, properties):
         self._selected_index = properties['selected_index']
-        

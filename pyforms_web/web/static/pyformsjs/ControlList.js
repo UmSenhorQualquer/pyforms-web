@@ -9,14 +9,14 @@ class ControlList extends ControlBase{
 
 	init_control(){
 		this.set_value(this.properties.value);
-		
+
 
 		if(this.properties.required) this.set_required();
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
 
-	get_value(){ 
+	get_value(){
 		var res=[];
 		$( "#"+this.control_id()+" tbody tr" ).each(function(i, row){
 			var new_row=[]
@@ -39,9 +39,9 @@ class ControlList extends ControlBase{
 
 	load_table(){
 		var html = "<div id='"+this.place_id()+"' class='field control'>";
-		if(this.properties.label_visible) html += "<label for='"+this.control_id()+"'>&nbsp;</label>";
+		if(this.properties.label_visible) html += `<label for='${this.control_id()}'>${this.properties.label}</label>`;
 		html += "<div style='overflow-x: auto;' ><table class='ui selectable celled table "+this.properties.css+" ControlList' id='"+this.control_id()+"' >";
-		
+
 		// GENERATE THE HEADER
 		html += "<thead>";
 		html += "<tr>";
@@ -56,7 +56,7 @@ class ControlList extends ControlBase{
 		// END GENERATE THE HEADER
 
 		var data = this.properties.value;
-		
+
 		html += "<tbody></div>";
 		if(data!=undefined)
 			for(var i=0; i<data.length; i++){
@@ -67,9 +67,9 @@ class ControlList extends ControlBase{
 				if(data[i]) length = data[i].length;
 				for(var j=0; j<length; j++)
 					html += selected?`<td style='${(colsalign)?`text-align:${colsalign[j]}`:''}' class='active' >${data[i][j]}</td>`:`<td style='${(colsalign)?`text-align:${colsalign[j]}`:''}' >${data[i][j]}</td>`;
-				
-				if(length<titles.length) 
-					for(var j=length; j<titles.length; j++) 
+
+				if(length<titles.length)
+					for(var j=length; j<titles.length; j++)
 						html += selected?"<td class='active' ></td>":"<td></td>";
 				html += "</tr>";
 			};
@@ -80,7 +80,7 @@ class ControlList extends ControlBase{
 		this.jquery_place().replaceWith(html);
 
 		var self = this;
-			
+
 		if(!this.properties.read_only){
 			$( "#"+this.control_id()+" tbody td" ).dblclick(function(){
 				if( self.being_edited ) return false;
@@ -105,7 +105,7 @@ class ControlList extends ControlBase{
 		$("#"+this.control_id()+" tbody td" ).click(function(){
 			if( !$(this).hasClass('active') ){
 				$("#"+self.control_id()+" tbody td" ).removeClass('active');
-				$("#"+self.control_id()+" tbody tr" ).removeClass('active');			
+				$("#"+self.control_id()+" tbody tr" ).removeClass('active');
 
 				if( self.properties.select_entire_row )
 					$(this).parent().find('td').addClass('active');
@@ -125,7 +125,7 @@ class ControlList extends ControlBase{
 			self.properties.selected_index = -1;
 			self.basewidget.fire_event( self.name, 'item_selection_changed_event' );
 		});
-		
+
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -134,4 +134,3 @@ class ControlList extends ControlBase{
 
 }
 
-	

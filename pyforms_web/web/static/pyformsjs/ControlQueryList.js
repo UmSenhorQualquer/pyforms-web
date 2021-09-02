@@ -13,9 +13,9 @@ class ControlQueryList extends ControlBase{
 
             html += "<div class='fields four'>";
             for(var i=0; i<4; i++){
-                if( (j+i)>=filters.length ) break; 
+                if( (j+i)>=filters.length ) break;
 
-                
+
 
                 var filter = filters[(j+i)];
 
@@ -33,7 +33,7 @@ class ControlQueryList extends ControlBase{
                         break;
                     case "date-range":
                         html += `<div class='field date-filter' id='${this.control_id()}-filter-${filter.column}' >`;
-                
+
                         html += `<label>${filter.label}</label>`;
 
                         html += `
@@ -75,11 +75,11 @@ class ControlQueryList extends ControlBase{
         var self = this;
 
         for(var i=0; i<filters.length; i++){
-            
+
             var filter = filters[i];
 
             if(filter.field_type=='date-range'){
-                
+
                 // set popup
                 $(`#${this.control_id()}-filter-${filter.column} .button.choose`).popup({
                     on: 'click',
@@ -88,7 +88,7 @@ class ControlQueryList extends ControlBase{
 
                 // set datetime pickers
                 $(`#${this.control_id()}-filter-${filter.column} input`).datepicker({
-                    dateFormat: "yy-mm-dd", 
+                    dateFormat: "yy-mm-dd",
                     changeMonth: true,
                     changeYear: true,
                     yearRange: "1900:3000"
@@ -102,7 +102,7 @@ class ControlQueryList extends ControlBase{
 
                     var begin = $(`#${self.control_id()}-filter-${column} .begin`).val();
                     var end   = $(`#${self.control_id()}-filter-${column} .end`).val();
-                    
+
                     var filter_value = '';
                     if( begin || end ){
                         filter_value += begin?`[${begin};`:'[;';
@@ -113,7 +113,7 @@ class ControlQueryList extends ControlBase{
                         $(`#${self.control_id()}-filter-${column} .button.clear`).hide();
 
                     choose_button.children('span').html(filter_value);
-                    
+
                     self.collect_filters_values();
                     self.update_server_flag = true;
                     self.basewidget.fire_event( self.name, 'filter_changed_event' );
@@ -191,7 +191,7 @@ class ControlQueryList extends ControlBase{
                     var filter = { [key]: filter_value};
                     this.properties.filter_by.push(filter)
                 };
-            };  
+            };
         }
 
     }
@@ -202,9 +202,10 @@ class ControlQueryList extends ControlBase{
         this.update_server_flag = false;
 
         var html = "<div id='"+this.place_id()+"' class='field control ControlQueryList'>";
+        if(this.properties.label_visible) html += `<label for='${this.control_id()}'>${this.properties.label}</label>`;
 
         var filters = this.properties.filters_list;
-        
+
         if( this.properties.search_field_key!=undefined ){
             html += "<div class='field'>";
             html += "<input placeholder='Search by' type='text' name='search_key' id='"+this.control_id()+"-search' />";
@@ -225,7 +226,7 @@ class ControlQueryList extends ControlBase{
         if(titles && titles.length>0){
             html += "<thead>";
             html += "<tr>";
-            for(var i=0; i<titles.length; i++) 
+            for(var i=0; i<titles.length; i++)
                 html += `<th style='${(colssizes)?`width:${colssizes[i]}`:''}; ${(colsalign)?`text-align:${colsalign[i]}`:''}' column='${titles[i].column}' >${titles[i].label}</th>`;
             html += "</tr>";
             html += "</thead>";
@@ -236,7 +237,7 @@ class ControlQueryList extends ControlBase{
         html += "</div>";
 
         this.jquery_place().replaceWith(html);
-        this.set_value(this.properties.value);  
+        this.set_value(this.properties.value);
 
         var self = this;
 
@@ -266,9 +267,9 @@ class ControlQueryList extends ControlBase{
             fullTextSearch: 'exact',
             match: 'text'
         });
-         
 
-        
+
+
 
         // remove the selection if the header is selected
         var self = this;
@@ -276,7 +277,7 @@ class ControlQueryList extends ControlBase{
             $("#"+self.control_id()+" tbody td" ).removeClass('active');
             $("#"+self.control_id()+" tbody tr" ).removeClass('active');
             self.properties.selected_index = -1;
-            
+
             if( $(this).hasClass('ascending') ){
                 $(this).removeClass('ascending');
                 $(this).addClass('descending');
@@ -290,11 +291,11 @@ class ControlQueryList extends ControlBase{
                 };
 
             self.properties.sort_by = [];
-            $("#"+self.control_id()+" thead th" ).each(function(index){         
+            $("#"+self.control_id()+" thead th" ).each(function(index){
                 if( $(this).hasClass('ascending') || $(this).hasClass('descending') ){
                     var sort_query = { column: $(this).attr('column'), desc: $(this).hasClass('descending') };
                     self.properties.sort_by.push(sort_query);
-                };          
+                };
             });
 
 
@@ -304,7 +305,7 @@ class ControlQueryList extends ControlBase{
 		if(this.properties.required) this.set_required();
 
 
-        
+
 
     };
 
@@ -325,7 +326,7 @@ class ControlQueryList extends ControlBase{
             $("#"+this.place_id()+"-search").val('');
         else
             $("#"+this.place_id()+"-search").val(this.properties.search_field_key);
-        
+
         var rows_html = '';
         var colsalign = this.properties.columns_align;
         for(var i=0; i<data.length; i++){
@@ -339,7 +340,7 @@ class ControlQueryList extends ControlBase{
         $( "#"+this.control_id()+" tfoot" ).remove();
 
         var titles = this.properties.horizontal_headers;
-        
+
         var html        = '';
         var pages_list  = this.properties.pages.pages_list;
         if(pages_list.length>1){
@@ -348,20 +349,20 @@ class ControlQueryList extends ControlBase{
             html += '<th colspan="'+(titles?titles.length:1)+'">';
 
             html += '<a class="ui pointing basic label">'+this.properties.values_total+' results</a> ';
-            
+
             if( this.properties.export_csv )
                 html += '<a class="ui button mini basic export-csv-btn "> <i class="ui icon cloud download"></i> CSV</a> ';
-            
+
             html += '<div class="ui right floated pagination menu tiny">';
 
             var start_page = 0;
             var end_page = (pages_list.length-1)>5?(pages_list.length-1):pages_list.length;
                 if( pages_list[0]>0 )
-                    html += '<a class="icon item" pageindex="'+pages_list[0]+'" ><i class="left chevron icon"></i></a>';            
+                    html += '<a class="icon item" pageindex="'+pages_list[0]+'" ><i class="left chevron icon"></i></a>';
                 for(var i=1; i<(pages_list.length-1); i++){
-                    html += '<a pageindex="'+pages_list[i]+'" class="item '+((pages_list[i]==this.properties.pages.current_page)?'active':'')+'">'+pages_list[i]+'</a>';            
-                };      
-                if( pages_list[pages_list.length-1]>0 ) 
+                    html += '<a pageindex="'+pages_list[i]+'" class="item '+((pages_list[i]==this.properties.pages.current_page)?'active':'')+'">'+pages_list[i]+'</a>';
+                };
+                if( pages_list[pages_list.length-1]>0 )
                     html += '<a pageindex="'+pages_list[pages_list.length-1]+'" class="icon item"><i class="right chevron icon"></i></a>';
             html += '</div>';
 
@@ -371,7 +372,7 @@ class ControlQueryList extends ControlBase{
 
             $( "#"+this.control_id()+" tbody ").after(html);
         };
-        
+
         this.set_click_events();
 
     };
@@ -412,7 +413,7 @@ class ControlQueryList extends ControlBase{
         $("#"+this.control_id()+" .export-csv-btn" ).click(function(){
             self.basewidget.fire_event( self.name, 'export_csv_event' );
         });
-        
+
     };
 
     update_server(){

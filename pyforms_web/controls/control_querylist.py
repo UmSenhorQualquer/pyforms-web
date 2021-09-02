@@ -113,6 +113,8 @@ class ControlQueryList(ControlBase):
         self._update_list = True #used to update the list to the client
         ####################################################################
 
+        kwargs.setdefault('label_visible', False)
+
         super(ControlQueryList, self).__init__(*args, **kwargs)
 
 
@@ -175,10 +177,10 @@ class ControlQueryList(ControlBase):
             row = [
                 strip_tags(format_list_column(get_lookup_value(o, col), raw=True))
                 for col in self.export_csv_columns
-            ] 
+            ]
             writer.writerow(row)
-            
-        return response 
+
+        return response
 
     @property
     def export_csv_columns(self):
@@ -201,12 +203,12 @@ class ControlQueryList(ControlBase):
     @export_csv.setter
     def export_csv(self, value):
         self._export_csv = value
-    
+
 
     @property
     def selected_row_id(self): return self._selected_row_id
     @selected_row_id.setter
-    def selected_row_id(self, value): 
+    def selected_row_id(self, value):
         self._selected_row_id = value
 
     @property
@@ -224,7 +226,7 @@ class ControlQueryList(ControlBase):
     def columns_align(self, value):
         self.mark_to_update_client()
         self._columns_align = value
-    
+
     @property
     def value(self):
         if self._app and self._model and self._query:
@@ -236,7 +238,7 @@ class ControlQueryList(ControlBase):
 
 
             # apply filters
-            for f in self.filter_by: 
+            for f in self.filter_by:
                 qs = qs.filter(**f)
 
             # apply search keys
@@ -255,7 +257,7 @@ class ControlQueryList(ControlBase):
                 for sort in self.sort_by:
                     direction = '-' if sort['desc'] else ''
                     qs = qs.order_by( direction+sort['column'] )
-            
+
             # if no order by exists add one, to avoid the values to be show randomly in the list
             order_by = list(qs.query.order_by)
             if 'pk' not in order_by or '-pk' not in order_by:
@@ -283,16 +285,16 @@ class ControlQueryList(ControlBase):
 
             self.mark_to_update_client()
             self.changed_event()
-        
+
 
     def serialize(self, init_form=False):
         data     = super().serialize()
         queryset = self.value
-    
+
         rows = []
 
 
-        
+
         if self._update_list and queryset:
             row_start = self.rows_per_page*(self._current_page-1)
             row_end   = self.rows_per_page*(self._current_page)
@@ -322,11 +324,11 @@ class ControlQueryList(ControlBase):
                         'column': column_name
                     })
             data.update({ 'horizontal_headers':   headers, });
-                
-        
+
+
         if len(self.search_fields)>0:
             data.update({'search_field_key': self.search_field_key if self.search_field_key is not None else ''})
-        
+
 
         total_rows = queryset.count() if queryset else 0
         total_n_pages   = (total_rows / self.rows_per_page) + (0 if (total_rows % self.rows_per_page)==0 else 1)
@@ -346,7 +348,7 @@ class ControlQueryList(ControlBase):
 
         return data
 
-        
+
     def page_changed_event(self):
         self.page_event()
         self._selected_row_id = -1
@@ -374,7 +376,7 @@ class ControlQueryList(ControlBase):
 
 
     def format_filter_column(self, col_value):
-        
+
 
         if isinstance(col_value, datetime.datetime):
             if not col_value: return ''
@@ -392,8 +394,8 @@ class ControlQueryList(ControlBase):
         else:
             return col_value
 
-    
-    
+
+
     def queryset_to_list(self, queryset, list_display, first_row, last_row):
         if not list_display:
             return [ [m.pk, str(m)] for m in queryset[first_row:last_row] ]
@@ -405,7 +407,7 @@ class ControlQueryList(ControlBase):
             for o in queryset[first_row:last_row]:
                 row = [o.pk] + [format_list_column(get_lookup_value(o, col)) for col in list_display]
                 rows.append(row)
-            
+
             return rows
 
     """
@@ -419,12 +421,12 @@ class ControlQueryList(ControlBase):
 
         month_begin     = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         month_end       = now.replace(day=monthrange(now.year, now.month)[1], hour=23, minute=59, second=59, microsecond=999)
-        
+
         return {
             'items': [
                 ("{0}__gte={1}&{0}__lte={2}".format(column_name, today_begin.strftime('%Y-%m-%d'), today_end.strftime('%Y-%m-%d')),      'Today'),
                 ("{0}__gte={1}&{0}__lte={2}".format(column_name, month_begin.strftime('%Y-%m-%d'), month_end.strftime('%Y-%m-%d')),      'This month'),
-                ("{0}__gte={1}&{0}__lte={2}".format(column_name, today_begin.strftime('%Y-%m-%d'), next_4_months.strftime('%Y-%m-%d')),  'Next 4 months'), 
+                ("{0}__gte={1}&{0}__lte={2}".format(column_name, today_begin.strftime('%Y-%m-%d'), next_4_months.strftime('%Y-%m-%d')),  'Next 4 months'),
                 ("{0}__year={1}".format(column_name, now.year), 'This year')
             ]
         }
@@ -434,13 +436,13 @@ class ControlQueryList(ControlBase):
         self._label   = properties.get('label','')
         self._help    = properties.get('help','')
         self._visible = properties.get('visible',True)
-        
+
         self.search_field_key   = properties.get('search_field_key', None)
         self.sort_by            = properties.get('sort_by', [])
         self.filter_by          = properties.get('filter_by',[])
         self._current_page      = int(properties['pages']['current_page'])
         self._selected_row_id   = properties.get('selected_row_id', -1)
-        
+
 
 
     def serialize_filters(self, list_filter, queryset):
@@ -452,7 +454,7 @@ class ControlQueryList(ControlBase):
             order_by    = column_name
             column_name = column_name[1:] if column_name.startswith('-') else column_name
             field = get_lookup_field(model, column_name)
-            
+
             if field is None: continue
 
             field_properties = {
@@ -473,10 +475,10 @@ class ControlQueryList(ControlBase):
                 field_properties.update({
                     'items': [ ("{0}={1}".format(column_name, c[0]),c[1]) for c in field.choices]
                 })
-            
+
             elif isinstance(field, (models.DateField, models.DateTimeField) ):
                 #field_properties.update(self.get_datetimefield_options(column_name))
-                
+
                 field_properties.update({
                     'field_type': 'date-range'
                 })
@@ -495,10 +497,10 @@ class ControlQueryList(ControlBase):
                     objects = self.parent.get_related_field_queryset(
                         PyFormsMiddleware.get_request(), queryset, field, objects
                     )
-                
+
                 filter_values = [(column_name+'='+str(o.pk), o.__str__() ) for o in objects]
                 field_properties.update({'items': filter_values})
-                
+
             else:
                 column_values = queryset.values_list(column_name, flat=True).distinct().order_by(order_by)
                 filter_values = [(column_name+'='+str(column_value), column_value) for column_value in column_values]
