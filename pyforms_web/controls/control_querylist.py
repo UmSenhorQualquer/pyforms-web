@@ -115,8 +115,9 @@ class ControlQueryList(ControlBase):
 
         kwargs.setdefault('label_visible', False)
 
-        super(ControlQueryList, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
+        self.value = kwargs.get('default', None)
 
     def init_form(self): return "new ControlQueryList('{0}', {1})".format( self._name, simplejson.dumps(self.serialize(init_form=True)) )
 
