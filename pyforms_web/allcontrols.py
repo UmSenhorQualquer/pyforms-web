@@ -51,6 +51,7 @@ from .controls.control_search                 import ControlSearch
 from .controls.control_playerjs               import ControlPlayerJs
 from .controls.control_codemirror             import ControlCodeMirror
 from .controls.control_drawinimg              import ControlDrawInImg
+from .controls.control_highlighttext          import ControlHighlightText
 
 try:
     from .controls.control_image              import ControlImage
