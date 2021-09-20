@@ -132,4 +132,5 @@ JSFILES = [
 	"/static/codemirror/htmlmixed.js",
 	"/static/codemirror/autorefresh.js",
 	"/static/jquery.selection.js",
+    '/static/TextHighlighter.min.js'
 ]
