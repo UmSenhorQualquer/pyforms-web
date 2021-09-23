@@ -10,22 +10,22 @@ class ControlCheckBoxList(ControlBase):
         self._select_entire_row = kwargs.get('select_entire_row',True)
         self._read_only         = kwargs.get('readonly',True)
         self._selected_index    = kwargs.get('selected_row_index',-1)
-        self._columns_sizes = kwargs.get('columns_styles', None)
+        self._columns_sizes = kwargs.get('columns_sizes', None)
 
         if 'row_double_click_event' in kwargs:
             self.row_double_click_event = kwargs['row_double_click_event']
         if 'item_selection_changed_event' in kwargs:
             self.item_selection_changed_event = kwargs['item_selection_changed_event']
 
-        super(ControlCheckBoxList, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
-    def init_form(self): 
+    def init_form(self):
         return "new ControlCheckBoxList('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
     def item_selection_changed_event(self): pass
 
-    
+
     @property
     def headers(self): return self._headers
 
@@ -56,7 +56,7 @@ class ControlCheckBoxList(ControlBase):
     def columns_align(self, value):
         self.mark_to_update_client()
         self._columns_align = value
-   
+
     @property
     def selected_row_index(self): return self._selected_index
 
@@ -67,11 +67,11 @@ class ControlCheckBoxList(ControlBase):
 
 
     @property
-    def value(self): 
+    def value(self):
         """
         Sets and gets the values.
 
-        The values should have the 
+        The values should have the
         """
         return ControlBase.value.fget(self)
 
@@ -81,7 +81,7 @@ class ControlCheckBoxList(ControlBase):
         ControlBase.value.fset(self, value)
 
     def serialize(self):
-        data = ControlBase.serialize(self)
+        data = super().serialize()
 
         data.update({
             'columns_styles':   self.columns_styles,
@@ -91,6 +91,5 @@ class ControlCheckBoxList(ControlBase):
         return data
 
     def deserialize(self, properties):
-        ControlBase.deserialize(self,properties)
-        self._selected_index    = properties['selected_index']
-        
+        super().deserialize(properties)
+        self._selected_index = properties['selected_index']

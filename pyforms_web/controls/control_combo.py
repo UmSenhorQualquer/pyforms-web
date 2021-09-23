@@ -27,13 +27,14 @@ class ControlCombo(ControlBase):
         """
         The flag _set_blank_to_null was created to solve an issue with Django fields:
             - If the field is set with blank=True and null=False,
-            and the user select the django.db.models.fields.BLANK_CHOICE_DASH it will set the 
+            and the user select the django.db.models.fields.BLANK_CHOICE_DASH it will set the
             ControlCombo the value as an empty string.
             - If the field is set with blank=True and null=True, and the user select the BLANK_CHOICE_DASH then the
             ControlCombo will assume the value None.
         """
 
-        super(ControlCombo, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+
 
     def init_form(self):
         self._init_form_called = True
@@ -106,7 +107,9 @@ class ControlCombo(ControlBase):
 
     @property
     def text(self):
-        return ""
+        for key, v in self._items.items():
+            if self._value==v:
+                return key
 
     @text.setter
     def text(self, value):

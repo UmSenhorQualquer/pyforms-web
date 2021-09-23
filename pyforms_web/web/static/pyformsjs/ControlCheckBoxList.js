@@ -10,12 +10,12 @@ class ControlCheckBoxList extends ControlBase{
     init_control(){
         this.set_value(this.properties.value);
 		if(this.properties.required) this.set_required();
-        
+
     };
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    get_value(){ 
+    get_value(){
         if( !this.properties.value ) return [];
 
         var values = this.properties.value.slice(0);
@@ -61,13 +61,13 @@ class ControlCheckBoxList extends ControlBase{
                 html += "<input type='checkbox' "+(data[i][0]?"checked=''":"")+" />";
                 html += "<label></label></div>";
                 html += "</td>";
- 
+
                 var length = data[i]?data[i].length:0;
                 length     = length>titles.length?titles.length:length;
                 for(var j=1; j<length; j++) html += "<td>"+data[i][j]+"</td>";
-                if(length<titles.length) 
+                if(length<titles.length)
                     for(var j=length; j<titles.length; j++) html += "<td></td>";
-                
+
                 html += "</tr>";
             };
         html += "</tbody>";
@@ -76,9 +76,11 @@ class ControlCheckBoxList extends ControlBase{
 
         this.jquery_place().replaceWith(html);
 
+        this.changed = false;
         var self = this;
         $( "#"+this.control_id()+" .checkbox").checkbox({
             onChange: function() {
+                self.changed = true;
               self.basewidget.fire_event( self.name, 'update_control_event' );
             }
         });
@@ -86,8 +88,9 @@ class ControlCheckBoxList extends ControlBase{
 
     ////////////////////////////////////////////////////////////////////////////////
 
-
+    update_server(){
+        return this.changed;
+    }
 
 }
 
-    
