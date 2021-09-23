@@ -336,6 +336,9 @@ h3.subtitle {
     top:-2px;
 }
 
+.ControlHighlightText .highlight{
+    background-color: yellow;
+}
 
 .ui.modal > .content{
     background-color: #f1f4f5;

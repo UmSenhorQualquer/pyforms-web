@@ -271,8 +271,16 @@ class ControlQueryList(ControlBase):
 
     @value.setter
     def value(self, value):
+        if value is None:
+            self._model = None
+            self._query = None
+            self._app = None
+            self._selected_row_id = -1
+            self._current_page = 1
 
-        if str(self._query) != str(value.query):
+            self.mark_to_update_client()
+            self.changed_event()
+        elif str(self._query) != str(value.query):
             if value is not None:
 
                 if len(value.query.order_by)==0 and value.model._meta.ordering:

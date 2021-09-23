@@ -71,6 +71,7 @@ PYFORMS_JSFILES_DEBUG = [
     "ControlWorkflow.js",
     "ControlSearch.js",
     "ControlCodeMirror.js",
+    "ControlHighlightText.js",
     "BaseWidget.js",
     "pyforms.js",
     "pyforms-hub.js",
@@ -131,4 +132,5 @@ JSFILES = [
 	"/static/codemirror/htmlmixed.js",
 	"/static/codemirror/autorefresh.js",
 	"/static/jquery.selection.js",
+    '/static/TextHighlighter.min.js'
 ]
