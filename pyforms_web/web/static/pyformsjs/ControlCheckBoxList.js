@@ -92,5 +92,26 @@ class ControlCheckBoxList extends ControlBase{
         return this.changed;
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    /**
+    Enable the control.
+    */
+    enable(){
+        this.jquery().find('tr').removeAttr('disabled');
+        this.jquery().find('tr').removeClass('disabled');
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    /**
+    Disable the control.
+    */
+    disable(){
+        this.jquery().find('tr').attr('disabled', 'true');
+        this.jquery().find('tr').addClass('disabled');
+    }
+
 }
 
