@@ -1,0 +1,17 @@
+sphinx
+sphinx-autobuild
+sphinx-rtd-theme
+rinohtype
+django
+flask
+recommonmark
+celery
+sphinxcontrib_django
+numpydoc
+docxbuilder
+sphinx_markdown_tables
+pygraphviz
+pyparsing
+pydot
+rst2pdf
+sphinx-js

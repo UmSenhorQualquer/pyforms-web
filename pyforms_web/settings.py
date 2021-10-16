@@ -4,7 +4,9 @@ PYFORMS_APPS = {}
 
 LAYOUT_NEW_WINDOW = 2
 
-PYFORMS_DEBUG = False 
+PYFORMS_DEBUG = False
+
+PYFORMS_VERBOSE = False
 
 try:
 	import os

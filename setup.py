@@ -28,6 +28,36 @@ def find_files(package_name,directory, pattern):
 with open('README.md', 'r') as fd:
     long_description = fd.read()
 
+requirements = [
+    'django-jfu-pyforms',
+    'numpy',
+    'opencv-python~=4.2',
+    'django>2.1',
+    'simplejson',
+    'dill',
+    'filelock',
+    'Pillow',
+    'python-dateutil',
+    'confapp'
+]
+
+#############################################################
+# Add the default layout libraries to the requirements ######
+#############################################################
+try:
+    import orquestra
+except ImportError:
+    requirements.append('orquestra')
+
+try:
+    import orquestra_simple
+except ImportError:
+    requirements.append('orquestra_simple')
+
+if ('orquestra' not in requirements) or ('orquestra_simple' not in requirements):
+    requirements.append('orquestra')
+#############################################################
+
 setup(
     name                 = 'PyForms-Web',
     version              = version,
@@ -46,20 +76,7 @@ setup(
         'pyforms_web':
         list( find_files('pyforms_web', 'web/static/', '*.*') ) + list(find_files('pyforms_web', 'web/templates/', '*.html'))
     },
-    install_requires=[
-        'django-jfu-pyforms',
-        'orquestra',
-        'numpy',
-        'opencv-python~=4.2',
-        'django>2.1',
-        'simplejson',
-        'dill',
-        'filelock',
-        'Pillow',
-        'python-dateutil',
-        'confapp'
-    ],
-
+    install_requires=requirements,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         

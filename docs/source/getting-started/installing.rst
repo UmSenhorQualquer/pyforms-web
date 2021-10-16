@@ -31,6 +31,7 @@ Edit the django project **settings.py** file to include the next configurations.
 
     INSTALLED_APPS = [
         'orquestra',
+        'sorl.thumbnail',
         'pyforms_web.web',
         'jfu',
         'sorl.thumbnail',
@@ -93,6 +94,21 @@ Access to `http://localhost:8000 <http://localhost:8000/>`_
 
 |
 
+
+Configure pyforms-web
+=========================
+
+Use the **local_settings.py** file to set some pyforms-web settings.
+
+.. code:: python
+
+    # Do not use the compressed JS file, and use the original files
+    PYFORMS_DEBUG = True
+
+    # Activate verbose mode for the
+    PYFORMS_VERBOSE = True
+|
+
 ------------------------------
 
 (optional)
@@ -144,7 +160,7 @@ Edit the urls.py file to add the next code.
     from django.urls import path
 
     urlpatterns = [
-        path(r'^accounts/', include('allauth.urls')),
+        path('accounts/', include('allauth.urls')),
         ...
     ]
 
@@ -163,3 +179,4 @@ Initialize allauth configuration by adding a new register to the sites.Site mode
 .. code:: shell
 
    python manage.py loaddata conf-allauth-site
+
