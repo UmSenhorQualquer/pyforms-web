@@ -30,7 +30,7 @@ class ControlCheckBoxList extends ControlBase{
 
     set_value(value){
         this.load_table();
-
+        this.set_click_events()
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -85,6 +85,22 @@ class ControlCheckBoxList extends ControlBase{
             }
         });
     };
+
+    set_click_events(){
+        var self = this;
+
+        $("#"+this.control_id()+" tbody td" ).click(function(){
+            if( !$(this).hasClass('active') ){
+                var new_id = $(this).parent().attr('row-id');
+                self.update_server_flag = new_id!=self.properties.selected_row_id;
+                self.properties.selected_row_id = new_id;
+                self.basewidget.fire_event( self.name, 'item_selection_changed_client_event' );
+            }
+        });
+
+    };
+
+
 
     ////////////////////////////////////////////////////////////////////////////////
 

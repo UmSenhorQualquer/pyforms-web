@@ -4,7 +4,7 @@ PYFORMS_APPS = {}
 
 LAYOUT_NEW_WINDOW = 2
 
-PYFORMS_DEBUG = False 
+PYFORMS_DEBUG = False
 
 try:
 	import os
@@ -67,6 +67,7 @@ PYFORMS_JSFILES_DEBUG = [
     "ControlEmptyWidget.js",
     "ControlMenu.js",
     "ControlTree.js",
+    "ControlTime.js",
     "ControlOrganogram.js",
     "ControlWorkflow.js",
     "ControlSearch.js",

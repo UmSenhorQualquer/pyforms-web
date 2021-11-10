@@ -25,6 +25,9 @@ class ControlCheckBoxList(ControlBase):
 
     def item_selection_changed_event(self): pass
 
+    def item_selection_changed_client_event(self):
+        self.mark_to_update_client()  # what are the implications of enabling this???
+        self.item_selection_changed_event()
 
     @property
     def headers(self): return self._headers
