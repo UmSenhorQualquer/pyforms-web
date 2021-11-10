@@ -69,6 +69,7 @@ PYFORMS_JSFILES_DEBUG = [
     "ControlEmptyWidget.js",
     "ControlMenu.js",
     "ControlTree.js",
+    "ControlTime.js",
     "ControlOrganogram.js",
     "ControlWorkflow.js",
     "ControlSearch.js",

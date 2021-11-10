@@ -1080,6 +1080,7 @@ class ModelFormWidget(BaseWidget):
                 )
             elif isinstance(field, models.BigIntegerField):     pyforms_field = ControlInteger( label, default=field.default, required=required, helptext=field.help_text )
             elif isinstance(field, models.BooleanField):        pyforms_field = ControlCheckBox( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.TimeField):           pyforms_field = ControlTime(label, default=field.default, required=required, helptext=field.help_text)
             elif isinstance(field, models.DateTimeField):       pyforms_field = ControlDateTime( label, default=field.default, required=required, helptext=field.help_text )
             elif isinstance(field, models.DateField):           pyforms_field = ControlDate( label, default=field.default, required=required, helptext=field.help_text )
             elif isinstance(field, models.DecimalField):        pyforms_field = ControlDecimal( label, default=field.default, required=required, helptext=field.help_text )
