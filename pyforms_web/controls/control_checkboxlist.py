@@ -95,4 +95,4 @@ class ControlCheckBoxList(ControlBase):
 
     def deserialize(self, properties):
         super().deserialize(properties)
-        self._selected_index = properties['selected_index']
+        self._selected_index = int(properties['selected_index'])

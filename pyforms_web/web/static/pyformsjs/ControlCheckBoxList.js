@@ -3,6 +3,7 @@ class ControlCheckBoxList extends ControlBase{
     constructor(name, properties){
         super(name, properties);
         this.being_edited = false;
+        this.update_server_flag = false;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -55,8 +56,11 @@ class ControlCheckBoxList extends ControlBase{
 
         if(data!=undefined)
             for(var i=0; i<data.length; i++){
-                html += "<tr>";
-                html += "<td class='collapsing' >";
+
+                const selected = this.properties.selected_index == i;
+
+                html += `<tr row-id="${i}" >`;
+                html += `<td class='collapsing ${(selected?'active':'')}' >`;
                 html += "<div class='ui fitted "+(data[i][0]?"active":"")+" checkbox'>";
                 html += "<input type='checkbox' "+(data[i][0]?"checked=''":"")+" />";
                 html += "<label></label></div>";
@@ -64,9 +68,9 @@ class ControlCheckBoxList extends ControlBase{
 
                 var length = data[i]?data[i].length:0;
                 length     = length>titles.length?titles.length:length;
-                for(var j=1; j<length; j++) html += "<td>"+data[i][j]+"</td>";
+                for(var j=1; j<length; j++) html += `<td class='${(selected?'active':'')}' >`+data[i][j]+"</td>";
                 if(length<titles.length)
-                    for(var j=length; j<titles.length; j++) html += "<td></td>";
+                    for(var j=length; j<titles.length; j++) html += `<td class='${(selected?'active':'')}'></td>`;
 
                 html += "</tr>";
             };
@@ -90,10 +94,12 @@ class ControlCheckBoxList extends ControlBase{
         var self = this;
 
         $("#"+this.control_id()+" tbody td" ).click(function(){
+
             if( !$(this).hasClass('active') ){
                 var new_id = $(this).parent().attr('row-id');
-                self.update_server_flag = new_id!=self.properties.selected_row_id;
-                self.properties.selected_row_id = new_id;
+
+                self.update_server_flag = new_id!=self.properties.selected_index;
+                self.properties.selected_index = new_id;
                 self.basewidget.fire_event( self.name, 'item_selection_changed_client_event' );
             }
         });
@@ -105,7 +111,13 @@ class ControlCheckBoxList extends ControlBase{
     ////////////////////////////////////////////////////////////////////////////////
 
     update_server(){
-        return this.changed;
+        return this.changed || this.update_server_flag;
+    }
+
+    serialize(){
+        var data = super.serialize();
+        this.update_server_flag = false;
+        return data;
     }
 
 
