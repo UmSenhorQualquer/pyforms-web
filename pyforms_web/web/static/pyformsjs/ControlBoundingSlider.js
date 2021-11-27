@@ -3,7 +3,7 @@ class ControlBoundingSlider extends ControlBase{
 
 	////////////////////////////////////////////////////////////////////////////////
 
-	set_value(value){
+	set_value(val){
 		this.jquery().slider({values:val})
 		$("#value-"+this.control_id() ).html( val );
 	};
