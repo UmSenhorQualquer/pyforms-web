@@ -2,7 +2,6 @@ from pyforms_web.controls.control_querylist import ControlQueryList
 from django.apps import apps
 from django.db.models.constants import LOOKUP_SEP
 from django.core.exceptions import FieldDoesNotExist
-from django.utils.encoding import force_text
 import simplejson
 
 

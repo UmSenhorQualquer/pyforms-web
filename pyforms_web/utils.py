@@ -1,6 +1,5 @@
 from django.db.models.constants import LOOKUP_SEP
 from django.db import models
-from django.utils.encoding import force_text
 from django.core.exceptions import FieldDoesNotExist
 
 
@@ -55,11 +54,11 @@ def get_lookup_verbose_name(model, lookup):
 
                 if last_loop:
                     if not hasattr(field, 'verbose_name'):
-                        return force_text(field.related_model._meta.verbose_name)
+                        return (field.related_model._meta.verbose_name)
                     elif field._verbose_name is None:
-                        return force_text(field.verbose_name).capitalize()
+                        return (field.verbose_name).capitalize()
                     else:
-                        return force_text(field.verbose_name)
+                        return (field.verbose_name)
 
                 else:
                     model = field.related_model
@@ -81,6 +80,6 @@ def get_lookup_verbose_name(model, lookup):
                 return part.title()
 
         if field._verbose_name is None:
-            return force_text(field.verbose_name).capitalize()
+            return (field.verbose_name).capitalize()
         else:
-            return force_text(field.verbose_name)
+            return (field.verbose_name)

@@ -2,7 +2,6 @@ from pyforms_web.controls.control_base import ControlBase
 from django.apps import apps
 from django.db.models.constants import LOOKUP_SEP
 from django.core.exceptions import FieldDoesNotExist
-from django.utils.encoding import force_text
 from django.utils.dateparse import parse_datetime
 from django.db.models import Q
 import simplejson, datetime
@@ -54,11 +53,11 @@ def get_verbose_name(model, lookup):
 		if f.is_relation:
 			model = f.related_model
 			if (len(parts)-1)==i:
-				return force_text(model._meta.verbose_name)
+				return (model._meta.verbose_name)
 			else:
 				continue
 
-		return force_text(f.verbose_name)
+		return (f.verbose_name)
 		
 
 

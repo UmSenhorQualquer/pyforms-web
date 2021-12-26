@@ -56,7 +56,8 @@ class ControlQueryCombo(ControlBase):
     @queryset.setter
     def queryset(self, value):
     
-        if value:
+        if value is not None:
+
             self._model = value.model._meta.label.split('.')[-1]
             self._query = value.query
             self._app   = value.model._meta.app_label
