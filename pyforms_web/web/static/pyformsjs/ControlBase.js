@@ -113,8 +113,11 @@ class ControlBase{
         var msg = this.properties.help;
         if (msg && msg.trim().length) {
             // style taken from mandatory asterisk
-            var html  = `<i class="help circle icon" title="${msg}" style="margin: -0.2em 0em 0em 0.2em;"></i>`;
-            $( `#${this.place_id()} label[for='${this.control_id()}']` ).first().append(html);
+            var html  = `<i class="help circle icon" style="float: right" title="${msg}" style="margin: -0.2em 0em 0em 0.2em;"></i>`;
+            $(`#${this.place_id()} label[for='${this.control_id()}']` ).first().before(html);
+
+            console.debug($(`#${this.place_id()} label[for='${this.control_id()}']` ).first().html())
+
         }
     }
 
@@ -355,9 +358,6 @@ class ControlBase{
     */
     after_init_control(){
 
-        if(!this.properties.visible)
-            this.hide();
-
         if(!this.properties.enabled)
             this.disable();
 
@@ -375,6 +375,10 @@ class ControlBase{
 
         if(this.properties.help)
             this.init_help();
+
+        if(!this.properties.visible)
+            this.hide();
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////

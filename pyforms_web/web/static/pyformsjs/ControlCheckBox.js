@@ -47,9 +47,7 @@ class ControlCheckBox extends ControlBase{
 	set_label(value){
 		var label = value;
 		
-		if(this.properties.help)
-			label = label + `<i class="help circle icon" title="${this.properties.help}" style="margin: -0.2em 0em 0em 0.2em;"></i>`;
-        $( `#${this.place_id()} label[for='${this.control_id()}']` ).first().html(label);
+		$( `#${this.place_id()} label[for='${this.control_id()}']` ).first().html(label);
     }
 
     ////////////////////////////////////////////////////////////////////////////////
