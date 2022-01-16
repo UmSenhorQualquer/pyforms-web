@@ -8,6 +8,14 @@ class ControlList extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
+		var html = `<div id='${this.place_id()}' class='field control ControlList'>`;
+		if(this.properties.label_visible)
+			html += `<label for='${this.control_id()}'>${this.properties.label}</label>`;
+		html += `<div style='overflow-x: auto;'><span id='${this.control_id()}' ></span></div>`;
+		html += '</div>';
+
+		this.jquery_place().replaceWith(html);
+
 		this.set_value(this.properties.value);
 
 
@@ -38,9 +46,8 @@ class ControlList extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	load_table(){
-		var html = "<div id='"+this.place_id()+"' class='field control'>";
-		if(this.properties.label_visible) html += `<label for='${this.control_id()}'>${this.properties.label}</label>`;
-		html += "<div style='overflow-x: auto;' ><table class='ui selectable celled table "+this.properties.css+" ControlList' id='"+this.control_id()+"' >";
+		let html = '';
+		html += "<table class='ui selectable celled table "+this.properties.css+"' id='"+this.control_id()+"' >";
 
 		// GENERATE THE HEADER
 		html += "<thead>";
@@ -75,9 +82,8 @@ class ControlList extends ControlBase{
 			};
 		html += "</tbody>";
 		html += "</table>";
-		html += "</div>";
 
-		this.jquery_place().replaceWith(html);
+		this.jquery().replaceWith(html);
 
 		var self = this;
 
