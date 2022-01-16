@@ -38,7 +38,8 @@ requirements = [
     'filelock',
     'Pillow',
     'python-dateutil',
-    'confapp'
+    'confapp',
+    'django~=4.0'
 ]
 
 #############################################################

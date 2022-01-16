@@ -75,6 +75,7 @@ PYFORMS_JSFILES_DEBUG = [
     "ControlSearch.js",
     "ControlCodeMirror.js",
     "ControlHighlightText.js",
+    "ControlThumbnailSelection.js",
     "BaseWidget.js",
     "pyforms.js",
     "pyforms-hub.js",

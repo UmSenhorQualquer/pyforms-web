@@ -52,6 +52,7 @@ from .controls.control_playerjs               import ControlPlayerJs
 from .controls.control_codemirror             import ControlCodeMirror
 from .controls.control_drawinimg              import ControlDrawInImg
 from .controls.control_highlighttext          import ControlHighlightText
+from .controls.control_thumbnailselection     import ControlThumbnailSelection
 
 try:
     from .controls.control_image              import ControlImage
