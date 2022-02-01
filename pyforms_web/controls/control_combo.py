@@ -150,5 +150,4 @@ class ControlCombo(ControlBase):
 
         data.update({"items": items, "value": self.__convert(value)})
 
-        print(data)
         return data
