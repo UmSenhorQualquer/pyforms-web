@@ -12,8 +12,8 @@ try:
 	import os
 	from django.conf import settings
 
-	PYFORMS_WEB_APPS_CACHE_DIR = os.path.join(settings.BASE_DIR ,'apps-cache')
-	PYFORMS_WEB_LOCKFILE 	   = os.path.join(settings.BASE_DIR ,'lockfile.txt')
+	PYFORMS_WEB_APPS_CACHE_DIR = os.path.join(str(settings.BASE_DIR) ,'apps-cache')
+	PYFORMS_WEB_LOCKFILE 	   = os.path.join(str(settings.BASE_DIR) ,'lockfile.txt')
 except:
 	PYFORMS_WEB_APPS_CACHE_DIR = 'apps-cache'
 	PYFORMS_WEB_LOCKFILE 	   = 'lockfile.txt'

@@ -780,7 +780,7 @@ class ModelFormWidget(BaseWidget):
                         url = '/'.join([dirpath]+[filename])
                         if url[0]=='/': url = url[1:]
                         setattr(obj, field.name, url)
-                        getattr(self, field.name).value = to_path[len(settings.BASE_DIR):]
+                        getattr(self, field.name).value = to_path[len(str(settings.BASE_DIR)):]
                 elif field.null:
                     setattr(obj, field.name, None)
                 else:
