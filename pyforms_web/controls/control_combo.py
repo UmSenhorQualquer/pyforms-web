@@ -1,7 +1,8 @@
 import collections
-import simplejson
 
+import simplejson
 from django.db.models import fields
+
 from pyforms_web.controls.control_base import ControlBase
 
 
@@ -35,7 +36,6 @@ class ControlCombo(ControlBase):
 
         super().__init__(*args, **kwargs)
 
-
     def init_form(self):
         self._init_form_called = True
         return "new ControlCombo('{0}', {1})".format(
@@ -47,7 +47,7 @@ class ControlCombo(ControlBase):
             self._items = collections.OrderedDict()
 
         # The value for the item was not set, so it will use the label as a value
-        if isinstance(value, ValueNotSet):
+        if value == ValueNotSet:
             value = label
         else:
             value = value
@@ -95,9 +95,9 @@ class ControlCombo(ControlBase):
             if value is None or value == '':
                 v = value if not self._set_blank_to_null else None
             else:
-                v = self._types[i](value) if self._types[i]!=type(None) else value
+                v = self._types[i](value) if self._types[i] != type(None) else value
 
-            if v == val or (self._set_blank_to_null and val=='' and v==None):
+            if v == val or (self._set_blank_to_null and val == '' and v == None):
                 if self._value != v:
                     self._value = v
                     self.mark_to_update_client()
@@ -108,7 +108,7 @@ class ControlCombo(ControlBase):
     @property
     def text(self):
         for key, v in self._items.items():
-            if self._value==v:
+            if self._value == v:
                 return key
 
     @text.setter
@@ -123,7 +123,7 @@ class ControlCombo(ControlBase):
         if value == fields.NOT_PROVIDED:
             return None
 
-        if isinstance(value, ValueNotSet):
+        if value == ValueNotSet:
             return None
         """
         if isinstance(value, bool):
@@ -149,4 +149,5 @@ class ControlCombo(ControlBase):
         value = self._value
 
         data.update({"items": items, "value": self.__convert(value)})
+
         return data

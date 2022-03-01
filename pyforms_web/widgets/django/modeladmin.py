@@ -1,10 +1,12 @@
-from pyforms_web.basewidget                     import BaseWidget, segment
-from pyforms_web.controls.control_button        import ControlButton
-from pyforms_web.controls.control_querylist     import ControlQueryList
-from pyforms_web.controls.control_emptywidget   import ControlEmptyWidget
-from pyforms_web.web.middleware                 import PyFormsMiddleware
-from .modelform                                 import ModelFormWidget
-from django.db                                  import models
+from django.db import models
+
+from pyforms_web.basewidget import BaseWidget, segment
+from pyforms_web.controls.control_button import ControlButton
+from pyforms_web.controls.control_emptywidget import ControlEmptyWidget
+from pyforms_web.controls.control_querylist import ControlQueryList
+from pyforms_web.web.middleware import PyFormsMiddleware
+from .modelform import ModelFormWidget
+
 
 class ModelAdminWidget(BaseWidget):
     """
@@ -20,37 +22,36 @@ class ModelAdminWidget(BaseWidget):
             TITLE = 'Suppliers'
     """
 
-    MODEL           = None  #: class: Model to manage
-    TITLE           = None  #: str: Title of the application
-    EDITFORM_CLASS  = ModelFormWidget #: class: Edit form class
-    ADDFORM_CLASS   = None #: class: Create form class
+    MODEL = None  #: class: Model to manage
+    TITLE = None  #: str: Title of the application
+    EDITFORM_CLASS = ModelFormWidget  #: class: Edit form class
+    ADDFORM_CLASS = None  #: class: Create form class
 
-    USE_DETAILS_TO_ADD  = True #: boolean: Use the flag to create the ControlEmptyWidget self._details. This control is used to load the ADDFORM_CLASS.
-    USE_DETAILS_TO_EDIT = True #: boolean: Use the flag to create the ControlEmptyWidget self._details. This control is used to load the EDITFORM_CLASS.
+    USE_DETAILS_TO_ADD = True  #: boolean: Use the flag to create the ControlEmptyWidget self._details. This control is used to load the ADDFORM_CLASS.
+    USE_DETAILS_TO_EDIT = True  #: boolean: Use the flag to create the ControlEmptyWidget self._details. This control is used to load the EDITFORM_CLASS.
 
-    INLINES         = []    #: list(class): Sub models to show in the interface
-    LIST_FILTER     = None  #: list(str): List of filters fields
-    LIST_DISPLAY    = None  #: list(str): List of fields to display in the table
-    LIST_HEADERS    = None  #: list(str): Table columns headers. It will override the LIST_DISPLAY
+    INLINES = []  #: list(class): Sub models to show in the interface
+    LIST_FILTER = None  #: list(str): List of filters fields
+    LIST_DISPLAY = None  #: list(str): List of fields to display in the table
+    LIST_HEADERS = None  #: list(str): Table columns headers. It will override the LIST_DISPLAY
     LIST_COLS_SIZES = None  #: list(str): Table columns sizes. Should use style units.
     LIST_COLS_ALIGN = None  #: list(str): Table columns alignments. Should use style units.
 
-    SEARCH_FIELDS   = None  #: list(str): Fields to be used in the search
+    SEARCH_FIELDS = None  #: list(str): Fields to be used in the search
 
-    EXPORT_CSV         = False #: boolean: Flag to activate the export of data to csv. The value of this flag is overwritten by the function has_export_csv_permissions
-    EXPORT_CSV_COLUMNS = None #: list(str): List of fields to export to the csv file. By default it will assume the fields in the LIST_DISPLAY variable
-    EXPORT_CSV_HEADERS = {} #: dict(str: str): Provide custom header labels to fields listed in EXPORT_CSV_COLUMNS, e.g. {'date': 'Procedure Date'}
+    EXPORT_CSV = False  #: boolean: Flag to activate the export of data to csv. The value of this flag is overwritten by the function has_export_csv_permissions
+    EXPORT_CSV_COLUMNS = None  #: list(str): List of fields to export to the csv file. By default it will assume the fields in the LIST_DISPLAY variable
+    EXPORT_CSV_HEADERS = {}  #: dict(str: str): Provide custom header labels to fields listed in EXPORT_CSV_COLUMNS, e.g. {'date': 'Procedure Date'}
 
-    CONTROL_LIST    = ControlQueryList #: class: Control to be used in to list the values
-    FIELDSETS       = None  #: Formset of the edit form
-    READ_ONLY       = []    #: list(str): List of readonly fields
+    CONTROL_LIST = ControlQueryList  #: class: Control to be used in to list the values
+    FIELDSETS = None  #: Formset of the edit form
+    READ_ONLY = []  #: list(str): List of readonly fields
 
-    LIST_ROWS_PER_PAGE = 10 #: int: number of rows to show per page
-    LIST_N_PAGES = 5        #: int: number of pages to show in the list bottom
+    LIST_ROWS_PER_PAGE = 10  #: int: number of rows to show per page
+    LIST_N_PAGES = 5  #: int: number of pages to show in the list bottom
 
     #: str: Label of the add button
     ADD_BTN_LABEL = '<i class="plus icon"></i> Add'
-
 
     def __init__(self, *args, **kwargs):
         """
@@ -60,14 +61,15 @@ class ModelAdminWidget(BaseWidget):
         :param int parent_pk: (optional) Used to generate the inline interface. Primary key of the parent model
         :param Model parent_model: (optional) Used to generate the inline interface. Parent model
         """
-        title                = kwargs.get('title') if 'title' in kwargs else self.TITLE
-        self.model           = kwargs.get('model') if 'model' in kwargs else self.MODEL
+        title = kwargs.get('title') if 'title' in kwargs else self.TITLE
+        self.model = kwargs.get('model') if 'model' in kwargs else self.MODEL
         self.editmodel_class = kwargs.get('editform_class') if 'editform_class' in kwargs else self.EDITFORM_CLASS
-        self.addmodel_class  = kwargs.get('addform_class', self.ADDFORM_CLASS if self.ADDFORM_CLASS else self.editmodel_class)
+        self.addmodel_class = kwargs.get('addform_class',
+                                         self.ADDFORM_CLASS if self.ADDFORM_CLASS else self.editmodel_class)
 
         # Set the class to behave as inline ModelAdmin ########
         self.parent_field = None
-        self.parent_pk    = kwargs.get('parent_pk',    None)
+        self.parent_pk = kwargs.get('parent_pk', None)
         self.parent_model = kwargs.get('parent_model', None)
 
         if self.parent_model and self.parent_pk:
@@ -80,17 +82,18 @@ class ModelAdminWidget(BaseWidget):
         #######################################################
         self._list = self.CONTROL_LIST(
             'List',
-            headers      = self.LIST_HEADERS  if self.LIST_HEADERS  else None,
-            list_display = self.LIST_DISPLAY  if self.LIST_DISPLAY  else [],
-            list_filter  = self.LIST_FILTER   if self.LIST_FILTER   else [],
-            search_fields= self.SEARCH_FIELDS if self.SEARCH_FIELDS else [],
-            rows_per_page= self.LIST_ROWS_PER_PAGE,
-            n_pages      = self.LIST_N_PAGES,
-            export_csv   = self.has_export_csv_permissions(user),
-            export_csv_columns = self.get_export_csv_columns(user),
-            export_csv_headers = self.EXPORT_CSV_HEADERS,
-            columns_size=self.LIST_COLS_SIZES  if self.LIST_COLS_SIZES  else None,
+            headers=self.LIST_HEADERS if self.LIST_HEADERS else None,
+            list_display=self.LIST_DISPLAY if self.LIST_DISPLAY else [],
+            list_filter=self.LIST_FILTER if self.LIST_FILTER else [],
+            search_fields=self.SEARCH_FIELDS if self.SEARCH_FIELDS else [],
+            rows_per_page=self.LIST_ROWS_PER_PAGE,
+            n_pages=self.LIST_N_PAGES,
+            export_csv=self.has_export_csv_permissions(user),
+            export_csv_columns=self.get_export_csv_columns(user),
+            export_csv_headers=self.EXPORT_CSV_HEADERS,
+            columns_size=self.LIST_COLS_SIZES if self.LIST_COLS_SIZES else None,
             columns_align=self.LIST_COLS_ALIGN if self.LIST_COLS_ALIGN else None,
+            filter_event=self.filter_event
         )
 
         has_details = self.USE_DETAILS_TO_ADD or self.USE_DETAILS_TO_EDIT
@@ -129,10 +132,10 @@ class ModelAdminWidget(BaseWidget):
 
         self._list.item_selection_changed_event = self.__list_item_selection_changed_event
 
-        #if it is a inline app, add the title to the header
+        # if it is a inline app, add the title to the header
 
         if self.parent_model and self.title:
-            self.formset = ['h3:'+str(title)]+self.formset
+            self.formset = ['h3:' + str(title)] + self.formset
 
         self.populate_list()
 
@@ -145,7 +148,7 @@ class ModelAdminWidget(BaseWidget):
         """
         django.db.models.Model: Return the current selected row object. If no row is selected return None.
         """
-        if int(self._list.selected_row_id)<0: return None
+        if int(self._list.selected_row_id) < 0: return None
         return self._list.value.get(pk=self._list.selected_row_id)
 
     #################################################################################
@@ -186,7 +189,6 @@ class ModelAdminWidget(BaseWidget):
 
         return queryset
 
-
     def get_related_field_queryset(self, request, list_queryset, field, queryset):
         """
         Called to return the main list filters for the ForeignKeys and ManyToMany fields.
@@ -203,7 +205,6 @@ class ModelAdminWidget(BaseWidget):
             return queryset.list_permissions(request.user)
         else:
             return queryset
-
 
     def hide_form(self):
         """
@@ -224,8 +225,6 @@ class ModelAdminWidget(BaseWidget):
         self._list.selected_row_id = -1
         self.populate_list()
 
-
-
     def show_create_form(self):
         """
         Show an empty for for creation
@@ -234,16 +233,16 @@ class ModelAdminWidget(BaseWidget):
         if not self.has_add_permissions(): return
 
         params = {
-            'title':'Create',
-            'model':self.model,
-            'parent_model':self.parent_model,
-            'parent_pk':self.parent_pk,
+            'title': 'Create',
+            'model': self.model,
+            'parent_model': self.parent_model,
+            'parent_pk': self.parent_pk,
             'parent_win': self
         }
 
-        if self.INLINES:   params.update({'inlines':self.INLINES})
-        if self.FIELDSETS: params.update({'fieldsets':self.FIELDSETS})
-        if self.READ_ONLY: params.update({'readonly':self.READ_ONLY})
+        if self.INLINES:   params.update({'inlines': self.INLINES})
+        if self.FIELDSETS: params.update({'fieldsets': self.FIELDSETS})
+        if self.READ_ONLY: params.update({'readonly': self.READ_ONLY})
 
         createform = self.addmodel_class(**params)
 
@@ -261,7 +260,6 @@ class ModelAdminWidget(BaseWidget):
             if hasattr(self, '_details'):
                 self._details.hide()
 
-
     def show_edit_form(self, obj_pk=None):
         """
         Show the edition for for a specific object
@@ -272,20 +270,19 @@ class ModelAdminWidget(BaseWidget):
         # if there is no edit permission then does not show the form
         if not self.has_view_permissions(obj): return
 
-
         # create the edit form a add it to the empty widget details
         # override the function hide_form to make sure the list is shown after the user close the edition form
         params = {
-            'title':'Edit',
-            'model':self.model,
-            'pk':obj.pk,
-            'parent_model':self.parent_model,
-            'parent_pk':self.parent_pk,
+            'title': 'Edit',
+            'model': self.model,
+            'pk': obj.pk,
+            'parent_model': self.parent_model,
+            'parent_pk': self.parent_pk,
             'parent_win': self
         }
 
-        if self.INLINES:   params.update({'inlines':  self.INLINES}  )
-        if self.FIELDSETS: params.update({'fieldsets':self.FIELDSETS})
+        if self.INLINES:   params.update({'inlines': self.INLINES})
+        if self.FIELDSETS: params.update({'fieldsets': self.FIELDSETS})
         if self.READ_ONLY: params.update({'readonly': self.READ_ONLY})
 
         editmodel_class = self.get_editmodel_class(obj)
@@ -307,7 +304,6 @@ class ModelAdminWidget(BaseWidget):
             if hasattr(self, '_details'):
                 self._details.hide()
 
-
     def get_editmodel_class(self, obj):
         """
         Gets the pyforms app to edit the object
@@ -315,7 +311,6 @@ class ModelAdminWidget(BaseWidget):
         :param django.db.models.Model obj: Object to be edited
         """
         return self.editmodel_class
-
 
     def set_parent(self, parent_model, parent_pk):
         """
@@ -325,8 +320,8 @@ class ModelAdminWidget(BaseWidget):
         :param int parent_pk: Primary key of the parent object
         """
 
-        self.parent_pk      = parent_pk
-        self.parent_model   = parent_model
+        self.parent_pk = parent_pk
+        self.parent_model = parent_model
 
         for field in self.model._meta.get_fields():
             if isinstance(field, models.ForeignKey):
@@ -342,11 +337,10 @@ class ModelAdminWidget(BaseWidget):
             bool: True if has add permission, False otherwise.
         """
         queryset = self.model.objects.all()
-        if  hasattr(queryset, 'has_add_permissions'):
-            return queryset.has_add_permissions( PyFormsMiddleware.user() )
+        if hasattr(queryset, 'has_add_permissions'):
+            return queryset.has_add_permissions(PyFormsMiddleware.user())
         else:
             return True
-
 
     def has_view_permissions(self, obj):
         """
@@ -358,8 +352,8 @@ class ModelAdminWidget(BaseWidget):
             bool: True if has view permissions, False otherwise.
         """
         queryset = self.model.objects.filter(pk=obj.pk)
-        if  hasattr(queryset, 'has_view_permissions'):
-            return queryset.has_view_permissions( PyFormsMiddleware.user() )
+        if hasattr(queryset, 'has_view_permissions'):
+            return queryset.has_view_permissions(PyFormsMiddleware.user())
         else:
             return True
 
@@ -385,7 +379,6 @@ class ModelAdminWidget(BaseWidget):
         """
         return True
 
-
     def has_export_csv_permissions(self, user):
         """
         Function called to check if one has permission to export the objects to csv.
@@ -408,13 +401,15 @@ class ModelAdminWidget(BaseWidget):
         """
         return self.EXPORT_CSV_COLUMNS if self.EXPORT_CSV_COLUMNS is not None else self.LIST_DISPLAY
 
+    def filter_event(self):
+        """
+        Function called when the filter is updated.
+        """
+        pass
 
     #################################################################################
     #### PRIVATE FUNCTIONS ##########################################################
     #################################################################################
-
-
-
 
     def __list_item_selection_changed_event(self):
         """
@@ -430,20 +425,19 @@ class ModelAdminWidget(BaseWidget):
             else:
                 raise Exception('You do not have permissions to visualize this record.')
 
-
     def __get_queryset(self):
         """
 
         """
         queryset = self.model.objects.all()
 
-        #used to filter the model for inline fields
+        # used to filter the model for inline fields
         if self.parent_field:
             queryset = queryset.filter(**{self.parent_field.name: self.parent_pk})
 
         # check if the model has a query_set function
         # if so use it to get the data for visualization
-        request  = PyFormsMiddleware.get_request()
+        request = PyFormsMiddleware.get_request()
 
         if hasattr(queryset, 'list_permissions'):
             queryset = queryset.list_permissions(request.user)
@@ -452,5 +446,3 @@ class ModelAdminWidget(BaseWidget):
             queryset = self.model.get_queryset(request, queryset)
 
         return self.get_queryset(request, queryset)
-
-

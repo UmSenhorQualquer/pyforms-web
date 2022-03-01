@@ -8,6 +8,7 @@ class ControlLineChart(ControlBase):
         self._legend = []
         self.selected_data = None
         self.selected_serie = None
+        self.height = kwargs.get('height', 400)
         
         super().__init__(*args, **kwargs)
 
@@ -55,7 +56,8 @@ class ControlLineChart(ControlBase):
 
         data.update({ 
             'legend': legend, 
-            'value':  series 
+            'value':  series,
+            'height': self.height
         })
 
         return data

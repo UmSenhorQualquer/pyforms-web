@@ -1,22 +1,24 @@
 import os
-from pyforms_web import settings
-from urllib.request import urlopen
 from urllib.parse import urlencode
+from urllib.request import urlopen
 
+from pyforms_web import settings
 
-FILES = [os.path.join("static","pyformsjs", x) for x in settings.PYFORMS_JSFILES_DEBUG]
+FILES = [os.path.join("static", "pyformsjs", x) for x in settings.PYFORMS_JSFILES_DEBUG]
 
-module_dir  = os.path.dirname(__file__)
-basedir     = os.path.join(module_dir, '..')
-webdir      = os.path.join(basedir, 'pyforms_web', 'web')
-exportfile  = os.path.join(webdir, 'static', 'pyforms.min.js')
+module_dir = os.path.dirname(__file__)
+basedir = os.path.join(module_dir, '..')
+webdir = os.path.join(basedir, 'pyforms_web', 'web')
+exportfile = os.path.join(webdir, 'static', 'pyforms.min.js')
 
 content = ''
 for filename in FILES:
-    with open(os.path.join(webdir,filename)) as infile:
+    with open(os.path.join(webdir, filename)) as infile:
         content += infile.read() + '\n\n'
 
 #content = js_minify(content).replace(';', ';\n')
+
+print(content)
 
 params = dict([
     ('js_code', content),
@@ -28,8 +30,8 @@ params = dict([
 print("Closure Compiler Service API ...", end=" ", flush=True)
 
 with urlopen(
-    url="https://closure-compiler.appspot.com/compile",
-    data=urlencode(params).encode("utf-8"),
+        url="https://closure-compiler.appspot.com/compile",
+        data=urlencode(params).encode("utf-8"),
 ) as response:
     print(response.status, response.reason)
 
@@ -40,7 +42,7 @@ with urlopen(
 
     print("Writing output to '%s'" % exportfile)
 
-    with open(exportfile,'wb') as outfile:
+    with open(exportfile, 'wb') as outfile:
         outfile.write(content)
 
 print("Done")
