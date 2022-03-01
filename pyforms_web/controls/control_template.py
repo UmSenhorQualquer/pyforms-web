@@ -8,7 +8,10 @@ class ControlTemplate(ControlBase):
 	def __init__(self, *args, **kwargs):
 		super(ControlTemplate, self).__init__(*args, **kwargs)
 		self._template = kwargs.get('template', None)
+		# Action triggered from the template html
 		self.action_param = None
+		# Data received from the template html
+		self.submit_action_data = None
 
 	def init_form(self):
 		return """new ControlTemplate('{0}', {1})""".format(
@@ -34,6 +37,7 @@ class ControlTemplate(ControlBase):
 		self._help    = properties.get('help','')
 		self._visible = properties.get('visible',True)
 		self.action_param = properties.get('action_param', None)
+		self.submit_action_data = properties.get('submit_action_data', None)
 		
 	@property
 	def template(self):

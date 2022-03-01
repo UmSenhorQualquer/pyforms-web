@@ -21,21 +21,5 @@ class ControlInteger extends ControlBase{
 
 	////////////////////////////////////////////////////////////////////////////////
 
-
-	get_value(){
-		if(this.jquery().length==0)
-			return this.properties.value;
-
-		var value = this.jquery().val();
-
-		if(value=='null' || value=='' || value==undefined)
-			return null;
-		else
-			return value;
-	};
-
-
-	////////////////////////////////////////////////////////////////////////////////
-
 }
 

@@ -1,17 +1,20 @@
-from pyforms_web.controls.control_base import ControlBase
 import simplejson
+
+from pyforms_web.controls.control_base import ControlBase
+
 
 class ControlInteger(ControlBase):
 
     def init_form(self):
 
         return """new ControlInteger('{0}', {1})""".format(
-            self._name, 
-            simplejson.dumps(self.serialize()) 
+            self._name,
+            simplejson.dumps(self.serialize())
         )
 
     @property
-    def value(self): return ControlBase.value.fget(self)
+    def value(self):
+        return ControlBase.value.fget(self)
 
     @value.setter
     def value(self, value):
@@ -32,8 +35,7 @@ class ControlInteger(ControlBase):
             self.error = True
             self.mark_to_update_client()
             raise e
-        
 
     def clean_field(self):
-        if isinstance(value, str): 
+        if isinstance(self.value, str):
             raise Exception('The field {0} should be of type integer')

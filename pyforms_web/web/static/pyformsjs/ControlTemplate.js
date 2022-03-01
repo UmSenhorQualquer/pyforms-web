@@ -27,20 +27,32 @@ class ControlTemplate extends ControlBase {
 
     set_actions() {
         this.properties.action_param = undefined;
-        var self = this;
-
+        const self = this;
 
         this.jquery().find('[action]').click(function () {
-            var action = $(this).attr('action');
-            var action_param = $(this).attr('action-param');
+            let action = $(this).attr('action');
+            let action_param = $(this).attr('action-param');
             self.properties.action_param = action_param;
+            self.basewidget.fire_event('self', action);
+        });
+
+        this.jquery().find('[submit-action]').click(function () {
+            let action = $(this).attr('submit-action');
+            let values = {};
+            self.jquery().find('[submit-action-name]').each(function(){
+                const name = $(this).attr('submit-action-name')
+                const value = $(this).is(":checked");
+                values[name] = value;
+            });
+            self.properties.submit_action_data = values;
             self.basewidget.fire_event('self', action);
         });
     };
 
 
     update_server() {
-        return this.properties.action_param != undefined;
+        return (this.properties.action_param != undefined) ||
+            (this.properties.submit_action_data != undefined);
     };
 
 }

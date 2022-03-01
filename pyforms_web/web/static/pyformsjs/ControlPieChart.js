@@ -35,7 +35,7 @@ class ControlPieChart extends ControlBase{
                 legend: { 
                     show: true,
                     rendererOptions: {
-                        numberRows: data.length/2
+                        numberRows: data.length/3
                     }, 
                     placement: "outside",
                     location: 's'
@@ -69,8 +69,6 @@ class ControlPieChart extends ControlBase{
         chart.themeEngine.newTheme('simple', temp);
         chart.activateTheme('simple');
 		if(this.properties.required) this.set_required();
-
-        
     };
 
 
@@ -82,7 +80,7 @@ class ControlPieChart extends ControlBase{
             legend: { 
                 show: true,
                 rendererOptions: {
-                    numberRows: value.length/2
+                    numberRows: value.length/3
                 }, 
                 placement: "outside",
                 location: 's'
