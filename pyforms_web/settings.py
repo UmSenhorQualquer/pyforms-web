@@ -97,7 +97,7 @@ CSSFILES = [
 	"/static/semantic-ui/semantic.css",
 	"/static/jquery-ui/jquery-ui.min.css",
 	"/static/codemirror/codemirror.css",
-	"/static/zoomist-main/dist/zoomist.min.css",
+	"/static/zoomist/zoomist.min.css",
 	"/static/pyforms.css",
 ]
 
@@ -140,5 +140,5 @@ JSFILES = [
 	"/static/codemirror/autorefresh.js",
 	"/static/jquery.selection.js",
     '/static/TextHighlighter.min.js',
-	"/static/zoomist-main/dist/zoomist.min.js",
+	"/static/zoomist/zoomist.min.js",
 ]
