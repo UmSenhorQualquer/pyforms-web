@@ -77,6 +77,7 @@ PYFORMS_JSFILES_DEBUG = [
     "ControlCodeMirror.js",
     "ControlHighlightText.js",
     "ControlThumbnailSelection.js",
+    "ControlImgViewer.js",
     "BaseWidget.js",
     "pyforms.js",
     "pyforms-hub.js",
@@ -96,6 +97,7 @@ CSSFILES = [
 	"/static/semantic-ui/semantic.css",
 	"/static/jquery-ui/jquery-ui.min.css",
 	"/static/codemirror/codemirror.css",
+	"/static/zoomist-main/dist/zoomist.min.css",
 	"/static/pyforms.css",
 ]
 
@@ -137,5 +139,6 @@ JSFILES = [
 	"/static/codemirror/htmlmixed.js",
 	"/static/codemirror/autorefresh.js",
 	"/static/jquery.selection.js",
-    '/static/TextHighlighter.min.js'
+    '/static/TextHighlighter.min.js',
+	"/static/zoomist-main/dist/zoomist.min.js",
 ]

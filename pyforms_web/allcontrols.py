@@ -54,6 +54,8 @@ from .controls.control_drawinimg              import ControlDrawInImg
 from .controls.control_highlighttext          import ControlHighlightText
 from .controls.control_thumbnailselection     import ControlThumbnailSelection
 
+from .controls.control_imgviewer import ControlImgViewer
+
 try:
     from .controls.control_image              import ControlImage
 except:
