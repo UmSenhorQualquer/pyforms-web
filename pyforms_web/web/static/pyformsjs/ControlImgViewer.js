@@ -21,14 +21,15 @@ class ControlImgViewer extends ControlBase {
     set_value(value) {
         if (this.zoomist) {
             this.zoomist.destroy();
+            this.zoomist = undefined;
         }
-        this.jquery().attr('data-zoomist-src', value);
-
-
-        this.zoomist = new Zoomist('#' + this.control_id(), {
-            slider: {
-                direction: 'vertical'
-            }
-        });
+        if (value !== undefined && value !== '') {
+            this.jquery().attr('data-zoomist-src', value);
+            this.zoomist = new Zoomist('#' + this.control_id(), {
+                slider: {
+                    direction: 'vertical'
+                }
+            });
+        }
     };
 }
