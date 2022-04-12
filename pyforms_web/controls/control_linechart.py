@@ -8,7 +8,7 @@ class ControlLineChart(ControlBase):
         self._legend = []
         self.selected_data = None
         self.selected_serie = None
-        self.height = kwargs.get('height', 400)
+        self.height = kwargs.get('height', None)
         self.width = kwargs.get('width', None)
         self.legend_location = kwargs.get('legend_location', 'e')
         self.legend_placement = kwargs.get('legend_placement', 'outside')
@@ -49,3 +49,6 @@ class ControlLineChart(ControlBase):
         })
 
         return data
+
+    def deserialize(self, properties):
+        pass

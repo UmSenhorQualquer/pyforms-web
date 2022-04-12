@@ -143,7 +143,7 @@ class ControlBase(object):
             res.update({'style':self._style})
 
         if self._field_style is not None: 
-            res.update({'field_style':self._field_style})
+            res.update({'field_style': self._field_style})
 
         return res
 

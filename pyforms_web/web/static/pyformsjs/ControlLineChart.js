@@ -22,7 +22,7 @@ class ControlLineChart extends ControlBase {
 
     set_value(data) {
 
-        if(this.chart){
+        if (this.chart) {
             this.chart.destroy();
         }
 
@@ -30,7 +30,8 @@ class ControlLineChart extends ControlBase {
 
         if (!data || data.length == 0 || data[0].length == 0) {
             data = [[[0, 0]]];
-        };
+        }
+        ;
 
         this.chart = $.jqplot(this.control_id(), data, {
             height: this.properties.height,
@@ -59,15 +60,12 @@ class ControlLineChart extends ControlBase {
                 show: legend.length > 0,
                 labels: legend,
                 placement: this.properties.legend_placement,
-                location: this.properties.legend_location,
-                rendererOptions: {
-                    numberRows: (legend.length / 4) +1
-                }
+                location: this.properties.legend_location
             },
             axes: {
                 xaxis: {
                     renderer: $.jqplot.DateAxisRenderer,
-                    tickOptions:{formatString:this.properties.x_axis_format},
+                    tickOptions: {formatString: this.properties.x_axis_format},
                 }
             },
             cursor: {
@@ -106,7 +104,7 @@ class ControlLineChart extends ControlBase {
 
     };
 
-    apply_deserialization(data){
+    apply_deserialization(data) {
         super.apply_deserialization(data);
         this.set_value(this.properties.value);
     }
