@@ -35,6 +35,7 @@ PYFORMS_JSFILES_DEBUG = [
     "ControlMultipleChecks.js",
     "ControlMultipleSelection.js",
     "ControlSlider.js",
+    "ControlSpacer.js",
     "ControlCheckBox.js",
     "ControlCheckBoxList.js",
     "ControlCheckBoxListQuery.js",

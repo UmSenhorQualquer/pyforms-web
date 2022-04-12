@@ -24,6 +24,7 @@ class ControlLineChart extends ControlBase {
 
         var chart = $.jqplot(this.control_id(), data, {
             height: this.properties.height,
+            width: this.properties.width,
             seriesColors: ['#f2711c', '#fbbd08', '#b5cc18', '#21ba45', '#00b5ad',
                 '#2185d0', '#6435c9', '#a333c8', '#e03997', '#a5673f', '#767676', '#1b1c1d', '#DB2828'],
             grid: {
@@ -44,8 +45,8 @@ class ControlLineChart extends ControlBase {
             legend: {
                 show: legend.length > 0,
                 labels: legend,
-                placement: "outside",
-                location: 'e'
+                placement: this.properties.legend_placement,
+                location: this.properties.legend_location
             },
             axes: {
                 xaxis: {
