@@ -13,8 +13,8 @@ class ControlLineChart(ControlBase):
         self.legend_location = kwargs.get('legend_location', 'e')
         self.legend_placement = kwargs.get('legend_placement', 'outside')
         self.x_axis_format = kwargs.get('x_axis_format', None)
+        self.smooth = kwargs.get('smooth', True)
 
-        
         super().__init__(*args, **kwargs)
 
         self.data_selected_event = kwargs.get('data_selected_event', self.data_selected_event)
@@ -44,7 +44,8 @@ class ControlLineChart(ControlBase):
             'value':  series,
             'height': self.height,
             'width': self.width,
-            'x_axis_format': self.x_axis_format
+            'x_axis_format': self.x_axis_format,
+            'smooth': self.smooth
         })
 
         return data
