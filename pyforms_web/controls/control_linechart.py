@@ -12,6 +12,8 @@ class ControlLineChart(ControlBase):
         self.width = kwargs.get('width', None)
         self.legend_location = kwargs.get('legend_location', 'e')
         self.legend_placement = kwargs.get('legend_placement', 'outside')
+        self.x_axis_format = kwargs.get('x_axis_format', None)
+
         
         super().__init__(*args, **kwargs)
 
@@ -41,19 +43,8 @@ class ControlLineChart(ControlBase):
             'legend_placement': self.legend_placement,
             'value':  series,
             'height': self.height,
-            'width': self.width
+            'width': self.width,
+            'x_axis_format': self.x_axis_format
         })
 
         return data
-
-    """
-    def deserialize(self, properties):
-        self.selected_serie  = properties.get('selected_series', None)
-        self.selected_data   = properties.get('selected_data', None)
-        
-        ControlBase.deserialize(self, properties)
-        self.legend = properties[u'legend']
-        self.value  = properties[u'value']
-    """
-
-        

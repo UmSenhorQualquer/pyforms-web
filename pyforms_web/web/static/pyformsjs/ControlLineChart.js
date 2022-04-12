@@ -19,8 +19,7 @@ class ControlLineChart extends ControlBase {
 
         if (data.length == 0 || data[0].length == 0) {
             data = [[[0, 0]]];
-        }
-        ;
+        };
 
         var chart = $.jqplot(this.control_id(), data, {
             height: this.properties.height,
@@ -50,7 +49,8 @@ class ControlLineChart extends ControlBase {
             },
             axes: {
                 xaxis: {
-                    renderer: $.jqplot.DateAxisRenderer
+                    renderer: $.jqplot.DateAxisRenderer,
+                    tickOptions:{formatString:this.properties.x_axis_format},
                 }
             },
             cursor: {
