@@ -3,7 +3,8 @@ class ControlCombo extends ControlBase{
 
 
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field control ControlCombo' ><label>"+this.properties.label+"</label>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlCombo' >";
+		if(this.properties.label_visible) html += '<label for=\'"+this.control_id()+"\'>'+this.properties.label+'</label>';
 		html += "<div class='ui search dropdown selection' id='"+this.control_id()+"' >"
 		html += '<i class="dropdown icon"></i>';
 		html += '<div class="default text">'+this.properties.placeholder+'</div>';

@@ -18,7 +18,6 @@ class ControlImgViewer(ControlBase):
         self._value = ''
         self.mark_to_update_client()
 
-
     def serialize(self):
         res = super().serialize()
 
@@ -30,4 +29,4 @@ class ControlImgViewer(ControlBase):
         return res
 
     def deserialize(self, properties):
-        super().deserialize(properties)
+        pass
