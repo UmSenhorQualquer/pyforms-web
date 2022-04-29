@@ -1,6 +1,12 @@
-from .apps_2_update import Apps2Update
+import dill
+import filelock
+import os
+import threading
+
 from confapp import conf
-import threading, os, dill, filelock
+
+from .apps_2_update import Apps2Update
+
 
 class PyFormsMiddleware(object):
     _request = {}
@@ -26,22 +32,22 @@ class PyFormsMiddleware(object):
         self.__class__._request.pop(threading.current_thread(), None)
         return response
 
-    
-
     @classmethod
     def get_request(cls, default=None):
         """Retrieve request"""
         return cls._request.get(threading.current_thread(), default)
-    
+
     ##################################################################################################
     ##################################################################################################
     ##################################################################################################
     @classmethod
-    def user(cls):      return cls.get_request().user
+    def user(cls):
+        return cls.get_request().user
 
     @classmethod
-    def add(cls, app):  cls.get_request().updated_apps.add_top(app)
-    
+    def add(cls, app):
+        cls.get_request().updated_apps.add_top(app)
+
     @classmethod
     def get_instance(cls, app_id):
         user = cls.user()
@@ -64,7 +70,6 @@ class PyFormsMiddleware(object):
             else:
                 return None
 
-
     @classmethod
     def commit_instance(cls, app):
         user = cls.user()
@@ -86,7 +91,6 @@ class PyFormsMiddleware(object):
             with lock.acquire(timeout=4):
                 with open(app_path, 'wb') as f:
                     dill.dump(app, f, protocol=4)
-
 
     @classmethod
     def remove_instance(cls, app_id):

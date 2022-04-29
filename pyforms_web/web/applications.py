@@ -1,8 +1,12 @@
-import datetime, json, dill, os, traceback, inspect, simplejson
+import inspect
+import simplejson
+import traceback
+
 from confapp import conf
-from django.http import HttpRequest
-from pyforms_web.web.middleware import PyFormsMiddleware
 from django.core.exceptions import PermissionDenied
+
+from pyforms_web.web.middleware import PyFormsMiddleware
+
 
 class ApplicationsLoader:
 
