@@ -1,3 +1,6 @@
+import datetime
+import time
+
 from django.http                    import HttpResponse, StreamingHttpResponse
 from django.views.decorators.cache  import never_cache
 from django.views.decorators.csrf   import csrf_exempt
@@ -110,8 +113,12 @@ def field_stream(request, app_id, fieldname, keyword=None):
     app = ApplicationsLoader.get_instance(request, app_id)
     field = getattr(app, fieldname)
 
+    def stream():
+        for d in field.streaming_func():
+            yield f'data: {d}\n\n'
+
     response = StreamingHttpResponse(
-        field.streaming_func(),
+        stream(),
         content_type='text/event-stream',
         status=200)
     response['Cache-Control'] = 'no-cache'

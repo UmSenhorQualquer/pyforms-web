@@ -686,11 +686,10 @@ class BaseWidget(object):
 
     def stream_status(self):
         for _ in self.streaming_func():
-            time.sleep(0.1)
-            yield simplejson.dumps(self.serialize_form())
+            yield f'data: {simplejson.dumps(self.serialize_form())}\n\n'
         self.abort_streaming = True
-        time.sleep(0.1)
-        yield simplejson.dumps(self.serialize_form())
+        yield f'data: {simplejson.dumps(self.serialize_form())}\n\n'
+        yield 'data: STOP\n\n'
 
     def stream(self, func):
         self.streaming_func = func
