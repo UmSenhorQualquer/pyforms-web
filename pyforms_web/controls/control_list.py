@@ -89,6 +89,12 @@ class ControlList(ControlBase):
         self._columns_style = value
 
     @property
+    def selected_row(self):
+        if self.selected_row_index<0:
+            return None
+        return self.value[self.selected_row_index]
+
+    @property
     def selected_row_index(self): return self._selected_index
 
     @selected_row_index.setter
