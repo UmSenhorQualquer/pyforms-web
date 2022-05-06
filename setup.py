@@ -45,15 +45,12 @@ requirements = [
 #############################################################
 # Add the default layout libraries to the requirements ######
 #############################################################
-try:
-    import orquestra
-except ImportError:
-    requirements.append('orquestra')
 
 try:
     import orquestra_simple
-except ImportError:
     requirements.append('orquestra_simple')
+except ImportError:
+    pass
 
 if ('orquestra' not in requirements) or ('orquestra_simple' not in requirements):
     requirements.append('orquestra')

@@ -5,19 +5,19 @@ try:
 except:
     pass
 
-from .controls.control_base     import ControlBase
-from .controls.control_label    import ControlLabel
-from .controls.control_button   import ControlButton
+from .controls.control_base import ControlBase
+from .controls.control_button import ControlButton
 
-from .web.middleware   import PyFormsMiddleware
+from .web.middleware import PyFormsMiddleware
 
 from pyforms_web.organizers import no_columns, segment
 from django.template.loader import render_to_string
 from .utils import make_lambda_func
 from confapp import conf
 
-import uuid, os, inspect, dill, simplejson, filelock
+import uuid, os, inspect, simplejson
 from django.core.exceptions import PermissionDenied
+
 
 class BaseWidget(object):
     """
@@ -25,9 +25,9 @@ class BaseWidget(object):
     """
 
     # TODO: Implement this
-    URLS = None #: list(str): Django urls to be added to the urls.py file
+    URLS = None  #: list(str): Django urls to be added to the urls.py file
 
-    TITLE = None #: str: Title of the application.
+    TITLE = None  #: str: Title of the application.
 
     #: int or str: Id of the layout handler function registered in the javascript by the function [pyforms.register_layout_place] or Element DOM id in the HTML where the application should be shown.
     LAYOUT_POSITION = None
@@ -65,23 +65,22 @@ class BaseWidget(object):
                     self.formset = ['_likebtn', '_htmlviewer']
         """
 
-
-        self._formset       = None
-        self._splitters     = []
-        self._title         = kwargs.get('title', args[0] if len(args)>0 else self.TITLE)
-        self._formLoaded    = False
-        self._controls      = []
-        self._html          = ''
-        self._js            = ''
-        self._css           = kwargs.get('css', self.CSS)
-        self.refresh_timeout= kwargs.get('refresh_timeout', self.REFRESH_TIMEOUT)
-        self._close_widget  = False
+        self._formset = None
+        self._splitters = []
+        self._title = kwargs.get('title', args[0] if len(args) > 0 else self.TITLE)
+        self._formLoaded = False
+        self._controls = []
+        self._html = ''
+        self._js = ''
+        self._css = kwargs.get('css', self.CSS)
+        self.refresh_timeout = kwargs.get('refresh_timeout', self.REFRESH_TIMEOUT)
+        self._close_widget = False
 
         self.init_form_result = None
 
-        self._uid =  self.UID if hasattr(self, 'UID') and self.UID else 'a'+str(uuid.uuid4())
+        self._uid = self.UID if hasattr(self, 'UID') and self.UID else 'a' + str(uuid.uuid4())
 
-        self._messages        = []
+        self._messages = []
         self._js_code2execute = [];
 
         # This variables stores the configured timeouts to execute.
@@ -98,11 +97,7 @@ class BaseWidget(object):
         if not self.has_session_permissions(PyFormsMiddleware.user()):
             raise PermissionDenied('The user does not have access to the app [{0}]'.format(self.title))
 
-
         PyFormsMiddleware.add(self)
-
-
-
 
     ############################################################################
     ############ FUNCTIONS #####################################################
@@ -130,51 +125,43 @@ class BaseWidget(object):
         if self._formset != None:
             self._html += self.generate_panel(self._formset)
 
-
         parent_code = 'undefined'
         if parent: parent_code = "'{0}'".format(parent.uid)
 
-        extra_data = {'refresh_timeout': self.refresh_timeout, 'messages':self._messages}
+        extra_data = {'refresh_timeout': self.refresh_timeout, 'messages': self._messages}
 
         modulename = inspect.getmodule(self).__name__ + '.' + self.__class__.__name__
 
         self._js = '[{0}]'.format(",".join(self._controls))
         self._html += """
         <script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1}, {3}, {4}) );{extra_code}</script>
-        """.format(modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data), extra_code=';'.join(self._js_code2execute))
+        """.format(modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data),
+                   extra_code=';'.join(self._js_code2execute))
         self._formLoaded = True
 
         self._messages = []
         self.mark_to_update_client()
 
-
-        res =  {
+        res = {
             'code': self._html,
             'title': self._title,
             'css': self._css,
-            'app_id':self.uid,
-            'refresh_timeout':  self.refresh_timeout
+            'app_id': self.uid,
+            'refresh_timeout': self.refresh_timeout
         }
 
-
         return res
-
-
-
-
-
-
 
     def generate_segment(self, row):
         """
         Generate the html to organize the formset in segments
         """
-        html  = "<div class='field {field_css}' style='{field_style}' ><div class='ui segment pyforms-segment {css}' style='{style}' >".format(
+        html = "<div class='field {field_css}' style='{field_style}' ><div class='ui segment pyforms-segment {css}' style='{style}' >".format(
             css=row.css,
             style=row.style,
             field_css=row.field_css,
             field_style=row.field_style)
-        html += self.generate_panel( list(row) )
+        html += self.generate_panel(list(row))
         html += "</div></div>"
         return html
 
@@ -182,15 +169,14 @@ class BaseWidget(object):
         """
         Generate the html for the no_columns organizer
         """
-        layout  = "<div class='row fields {size} {css}' style='{style}' >".format(
+        layout = "<div class='row fields {size} {css}' style='{style}' >".format(
             size=self.__get_fields_class(formset),
             css=formset.css,
             style=formset.style
         )
         for row in formset:
-            layout += self.generate_panel( row )
-        return layout+"</div>"
-
+            layout += self.generate_panel(row)
+        return layout + "</div>"
 
     def generate_tabs(self, formsetdict):
         """
@@ -202,39 +188,59 @@ class BaseWidget(object):
         tabs_body = ""
         tab_id = uuid.uuid4()
 
-        for index, (key, item) in enumerate( sorted(formsetdict.items()) ):
+        for index, (key, item) in enumerate(sorted(formsetdict.items())):
             if item is None: continue
-            active = 'active' if index==0 else ''
-            tabs_body += "<div class='ui bottom attached {3} tab segment' data-tab='{4}-{5}'  id='{0}-tab{1}' >{2}</div>".format(tab_id, index, self.generate_panel(item), active, tab_id, index)
-            tabs_head += "<div class='{1} item' data-tab='{2}-{3}' >{0}</div>".format(key[key.find(':')+1:], active, tab_id, index)
+            active = 'active' if index == 0 else ''
+            tabs_body += "<div class='ui bottom attached {3} tab segment' data-tab='{4}-{5}'  id='{0}-tab{1}' >{2}</div>".format(
+                tab_id, index, self.generate_panel(item), active, tab_id, index)
+            tabs_head += "<div class='{1} item' data-tab='{2}-{3}' >{0}</div>".format(key[key.find(':') + 1:], active,
+                                                                                      tab_id, index)
 
-        return """<div id='{0}' class='ui top attached tabular menu' >{1}</div>{2}<script type='text/javascript'>$('#{0}.menu .item').tab();</script>""".format(tab_id, tabs_head, tabs_body)
+        return """<div id='{0}' class='ui top attached tabular menu' >{1}</div>{2}<script type='text/javascript'>$('#{0}.menu .item').tab();</script>""".format(
+            tab_id, tabs_head, tabs_body)
 
     def generate_control(self, row):
         control = self.controls.get(row, None)
-        if control==None:
-            if   row==' ':                   return "<div class='field' ></div>"
-            if   row.startswith('empty:'):   return "<div class='field {0} wide' ></div>".format(row[6:])
-            elif row.startswith('h1:'):      return "<h1 class='field' >{0}</h1>".format(row[3:])
-            elif row.startswith('h1-right:'):return "<h1 class='ui right aligned header field' >{0}</h1>".format(row[9:])
-            elif row.startswith('h2:'):      return "<h2 class='field' >{0}</h2>".format(row[3:])
-            elif row.startswith('h2-right:'):return "<h2 class='ui right aligned header field' >{0}</h2>".format(row[9:])
-            elif row.startswith('h3:'):      return "<h3 class='field' >{0}</h3>".format(row[3:])
-            elif row.startswith('h3-right:'):return "<h3 class='ui right aligned header field' >{0}</h3>".format(row[9:])
-            elif row.startswith('h4:'):      return "<h4 class='field' >{0}</h4>".format(row[3:])
-            elif row.startswith('h4-right:'):return "<h4 class='ui right aligned header field' >{0}</h4>".format(row[9:])
-            elif row.startswith('h5:'):      return "<h5 class='field' >{0}</h5>".format(row[3:])
-            elif row.startswith('h5-right:'):return "<h5 class='ui right aligned header field' >{0}</h5>".format(row[9:])
-            elif row.startswith('info:'):    return "<div class='ui info visible message'>{0}</div>".format(row[5:])
-            elif row.startswith('warning:'): return "<div class='ui warning visible message'>{0}</div>".format(row[8:])
-            elif row.startswith('alert:'):   return "<div class='ui error visible message'>{0}</div>".format(row[6:])
-            elif row.startswith('msg:'):     return "<div class='ui message'>{0}</div>".format(row[4:])
-            elif row.startswith('text:'):    return "<div class='field'>{0}</div>".format(row[5:])
-            elif row == '-':                 return "<div class='ui clearing divider'></div>"
-            else:                            return row
+        if control == None:
+            if row == ' ':                   return "<div class='field' ></div>"
+            if row.startswith('empty:'):
+                return "<div class='field {0} wide' ></div>".format(row[6:])
+            elif row.startswith('h1:'):
+                return "<h1 class='field' >{0}</h1>".format(row[3:])
+            elif row.startswith('h1-right:'):
+                return "<h1 class='ui right aligned header field' >{0}</h1>".format(row[9:])
+            elif row.startswith('h2:'):
+                return "<h2 class='field' >{0}</h2>".format(row[3:])
+            elif row.startswith('h2-right:'):
+                return "<h2 class='ui right aligned header field' >{0}</h2>".format(row[9:])
+            elif row.startswith('h3:'):
+                return "<h3 class='field' >{0}</h3>".format(row[3:])
+            elif row.startswith('h3-right:'):
+                return "<h3 class='ui right aligned header field' >{0}</h3>".format(row[9:])
+            elif row.startswith('h4:'):
+                return "<h4 class='field' >{0}</h4>".format(row[3:])
+            elif row.startswith('h4-right:'):
+                return "<h4 class='ui right aligned header field' >{0}</h4>".format(row[9:])
+            elif row.startswith('h5:'):
+                return "<h5 class='field' >{0}</h5>".format(row[3:])
+            elif row.startswith('h5-right:'):
+                return "<h5 class='ui right aligned header field' >{0}</h5>".format(row[9:])
+            elif row.startswith('info:'):
+                return "<div class='ui info visible message'>{0}</div>".format(row[5:])
+            elif row.startswith('warning:'):
+                return "<div class='ui warning visible message'>{0}</div>".format(row[8:])
+            elif row.startswith('alert:'):
+                return "<div class='ui error visible message'>{0}</div>".format(row[6:])
+            elif row.startswith('msg:'):
+                return "<div class='ui message'>{0}</div>".format(row[4:])
+            elif row.startswith('text:'):
+                return "<div class='field'>{0}</div>".format(row[5:])
+            elif row == '-':
+                return "<div class='ui clearing divider'></div>"
+            else:
+                return row
         else:
             return str(control)
-
 
     def generate_panel(self, formset):
         """
@@ -316,48 +322,45 @@ class BaseWidget(object):
             return "<div class='notifications-area field'></div>"
 
         elif '=' in formset:
-            index = list( formset ).index('=')
+            index = list(formset).index('=')
             return "<div id='{splitter_id}' class='horizontalSplitter' ><div>{top}</div><div>{bottom}</div></div>".format(
-                splitter_id = uuid.uuid4(),
-                top         = self.generate_panel(formset[0:index]),
-                bottom      = self.generate_panel(formset[index+1:])
+                splitter_id=uuid.uuid4(),
+                top=self.generate_panel(formset[0:index]),
+                bottom=self.generate_panel(formset[index + 1:])
             )
         elif '||' in formset:
-            index = list( formset ).index('||')
+            index = list(formset).index('||')
             return "<div id='{splitter_id}' class='verticalSplitter' ><div>{left}</div><div>{right}</div></div>".format(
-                splitter_id = uuid.uuid4(),
-                left        = self.generate_panel(formset[0:index]),
-                right       = self.generate_panel(formset[index+1:])
+                splitter_id=uuid.uuid4(),
+                left=self.generate_panel(formset[0:index]),
+                right=self.generate_panel(formset[index + 1:])
             )
-        elif isinstance(formset, tuple ):
-            layout  = "<div class='row fields {0}' >".format(self.__get_fields_class(formset))
+        elif isinstance(formset, tuple):
+            layout = "<div class='row fields {0}' >".format(self.__get_fields_class(formset))
             for row in formset:
-                layout += self.generate_panel( row )
-            return layout+"</div>"
+                layout += self.generate_panel(row)
+            return layout + "</div>"
 
-        elif isinstance(formset, no_columns ):
+        elif isinstance(formset, no_columns):
             return self.generate_nocolumns(formset)
 
         elif isinstance(formset, segment):
             return self.generate_segment(formset)
 
         elif isinstance(formset, list):
-            layout  = ""
+            layout = ""
             for row in formset:
                 if row == ' ':
                     layout += "<div class='field-empty-space' ></div>"
                 else:
-                    layout += self.generate_panel( row )
+                    layout += self.generate_panel(row)
             return layout
 
-        elif isinstance(formset, dict ):
+        elif isinstance(formset, dict):
             return self.generate_tabs(formset)
 
         else:
             return self.generate_control(formset)
-
-
-
 
     def save_form(self, data={}, path=None):
         """
@@ -404,10 +407,12 @@ class BaseWidget(object):
         :param str title: Message title.
         :param str msg_type: Message box css class.
         """
-        msg = { 'type': msg_type if msg_type else '', 'messages':msg if isinstance(msg, list) else [msg], 'title':title }
+        msg = {'type': msg_type if msg_type else '', 'messages': msg if isinstance(msg, list) else [msg],
+               'title': title}
         self._messages.append(msg)
         self.mark_to_update_client()
-    def success(self,   msg, title=None):
+
+    def success(self, msg, title=None):
         """
         Write a success message
 
@@ -415,7 +420,8 @@ class BaseWidget(object):
         :param str title: Message title.
         """
         self.message(msg, title, msg_type='success')
-    def info(self,      msg, title=None):
+
+    def info(self, msg, title=None):
         """
         Write a info message
 
@@ -423,7 +429,8 @@ class BaseWidget(object):
         :param str title: Message title.
         """
         self.message(msg, title, msg_type='info')
-    def warning(self,   msg, title=None):
+
+    def warning(self, msg, title=None):
         """
         Write a warning message
 
@@ -431,7 +438,8 @@ class BaseWidget(object):
         :param str title: Message title.
         """
         self.message(msg, title, msg_type='warning');
-    def alert(self,     msg, title=None):
+
+    def alert(self, msg, title=None):
         """
         Write a alert message
 
@@ -517,15 +525,13 @@ class BaseWidget(object):
         """
         return self.message_popup(msg, title, buttons, handler, msg_type='negative', buttons_css=buttons_css)
 
-
     def add_timeout(self, milliseconds, call_function):
-        self._timeouts.append( (milliseconds, call_function.__name__) )
+        self._timeouts.append((milliseconds, call_function.__name__))
         self.mark_to_update_client()
 
     ##########################################################################
     ############ WEB functions ###############################################
     ##########################################################################
-
 
     def __get_fields_class(self, row):
         """
@@ -533,28 +539,50 @@ class BaseWidget(object):
         """
         if isinstance(row, no_columns): return 'no-alignment'
 
-        if   len(row)==2: return 'two'
-        elif len(row)==3: return 'three'
-        elif len(row)==4: return 'four'
-        elif len(row)==5: return 'five'
-        elif len(row)==6: return 'six'
-        elif len(row)==7: return 'seven'
-        elif len(row)==8: return 'eight'
-        elif len(row)==9: return 'nine'
-        elif len(row)==10: return 'ten'
-        elif len(row)==11: return 'eleven'
-        elif len(row)==12: return 'twelve'
-        elif len(row)==13: return 'thirteen'
-        elif len(row)==14: return 'fourteen'
-        elif len(row)==15: return 'fiveteen'
-        elif len(row)==16: return 'sixteen'
-        elif len(row)==17: return 'seventeen'
-        elif len(row)==18: return 'eighteen'
-        elif len(row)==19: return 'nineteen'
-        elif len(row)==20: return 'twenty'
-        elif len(row)==21: return 'twentyone'
-        elif len(row)==22: return 'twentytwo'
-        else: return ''
+        if len(row) == 2:
+            return 'two'
+        elif len(row) == 3:
+            return 'three'
+        elif len(row) == 4:
+            return 'four'
+        elif len(row) == 5:
+            return 'five'
+        elif len(row) == 6:
+            return 'six'
+        elif len(row) == 7:
+            return 'seven'
+        elif len(row) == 8:
+            return 'eight'
+        elif len(row) == 9:
+            return 'nine'
+        elif len(row) == 10:
+            return 'ten'
+        elif len(row) == 11:
+            return 'eleven'
+        elif len(row) == 12:
+            return 'twelve'
+        elif len(row) == 13:
+            return 'thirteen'
+        elif len(row) == 14:
+            return 'fourteen'
+        elif len(row) == 15:
+            return 'fiveteen'
+        elif len(row) == 16:
+            return 'sixteen'
+        elif len(row) == 17:
+            return 'seventeen'
+        elif len(row) == 18:
+            return 'eighteen'
+        elif len(row) == 19:
+            return 'nineteen'
+        elif len(row) == 20:
+            return 'twenty'
+        elif len(row) == 21:
+            return 'twentyone'
+        elif len(row) == 22:
+            return 'twentytwo'
+        else:
+            return ''
 
     def commit(self):
         """
@@ -573,15 +601,13 @@ class BaseWidget(object):
         self._js_code2execute.append(code)
         self.mark_to_update_client()
 
-
-
     def mark_to_update_client(self):
         """
         Used to flag pyforms that the application was updated and the updates should be sent to the client side
         """
         request = PyFormsMiddleware.get_request()
-        if  request is not None and \
-            hasattr(request,'updated_apps'):
+        if request is not None and \
+                hasattr(request, 'updated_apps'):
             request.updated_apps.add_top(self)
 
     def deserialize_form(self, params):
@@ -592,15 +618,14 @@ class BaseWidget(object):
         """
         widgets = []
 
-        #if hasattr(self, 'parent') and isinstance(self.parent, str):
+        # if hasattr(self, 'parent') and isinstance(self.parent, str):
         #    self.parent = PyFormsMiddleware.get_instance(self.parent)
-
 
         for key, value in params.items():
             control = self.controls.get(key, None)
-            if control!=None:
-                if control.__class__.__name__=='ControlEmptyWidget':
-                    widgets.append( (control, params[key]) )
+            if control != None:
+                if control.__class__.__name__ == 'ControlEmptyWidget':
+                    widgets.append((control, params[key]))
                 else:
                     control.deserialize(params[key])
 
@@ -612,11 +637,9 @@ class BaseWidget(object):
                 item = self.controls[control]
                 func = getattr(item, params['event']['event'])
                 func()
-            elif control=='self':
+            elif control == 'self':
                 func = getattr(self, params['event']['event'])
                 func()
-
-
 
     def serialize_form(self):
         """
@@ -626,15 +649,15 @@ class BaseWidget(object):
             dict: Data representings the current state of the application.
         """
         res = {
-            'uid':              self.uid,
-            'layout_position':  self.LAYOUT_POSITION if hasattr(self, 'LAYOUT_POSITION') else 5,
-            'title':            self.title,
-            'close_widget':     self._close_widget,
-            'js-code':          list(self._js_code2execute),
-            'refresh_timeout':  self.refresh_timeout,
-            'timeouts':         self._timeouts,
-			'start_streaming':  self.start_streaming,
-			'abort_streaming':  self.abort_streaming
+            'uid': self.uid,
+            'layout_position': self.LAYOUT_POSITION if hasattr(self, 'LAYOUT_POSITION') else 5,
+            'title': self.title,
+            'close_widget': self._close_widget,
+            'js-code': list(self._js_code2execute),
+            'refresh_timeout': self.refresh_timeout,
+            'timeouts': self._timeouts,
+            'start_streaming': self.start_streaming,
+            'abort_streaming': self.abort_streaming
         }
         self.start_streaming = False
         self.abort_streaming = False
@@ -642,7 +665,7 @@ class BaseWidget(object):
         self._timeouts = []
         self._js_code2execute = []
 
-        if len(self._messages)>0:
+        if len(self._messages) > 0:
             res.update({'messages': self._messages})
             if self._formLoaded: self._messages = []
 
@@ -651,8 +674,8 @@ class BaseWidget(object):
             if item.was_updated:
                 res[item._name] = item.serialize()
                 try:
-                    if isinstance(item, ControlPlayer ) and item._value!=None and item._value!='':
-                        item._value.release() #release any open video
+                    if isinstance(item, ControlPlayer) and item._value != None and item._value != '':
+                        item._value.release()  # release any open video
                 except:
                     pass
 
@@ -663,12 +686,10 @@ class BaseWidget(object):
 
     def stream_status(self):
         for _ in self.streaming_func():
-            time.sleep(0.1)
-            yield simplejson.dumps(self.serialize_form())
+            yield f'data: {simplejson.dumps(self.serialize_form())}\n\n'
         self.abort_streaming = True
-        time.sleep(0.1)
-        yield simplejson.dumps(self.serialize_form())
-
+        yield f'data: {simplejson.dumps(self.serialize_form())}\n\n'
+        yield 'data: STOP\n\n'
 
     def stream(self, func):
         self.streaming_func = func
@@ -701,8 +722,6 @@ class BaseWidget(object):
         """
         return self.has_permissions(user)
 
-
-
     ##########################################################################
     ############ EVENTS ######################################################
     ##########################################################################
@@ -725,12 +744,9 @@ class BaseWidget(object):
         """
         pass
 
-
-
     ############################################################################
     ############ Properties ####################################################
     ############################################################################
-
 
     @property
     def controls(self):
@@ -740,9 +756,9 @@ class BaseWidget(object):
         result = {}
         for name, var in vars(self).items():
             if isinstance(var, ControlBase):
-                var._name   = name
-                var.parent  = self
-                result[name]= var
+                var._name = name
+                var.parent = self
+                result[name] = var
 
         return result
 
@@ -764,7 +780,8 @@ class BaseWidget(object):
         return self._title
 
     @title.setter
-    def title(self, value): self._title = value
+    def title(self, value):
+        self._title = value
 
     @property
     def mainmenu(self):
@@ -779,7 +796,6 @@ class BaseWidget(object):
     def mainmenu(self, value):
         pass
 
-
     @property
     def formset(self):
         """
@@ -788,8 +804,8 @@ class BaseWidget(object):
         return self._formset
 
     @formset.setter
-    def formset(self, value): self._formset = value
-
+    def formset(self, value):
+        self._formset = value
 
     @property
     def uid(self):
@@ -799,7 +815,8 @@ class BaseWidget(object):
         return self._uid
 
     @uid.setter
-    def uid(self, value): self._uid = value
+    def uid(self, value):
+        self._uid = value
 
     @property
     def visible(self):
@@ -816,8 +833,8 @@ class BaseWidget(object):
         return self._refresh_timeout
 
     @refresh_timeout.setter
-    def refresh_timeout(self, value): self._refresh_timeout = value
-
+    def refresh_timeout(self, value):
+        self._refresh_timeout = value
 
     @property
     def parent(self):
@@ -844,7 +861,6 @@ class BaseWidget(object):
     ############ WEB Properties ################################################
     ############################################################################
 
-
     @property
     def js(self):
         """
@@ -853,52 +869,32 @@ class BaseWidget(object):
         return self._js
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class PopupWindow(BaseWidget):
     LAYOUT_POSITION = conf.LAYOUT_NEW_WINDOW
 
     def __init__(self, title, msg, buttons, handler, msg_type, parent_win=None, buttons_css=[]):
 
-        if msg_type=='positive':
+        if msg_type == 'positive':
             title = f'<i class="ui icon check"></i>{title}'
-        elif msg_type=='negative':
+        elif msg_type == 'negative':
             title = f'<i class="ui icon minus circle"></i>{title}'
-        elif msg_type=='warning':
+        elif msg_type == 'warning':
             title = f'<i class="ui icon exclamation"></i>{title}'
         elif msg_type == 'info':
             title = f'<i class="ui icon info"></i>{title}'
 
         BaseWidget.__init__(self, title, parent_win=parent_win)
 
-
-
-        #self._label = ControlLabel(default=msg)
-        #self._label.field_css = msg_type
+        # self._label = ControlLabel(default=msg)
+        # self._label.field_css = msg_type
         buttons_formset = []
 
         if buttons:
             for i, b in enumerate(buttons):
                 name = 'button_{0}'.format(i)
                 setattr(self, name, ControlButton(b, label_visible=False, css=buttons_css))
-                getattr(self, name ).value = make_lambda_func(handler, popup=self, button=b)
-                if len(buttons_css)>i:
+                getattr(self, name).value = make_lambda_func(handler, popup=self, button=b)
+                if len(buttons_css) > i:
                     getattr(self, name).css = buttons_css[i]
                 buttons_formset.append(name)
 

@@ -8,8 +8,13 @@ class ControlLineChart(ControlBase):
         self._legend = []
         self.selected_data = None
         self.selected_serie = None
-        self.height = kwargs.get('height', 400)
-        
+        self.height = kwargs.get('height', None)
+        self.width = kwargs.get('width', None)
+        self.legend_location = kwargs.get('legend_location', 'e')
+        self.legend_placement = kwargs.get('legend_placement', 'outside')
+        self.x_axis_format = kwargs.get('x_axis_format', None)
+        self.smooth = kwargs.get('smooth', True)
+
         super().__init__(*args, **kwargs)
 
         self.data_selected_event = kwargs.get('data_selected_event', self.data_selected_event)
@@ -22,27 +27,6 @@ class ControlLineChart(ControlBase):
     def data_selected_event(self, series_index, data):
         pass
 
-    """
-    @property
-    def value(self):
-        rows = []
-        for title, serie in self._value.items():
-            new_row = []
-            for value in row:
-                if value is None: break
-                if isinstance(value[0], datetime.datetime): value[0] = str(value[0])
-                if isinstance(value[0], datetime.date): value[0] = str(value[0])
-                if isinstance(value[0], str): value[0] = str(value[0])
-                if isinstance(value[1], str): value[1] = str(value[1])
-                new_row.append(value)
-            rows.append(new_row)
-        return rows
-
-    @value.setter
-    def value(self, value):
-        ControlBase.value.fset(self, value)
-    """
-
     def serialize(self):
         data = ControlBase.serialize(self)
         
@@ -53,22 +37,18 @@ class ControlLineChart(ControlBase):
             legend.append(title)
             series.append(serie)
 
-
         data.update({ 
-            'legend': legend, 
+            'legend': legend,
+            'legend_location': self.legend_location,
+            'legend_placement': self.legend_placement,
             'value':  series,
-            'height': self.height
+            'height': self.height,
+            'width': self.width,
+            'x_axis_format': self.x_axis_format,
+            'smooth': self.smooth
         })
 
         return data
 
-
     def deserialize(self, properties):
-        self.selected_serie  = properties.get('selected_series', None)
-        self.selected_data   = properties.get('selected_data', None)
-        
-        ControlBase.deserialize(self, properties)
-        self.legend = properties[u'legend']
-        self.value  = properties[u'value']
-
-        
+        pass
