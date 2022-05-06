@@ -18,7 +18,7 @@ class ControlMultipleUpload extends ControlBase {
                 enctype: 'multipart/form-data', //Request enctype {String}
                 synchron: false, //Upload synchron the files
                 beforeSend: function () {
-                    self.basewidget.loading();
+                    //self.basewidget.loading();
                 }, //A pre-request callback function {Function}
                 success: function(data, itemEl, listEl, boxEl, newInputEl, inputEl, id){
 					self.files[data.metas[0].name] = data.metas[0];
@@ -29,7 +29,7 @@ class ControlMultipleUpload extends ControlBase {
                         return self.files[x.file.name].file;
                     });
                     self.basewidget.fire_event(self.name, 'update_control_event');
-                    self.basewidget.not_loading();
+                    //self.basewidget.not_loading();
                 },
                 error: null, //A function to be called if the request fails {Function}
                 statusCode: null, //An object of numeric HTTP codes {Object}
