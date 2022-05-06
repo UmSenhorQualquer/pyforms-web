@@ -29,7 +29,6 @@ PYFORMS_JSFILES_DEBUG = [
     "ControlButton.js",
     "ControlBarsChart.js",
     "ControlFile.js",
-    "ControlMultipleUpload.js",
     "ControlFileUpload.js",
     "ControlDir.js",
     "ControlMultipleChecks.js",

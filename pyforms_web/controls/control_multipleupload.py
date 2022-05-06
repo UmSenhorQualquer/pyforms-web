@@ -1,29 +1,36 @@
 import os
-from django.conf import settings
-from pyforms_web.controls.control_base import ControlBase
+
 import simplejson
+from django.conf import settings
+
+from pyforms_web.controls.control_base import ControlBase
+
 
 class ControlMultipleUpload(ControlBase):
 
-	def init_form(self):
-		return "new ControlMultipleUpload('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+    def init_form(self):
+        return "new ControlMultipleUpload('{0}', {1})".format(self._name, simplejson.dumps(self.serialize()))
 
-	@property
-	def filepath(self):
-		return os.path.join( settings.MEDIA_ROOT, self.value[len(settings.MEDIA_URL):] )
+    @property
+    def filepaths(self):
+        for filename in self.value:
+            yield os.path.join(settings.MEDIA_ROOT, filename[len(settings.MEDIA_URL):])
 
-	def serialize(self):
-		data 	  = super().serialize()
-		if self.value:
-			try:
-				file_data = {
-					'name': os.path.basename(self.value),
-					'size': os.path.getsize(self.filepath),
-					'file': self.value,
-					 'url': self.value
-				}
-				data.update({ 'file_data':file_data })
-			except OSError:
-				pass
+    def serialize(self):
+        data = super().serialize()
+        if self.value:
 
-		return data
+            files = []
+            for filename in self.value:
+                print(filename, os.path.join(settings.MEDIA_ROOT, filename[len(settings.MEDIA_URL):]))
+                filepath = os.path.join(settings.MEDIA_ROOT, filename[len(settings.MEDIA_URL):])
+                files.append({
+                    'name': os.path.basename(filename),
+                    'size': os.path.getsize(filepath),
+                    'file': filename,
+                    'url': filename
+                })
+            data.update({'file_data': files})
+            print(data)
+
+        return data
