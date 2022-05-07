@@ -22,7 +22,6 @@ class ControlMultipleUpload(ControlBase):
 
             files = []
             for filename in self.value:
-                print(filename, os.path.join(settings.MEDIA_ROOT, filename[len(settings.MEDIA_URL):]))
                 filepath = os.path.join(settings.MEDIA_ROOT, filename[len(settings.MEDIA_URL):])
                 files.append({
                     'name': os.path.basename(filename),
@@ -31,6 +30,5 @@ class ControlMultipleUpload(ControlBase):
                     'url': filename
                 })
             data.update({'file_data': files})
-            print(data)
 
         return data

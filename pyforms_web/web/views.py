@@ -1,4 +1,5 @@
 import os
+
 import simplejson
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
@@ -21,7 +22,7 @@ def upload_files(request):
 
         for key in request.FILES:
             myfile = request.FILES[key]
-            name = "".join([(c if c.isalnum() or c == '.' else '') for c in myfile.name])
+            name = "".join([(c if c.isalnum() or c in ['.', '-', '_'] else '') for c in myfile.name])
             for c in r' []/\;,><&*:%=+@!#^()|?^': name = name.replace(c, '')
 
             fs = FileSystemStorage(location=path2save, base_url=settings.MEDIA_URL + 'apps/' + request.POST['app_id'] + '/')
