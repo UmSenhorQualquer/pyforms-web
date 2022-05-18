@@ -590,6 +590,7 @@ class BaseWidget(object):
         """
         for key, item in self.controls.items(): item.commit()
 
+        self.is_new_app = False
         PyFormsMiddleware.commit_instance(self)
 
     def execute_js(self, code):
@@ -641,6 +642,7 @@ class BaseWidget(object):
                 func = getattr(self, params['event']['event'])
                 func()
 
+
     def serialize_form(self):
         """
         Serialize the Form to a control.
@@ -669,15 +671,15 @@ class BaseWidget(object):
             res.update({'messages': self._messages})
             if self._formLoaded: self._messages = []
 
-        for key, item in self.controls.items():
-
-            if item.was_updated:
-                res[item._name] = item.serialize()
-                try:
-                    if isinstance(item, ControlPlayer) and item._value != None and item._value != '':
-                        item._value.release()  # release any open video
-                except:
-                    pass
+        if not self.is_new_app:
+            for key, item in self.controls.items():
+                if item.was_updated:
+                    res[item._name] = item.serialize()
+                    try:
+                        if isinstance(item, ControlPlayer) and item._value != None and item._value != '':
+                            item._value.release()  # release any open video
+                    except:
+                        pass
 
         if self.parent:
             self._parent_win_id = self.parent.uid
