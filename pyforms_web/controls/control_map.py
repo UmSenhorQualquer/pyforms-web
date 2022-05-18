@@ -64,7 +64,8 @@ class ControlMap(ControlBase):
 
         self.markers = []
         for m in properties.get('markers', []):
-            self.markers.append(m['geometry']['coordinates'])
+            coord =m['geometry']['coordinates']
+            self.markers.append([coord[1], coord[0]])
 
         return super().deserialize(properties)
 

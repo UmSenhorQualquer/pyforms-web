@@ -20,6 +20,8 @@ class ControlMap extends ControlBase {
 
         if (this.properties.required) this.set_required();
 
+
+
         // Delay the map initialization for rendering proposes.
         setTimeout(() => {
             this.initMap();
@@ -67,8 +69,8 @@ class ControlMap extends ControlBase {
             }
         };
 
-        var drawControl = new L.Control.Draw(options);
-        this.map.addControl(drawControl);
+        this.drawControl = new L.Control.Draw(options);
+        this.map.addControl(this.drawControl);
 
         this.map.on(L.Draw.Event.CREATED, e => {
             this.editableLayers.addLayer(e.layer);
@@ -86,20 +88,22 @@ class ControlMap extends ControlBase {
 
     process_commands() {
         if (this.properties.add_markers) {
-            this.properties.add_markers.forEach(m => {
-                this.editableLayers.addLayer(L.marker(m.coordinate, m));
+            this.properties.add_markers.forEach((m, idx) => {
+                const marker = L.marker(m.coordinate, m);
+                this.editableLayers.addLayer(marker);
             });
         }
 
         if (this.properties.add_polygons) {
             this.properties.add_polygons.forEach(p => {
-                this.editableLayers.addLayer(L.polygon(p.coordinates, p));
+                const poly = L.polygon(p.coordinates, p);
+                this.editableLayers.addLayer(poly);
             });
         }
         this.properties.add_markers = [];
         this.properties.add_polygons = [];
 
-        if (this.properties.fitBounds && this.map) {
+        if (this.properties.fitBounds && this.map && this.editableLayers.getBounds().isValid()) {
             this.map.fitBounds(this.editableLayers.getBounds());
         }
     }
@@ -110,9 +114,10 @@ class ControlMap extends ControlBase {
         this.map.eachLayer(l => {
             if (l instanceof L.Polygon) {
                 polygons.push(l.toGeoJSON())
-            } else if (l instanceof L.Marker) {
+            } else if (l instanceof L.Marker && l.options && l.options.pane === "markerPane") {
                 markers.push(l.toGeoJSON())
             }
+
         });
 
         this.properties.polygons = polygons;
@@ -123,11 +128,21 @@ class ControlMap extends ControlBase {
 
     deserialize(data) {
         super.deserialize(data);
-        if (this.properties.fitBounds && this.map) {
+        if (this.properties.fitBounds && this.map && this.editableLayers.getBounds().isValid()) {
             this.map.fitBounds(this.editableLayers.getBounds());
         }
         if (this.map) {
             this.process_commands();
         }
     }
+
+    /*
+        enable() {
+            this.drawControl.enable();
+        }
+
+        disable() {
+            this.drawControl.disable();
+        }
+        */
 }
