@@ -102,7 +102,7 @@ CSSFILES = [
     "/static/zoomist/zoomist.min.css",
     "/static/pyforms.css",
     "/static/leaflet/leaflet.css",
-    "/static/leaflet/draw/Leaflet.draw.css",
+    "/static/leaflet/draw/leaflet.draw.css",
 ]
 
 JSFILES = [
