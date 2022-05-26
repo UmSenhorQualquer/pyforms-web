@@ -34,7 +34,7 @@ requirements = [
     'opencv-python~=4.2',
     'django>2.1',
     'simplejson',
-    'dill',
+    'dill==0.3.4',
     'filelock',
     'Pillow',
     'python-dateutil',
