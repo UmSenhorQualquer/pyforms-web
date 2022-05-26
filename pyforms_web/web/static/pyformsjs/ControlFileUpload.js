@@ -62,7 +62,6 @@ class ControlFileUpload extends ControlBase{
 		if(this.properties.file_data){
 			filerKit.append(this.properties.file_data);
 		};
-		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +71,6 @@ class ControlFileUpload extends ControlBase{
 		this.properties.new_value = undefined;
 		this.properties = $.extend(this.properties, data);	
 		this.set_value(this.properties.value);
-		
 
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error'); 
 	};

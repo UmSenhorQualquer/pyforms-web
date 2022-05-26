@@ -1,4 +1,4 @@
-PYFORMS_APPS_IN_MEMORY = False # Between the user requests to the server, the app is stored in memory instead of the disk
+PYFORMS_APPS_IN_MEMORY = False  # Between the user requests to the server, the app is stored in memory instead of the disk
 
 PYFORMS_APPS = {}
 
@@ -9,17 +9,17 @@ PYFORMS_DEBUG = False
 PYFORMS_VERBOSE = False
 
 try:
-	import os
-	from django.conf import settings
+    import os
+    from django.conf import settings
 
-	PYFORMS_WEB_APPS_CACHE_DIR = os.path.join(str(settings.BASE_DIR) ,'apps-cache')
-	PYFORMS_WEB_LOCKFILE 	   = os.path.join(str(settings.BASE_DIR) ,'lockfile.txt')
+    PYFORMS_WEB_APPS_CACHE_DIR = os.path.join(str(settings.BASE_DIR), 'apps-cache')
+    PYFORMS_WEB_LOCKFILE = os.path.join(str(settings.BASE_DIR), 'lockfile.txt')
 except:
-	PYFORMS_WEB_APPS_CACHE_DIR = 'apps-cache'
-	PYFORMS_WEB_LOCKFILE 	   = 'lockfile.txt'
+    PYFORMS_WEB_APPS_CACHE_DIR = 'apps-cache'
+    PYFORMS_WEB_LOCKFILE = 'lockfile.txt'
 
 PYFORMS_JSFILES_DEBUG = [
-    #"MultiInheritance.js",
+    # "MultiInheritance.js",
     "ControlBase.js",
     "BaseControlStreaming.js",
     "ControlAutoComplete.js",
@@ -29,7 +29,6 @@ PYFORMS_JSFILES_DEBUG = [
     "ControlButton.js",
     "ControlBarsChart.js",
     "ControlFile.js",
-    "ControlMultipleUpload.js",
     "ControlFileUpload.js",
     "ControlDir.js",
     "ControlMultipleChecks.js",
@@ -79,67 +78,102 @@ PYFORMS_JSFILES_DEBUG = [
     "ControlHighlightText.js",
     "ControlThumbnailSelection.js",
     "ControlImgViewer.js",
+    "ControlMultipleUpload.js",
+    "ControlMap.js",
     "BaseWidget.js",
     "pyforms.js",
     "pyforms-hub.js",
 ]
 
-PYFORMS_JSFILES_PROD  = [
+PYFORMS_JSFILES_PROD = [
     "/static/pyforms.min.js",
 ]
 
 CSSFILES = [
-	"/static/treant/Treant.css",
-	"/static/jquery.flowchart/jquery.flowchart.min.css",
-	"/static/datetimepicker/jquery.datetimepicker.min.css",
-	"/static/jqplot/jquery.jqplot.css",
-	"/static/filer/css/jquery.filer.css",
-	"/static/filer/css/jquery.filer-dragdropbox-theme.css",
-	"/static/semantic-ui/semantic.css",
-	"/static/jquery-ui/jquery-ui.min.css",
-	"/static/codemirror/codemirror.css",
-	"/static/zoomist/zoomist.min.css",
-	"/static/pyforms.css",
+    "/static/treant/Treant.css",
+    "/static/jquery.flowchart/jquery.flowchart.min.css",
+    "/static/datetimepicker/jquery.datetimepicker.min.css",
+    "/static/jqplot/jquery.jqplot.css",
+    "/static/filer/css/jquery.filer.css",
+    "/static/filer/css/jquery.filer-dragdropbox-theme.css",
+    "/static/semantic-ui/semantic.css",
+    "/static/jquery-ui/jquery-ui.min.css",
+    "/static/codemirror/codemirror.css",
+    "/static/zoomist/zoomist.min.css",
+    "/static/pyforms.css",
+    "/static/leaflet/leaflet.css",
+    "/static/leaflet/draw/leaflet.draw.css",
 ]
 
 JSFILES = [
-	"/static/jquery.min.js",
-	"/static/jquery.json-2.4.min.js",
-	"/static/jquery.flowchart/jquery.panzoom.min.js",
-	"/static/jquery.flowchart/jquery.mousewheel.min.js",
-	"/static/jquery.flowchart/jquery.flowchart.min.js",
-	"/static/datetimepicker/jquery.datetimepicker.full.min.js",
-	"/static/base64.js",
-	"/static/gmaps.min.js",
-	"/static/treant/Treant.js",
-	"/static/timeline/timeline.js",
-	"/static/timeline/track.js",
-	"/static/timeline/event.js",
-	"/static/timeline/graph.js",
-	"/static/canvas-video-player.js",
-	"/static/jqplot/jquery.jqplot.js",
-	"/static/jqplot/plugins/jqplot.cursor.js",
-	"/static/jqplot/plugins/jqplot.logAxisRenderer.js",
-	"/static/jqplot/plugins/jqplot.canvasTextRenderer.js",
-	"/static/jqplot/plugins/jqplot.canvasAxisLabelRenderer.js",
-	"/static/jqplot/plugins/jqplot.blockRenderer.js",
-	"/static/jqplot/plugins/jqplot.enhancedLegendRenderer.js",
-	"/static/jqplot/plugins/jqplot.logAxisRenderer.js",
-	"/static/jqplot/plugins/jqplot.dateAxisRenderer.js",
-	"/static/jqplot/plugins/jqplot.categoryAxisRenderer.js",
-	"/static/jqplot/plugins/jqplot.barRenderer.js",
-	"/static/jqplot/plugins/jqplot.pointLabels.js",
-	"/static/jqplot/plugins/jqplot.pieRenderer.js",
-	"/static/filer/js/jquery.filer.js",
-	"/static/jquery-ui/jquery-ui.min.js",
-	"/static/semantic-ui/semantic.min.js",
-	"/static/codemirror/codemirror.js",
-	"/static/codemirror/xml.js",
-	"/static/codemirror/css.js",
-	"/static/codemirror/javascript.js",
-	"/static/codemirror/htmlmixed.js",
-	"/static/codemirror/autorefresh.js",
-	"/static/jquery.selection.js",
+    "/static/jquery.min.js",
+    "/static/jquery.json-2.4.min.js",
+    "/static/jquery.flowchart/jquery.panzoom.min.js",
+    "/static/jquery.flowchart/jquery.mousewheel.min.js",
+    "/static/jquery.flowchart/jquery.flowchart.min.js",
+    "/static/datetimepicker/jquery.datetimepicker.full.min.js",
+    "/static/base64.js",
+    "/static/gmaps.min.js",
+    "/static/treant/Treant.js",
+    "/static/timeline/timeline.js",
+    "/static/timeline/track.js",
+    "/static/timeline/event.js",
+    "/static/timeline/graph.js",
+    "/static/canvas-video-player.js",
+    "/static/jqplot/jquery.jqplot.js",
+    "/static/jqplot/plugins/jqplot.cursor.js",
+    "/static/jqplot/plugins/jqplot.logAxisRenderer.js",
+    "/static/jqplot/plugins/jqplot.canvasTextRenderer.js",
+    "/static/jqplot/plugins/jqplot.canvasAxisLabelRenderer.js",
+    "/static/jqplot/plugins/jqplot.blockRenderer.js",
+    "/static/jqplot/plugins/jqplot.enhancedLegendRenderer.js",
+    "/static/jqplot/plugins/jqplot.logAxisRenderer.js",
+    "/static/jqplot/plugins/jqplot.dateAxisRenderer.js",
+    "/static/jqplot/plugins/jqplot.categoryAxisRenderer.js",
+    "/static/jqplot/plugins/jqplot.barRenderer.js",
+    "/static/jqplot/plugins/jqplot.pointLabels.js",
+    "/static/jqplot/plugins/jqplot.pieRenderer.js",
+    "/static/filer/js/jquery.filer.js",
+    "/static/jquery-ui/jquery-ui.min.js",
+    "/static/semantic-ui/semantic.min.js",
+    "/static/codemirror/codemirror.js",
+    "/static/codemirror/xml.js",
+    "/static/codemirror/css.js",
+    "/static/codemirror/javascript.js",
+    "/static/codemirror/htmlmixed.js",
+    "/static/codemirror/autorefresh.js",
+    "/static/jquery.selection.js",
     '/static/TextHighlighter.min.js',
-	"/static/zoomist/zoomist.min.js",
+    "/static/zoomist/zoomist.min.js",
+    "/static/leaflet/leaflet.js",
+
+    "/static/leaflet/draw/Leaflet.draw.js",
+    "/static/leaflet/draw/Leaflet.Draw.Event.js",
+    "/static/leaflet/draw/Toolbar.js",
+    "/static/leaflet/draw/Tooltip.js",
+    "/static/leaflet/draw/ext/GeometryUtil.js",
+    "/static/leaflet/draw/ext/LatLngUtil.js",
+    "/static/leaflet/draw/ext/LineUtil.Intersect.js",
+    "/static/leaflet/draw/ext/Polygon.Intersect.js",
+    "/static/leaflet/draw/ext/Polyline.Intersect.js",
+    "/static/leaflet/draw/ext/TouchEvents.js",
+    "/static/leaflet/draw/draw/DrawToolbar.js",
+    "/static/leaflet/draw/draw/handler/Draw.Feature.js",
+    "/static/leaflet/draw/draw/handler/Draw.SimpleShape.js",
+    "/static/leaflet/draw/draw/handler/Draw.Polyline.js",
+    "/static/leaflet/draw/draw/handler/Draw.Marker.js",
+    "/static/leaflet/draw/draw/handler/Draw.Circle.js",
+    "/static/leaflet/draw/draw/handler/Draw.CircleMarker.js",
+    "/static/leaflet/draw/draw/handler/Draw.Polygon.js",
+    "/static/leaflet/draw/draw/handler/Draw.Rectangle.js",
+    "/static/leaflet/draw/edit/EditToolbar.js",
+    "/static/leaflet/draw/edit/handler/EditToolbar.Edit.js",
+    "/static/leaflet/draw/edit/handler/EditToolbar.Delete.js",
+    "/static/leaflet/draw/Control.Draw.js",
+    "/static/leaflet/draw/edit/handler/Edit.Poly.js",
+    "/static/leaflet/draw/edit/handler/Edit.SimpleShape.js",
+    "/static/leaflet/draw/edit/handler/Edit.Rectangle.js",
+    "/static/leaflet/draw/edit/handler/Edit.Marker.js",
+    "/static/leaflet/draw/edit/handler/Edit.CircleMarker.js",
+    "/static/leaflet/draw/edit/handler/Edit.Circle.js",
 ]

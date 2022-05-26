@@ -1058,7 +1058,7 @@ class ModelFormWidget(BaseWidget):
             elif field.name in self.readonly:
 
                 if isinstance(field, (models.TextField, models.JSONField)):
-                    pyforms_field = ControlTextArea( label, readonly=True, required=required, helptext=field.help_text )
+                    pyforms_field = ControlTextArea( label, readonly=True, required=required, helptext=field.help_text)
                 else:
                     pyforms_field = ControlText( label, readonly=True, required=required, helptext=field.help_text )
 
@@ -1094,6 +1094,8 @@ class ModelFormWidget(BaseWidget):
                                                helptext=field.help_text)
             elif isinstance(field, models.SmallIntegerField):   pyforms_field = ControlInteger(label, default=field.default, required=required, helptext=field.help_text)
             elif isinstance(field, models.TextField):           pyforms_field = ControlTextArea( label, default=field.default, required=required, helptext=field.help_text )
+            elif isinstance(field, models.JSONField):
+                pyforms_field = ControlTextArea(label, default=field.default, required=required, helptext=field.help_text)
             elif isinstance(field, models.NullBooleanField):
                 pyforms_field = ControlCombo(
                     label,
