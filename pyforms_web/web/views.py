@@ -103,7 +103,7 @@ def app_stream(request, app_id, keyword=None):
     app = ApplicationsLoader.get_instance(request, app_id)
 
     response = StreamingHttpResponse(
-        app.stream_status(),
+        app.stream_status(request.user),
         content_type='text/event-stream',
         status=200)
     response['Cache-Control'] = 'no-cache'
@@ -116,6 +116,8 @@ def field_stream(request, app_id, fieldname, keyword=None):
     def stream():
         for d in field.streaming_func():
             yield f'data: {d}\n\n'
+
+        app.commit(request.user)
 
     response = StreamingHttpResponse(
         stream(),

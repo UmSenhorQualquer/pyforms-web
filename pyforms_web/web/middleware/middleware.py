@@ -71,8 +71,9 @@ class PyFormsMiddleware(object):
                 return None
 
     @classmethod
-    def commit_instance(cls, app):
-        user = cls.user()
+    def commit_instance(cls, app, user=None):
+        if user is None:
+            user = cls.user()
 
         if conf.PYFORMS_APPS_IN_MEMORY:
             cls._users.setdefault(user.pk, {})

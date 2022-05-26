@@ -584,13 +584,13 @@ class BaseWidget(object):
         else:
             return ''
 
-    def commit(self):
+    def commit(self, user=None):
         """
         Save all the application updates to a file, so it can be used in the next session.
         """
         for key, item in self.controls.items(): item.commit()
 
-        PyFormsMiddleware.commit_instance(self)
+        PyFormsMiddleware.commit_instance(self, user)
 
     def execute_js(self, code):
         """
@@ -684,11 +684,12 @@ class BaseWidget(object):
 
         return res
 
-    def stream_status(self):
+    def stream_status(self, user=None):
         for _ in self.streaming_func():
             yield f'data: {simplejson.dumps(self.serialize_form())}\n\n'
         self.abort_streaming = True
         yield f'data: {simplejson.dumps(self.serialize_form())}\n\n'
+        self.commit(user)
         yield 'data: STOP\n\n'
 
     def stream(self, func):
