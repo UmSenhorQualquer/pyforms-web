@@ -6,7 +6,7 @@ class ControlImgViewer extends ControlBase {
         var html = `<div id='${this.place_id()}' class='field control ControlImgViewer' >`;
         if (this.properties.label_visible)
             html += `<label for='${this.control_id()}'>${this.properties.label}</label>`;
-        html += `<div id='${this.control_id()}'></div>`;
+        html += `<div id='${this.control_id()}' style="min-height: ${this.properties.min_height}px;" ></div>`;
 
         this.jquery_place().replaceWith(html);
 
@@ -26,6 +26,7 @@ class ControlImgViewer extends ControlBase {
         if (value !== undefined && value !== '') {
             this.jquery().attr('data-zoomist-src', value);
             this.zoomist = new Zoomist('#' + this.control_id(), {
+                fill: 'contain',
                 slider: {
                     direction: 'vertical'
                 }

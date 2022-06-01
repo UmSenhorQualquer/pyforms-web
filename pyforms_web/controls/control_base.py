@@ -28,6 +28,7 @@ class ControlBase(object):
         self._parent = None  # parent basewidget. It is updated in runtime
         self._update_client = False  # flag that indicate if the Control should be updated
 
+        self._inline = kwargs.get('inline', False)
         self._help = kwargs.get('helptext', None)
         self._value = kwargs.get('default', None)
         self._required = kwargs.get('required', False)
@@ -130,7 +131,8 @@ class ControlBase(object):
             'error': self._error,
             'enabled': self._enabled,
             'label_visible': self._label_visible,
-            'required': self._required
+            'required': self._required,
+            'inline': self._inline
         }
         if self._css is not None:
             res.update({'css': self._css})

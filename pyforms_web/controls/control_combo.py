@@ -19,7 +19,10 @@ class ControlCombo(ControlBase):
         self._items = collections.OrderedDict()
         items = kwargs.get("items", [])
         for item in items:
-            self.add_item(*item)
+            if isinstance(item, str):
+                self.add_item(item)
+            else:
+                self.add_item(*item)
 
         if not items and "default" in kwargs:
             del kwargs["default"]
@@ -35,6 +38,8 @@ class ControlCombo(ControlBase):
         """
 
         super().__init__(*args, **kwargs)
+
+        self.placeholder = '-'
 
     def init_form(self):
         self._init_form_called = True

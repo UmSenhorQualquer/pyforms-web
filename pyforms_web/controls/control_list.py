@@ -99,8 +99,8 @@ class ControlList(ControlBase):
 
     @selected_row_index.setter
     def selected_row_index(self, value):
-        self.mark_to_update_client()
         self._selected_index = value
+        self.mark_to_update_client()
 
 
     @property

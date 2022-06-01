@@ -8,6 +8,8 @@ class ControlImgViewer(ControlBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.min_height = kwargs.get('min_height', 200)
+
     def init_form(self):
         return """new ControlImgViewer('{0}', {1})""".format(
             self._name,
@@ -20,6 +22,8 @@ class ControlImgViewer(ControlBase):
 
     def serialize(self):
         res = super().serialize()
+
+        res.update({'min_height': self.min_height})
 
         if self.value is None:
             res.update({'value': ''})
