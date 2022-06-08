@@ -26,7 +26,7 @@ class ControlImgViewer extends ControlBase {
         if (value !== undefined && value !== '') {
             this.jquery().attr('data-zoomist-src', value);
             this.zoomist = new Zoomist('#' + this.control_id(), {
-                fill: 'none',
+                fill: this.properties.fill,
                 slider: {
                     direction: 'vertical'
                 }
