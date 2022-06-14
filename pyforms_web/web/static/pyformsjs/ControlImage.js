@@ -3,7 +3,6 @@ class ControlImage extends ControlBase{
 
 	////////////////////////////////////////////////////////////////////////////////
 
-
 	get_value(){ 
 		return this.jquery().attr('src');
 	};
@@ -11,11 +10,14 @@ class ControlImage extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	set_value(value){
-		if(value.image) this.jquery().attr("src", "data:image/png;base64,"+value.image);
+		if(value.base64){
+			this.jquery().attr("src", "data:image/png;base64,"+value.base64);
+		}else{
+			this.jquery().attr("src", value.url);
+		}
 
 		var width = this.jquery().width();
 		this.jquery().css('width', width+"px");
-
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -30,8 +32,6 @@ class ControlImage extends ControlBase{
 		html += "</div>";
 		this.jquery_place().replaceWith(html);
 		if(this.properties.required) this.set_required();
-
-		
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
