@@ -26,11 +26,12 @@ class ControlImage extends ControlBase{
 		var html = "<div id='"+this.place_id()+"' class='field control ControlImage' >";
 		html += "<div class='ui card' id='card"+this.control_id()+"' >";
 		html += "<div class='image'>";
-		html += "<img style='width:100%;' class='image' src='' id='"+this.control_id()+"' />";
+		html += "<img id='"+this.control_id()+"' />";
 		html += "</div>";
 		html += "</div>";
 		html += "</div>";
 		this.jquery_place().replaceWith(html);
+		this.set_value(this.properties.value);
 		if(this.properties.required) this.set_required();
 	};
 
