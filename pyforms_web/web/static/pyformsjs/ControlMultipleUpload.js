@@ -5,11 +5,13 @@ class ControlMultipleUpload extends ControlBase {
         html += '<input type="file" name="' + this.name + '" id="' + this.control_id() + '" placeholder="' + this.properties.label + '" >';
         html += "</div>";
 
+        this.modified = false;
+
         this.jquery_place().replaceWith(html);
 
-        this.files = {};
+        this.properties.new_value = [];
+        this.files = [];
 
-        var self = this;
         this.jquery().filer({
             uploadFile: {
                 url: PYFORMS_SERVER_URL + '/pyforms/upload-files/',
@@ -17,18 +19,20 @@ class ControlMultipleUpload extends ControlBase {
                 type: 'POST',
                 enctype: 'multipart/form-data', //Request enctype {String}
                 synchron: false, //Upload synchron the files
-                beforeSend: function () {
+                /*beforeSend: function () {
                     //self.basewidget.loading();
-                }, //A pre-request callback function {Function}
-                success: function(data, itemEl, listEl, boxEl, newInputEl, inputEl, id){
-					self.files[data.metas[0].name] = data.metas[0];
-				},
-				onComplete: function (listEl, parentEl, newInputEl, inputEl, jqXHR, textStatus) {
-                    const filerKit = self.jquery().prop("jFiler");
-                    self.properties.new_value = filerKit.files_list.map(x => {
-                        return self.files[x.file.name].file;
+                }, //A pre-request callback function {Function}*/
+                success: (data, itemEl, listEl, boxEl, newInputEl, inputEl, id) => {
+                    this.files.push(data.metas[0]);
+                },
+                onComplete: (listEl, parentEl, newInputEl, inputEl, jqXHR, textStatus) => {
+                    //const filerKit = self.jquery().prop("jFiler");
+                    this.modified = true;
+                    this.properties.new_value = this.files.map(x => {
+                        return x.file;
                     });
-                    self.basewidget.fire_event(self.name, 'update_control_event');
+                    console.debug('--', this.properties.new_value);
+                    this.basewidget.fire_event(this.name, 'update_control_event');
                     //self.basewidget.not_loading();
                 },
                 error: null, //A function to be called if the request fails {Function}
@@ -38,9 +42,14 @@ class ControlMultipleUpload extends ControlBase {
             showThumbs: true,
             addMore: true,
             allowDuplicates: false,
-            onRemove: function (itemEl, file, id, listEl, boxEl, newInputEl, inputEl) {
-                self.properties.new_value = '';
-                self.basewidget.fire_event(self.name, 'update_control_event');
+            onRemove: (itemEl, file, id, listEl, boxEl, newInputEl, inputEl) => {
+                this.modified = true;
+
+                this.properties.new_value = this.properties.value.filter(x => {
+                    return x.localeCompare(file.file) !== 0;
+                });
+                console.debug(this.properties.value, file.file, this.properties.new_value)
+                this.basewidget.fire_event(this.name, 'update_control_event');
             },
         });
 
@@ -59,6 +68,9 @@ class ControlMultipleUpload extends ControlBase {
 
     };
 
+    update_server() {
+        return this.modified;
+    }
 
     get_value() {
         if (this.properties.new_value === undefined) return this.properties.value;
@@ -74,10 +86,17 @@ class ControlMultipleUpload extends ControlBase {
             this.properties.file_data.forEach(x => {
                 filerKit.append(x);
             });
-        };
+        }
+        ;
     };
 
     ////////////////////////////////////////////////////////////////////////////////
+
+    serialize() {
+        const data = super.serialize();
+        this.modified = false;
+        return data
+    }
 
     deserialize(data) {
         this.properties.file_data = undefined;

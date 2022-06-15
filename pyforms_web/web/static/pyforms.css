@@ -6,11 +6,10 @@
     position: relative;
     top: -1px;
 }
-/*
-.ControlCombo.inline label {
-    position: relative;
-    top: 11px;
-}*/
+
+.ControlCheckBox .checkbox {
+    display: block;
+}
 
 .ControlTimeout .progress {
     margin-top: 20px !important;

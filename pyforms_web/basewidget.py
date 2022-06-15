@@ -123,7 +123,7 @@ class BaseWidget(object):
         self._js = ''
         self._controls = [c.init_form() for c in self.controls.values()]
         if self._formset != None:
-            self._html += self.generate_panel(self._formset)
+            self._html += self.generate_panel(self.formset)
 
         parent_code = 'undefined'
         if parent: parent_code = "'{0}'".format(parent.uid)
