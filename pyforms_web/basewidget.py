@@ -1,22 +1,22 @@
-import time
-
 try:
     from .controls.control_player import ControlPlayer
 except:
     pass
 
-from .controls.control_base import ControlBase
-from .controls.control_button import ControlButton
+import inspect
+import os
+import simplejson
+import uuid
 
-from .web.middleware import PyFormsMiddleware
+from confapp import conf
+from django.core.exceptions import PermissionDenied
+from django.template.loader import render_to_string
 
 from pyforms_web.organizers import no_columns, segment
-from django.template.loader import render_to_string
+from .controls.control_base import ControlBase
+from .controls.control_button import ControlButton
 from .utils import make_lambda_func
-from confapp import conf
-
-import uuid, os, inspect, simplejson
-from django.core.exceptions import PermissionDenied
+from .web.middleware import PyFormsMiddleware
 
 
 class BaseWidget(object):
@@ -622,7 +622,17 @@ class BaseWidget(object):
         # if hasattr(self, 'parent') and isinstance(self.parent, str):
         #    self.parent = PyFormsMiddleware.get_instance(self.parent)
 
-        for key, value in params.items():
+        event = params.get('event', None)
+        event_control = params['event'].get('control', None) if event else None
+        event_event = params['event'].get('event', None) if event else None
+
+        for key, _ in params.items():
+
+            # Avoid deserializing the updated control, because it may trigger the changed_event, before all the events are
+            # deserialized.
+            if key == event_control:
+                continue
+
             control = self.controls.get(key, None)
             if control != None:
                 if control.__class__.__name__ == 'ControlEmptyWidget':
@@ -630,18 +640,25 @@ class BaseWidget(object):
                 else:
                     control.deserialize(params[key])
 
+        # Finally after all the other controls are deserialized, it can deserialize the control that trigger an event
+        if event:
+            control = self.controls.get(event_control, None)
+            if control is not None:
+                if control.__class__.__name__ == 'ControlEmptyWidget':
+                    widgets.append((control, params[event_control]))
+                elif event_control in params:
+                    control.deserialize(params[event_control])
+
         for control, data in widgets: control.deserialize(data)
 
-        if 'event' in params.keys():
-            control = params['event']['control']
-            if control in self.controls.keys():
-                item = self.controls[control]
-                func = getattr(item, params['event']['event'])
+        if event:
+            if event_control in self.controls.keys():
+                item = self.controls[event_control]
+                func = getattr(item, event_event)
                 func()
-            elif control == 'self':
-                func = getattr(self, params['event']['event'])
+            elif event_control == 'self':
+                func = getattr(self, event_event)
                 func()
-
 
     def serialize_form(self):
         """
