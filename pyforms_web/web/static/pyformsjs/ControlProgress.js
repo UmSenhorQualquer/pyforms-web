@@ -7,7 +7,7 @@ class ControlProgress extends ControlBase{
 			  <div class="bar">
 				<div class="progress"></div>
 			  </div>
-			  ${this.properties.label_visible?`<div class="label">${this.properties.label}</div>`:''}
+			  ${this.properties.label_visible?`<div class="label" for="${this.control_id()}">${this.properties.label}</div>`:''}
 			</div>
 		</div>`;
         this.jquery_place().replaceWith(html);
@@ -15,12 +15,19 @@ class ControlProgress extends ControlBase{
 		if(this.properties.required) this.set_required();
 	};
 
+	////////////////////////////////////////////////////////////////////////////////
+
 	set_value(value) {
 		this.jquery().progress({total: this.properties.max, value: this.properties.value})
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
 
-	deserialize(data){
-        super.deserialize(data);
+    /**
+    Sets the label of the control.
+    @param {string} value - Label to set.
+    */
+    set_label(value){
+        $( `#${this.place_id()} .label[for='${this.control_id()}']` ).first().html(value);
     }
 }
