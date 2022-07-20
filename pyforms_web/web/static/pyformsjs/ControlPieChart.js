@@ -36,9 +36,9 @@ class ControlPieChart extends ControlBase{
                     show: true,
                     rendererOptions: {
                         numberRows: data.length/3
-                    }, 
-                    placement: "outside",
-                    location: 's'
+                    },
+                    placement: this.properties.legend_placement,
+                    location: this.properties.legend_location
                 }
             }
         );
