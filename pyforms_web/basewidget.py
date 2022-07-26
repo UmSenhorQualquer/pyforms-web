@@ -205,6 +205,8 @@ class BaseWidget(object):
             if row == ' ':                   return "<div class='field' ></div>"
             if row.startswith('empty:'):
                 return "<div class='field {0} wide' ></div>".format(row[6:])
+            elif row.startswith('icon:'):
+                return "<i class='ui icon {0}' style='margin-top:10px' ></i>".format(row[5:])
             elif row.startswith('h1:'):
                 return "<h1 class='field' >{0}</h1>".format(row[3:])
             elif row.startswith('h1-right:'):
