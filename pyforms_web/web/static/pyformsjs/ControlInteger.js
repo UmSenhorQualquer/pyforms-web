@@ -10,9 +10,9 @@ class ControlInteger extends ControlBase{
 		this.jquery_place().replaceWith(html);
 		this.set_value(this.properties.value);
 
-		var self = this;
-		this.jquery().change(function(){
-			self.basewidget.fire_event( this.name, 'update_control_event' );
+		this.jquery().change(()=>{
+			console.debug('update_control_event')
+			this.basewidget.fire_event( this.name, 'update_control_event' );
 		});
 
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
