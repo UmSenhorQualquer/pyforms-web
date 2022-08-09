@@ -29,6 +29,12 @@ class ControlImage(ControlBase):
     def repaint(self):
         pass
 
+    def set_url(self, url):
+        if self._value != url:
+            self.mark_to_update_client()
+            self.changed_event()
+        self._value = url
+
     @property
     def value(self):
         return ControlBase.value.fget(self)

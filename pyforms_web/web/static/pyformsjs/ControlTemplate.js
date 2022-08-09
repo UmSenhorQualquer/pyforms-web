@@ -30,15 +30,15 @@ class ControlTemplate extends ControlBase {
         const self = this;
 
         this.jquery().find('[action]').click(function () {
-            let action = $(this).attr('action');
-            let action_param = $(this).attr('action-param');
+            const action = $(this).attr('action');
+            const action_param = $(this).attr('action-param');
             self.properties.action_param = action_param;
             self.basewidget.fire_event('self', action);
         });
 
-        this.jquery().find('[submit-action]').click(function () {
-            let action = $(this).attr('submit-action');
-            let values = {};
+        this.jquery().find('[submit-action]').click(function() {
+            const action = $(this).attr('submit-action');
+            const values = {};
             self.jquery().find('[submit-action-name]').each(function(){
                 const name = $(this).attr('submit-action-name')
                 const value = $(this).is(":checked");

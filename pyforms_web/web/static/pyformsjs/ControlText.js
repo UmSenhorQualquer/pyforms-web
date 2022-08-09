@@ -15,10 +15,10 @@ class ControlText extends ControlBase{
 			self.basewidget.fire_event( this.name, 'update_control_event' );
 		});
 
-		this.jquery().keypress(function(e) {
+		/*this.jquery().keypress(function(e) {
         	if(e.which == 13)
 				self.basewidget.fire_event( this.name, 'on_enter_event' );
-		});
+		});*/
 
 		if(this.properties.error) this.jquery_place().addClass('error'); else this.jquery_place().removeClass('error');
 		if(this.properties.required) this.set_required();

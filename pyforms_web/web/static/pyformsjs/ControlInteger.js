@@ -11,7 +11,6 @@ class ControlInteger extends ControlBase{
 		this.set_value(this.properties.value);
 
 		this.jquery().change(()=>{
-			console.debug('update_control_event')
 			this.basewidget.fire_event( this.name, 'update_control_event' );
 		});
 
