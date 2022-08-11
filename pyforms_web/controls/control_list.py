@@ -50,6 +50,18 @@ class ControlList(ControlBase):
 
     def row_double_click_event(self): pass
 
+    def append(self, row):
+        if self._value is None:
+            self._value = []
+        self._value.append(row)
+        self.mark_to_update_client()
+        self._selected_index = -1
+
+    def pop(self, row_index):
+        self._value.pop(row_index)
+        self.mark_to_update_client()
+        self._selected_index = -1
+
     @property
     def horizontal_headers(self): return self._titles
 
@@ -101,7 +113,6 @@ class ControlList(ControlBase):
     def selected_row_index(self, value):
         self._selected_index = value
         self.mark_to_update_client()
-
 
     @property
     def value(self): return ControlBase.value.fget(self)
