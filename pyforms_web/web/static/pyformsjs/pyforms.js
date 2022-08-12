@@ -32,8 +32,15 @@ class PyformsManager {
         this.loop = undefined;
         this.layout_places = [];
         this.applications = [];
+        this.active_app = null; // the currently active app
 
         setInterval(this.garbage_collector, 5000); //Run the garbage collector for times to times.
+
+        $(document).keydown(evt => {
+
+            if (this.active_app && evt.target.nodeName !== 'INPUT')
+                this.active_app.key_pressed(evt)
+        })
     }
 
     ////////////////////////////////////////////////////////////
@@ -306,7 +313,8 @@ class PyformsManager {
                         html += '</form>';
                         html += '</div>';
                         $('#' + layout_position).html(html);
-                    };
+                    }
+                    ;
                 }
             }).fail(function (xhr) {
                 error_msg(xhr.status + " " + xhr.statusText + ": " + xhr.responseText);

@@ -44,6 +44,9 @@ class BaseWidget(object):
     #: str: Static files to include in the page
     STATIC_FILES = []
 
+    #: list(int): List of keys codes to detect
+    TRIGGER_ON_KEYDOWN_CODES = []
+
     def __init__(self, *args, **kwargs):
         """
         :param str title: Title of the app. By default will assume the value in the class variable TITLE.
@@ -81,7 +84,8 @@ class BaseWidget(object):
         self._uid = self.UID if hasattr(self, 'UID') and self.UID else 'a' + str(uuid.uuid4())
 
         self._messages = []
-        self._js_code2execute = [];
+        self._js_code2execute = []
+        self.keydown_keycode = None
 
         # This variables stores the configured timeouts to execute.
         # the format should be [(milliseconds, name of the function to call), ...]
@@ -128,7 +132,11 @@ class BaseWidget(object):
         parent_code = 'undefined'
         if parent: parent_code = "'{0}'".format(parent.uid)
 
-        extra_data = {'refresh_timeout': self.refresh_timeout, 'messages': self._messages}
+        extra_data = {
+            'refresh_timeout': self.refresh_timeout,
+            'messages': self._messages,
+            'keydown_codes': self.TRIGGER_ON_KEYDOWN_CODES
+        }
 
         modulename = inspect.getmodule(self).__name__ + '.' + self.__class__.__name__
 
@@ -627,6 +635,7 @@ class BaseWidget(object):
         event = params.get('event', None)
         event_control = params['event'].get('control', None) if event else None
         event_event = params['event'].get('event', None) if event else None
+        self.keydown_keycode = params.get('keydown_keycode', None)
 
         for key, _ in params.items():
 
@@ -764,6 +773,9 @@ class BaseWidget(object):
         """
         Event called every X time defined by REFRESH_TIMEOUT variable.
         """
+        pass
+
+    def keydown_event(self):
         pass
 
     ############################################################################

@@ -17,22 +17,22 @@ class BaseWidget {
         this.timeouts_loops = [];
         this.xmlhttp = undefined;
         this.stream_length = 0;
+        this.keydown_codes = data['keydown_codes'];
+        this.keydown_keycode = undefined;
 
         // variables used to verify if the loading layer needs to be shown or not
         this.loading_begin = undefined;
         this.loading_counter = 0;
 
         for (var index = 0; index < controls.length; index++) {
-
-            var control = controls[index];
-
+            const control = controls[index];
             control.basewidget = this;
             control.init_control();
         }
-        ;
 
-        for (var index = 0; index < controls.length; index++)
+        for (var index = 0; index < controls.length; index++) {
             controls[index].after_init_control()
+        }
 
         if (data.messages != undefined)
             for (var i = 0; i < data.messages.length; i++) {
@@ -42,14 +42,14 @@ class BaseWidget {
                 var html = '<div class="ui ' + msg.type + ' message">';
                 html += '<i class="close icon"></i>';
                 if (msg.title) html += '<div class="header">' + msg.title + '</div>';
-                if (msg.messages.length == 1)
+                if (msg.messages.length == 1) {
                     html += '<p>' + msg.messages[0] + '</p>';
-                else {
+                } else {
                     html += '<ul class="list">';
                     for (var i = 0; i < msg.messages.length; i++) html += '<li>' + msg.messages[i] + '</li>';
                     html += '</ul>';
                 }
-                ;
+
                 $(html).prependTo(this.jquery()).find('.close').on('click', function () {
                     $(this).closest('.message').transition({
                         animation: 'fade', onComplete: function () {
@@ -68,8 +68,23 @@ class BaseWidget {
                 self.refresh_timeout_event();
             }, data.refresh_timeout);
         }
+
+        $('#' + this.app_id()).click(() => {
+            pyforms.active_app = this;
+        });
     }
 
+    ////////////////////////////////////////////////////////////
+
+    /**
+     Function called when the key is pressed.
+     */
+    key_pressed(evt) {
+        if (this.keydown_codes && this.keydown_codes.indexOf(evt.keyCode) !== -1) {
+            this.keydown_keycode = evt.keyCode;
+            this.fire_event('self', 'keydown_event');
+        }
+    }
 
     ////////////////////////////////////////////////////////////
 
@@ -109,6 +124,16 @@ class BaseWidget {
                 return this.controls[index];
 
         return undefined;
+    }
+
+    ////////////////////////////////////////////////////////////
+
+    /**
+     Returns the App id.
+     @returns {string}
+     */
+    app_id(name) {
+        return 'app-' + this.widget_id;
     }
 
     ////////////////////////////////////////////////////////////
@@ -158,6 +183,7 @@ class BaseWidget {
      @param {object} data - Data to deserialize.
      */
     deserialize(data) {
+
         var js_code2excute = data['js-code'];
         if (js_code2excute && js_code2excute.length > 0)
             for (var i = 0; i < js_code2excute.length; i++)
@@ -257,9 +283,9 @@ class BaseWidget {
         if (data['start_streaming']) {
             const source = new EventSource(`/pyforms/app-stream/${this.widget_id}/`);
             source.onmessage = (evt) => {
-                if(evt.data==='STOP'){
+                if (evt.data === 'STOP') {
                     source.close();
-                }else{
+                } else {
                     this.stream_update(evt);
                 }
             }
@@ -288,7 +314,6 @@ class BaseWidget {
         else
             data = {};
 
-
         for (var index = 0; index < this.controls.length; index++) {
             var name = this.controls[index].name;
             data[name] = this.controls[index].serialize();
@@ -314,6 +339,7 @@ class BaseWidget {
         }
         ;
         data['uid'] = this.widget_id;
+        data['keydown_keycode'] = this.keydown_keycode;
         return data;
     }
 
