@@ -1,6 +1,8 @@
 
 docs/build/
 
+server/apps-cache/
+
 *.pyc
 
 docs/\.DS_Store

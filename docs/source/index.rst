@@ -74,6 +74,7 @@ The next code produces the next web application.
    :caption: PyForms web
 
    overview
+   getting-started/quick-start
    getting-started/installing
 
 .. toctree::

@@ -1,4 +1,5 @@
 import uuid
+import os
 
 from pyforms_web.web.middleware import PyFormsMiddleware
 
@@ -23,6 +24,7 @@ class ControlBase(object):
         :param bool readonly: Set the control as read only. Default = False.
         :param bool label_visible: Hide or show the label. Default = True.
         """
+
         self.uid = 'c' + str(uuid.uuid4())
         self._name = ""  # variable name. It is updated in runtime
         self._parent = None  # parent basewidget. It is updated in runtime
@@ -57,7 +59,7 @@ class ControlBase(object):
         return "<span id='place-{0}-{1}' />".format(self.parent.uid if self.parent else '', self._name)
 
     ##########################################################################
-    ############ Functions ####################################################
+    ############ Functions ###################################################
     ##########################################################################
 
     def update_control_event(self):

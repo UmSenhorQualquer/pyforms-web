@@ -1,0 +1,1 @@
+uglifyjs --compress --mangle --output pyforms_web/web/static/pyforms.min.js -- pyforms_web/web/static/pyformsjs/ControlBase.js pyforms_web/web/static/pyformsjs/*.js

@@ -194,3 +194,23 @@ a new position to these messages by including the code 'notifications-area' on t
                 ),
            ]
 
+Customize fields css classes and styles
+############################################
+
+Use the constructor parameters **field_css**, **field_style**, **css**, and **style** to customize the visualization of each field.
+
+Example:
+
+.. code:: python
+
+    self._field_example = ControlText(
+        ...,
+        style='margin-top:5px;',            # Extra style to add to the control.
+        css='mini'                          # Extra css classes to add to the control.
+        field_style='text-align: right;',   # Extra style to add to the field div that encapsulates the control.
+        field_css='mini'                    # Extra css classes to add to the field dive that encapsulates the control.
+    )
+
+.. note::
+
+   Check the PeopleFormWidget example above for more examples.

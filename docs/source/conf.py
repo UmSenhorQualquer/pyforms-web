@@ -37,7 +37,6 @@ import sys
 
 sys.path.insert(0, os.path.abspath('../../'))
 
-
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
@@ -53,7 +52,7 @@ extensions = [
     'sphinx_js'
 ]
 
-js_source_path = os.path.join( os.path.dirname(os.path.realpath(__file__)),  '../../pyforms_web/web/static/pyformsjs')
+js_source_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../pyforms_web/web/static/pyformsjs')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -86,7 +85,7 @@ release = '4.0'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -99,13 +98,13 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
+# html_theme = 'press'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -132,12 +131,10 @@ html_sidebars = {
     ]
 }
 
-
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'PyformsWebdoc'
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -167,7 +164,6 @@ latex_documents = [
      'Ricardo Jorge Vieira Ribeiro', 'manual'),
 ]
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
@@ -176,7 +172,6 @@ man_pages = [
     (master_doc, 'pyformsweb', 'Pyforms Web Documentation',
      [author], 1)
 ]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -188,8 +183,6 @@ texinfo_documents = [
      author, 'PyformsWeb', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
 
 # -- Options for Epub output ----------------------------------------------
 
@@ -211,13 +204,8 @@ epub_copyright = copyright
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
 
-
-
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
-
-
-
 
 # -- Options for graphviz ----------------------------------------------------
 # The following section is needed to enable links within graphviz generated diagrams
@@ -227,7 +215,6 @@ graphviz_output_format = 'svg'
 
 inheritance_graph_attrs = dict(rankdir="LR", size='"10.0, 12.0"', ratio='compressed')
 inheritance_node_attrs = dict(fontsize=18, height=1.25, style='filled')
-
 
 autoclass_content = 'both'
 autodoc_member_order = 'bysource'

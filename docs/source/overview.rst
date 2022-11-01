@@ -45,33 +45,6 @@ Orquestra implements a layout environment to accommodate Pyforms applications. T
     :align: center
 
 
-Developer
-=============
-
-============================================================================================    =====================================================================================================================
-`Ricardo Ribeiro <https://www.linkedin.com/in/ricardo-jorge-vieira-ribeiro-690373aa>`_              `Champalimaud Scientific Software Platform <https://fchampalimaud.org/platforms/single/scientific-software>`_  
-
-                                                                                                    ricardo.ribeiro@research.fchampalimaud.org
-
-                                                                                                    ricardojvr@gmail.com
-
-    
-`Hugo Cachitas <https://github.com/cachitas>`_                                                      `Champalimaud Scientific Software Platform <https://fchampalimaud.org/platforms/single/scientific-software>`_  
-
-                                                                                                    hugo.cachitas@research.fchampalimaud.org
-
-                                                                                                    hcachitas@gmail.com
-
-    
-`João Baúio <https://www.linkedin.com/in/jbauto/>`_                                                 `Champalimaud Scientific Software Platform <https://fchampalimaud.org/platforms/single/scientific-software>`_  
-
-                                                                                                    joao.bauto@research.fchampalimaud.org
-
-                                                                                                    joao.m.f.bauto@gmail.com
-
-============================================================================================    =====================================================================================================================
-
-
 .. note::
 
    Please **star** the project at the `Github repository <https://github.com/UmSenhorQualquer/pyforms-web/>`_  to support the project.

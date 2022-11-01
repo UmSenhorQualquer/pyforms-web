@@ -1,3 +1,5 @@
+import os
+
 from pyforms_web.controls.control_base import ControlBase
 import simplejson, collections
 from django.db.models import Q
@@ -55,6 +57,7 @@ class ControlAutoComplete(ControlBase):
 
         # allow multiple choices
         self.multiple = kwargs.get('multiple', False)
+
 
     def init_form(self): 
         self._init_form_called = True

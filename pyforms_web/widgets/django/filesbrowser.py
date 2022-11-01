@@ -23,7 +23,7 @@ class FilesBrowserApp(BaseWidget):
     LAYOUT_POSITION = 4
     
     def __init__(self, *args, **kwargs):
-        super(FilesBrowserApp,self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         
         self._control_id    = ControlText('Input id')
         self._only_folders  = ControlCheckBox('Only folders')
