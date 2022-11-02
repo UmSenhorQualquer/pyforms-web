@@ -45,7 +45,7 @@ class ControlImage(ControlBase):
             self.mark_to_update_client()
             self.changed_event()
 
-        if len(value) == 0:
+        if value is None or len(value) == 0:
             self._value = ''
         elif isinstance(value, np.ndarray):
             self._value = value

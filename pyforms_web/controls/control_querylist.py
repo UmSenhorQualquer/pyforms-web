@@ -119,7 +119,7 @@ class ControlQueryList(ControlBase):
         self._update_list = True  # used to update the list to the client
         ####################################################################
 
-        kwargs.setdefault('label_visible', False)
+        kwargs.setdefault('label_visible', True)
 
         super().__init__(*args, **kwargs)
 

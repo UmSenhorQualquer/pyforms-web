@@ -26,7 +26,7 @@ Create a empty django app folder with the next directory structure inside:
 .. code:: bash
 
     my_module_name
-    ├── apps
+    ├── pyforms_apps
     │   └── __init__.py
     └── __init__.py
 
@@ -44,7 +44,7 @@ Add the application to the settings.py
 Create the first app
 ____________________
 
-Create the file **my_module_name/apps/site_crawl.py** and add the next code to it.
+Create the file **my_module_name/pyforms_apps/site_crawl.py** and add the next code to it.
 
 .. code:: python
 
@@ -62,7 +62,7 @@ Create the file **my_module_name/apps/site_crawl.py** and add the next code to i
         ORQUESTRA_MENU_ICON  = 'browser'
         ORQUESTRA_MENU_ORDER = 0
 
-In the **my_module_name/apps/__init__.py** add the next code:
+In the **my_module_name/pyforms_apps/__init__.py** add the next code:
 
 .. code:: python
 

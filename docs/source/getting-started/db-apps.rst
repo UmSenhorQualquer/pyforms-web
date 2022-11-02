@@ -27,7 +27,7 @@ Create a empty django app folder with the next directory structure inside:
 .. code:: bash
 
     my_dbmodule_name
-    ├── apps
+    ├── pyforms_apps
     │   └── __init__.py
     ├── models.py
     └── __init__.py
@@ -77,7 +77,7 @@ ______________________________________________
 
 To create an app to manage a Django model inherit your App from the ModelAdminWidget class.
 
-Create the file **my_dbmodule_name/apps/post_app.py** and add the next code to it.
+Create the file **my_dbmodule_name/pyforms_apps/post_app.py** and add the next code to it.
 
 .. code:: python
 

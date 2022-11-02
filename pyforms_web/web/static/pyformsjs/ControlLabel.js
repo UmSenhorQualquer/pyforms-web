@@ -9,7 +9,6 @@ class ControlLabel extends ControlBase{
     ////////////////////////////////////////////////////////////////////////////////
 
     init_control(){
-        console.debug(this.properties);
         var html = '<div class="ui field '+this.properties.css+' message control ControlLabel" id="'+this.place_id()+'"  >';
         html += '<div class="header">';
         html += this.properties.label;

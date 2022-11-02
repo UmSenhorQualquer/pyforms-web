@@ -1,11 +1,23 @@
 class ControlBoundingSlider extends ControlBase{
 
+	////////////////////////////////////////////////////////////////////////////////
+
+
+	set_label(value){
+		const values = this.jquery().slider('option', 'values');
+
+        $( `#${this.place_id()} label[for='${this.control_id()}']` ).first().html(
+			`${this.properties.label}: <small id='value-${this.control_id()}' style='color:red' >${values}</small>`
+		);
+    }
 
 	////////////////////////////////////////////////////////////////////////////////
 
 	set_value(val){
-		this.jquery().slider({values:val})
-		$("#value-"+this.control_id() ).html( val );
+		console.debug(val)
+		this.jquery().slider({values:val['value']})
+		console.debug(String(val['value']))
+		$("#value-"+this.control_id() ).html( String(val['value']));
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -17,7 +29,7 @@ class ControlBoundingSlider extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html =	"<div class='ControlSlider field control' id='"+this.place_id()+"' title='"+this.properties.help+"'   >";
+		var html =	"<div class='ControlBoundingSlider field control' id='"+this.place_id()+"' title='"+this.properties.help+"'   >";
 		html +=		"<label style='margin-right: 20px;' for='"+this.control_id()+"'>"+this.properties.label+": <small id='value-"+this.control_id()+"' style='color:red' >"+this.properties.value+"</small></label>";
 		html += 	"<div style='width:100%;' class='slider' name='"+this.name+"' id='"+this.control_id()+"' ></div>";
 		html += 	"</div>";
@@ -26,10 +38,14 @@ class ControlBoundingSlider extends ControlBase{
 		var self = this;
 		this.jquery().slider({ 
 			range: true,
-			slide: function( event, ui ) { $( "#value-"+self.control_id() ).html( ui.value ); },
-			stop:  function(){ self.basewidget.fire_event( self.name, 'update_control_event' )}, 
-			min: this.properties.min, max: this.properties.max, values: this.properties.value 
+			stop:  function(event, ui){
+				self.basewidget.fire_event( self.name, 'update_control_event' );
+			},
+			min: self.properties.min,
+			max: self.properties.max,
+			values: self.properties.value
 		});
+
 		if(this.properties.required) this.set_required();
 	};
 

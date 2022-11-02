@@ -5,13 +5,17 @@ class ControlMultipleSelection(ControlBase):
 
 	def __init__(self, *args, **kwargs):
 		if kwargs.get('default', None) is None: kwargs['default'] = []
-		super(ControlMultipleSelection, self).__init__(*args, **kwargs)
-		self.mode   		= kwargs.get('mode', 'selection')
-		self._update_items	= True
-		self._items			= collections.OrderedDict()
+		self.mode = kwargs.get('mode', 'selection')
+		self._update_items = True
+		self._items = collections.OrderedDict()
 
+		super().__init__(*args, **kwargs)
 
-	def init_form(self): return "new ControlMultipleSelection('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+		for item in kwargs.get('items', []):
+			self.add_item(*item)
+
+	def init_form(self):
+		return "new ControlMultipleSelection('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 
 	def add_item(self, label, value = None):
 		if self._items==None: self._items={}
