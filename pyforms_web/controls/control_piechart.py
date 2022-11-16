@@ -1,4 +1,6 @@
 import datetime
+
+from pyforms_web.basewidget import custom_json_converter
 from pyforms_web.controls.control_base import ControlBase
 import simplejson
 
@@ -10,7 +12,7 @@ class ControlPieChart(ControlBase):
         self.legend_location = kwargs.get('legend_location', 'e')
         self.legend_placement = kwargs.get('legend_placement', 'outside')
 
-    def init_form(self): return "new ControlPieChart('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+    def init_form(self): return "new ControlPieChart('{0}', {1})".format( self._name, simplejson.dumps(self.serialize(), default=custom_json_converter) )
 
     def deserialize(self, properties):
         ControlBase.deserialize(self, properties)

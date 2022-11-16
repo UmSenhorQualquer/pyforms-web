@@ -1,6 +1,6 @@
 import simplejson
 
-from pyforms_web.basewidget import BaseWidget
+from pyforms_web.basewidget import BaseWidget, custom_json_converter
 from pyforms_web.controls.control_base import ControlBase
 from pyforms_web.web.middleware import PyFormsMiddleware
 
@@ -17,7 +17,7 @@ class ControlEmptyWidget(ControlBase):
     def init_form(self):
         return """new ControlEmptyWidget('{0}', {1})""".format(
             self._name,
-            simplejson.dumps(self.serialize())
+            simplejson.dumps(self.serialize(), default=custom_json_converter)
         )
 
     def serialize(self):

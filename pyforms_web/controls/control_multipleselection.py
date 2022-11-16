@@ -1,21 +1,26 @@
+from pyforms_web.basewidget import custom_json_converter
 from pyforms_web.controls.control_base import ControlBase
 import simplejson, collections
 
 class ControlMultipleSelection(ControlBase):
 
 	def __init__(self, *args, **kwargs):
-		if kwargs.get('default', None) is None: kwargs['default'] = []
-		self.mode = kwargs.get('mode', 'selection')
-		self._update_items = True
-		self._items = collections.OrderedDict()
 
 		super().__init__(*args, **kwargs)
+		self.mode   		= kwargs.get('mode', 'selection')
+		self._update_items	= True
+		self._items			= collections.OrderedDict()
 
 		for item in kwargs.get('items', []):
-			self.add_item(*item)
+			if isinstance(item, str):
+				self.add_item(item)
+			else:
+				self.add_item(*item)
+
+		if kwargs.get('default', None) is None: kwargs['default'] = []
 
 	def init_form(self):
-		return "new ControlMultipleSelection('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+		return "new ControlMultipleSelection('{0}', {1})".format( self._name, simplejson.dumps(self.serialize(), default=custom_json_converter) )
 
 	def add_item(self, label, value = None):
 		if self._items==None: self._items={}
@@ -28,12 +33,10 @@ class ControlMultipleSelection(ControlBase):
 		self._update_items = True
 		self.mark_to_update_client()
 
-
 	def clear_items(self):
 		self._items = {}
 		self._value = None
 		self.mark_to_update_client()
-
 
 	def serialize(self):
 		data = ControlBase.serialize(self)
@@ -52,8 +55,6 @@ class ControlMultipleSelection(ControlBase):
 		
 		self._update_items = False
 		return data
-		
-	
 
 	def deserialize(self, properties):
 		value = properties.get('value', [])

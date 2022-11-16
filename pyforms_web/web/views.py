@@ -9,6 +9,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 
 from pyforms_web.web import ApplicationsLoader
+from pyforms_web.basewidget import custom_json_converter
 
 
 @csrf_exempt
@@ -43,7 +44,7 @@ def upload_files(request):
             })
 
     data = {'files': files_data, 'metas': files_metadata}
-    return HttpResponse(simplejson.dumps(data, bigint_as_string=True), "application/json")
+    return HttpResponse(simplejson.dumps(data, bigint_as_string=True, default=custom_json_converter), "application/json")
 
 
 @never_cache
@@ -57,7 +58,7 @@ def register_app(request, app_module):
         return HttpResponse(
             simplejson.dumps({'error': 'Application session ended.'}), "application/json"
         )
-    return HttpResponse(simplejson.dumps(data), "application/json")
+    return HttpResponse(simplejson.dumps(data, default=custom_json_converter), "application/json")
 
 
 @never_cache
@@ -72,7 +73,7 @@ def open_app(request, app_id):
     except PermissionDenied as e:
         params = {'error': str(e)}
 
-    return HttpResponse(simplejson.dumps(params), "application/json")
+    return HttpResponse(simplejson.dumps(params, default=custom_json_converter), "application/json")
 
 
 @never_cache
@@ -85,7 +86,7 @@ def update_app(request, app_id):
             {'result': 'error', 'msg': 'Application session ended.'}),
             "application/json"
         )
-    return HttpResponse(simplejson.dumps(data), "application/json")
+    return HttpResponse(simplejson.dumps(data, default=custom_json_converter), "application/json")
 
 
 @never_cache
@@ -95,7 +96,7 @@ def remove_app(request, app_id):
         data = {'res': 'OK'}
     else:
         data = {'res': 'ERROR', 'msg': 'the instance was not removed successfully'}
-    return HttpResponse(simplejson.dumps(data), "application/json")
+    return HttpResponse(simplejson.dumps(data, default=custom_json_converter), "application/json")
 
 
 def app_stream(request, app_id, keyword=None):
@@ -141,7 +142,7 @@ def autocomplete_search(request, app_id, fieldname, keyword=None):
 
     data = {'success': len(items) > 0, 'results': items}
 
-    return HttpResponse(simplejson.dumps(data), "application/json")
+    return HttpResponse(simplejson.dumps(data, default=custom_json_converter), "application/json")
 
 
 @never_cache

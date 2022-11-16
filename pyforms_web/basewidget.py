@@ -7,6 +7,7 @@ import inspect
 import os
 import simplejson
 import uuid
+import datetime
 
 from confapp import conf
 from django.core.exceptions import PermissionDenied
@@ -17,6 +18,14 @@ from .controls.control_base import ControlBase
 from .controls.control_button import ControlButton
 from .utils import make_lambda_func
 from .web.middleware import PyFormsMiddleware
+
+
+def custom_json_converter(o):
+    if isinstance(o, datetime.datetime):
+        return o.strftime("%m/%d/%Y, %H:%M:%S")
+    elif isinstance(o, datetime.date):
+        return o.strftime("%m/%d/%Y")
+    return o
 
 
 class BaseWidget(object):
@@ -143,7 +152,7 @@ class BaseWidget(object):
         self._js = '[{0}]'.format(",".join(self._controls))
         self._html += """
         <script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1}, {3}, {4}) );{extra_code}</script>
-        """.format(modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data),
+        """.format(modulename, self._js, self.uid, parent_code, simplejson.dumps(extra_data, default=custom_json_converter),
                    extra_code=';'.join(self._js_code2execute))
         self._formLoaded = True
 
@@ -716,9 +725,9 @@ class BaseWidget(object):
 
     def stream_status(self, user=None):
         for _ in self.streaming_func():
-            yield f'data: {simplejson.dumps(self.serialize_form())}\n\n'
+            yield f'data: {simplejson.dumps(self.serialize_form(), default=custom_json_converter)}\n\n'
         self.abort_streaming = True
-        yield f'data: {simplejson.dumps(self.serialize_form())}\n\n'
+        yield f'data: {simplejson.dumps(self.serialize_form(), default=custom_json_converter)}\n\n'
         self.commit(user)
         yield 'data: STOP\n\n'
 

@@ -1,4 +1,6 @@
 from datetime import date
+
+from pyforms_web.basewidget import custom_json_converter
 from pyforms_web.controls.control_base import ControlBase
 import simplejson
 
@@ -11,7 +13,7 @@ class ControlCalendar(ControlBase):
         self.month = today.month 
         self.year  = today.year
         
-    def init_form(self): return "new ControlCalendar('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+    def init_form(self): return "new ControlCalendar('{0}', {1})".format( self._name, simplejson.dumps(self.serialize(), default=custom_json_converter) )
     
     def serialize(self):
         data = super(ControlCalendar, self).serialize()

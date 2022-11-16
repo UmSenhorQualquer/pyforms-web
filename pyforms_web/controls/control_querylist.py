@@ -13,6 +13,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.html import strip_tags
 
+from pyforms_web.basewidget import custom_json_converter
 from pyforms_web.controls.control_base import ControlBase
 from pyforms_web.utils import get_lookup_verbose_name, get_lookup_value, get_lookup_field
 from pyforms_web.web.middleware import PyFormsMiddleware
@@ -126,7 +127,10 @@ class ControlQueryList(ControlBase):
         self.value = kwargs.get('default', None)
 
     def init_form(self):
-        return "new ControlQueryList('{0}', {1})".format(self._name, simplejson.dumps(self.serialize(init_form=True)))
+        return "new ControlQueryList('{0}', {1})".format(
+            self._name,
+            simplejson.dumps(self.serialize(init_form=True), default=custom_json_converter)
+        )
 
     def item_selection_changed_client_event(self):
         self.mark_to_update_client()  # what are the implications of enabling this???
