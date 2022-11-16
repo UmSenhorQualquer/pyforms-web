@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'orquestra',
     'pyforms_web.web',
+    'pyforms_web_experimental',
     'jfu',
 
     #'pyforms_web_experimental',
