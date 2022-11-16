@@ -2,6 +2,10 @@
     margin: 0 0 2em !important;
 }
 
+.ControlCombo{
+    z-index: 999;
+}
+
 .ControlCombo.inline{
     position: relative;
     top: -1px;
@@ -20,6 +24,9 @@
 
 }
 
+.ControlAutoComplete{
+    z-index: 999 !important;
+}
 
 .ControlSlider input[type='range'] {
     min-width: 300px;

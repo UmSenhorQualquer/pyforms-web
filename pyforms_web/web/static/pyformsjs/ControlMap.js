@@ -3,6 +3,7 @@ class ControlMap extends ControlBase {
     ////////////////////////////////////////////////////////////////////////////////
     init_control() {
         super.init_control();
+        this.layers = {};
 
         this.jquery_place().replaceWith(
             `<div id='${this.place_id()}' class='field control ControlMap' >
@@ -19,7 +20,6 @@ class ControlMap extends ControlBase {
             this.jquery_place().removeClass('error');
 
         if (this.properties.required) this.set_required();
-
 
 
         // Delay the map initialization for rendering proposes.
@@ -40,7 +40,7 @@ class ControlMap extends ControlBase {
 
         if (layers) {
             layers.forEach(l => {
-                L.tileLayer(l.url, l.options).addTo(this.map);
+                this.layers[l.url] = L.tileLayer(l.url, l.options).addTo(this.map);
             });
         }
 
@@ -100,8 +100,24 @@ class ControlMap extends ControlBase {
                 this.editableLayers.addLayer(poly);
             });
         }
+
+        if (this.properties.add_layers) {
+            this.properties.add_layers.forEach(l => {
+                console.debug('add', l)
+                this.layers[l.url] = L.tileLayer(l.url, l.options).addTo(this.map);
+            });
+        }
+
+        if (this.properties.remove_layers) {
+            this.properties.remove_layers.forEach(l => {
+                this.layers[l.url].removeFrom(this.map);
+            });
+        }
+
         this.properties.add_markers = [];
         this.properties.add_polygons = [];
+        this.properties.add_layers = [];
+        this.properties.remove_layers = [];
 
         if (this.properties.fitBounds && this.map && this.editableLayers.getBounds().isValid()) {
             this.map.fitBounds(this.editableLayers.getBounds());
