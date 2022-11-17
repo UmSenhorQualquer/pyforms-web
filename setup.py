@@ -18,12 +18,13 @@ if version is None: raise RuntimeError('Cannot find version information')
 if license is None: raise RuntimeError('Cannot find license information')
 
 
-def find_files(package_name,directory, pattern):
+def find_files(package_name, directory, pattern):
     for root, dirs, files in os.walk(os.path.join(package_name, directory)):
         for basename in files:
             if fnmatch.fnmatch(basename, pattern):
-                filename = os.path.join(root[len(package_name)+1:], basename)
+                filename = os.path.join(root[len(package_name) + 1:], basename)
                 yield filename
+
 
 with open('README.md', 'r') as fd:
     long_description = fd.read()
@@ -48,6 +49,7 @@ requirements = [
 
 try:
     import orquestra_simple
+
     requirements.append('orquestra_simple')
 except ImportError:
     pass
@@ -57,29 +59,30 @@ if ('orquestra' not in requirements) or ('orquestra_simple' not in requirements)
 #############################################################
 
 setup(
-    name                 = 'PyForms-Web',
-    version              = version,
-    description          = """Pyforms Web is Python 3 framework to create single-page web applications.""",
-    author               = 'Ricardo Ribeiro',
-    author_email         = 'ricardojvr@gmail.com',
-    license              = license,
-    url                  = 'https://github.com/UmSenhorQualquer/pyforms-web',
-    
-    long_description     = long_description,
-    long_description_content_type = 'text/markdown',
-    
-    include_package_data = True,
+    name='PyForms-Web',
+    version=version,
+    description="""Pyforms Web is Python 3 framework to create single-page web applications.""",
+    author='Ricardo Ribeiro',
+    author_email='ricardojvr@gmail.com',
+    license=license,
+    url='https://github.com/UmSenhorQualquer/pyforms-web',
+
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+
+    include_package_data=True,
     packages=find_packages(),
     package_data={
         'pyforms_web':
-        list( find_files('pyforms_web', 'web/static/', '*.*') ) + list(find_files('pyforms_web', 'web/templates/', '*.html'))
+            list(find_files('pyforms_web_experimental', 'static', '*.*')) + list(find_files('pyforms_web', 'web/static/', '*.*')) + list(
+                find_files('pyforms_web', 'web/templates/', '*.html'))
     },
     install_requires=requirements,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
-        
+
         'Topic :: Software Development :: Build Tools',
-        
+
         'Programming Language :: Python :: 3',
 
         'Environment :: Web Environment',
@@ -88,7 +91,7 @@ setup(
         'Intended Audience :: End Users/Desktop',
         'Intended Audience :: Information Technology',
         'Intended Audience :: Science/Research',
-        
+
         'Natural Language :: English',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
@@ -122,8 +125,6 @@ setup(
 
         'Framework :: Django :: 2.0'
     ],
-
-
 
     keywords='web development single-page-application pyforms'
 )
