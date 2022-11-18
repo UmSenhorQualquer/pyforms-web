@@ -29,7 +29,7 @@ class ControlMultipleSelection extends ControlBase{
 		switch(this.properties.mode) {
 		    case 'scrolling':
 		        html += "<div class='ui dropdown multiple scrolling' id='"+this.control_id()+"'>"
-		        html += '<div class="default text">'+this.properties.label+'</div>';
+		        html += '<div class="default text">'+this.properties.placeholder+'</div>';
 		        html += '<i class="dropdown icon"></i>';
 		        html += '<div class="menu"></div>';
 				html += '</div>';

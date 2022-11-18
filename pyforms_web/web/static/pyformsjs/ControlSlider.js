@@ -19,14 +19,14 @@ class ControlSlider extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = 	"<div id='"+this.place_id()+"' class='field control ControlSlider' title='"+this.properties.help+"' >";
-		html += 	"<label for='"+this.control_id()+"'>"+this.properties.label;
-		html += 	" <div id='value"+this.control_id()+"' class='ui basic label'>"+this.properties.value+"</div>";
-		html += 	"</label>";
-		html += 	"<input style='width:100%;' type='range' name='"+this.name+"' value='"+this.properties.value+"' id='"+this.control_id()+"' min='"+this.properties.min+"' max='"+this.properties.max+"'>";
-		html += 	"</div>";
 
-		this.jquery_place().replaceWith(html);
+		this.jquery_place().replaceWith(
+			`<div id='${this.place_id()}' class='field control ControlSlider' title='${this.properties.help}' >
+				<label for='${this.control_id()}'>${this.properties.label} (<span id='value${this.control_id()}'>${this.properties.value}</span>)</label>
+				
+				<input type='range' style='width: 100%' name='${this.name}' value='${this.properties.value}' id='${this.control_id()}' min='${this.properties.min}' max='${this.properties.max}'>
+			</div>`);
+
 		//this.jquery().on('input', function () {$(this).trigger('change');});
 		var self = this;
 		this.jquery().change(function(){ 
