@@ -105,7 +105,8 @@ def app_stream(request, app_id, keyword=None):
     response = StreamingHttpResponse(
         app.stream_status(request.user),
         content_type='text/event-stream',
-        status=200)
+        status=200
+    )
     response['Cache-Control'] = 'no-cache'
     return response
 
