@@ -12,8 +12,6 @@ class ControlMap extends ControlBase {
             </div>`
         );
 
-        this.set_value(this.properties.value);
-
         if (this.properties.error)
             this.jquery_place().addClass('error');
         else
@@ -31,18 +29,11 @@ class ControlMap extends ControlBase {
     ////////////////////////////////////////////////////////////////////////////////
 
     initMap() {
-        const layers = this.properties.value;
 
         this.map = L.map(this.control_id()).setView(
             this.properties.center,
             this.properties.zoom
         );
-
-        if (layers) {
-            layers.forEach(l => {
-                this.layers[l.url] = L.tileLayer(l.url, l.options).addTo(this.map);
-            });
-        }
 
         this.initEditPolygon();
 
@@ -101,27 +92,33 @@ class ControlMap extends ControlBase {
             });
         }
 
-        if (this.properties.add_layers) {
-            this.properties.add_layers.forEach(l => {
-                console.debug('add', l)
-                this.layers[l.url] = L.tileLayer(l.url, l.options).addTo(this.map);
-            });
-        }
-
-        if (this.properties.remove_layers) {
-            this.properties.remove_layers.forEach(l => {
-                this.layers[l.url].removeFrom(this.map);
+        if (this.properties.commands) {
+            this.properties.commands.forEach(c => {
+                switch (c.command) {
+                    case 'setOpacity':
+                        this.layers[c.layer_url].setOpacity(c.opacity);
+                        break;
+                    case 'addLayer':
+                        this.layers[c.layer_url] = L.tileLayer(c.layer_url, c.options).addTo(this.map);
+                        break;
+                    case 'setZIndex':
+                        this.layers[c.layer_url].setZIndex(c.zindex);
+                        break;
+                    case 'removeLayer':
+                        this.layers[c.layer_url].removeFrom(this.map);
+                        break;
+                    case 'fitBounds':
+                        this.map.fitBounds(c.bounds)
+                        console.debug(c)
+                        break;
+                }
             });
         }
 
         this.properties.add_markers = [];
         this.properties.add_polygons = [];
-        this.properties.add_layers = [];
-        this.properties.remove_layers = [];
+        this.properties.commands = [];
 
-        if (this.properties.fitBounds && this.map && this.editableLayers.getBounds().isValid()) {
-            this.map.fitBounds(this.editableLayers.getBounds());
-        }
     }
 
     serialize() {
@@ -144,9 +141,6 @@ class ControlMap extends ControlBase {
 
     deserialize(data) {
         super.deserialize(data);
-        if (this.properties.fitBounds && this.map && this.editableLayers.getBounds().isValid()) {
-            this.map.fitBounds(this.editableLayers.getBounds());
-        }
         if (this.map) {
             this.process_commands();
         }

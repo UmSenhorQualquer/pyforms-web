@@ -31,7 +31,11 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'orquestra',
     'pyforms_web.web',
+    'pyforms_web_experimental',
     'jfu',
+
+    #'pyforms_web_experimental',
+    'pyforms_web_tests',
 
     'django.contrib.admin',
     'django.contrib.auth',

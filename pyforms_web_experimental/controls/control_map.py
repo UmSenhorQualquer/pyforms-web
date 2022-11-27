@@ -24,15 +24,16 @@ class ControlMap(ControlBase):
 
         self.center = kwargs.get('center', [51.505, -0.09])
         self.zoom = kwargs.get('zoom', 10)
-        self.fitBounds = kwargs.get('fitBounds', False)
 
-        self._remove_layers = []
-        self._add_layers = []
         self._add_markers = []
         self._add_polygons = []
-        self.layers = {}
+        self._commands = []
+        self.layers = []
         self.markers = []
         self.polygons = []
+
+        for layer in self.value:
+            self.add_layer(layer['url'], layer['options'])
 
     def init_form(self):
         return """new ControlMap('{0}', {1})""".format(
@@ -47,26 +48,32 @@ class ControlMap(ControlBase):
         pass
 
     def clear_layers(self):
-        self._remove_layers = [l for l in self.layers.values()]
-        self.layers = {}
+        for l in self.layers:
+            self.remove_layer(l)
+        self.mark_to_update_client()
+
+    def set_layer_opacity(self, url, opacity):
+        self._commands.append({'command': 'setOpacity', 'layer_url': url, 'opacity': opacity})
+        self.mark_to_update_client()
+
+    def fit_bounds(self, bounds):
+        self._commands.append({'command': 'fitBounds', 'bounds': bounds})
+        self.mark_to_update_client()
+
+    def set_z_index(self, url, zindex):
+        self._commands.append({'command': 'setZIndex', 'layer_url': url, 'zindex': zindex})
         self.mark_to_update_client()
 
     def add_layer(self, layer_url, options=None):
-
         if layer_url in self.layers:
             return
-
-        layer = {'url': layer_url}
-        if options:
-            layer.update({'options': options})
-
-        self._add_layers.append(layer)
-        self.layers[layer_url] = layer
+        self._commands.append({'command': 'addLayer', 'layer_url': layer_url, 'options': options})
+        self.layers.append(layer_url)
         self.mark_to_update_client()
 
-    def remove_layer(self, layer):
-        self._remove_layers.append(layer)
-        self.layers.pop(layer['url'])
+    def remove_layer(self, layer_url):
+        self._commands.append({'command': 'removeLayer', 'layer_url': layer_url})
+        self.layers.remove(layer_url)
         self.mark_to_update_client()
 
     def add_mark(self, lat, long, **kwargs):
@@ -100,14 +107,12 @@ class ControlMap(ControlBase):
         res.update({
             'center': self.center,
             'zoom': self.zoom,
-            'fitBounds': self.fitBounds,
             'min_height': self._min_height,
 
             'add_markers': self._add_markers,
             'add_polygons': self._add_polygons,
 
-            'add_layers': self._add_layers,
-            'remove_layers': self._remove_layers,
+            'commands': self._commands,
 
             'edit_polyline': self._edit_polyline,
             'edit_polygon': self._edit_polygon,
@@ -118,9 +123,7 @@ class ControlMap(ControlBase):
         })
         self._add_markers = []
         self._add_polygons = []
-        self._add_layers = []
-        self._remove_layers = []
+        self._commands = []
 
-        self.fitBounds = False
         return res
 

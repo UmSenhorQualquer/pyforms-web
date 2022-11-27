@@ -81,20 +81,6 @@ ControlButton
 
 ----------------------------
 
-ControlCalendar
-----------------------------
-
-.. image:: /_static/imgs/controls/calendar.png
-    :align: center
-
-
-.. autoclass:: pyforms_web.controls.control_calendar.ControlCalendar
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
 
 ControlCheckBox
 ----------------------------
@@ -186,27 +172,6 @@ ControlDecimal
 
 ----------------------------
 
-ControlDir
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_dir.ControlDir
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
-
-ControlDrawInImg
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_drawinimg.ControlDrawInImg
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
 
 ControlEmail
 ----------------------------
@@ -230,16 +195,6 @@ ControlEmptyWidget
 
 ----------------------------
 
-ControlFeed
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_feed.ControlFeed
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
 
 ControlFile
 ----------------------------
@@ -320,17 +275,6 @@ ControlImg
 ----------------------------
 
 
-ControlImgViewer
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_imgviewer.ControlImgViewer
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
-
 ControlInteger
 ----------------------------
 
@@ -345,16 +289,6 @@ ControlInteger
 
 ----------------------------
 
-ControlItemsList
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_itemslist.ControlItemsList
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
 
 ControlLabel
 ----------------------------
@@ -401,29 +335,6 @@ ControlList
 
 ----------------------------
 
-ControlMap
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_map.ControlMap
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-
-----------------------------
-
-ControlMenu
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_menu.ControlMenu
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
-
 ControlMultipleChecks
 ----------------------------
 
@@ -449,16 +360,6 @@ ControlMultipleSelection
 
 ----------------------------
 
-ControlMultipleSelectionQuery
-------------------------------
-
-.. autoclass:: pyforms_web.controls.control_multipleselectionquery.ControlMultipleSelectionQuery
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
 
 ControlMultipleUpload
 ------------------------------
@@ -499,19 +400,6 @@ ControlPieChart
 
 ----------------------------
 
-ControlPlayer
-----------------------------
-
-.. image:: /_static/imgs/controls/player.png
-    :align: center
-
-.. autoclass:: pyforms_web.controls.control_player.ControlPlayer
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
 
 ControlProgress
 ----------------------------
@@ -524,54 +412,11 @@ ControlProgress
 
 ----------------------------
 
-ControlQueryCards
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_querycards.ControlQueryCards
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
-
-ControlQueryCombo
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_querycombo.ControlQueryCombo
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
-
-ControlQueryItem
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_queryitem.ControlQueryItem
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
 
 ControlQueryList
 ----------------------------
 
 .. autoclass:: pyforms_web.controls.control_querylist.ControlQueryList
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
-
-ControlSearch
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_search.ControlSearch
     :members:
     :undoc-members:
     :show-inheritance:
@@ -655,16 +500,6 @@ ControlTextArea
 
 ----------------------------
 
-ControlThumbnailSelection
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_thumbnailselection.ControlThumbnailSelection
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
 
 ControlTime
 ----------------------------
@@ -676,36 +511,3 @@ ControlTime
     :exclude-members: init_form, serialize, deserialize
 
 ----------------------------
-
-
-ControlTimeout
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_timeout.ControlTimeout
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
-
-ControlVisVis
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_visvis.ControlVisVis
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-
-----------------------------
-
-ControlWorkflow
-----------------------------
-
-.. autoclass:: pyforms_web.controls.control_workflow.ControlWorkflow
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: init_form, serialize, deserialize
-

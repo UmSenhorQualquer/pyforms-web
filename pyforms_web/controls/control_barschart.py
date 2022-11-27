@@ -1,4 +1,6 @@
 import datetime
+
+from pyforms_web.basewidget import custom_json_converter
 from pyforms_web.controls.control_base import ControlBase
 import simplejson
 
@@ -13,7 +15,7 @@ class ControlBarsChart(ControlBase):
 
         self.data_selected_event = kwargs.get('data_selected_event', self.data_selected_event)
 
-    def init_form(self): return "new ControlBarsChart('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+    def init_form(self): return "new ControlBarsChart('{0}', {1})".format( self._name, simplejson.dumps(self.serialize(), default=custom_json_converter) )
 
     def remote_data_selected_event(self):
         self.data_selected_event(self.selected_serie, self.selected_data)

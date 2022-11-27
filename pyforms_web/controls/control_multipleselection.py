@@ -1,9 +1,11 @@
+from pyforms_web.basewidget import custom_json_converter
 from pyforms_web.controls.control_base import ControlBase
 import simplejson, collections
 
 class ControlMultipleSelection(ControlBase):
 
 	def __init__(self, *args, **kwargs):
+
 		super().__init__(*args, **kwargs)
 		self.mode   		= kwargs.get('mode', 'selection')
 		self._update_items	= True
@@ -17,7 +19,8 @@ class ControlMultipleSelection(ControlBase):
 
 		if kwargs.get('default', None) is None: kwargs['default'] = []
 
-	def init_form(self): return "new ControlMultipleSelection('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+	def init_form(self):
+		return "new ControlMultipleSelection('{0}', {1})".format( self._name, simplejson.dumps(self.serialize(), default=custom_json_converter) )
 
 	def add_item(self, label, value = None):
 		if self._items==None: self._items={}

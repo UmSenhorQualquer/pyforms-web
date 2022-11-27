@@ -1,0 +1,23 @@
+[
+  {
+    "model": "pyforms_web_tests.Test",
+    "pk": 1,
+    "fields": {
+      "name": "Name 1"
+    }
+  },
+  {
+    "model": "pyforms_web_tests.Test",
+    "pk": 2,
+    "fields": {
+      "name": "Name 2"
+    }
+  },
+  {
+    "model": "pyforms_web_tests.Test",
+    "pk": 3,
+    "fields": {
+      "name": "Name 3"
+    }
+  }
+]

@@ -1,5 +1,7 @@
 import datetime
 from datetime import date, time
+
+from pyforms_web.basewidget import custom_json_converter
 from pyforms_web.controls.control_base import ControlBase
 import simplejson
 from django.db.models.fields import NOT_PROVIDED
@@ -9,7 +11,7 @@ from django.utils import timezone
 
 class ControlTime(ControlBase):
 
-    def init_form(self): return "new ControlTime('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+    def init_form(self): return "new ControlTime('{0}', {1})".format( self._name, simplejson.dumps(self.serialize(), default=custom_json_converter) )
 
     @property
     def value(self):
