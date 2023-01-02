@@ -1,3 +1,5 @@
+import logging
+
 try:
     from .controls.control_player import ControlPlayer
 except:
@@ -19,6 +21,7 @@ from .controls.control_button import ControlButton
 from .utils import make_lambda_func
 from .web.middleware import PyFormsMiddleware
 
+logger = logging.getLogger(__name__)
 
 def custom_json_converter(o):
     if isinstance(o, datetime.datetime):
@@ -741,8 +744,14 @@ class BaseWidget(object):
         return res
 
     def stream_status(self, user=None):
-        for _ in self.streaming_func():
-            yield f'data: {simplejson.dumps(self.serialize_form(), default=custom_json_converter)}\n\n'
+
+        try:
+            for _ in self.streaming_func():
+                yield f'data: {simplejson.dumps(self.serialize_form(), default=custom_json_converter)}\n\n'
+        except Exception as e:
+            logger.critical(e, exc_info=True)
+            self.alert(str(e), 'Error when streaming')
+
         self.abort_streaming = True
         yield f'data: {simplejson.dumps(self.serialize_form(), default=custom_json_converter)}\n\n'
         self.commit(user)

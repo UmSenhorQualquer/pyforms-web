@@ -1,4 +1,5 @@
 import inspect
+import logging
 import traceback
 
 import simplejson
@@ -7,6 +8,7 @@ from django.core.exceptions import PermissionDenied
 
 from pyforms_web.web.middleware import PyFormsMiddleware
 
+logger = logging.getLogger(__name__)
 
 class ApplicationsLoader:
     _storage = {}
@@ -78,7 +80,7 @@ class ApplicationsLoader:
             try:
                 app.deserialize_form(app_data)
             except Exception as e:
-                traceback.print_exc()
+                logger.critical(e, exc_info=True)
                 app.alert(str(e))
 
         return ApplicationsLoader.get_data(request)
