@@ -13,7 +13,7 @@ from confapp import conf
 from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 
-from pyforms_web.organizers import no_columns, segment
+from pyforms_web.organizers import no_columns, segment, column
 from .controls.control_base import ControlBase
 from .controls.control_button import ControlButton
 from .utils import make_lambda_func
@@ -180,6 +180,19 @@ class BaseWidget(object):
             field_style=row.field_style)
         html += self.generate_panel(list(row))
         html += "</div></div>"
+        return html
+
+    def generate_column(self, row):
+        """
+        Generate the html to organize the formset in segments
+        """
+        html = "<div class='field {field_css}' style='{field_style}' >".format(
+            css=row.css,
+            style=row.style,
+            field_css=row.field_css,
+            field_style=row.field_style)
+        html += self.generate_panel(list(row))
+        html += "</div>"
         return html
 
     def generate_nocolumns(self, formset):
@@ -362,6 +375,10 @@ class BaseWidget(object):
 
         elif isinstance(formset, no_columns):
             return self.generate_nocolumns(formset)
+
+
+        elif isinstance(formset, column):
+            return self.generate_column(formset)
 
         elif isinstance(formset, segment):
             return self.generate_segment(formset)
