@@ -73,9 +73,8 @@ setup(
     include_package_data=True,
     packages=find_packages(),
     package_data={
-        'pyforms_web':
-            list(find_files('pyforms_web_experimental', 'static', '*.*')) + list(find_files('pyforms_web', 'web/static/', '*.*')) + list(
-                find_files('pyforms_web', 'web/templates/', '*.html'))
+        'pyforms_web_experimental': list(find_files('pyforms_web_experimental', 'static', '*.*')),
+        'pyforms_web': list(find_files('pyforms_web', 'web/static/', '*.*')) + list(find_files('pyforms_web', 'web/templates/', '*.html'))
     },
     install_requires=requirements,
     classifiers=[
