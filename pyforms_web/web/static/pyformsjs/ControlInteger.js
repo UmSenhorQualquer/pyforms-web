@@ -3,10 +3,11 @@ class ControlInteger extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = `<div id='${this.place_id()}' class='field control ControlInteger' >
-					<label for='${this.control_id()}' >${this.properties.label}</label>
-					<input placeholder='${this.properties.placeholder}' type='text' name='${this.name}' id='${this.control_id()}' />
-					</div>`;
+		var html = `<div id='${this.place_id()}' class='field control ControlInteger' >`;
+		if(this.properties.label_visible)
+			html += `<label for='${this.control_id()}' >${this.properties.label}</label>`;
+		html += `<input placeholder='${this.properties.placeholder}' type='text' name='${this.name}' id='${this.control_id()}' />`;
+		html += `</div>`;
 		this.jquery_place().replaceWith(html);
 		this.set_value(this.properties.value);
 
