@@ -82,6 +82,7 @@ class ModelAdminWidget(BaseWidget):
         #######################################################
         self._list = self.CONTROL_LIST(
             'List',
+            label_visible=False,
             headers=self.LIST_HEADERS if self.LIST_HEADERS else None,
             list_display=self.LIST_DISPLAY if self.LIST_DISPLAY else [],
             list_filter=self.LIST_FILTER if self.LIST_FILTER else [],
