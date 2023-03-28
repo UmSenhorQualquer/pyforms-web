@@ -1,6 +1,5 @@
 class ControlLineChart extends ControlBase {
 
-
     ////////////////////////////////////////////////////////////////////////////////
 
     init_control() {
@@ -12,7 +11,9 @@ class ControlLineChart extends ControlBase {
         html += "</div>";
         this.jquery_place().replaceWith(html);
 
-        this.set_value(this.properties.value);
+        if (this.properties.value) {
+            this.set_value(this.properties.value);
+        }
 
         if (this.properties.required) this.set_required();
     };
@@ -21,6 +22,7 @@ class ControlLineChart extends ControlBase {
     ////////////////////////////////////////////////////////////////////////////////
 
     set_value(data) {
+        if( !this.jquery( ).length ) return;
 
         if (this.chart) {
             this.chart.destroy();
@@ -31,7 +33,6 @@ class ControlLineChart extends ControlBase {
         if (!data || data.length == 0 || data[0].length == 0) {
             data = [[[0, 0]]];
         }
-        ;
 
         this.chart = $.jqplot(this.control_id(), data, {
             height: this.properties.height,
@@ -89,6 +90,11 @@ class ControlLineChart extends ControlBase {
                 self.basewidget.fire_event(self.name, 'remote_data_selected_event');
             }
         );
+
+        if (this.properties.visible)
+            this.show();
+        else
+            this.hide();
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +107,6 @@ class ControlLineChart extends ControlBase {
 
     deserialize(data) {
         this.properties = $.extend(this.properties, data);
-
     };
 
     apply_deserialization(data) {

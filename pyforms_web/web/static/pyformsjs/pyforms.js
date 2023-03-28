@@ -312,7 +312,13 @@ class PyformsManager {
                         html += res.code;
                         html += '</form>';
                         html += '</div>';
-                        $('#' + layout_position).html(html);
+                        if( $('#' + layout_position).length == 0 ) {
+                            setTimeout(() => {
+                                $('#' + layout_position).html(html);
+                            }, 1000);
+                        }else{
+                            $('#' + layout_position).html(html);
+                        }
                     }
                     ;
                 }

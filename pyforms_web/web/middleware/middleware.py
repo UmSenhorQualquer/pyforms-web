@@ -63,7 +63,8 @@ class PyFormsMiddleware(object):
             )
 
             if os.path.isfile(app_path):
-                lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
+                lock_filepath = os.path.join(conf.PYFORMS_WEB_APPS_CACHE_DIR, '{0}-{1}'.format(user.pk, user.username), 'lockfile.txt')
+                lock = filelock.FileLock(lock_filepath)
                 with lock.acquire(timeout=10):
                     with open(app_path, 'rb') as f:
                         return dill.load(f)
@@ -88,7 +89,8 @@ class PyFormsMiddleware(object):
 
             app_path = os.path.join(userpath, "{0}.app".format(app.uid))
 
-            lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
+            lock_filepath = os.path.join(conf.PYFORMS_WEB_APPS_CACHE_DIR, '{0}-{1}'.format(user.pk, user.username), 'lockfile.txt')
+            lock = filelock.FileLock(lock_filepath)
             with lock.acquire(timeout=4):
                 with open(app_path, 'wb') as f:
                     dill.dump(app, f, protocol=4)
@@ -112,7 +114,8 @@ class PyFormsMiddleware(object):
                 "{0}.app".format(app_id)
             )
             if os.path.isfile(app_path):
-                lock = filelock.FileLock(conf.PYFORMS_WEB_LOCKFILE)
+                lock_filepath = os.path.join(conf.PYFORMS_WEB_APPS_CACHE_DIR, '{0}-{1}'.format(user.pk, user.username), 'lockfile.txt')
+                lock = filelock.FileLock(lock_filepath)
                 with lock.acquire(timeout=10):
                     os.remove(app_path)
                 return True
