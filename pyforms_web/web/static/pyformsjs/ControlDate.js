@@ -33,7 +33,7 @@ class ControlDate extends ControlBase{
 	////////////////////////////////////////////////////////////////////////////////
 
 	init_control(){
-		var html = "<div id='"+this.place_id()+"' class='field control ControlDate' ><label>"+this.properties.label+"</label><input placeholder='"+this.properties.placeholder+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' /></div>";
+		var html = "<div id='"+this.place_id()+"' class='field control ControlDate' ><label>"+this.properties.label+"</label><input autocomplete='off' placeholder='"+this.properties.placeholder+"' type='text' name='"+this.name+"' id='"+this.control_id()+"' /></div>";
 		this.jquery_place().replaceWith(html);
 		this.set_value(this.properties.value);
 
