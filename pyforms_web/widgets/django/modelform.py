@@ -839,7 +839,6 @@ class ModelFormWidget(BaseWidget):
 
         return obj
 
-
     def save_form_event(self, obj):
         """
         Function handling the form save.
@@ -851,8 +850,6 @@ class ModelFormWidget(BaseWidget):
         Returns:
             :boolean: It returns True or False if the save was successfully.
         """
-        user = PyFormsMiddleware.user()
-
         # decides if an object is going to be created or updated
         new_object = obj.pk is None
 
