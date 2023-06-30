@@ -3,6 +3,7 @@ from confapp import conf
 conf.PYFORMS_JSFILES_DEBUG += [
     "ControlCalendar.js",
     "ControlCodeMirror.js",
+    "ControlHButtons.js",
     "ControlDir.js",
     "ControlDrawInImg.js",
     "ControlFeed.js",
