@@ -54,15 +54,6 @@ class ControlHButtons(ControlBase):
             self._query = None
             self._app = None
 
-
-    def pressed(self):
-        """
-        This event is called when the button is pressed.
-        The correspondent js event is defined in the framework.js file
-        """
-        if not isinstance(self._value, str) and self._value: self._value()
-
-
     def item_format(self, item):
         return str(item)
 
@@ -117,3 +108,7 @@ class ControlHButtons(ControlBase):
 
         if self.current_page >= self.first_page+self.max_items:
             self.current_page = self.first_page+self.max_items-1
+
+        if self._value != properties.get('value', self._value):
+            self._value = properties.get('value', self._value)
+            self.changed_event()

@@ -24,7 +24,7 @@ class ControlHButtons extends ControlBase {
             }
 
             for (var i = 0; i < items.length; i++) {
-                html += `<a current-page-idx="${items[i].page_idx}" class="item ${items[i].page_idx == this.properties.current_page ? 'active' : ''}">${items[i].text}</a>`;
+                html += `<a current-page-idx="${items[i].page_idx}" val="${items[i].value}" class="item ${items[i].page_idx == this.properties.current_page ? 'active' : ''}">${items[i].text}</a>`;
             }
 
             if ((this.properties.first_page + items.length) < this.properties.total_items) {
@@ -41,13 +41,13 @@ class ControlHButtons extends ControlBase {
                     const current_page_idx = $(this).attr('current-page-idx');
                     if (current_page_idx) {
                         self.properties.current_page = parseInt(current_page_idx);
+                        self.properties.value = $(this).attr('val');
                     }
 
                     const first_page_idx = $(this).attr('first-page-idx');
                     if (first_page_idx) {
                         self.properties.first_page = parseInt(first_page_idx);
                     }
-
                     self.basewidget.fire_event(self.name, 'page_changed_event');
                 }
             });
