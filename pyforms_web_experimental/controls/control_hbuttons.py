@@ -25,8 +25,9 @@ class ControlHButtons(ControlBase):
         self.current_page = 0
         self.first_page = 0
 
-
         super().__init__(*args, **kwargs)
+
+        self._loaded = True
 
     def init_form(self):
         return "new ControlHButtons('{0}', {1})".format(self._name, simplejson.dumps(self.serialize()))
@@ -48,11 +49,13 @@ class ControlHButtons(ControlBase):
             self._model = value.model._meta.label.split('.')[-1]
             self._query = value.query
             self._app = value.model._meta.app_label
-            self.mark_to_update_client()
         else:
             self._model = None
             self._query = None
             self._app = None
+
+        if hasattr(self, '_loaded'):
+            self.mark_to_update_client()
 
     def item_format(self, item):
         return str(item)
