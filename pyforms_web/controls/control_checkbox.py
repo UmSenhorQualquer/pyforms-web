@@ -9,7 +9,6 @@ class ControlCheckBox(ControlBase):
 
         super().__init__(*args, **kwargs)
     
-
     def init_form(self):
         return "new ControlCheckBox('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
 

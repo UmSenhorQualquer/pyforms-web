@@ -1,10 +1,10 @@
-import os
-
-from pyforms_web.controls.control_base import ControlBase
-import simplejson, collections
-from django.db.models import Q
+import simplejson
 from django.apps import apps
 from django.db import models
+from django.db.models import Q
+
+from pyforms_web.controls.control_base import ControlBase
+
 
 class ValueNotSet: pass
 
@@ -40,12 +40,11 @@ class ControlAutoComplete(ControlBase):
     
     """
 
-
     def __init__(self, *args, **kwargs):
 
         self._init_form_called = False
         super(ControlAutoComplete, self).__init__(*args, **kwargs)
-        
+
         # configure the Combo to get its items from an URL
         self.items_url = kwargs.get('items_url', None)
         # set the function to query the items in the case we are using the url mode
@@ -58,21 +57,20 @@ class ControlAutoComplete(ControlBase):
         # allow multiple choices
         self.multiple = kwargs.get('multiple', False)
 
-
-    def init_form(self): 
+    def init_form(self):
         self._init_form_called = True
-        return "new ControlAutoComplete('{0}', {1})".format( self._name, simplejson.dumps(self.serialize()) )
+        return "new ControlAutoComplete('{0}', {1})".format(self._name, simplejson.dumps(self.serialize()))
 
-    #def queryset_filter(self, qs, keyword, control):
+    # def queryset_filter(self, qs, keyword, control):
     #    return qs
 
     @property
     def queryset(self):
         if self._app and self._model and self._query:
             # reconstruct the query ################################
-            model       = apps.get_model(self._app, self._model)
-            qs          = model.objects.all()
-            qs.query    = self._query
+            model = apps.get_model(self._app, self._model)
+            qs = model.objects.all()
+            qs.query = self._query
             return qs
         else:
             return None
@@ -82,11 +80,11 @@ class ControlAutoComplete(ControlBase):
         if value:
             self._model = value.model._meta.label.split('.')[-1]
             self._query = value.query
-            self._app   = value.model._meta.app_label
+            self._app = value.model._meta.app_label
         else:
             self._model = None
             self._query = None
-            self._app   = None
+            self._app = None
 
     def autocomplete_search(self, keyword):
         queryset = self.queryset
@@ -95,24 +93,23 @@ class ControlAutoComplete(ControlBase):
 
             if self.queryset_filter:
                 queryset = self.queryset_filter(queryset, keyword, self)
-                
+
             if keyword:
 
-                
                 model = queryset.model
-     
+
                 if hasattr(model, 'autocomplete_search_fields'):
                     or_filter = Q()
                     for search_field in model.autocomplete_search_fields():
-                        or_filter.add( Q(**{search_field:keyword}), Q.OR)
+                        or_filter.add(Q(**{search_field: keyword}), Q.OR)
                     queryset = queryset.filter(or_filter)
-                
+
                 elif not self.queryset_filter:
                     queryset = queryset.filter(pk=keyword)
 
             try:
                 # return the results
-                return [{'name':str(o), 'value':o.pk, 'text':str(o)} for o in queryset]
+                return [{'name': str(o), 'value': o.pk, 'text': str(o)} for o in queryset]
             except:
                 return []
         else:
@@ -127,10 +124,19 @@ class ControlAutoComplete(ControlBase):
         if self._value!=value: self.mark_to_update_client()
         self._value = value
     """
-    
+
+    def add(self, value):
+
+        if self.value is None:
+            self._value = []
+
+        if value not in self.value:
+            self._value.append(value)
+            self.mark_to_update_client()
+
     def deserialize(self, data):
         value = data.get('value', None)
-        
+
         if self.multiple:
             if value is None:
                 self.value = []
@@ -141,11 +147,10 @@ class ControlAutoComplete(ControlBase):
         else:
             self.value = int(value) if value and value.isdigit() else None
 
-
     def serialize(self):
-        data = super(ControlAutoComplete,self).serialize()
+        data = super(ControlAutoComplete, self).serialize()
 
-        if self._value==models.fields.NOT_PROVIDED:
+        if self._value == models.fields.NOT_PROVIDED:
             self._value = ValueNotSet
 
         if self.multiple:
@@ -163,16 +168,16 @@ class ControlAutoComplete(ControlBase):
                 values = self._value if isinstance(self._value, list) else [self._value]
                 values = [v for v in values if v if v is not None]
                 queryset = queryset.filter(pk__in=values).distinct()
-                items = [{'name':str(o), 'value':str(o.pk), 'text':str(o)} for o in queryset]
+                items = [{'name': str(o), 'value': str(o.pk), 'text': str(o)} for o in queryset]
             else:
                 items = []
 
             if not self.multiple:
-                items = [{'name':'---', 'value':None, 'text':'---'}] + items
+                items = [{'name': '---', 'value': None, 'text': '---'}] + items
         else:
             items = []
 
-        data.update({'items_url': self.items_url, 'items':items, 'multiple':self.multiple})
+        data.update({'items_url': self.items_url, 'items': items, 'multiple': self.multiple})
 
         return data
 
@@ -194,15 +199,12 @@ class ControlAutoComplete(ControlBase):
         return self._parent
 
     @parent.setter
-    def parent(self, value): 
+    def parent(self, value):
         ControlBase.parent.fset(self, value)
-        
+
         if self.items_url is None:
             url = "/pyforms/autocomplete/{app_id}/{field_name}/{{query}}/".format(
-                app_id=value.uid, 
+                app_id=value.uid,
                 field_name=self.name
             )
             self.items_url = url
-
-        
-
