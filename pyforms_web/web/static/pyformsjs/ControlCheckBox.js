@@ -20,8 +20,14 @@ class ControlCheckBox extends ControlBase{
 		var html = "<div class='field control ControlCheckBox' id='"+this.place_id()+"' >";
 		if(this.properties.label_visible)
 			html += "<div style='height: 31px' ></div>";
-		else
-			html += "<div style='height: 3px' ></div>";
+		else{
+			if(this.properties.checkbox_type=='toggle'){
+				html += "<div style='height: 3px' ></div>";
+			}else{
+				html += "<div style='height: 7px' ></div>";
+			}
+		}
+
 		html += `<div class='ui ${this.properties.checkbox_type} checkbox' >`;
 		html += "<input name='"+this.name+"' id='"+this.control_id()+"' type='checkbox' value='true' class='hidden' />";
 		html += `<label title='${this.properties.help}' for='${this.control_id()}'>${this.properties.label}</label>`;
