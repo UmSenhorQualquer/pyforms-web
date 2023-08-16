@@ -55,6 +55,9 @@ class ControlHButtons(ControlBase):
             self._app = None
 
         if hasattr(self, '_loaded'):
+            self._value = None
+            self.current_page = -1
+            self.first_page = 0
             self.mark_to_update_client()
 
     def item_format(self, item):

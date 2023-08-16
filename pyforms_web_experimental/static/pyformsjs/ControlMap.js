@@ -104,8 +104,7 @@ class ControlMap extends ControlBase {
                         this.map.fitBounds(c.bounds)
                         break;
                     case 'addLayer':
-                        this.map_objects[`layer-${c.name}`] = L.tileLayer(c.url, c.options)
-                        this.map_objects[`layer-${c.name}`].addTo(this.map);
+                        this.map_objects[`layer-${c.name}`] = L.tileLayer(c.url, c.options).addTo(this.map);
                         break;
                     case 'removeLayer':
                         this.map_objects[`layer-${c.name}`].removeFrom(this.map);
@@ -118,8 +117,7 @@ class ControlMap extends ControlBase {
                         this.map_objects[`layer-${c.name}`].setOpacity(c.opacity);
                         break;
                     case 'addMarker':
-                        this.map_objects[`marker-${c.name}`] = L.marker(c.coordinate, c.options)
-                        this.map_objects[`marker-${c.name}`].addTo(this.map);
+                        this.map_objects[`marker-${c.name}`] = L.marker(c.coordinate, c.options).addTo(this.map);
                         break;
                     case 'removeMarker':
                         this.map_objects[`marker-${c.name}`].removeFrom(this.map);
@@ -131,8 +129,7 @@ class ControlMap extends ControlBase {
                         this.map_objects[`editable-marker-${c.name}`] = marker;
                         break;
                     case 'addPolyline':
-                        this.map_objects[`polyline-${c.name}`] = L.polyline(c.coordinates, c.options)
-                        this.map_objects[`polyline-${c.name}`].addTo(this.map);
+                        this.map_objects[`polyline-${c.name}`] = L.polyline(c.coordinates, c.options).addTo(this.map);
                         break;
                     case 'removePolyline':
                         this.map_objects[`polyline-${c.name}`].removeFrom(this.map);
@@ -146,8 +143,7 @@ class ControlMap extends ControlBase {
                             }
                         break;
                     case 'addPolygon':
-                        this.map_objects[`polygon-${c.name}`] = L.polygon(c.coordinates, c.options)
-                        this.map_objects[`polygon-${c.name}`].addTo(this.map);
+                        this.map_objects[`polygon-${c.name}`] = L.polygon(c.coordinates, c.options).addTo(this.map);
                         break;
                     case 'removePolygon':
                         this.map_objects[`polygon-${c.name}`].removeFrom(this.map);
