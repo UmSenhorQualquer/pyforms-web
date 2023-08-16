@@ -25,17 +25,15 @@ class ControlMap(ControlBase):
         self.center = kwargs.get('center', [51.505, -0.09])
         self.zoom = kwargs.get('zoom', 10)
 
-        self._add_markers = []
-        self._add_polygons = []
         self._commands = []
-        self.layers = []
-        self.markers = []
-        self.polygons = []
 
         for layer in self.value:
-            self.add_layer(layer['url'], layer['options'])
+            self.add_layer(layer['name'], layer['url'], options=layer['options'])
 
     def init_form(self):
+        """
+        Initialize the form
+        """
         return """new ControlMap('{0}', {1})""".format(
             self._name,
             simplejson.dumps(self.serialize())
@@ -48,47 +46,114 @@ class ControlMap(ControlBase):
         pass
 
     def clear_layers(self):
-        for l in self.layers:
-            self.remove_layer(l)
-        self.mark_to_update_client()
-
-    def set_layer_opacity(self, url, opacity):
-        self._commands.append({'command': 'setOpacity', 'layer_url': url, 'opacity': opacity})
+        """
+        Clear all layers from the map
+        """
+        self._commands.append({'command': 'clearLayers'})
         self.mark_to_update_client()
 
     def fit_bounds(self, bounds):
+        """
+        Fit the map to the given bounds
+        """
         self._commands.append({'command': 'fitBounds', 'bounds': bounds})
         self.mark_to_update_client()
 
-    def set_z_index(self, url, zindex):
-        self._commands.append({'command': 'setZIndex', 'layer_url': url, 'zindex': zindex})
+    def add_layer(self, name, url, options=None):
+        """
+        Add a layer to the map
+        """
+        self._commands.append({'command': 'addLayer', 'url': url, 'name': name, 'options': options})
         self.mark_to_update_client()
 
-    def add_layer(self, layer_url, options=None):
-        if layer_url in self.layers:
-            return
-        self._commands.append({'command': 'addLayer', 'layer_url': layer_url, 'options': options})
-        self.layers.append(layer_url)
+    def remove_layer(self, name):
+        """
+        Remove a layer from the map
+        """
+        self._commands.append({'command': 'removeLayer', 'name': name})
         self.mark_to_update_client()
 
-    def remove_layer(self, layer_url):
-        self._commands.append({'command': 'removeLayer', 'layer_url': layer_url})
-        self.layers.remove(layer_url)
+    def set_z_index(self, name, z_index):
+        """
+        Set the z-index of a layer
+        """
+        self._commands.append({'command': 'setZIndex', 'name': name, 'z_index': z_index})
         self.mark_to_update_client()
 
-    def add_mark(self, lat, long, **kwargs):
-        marker = {'coordinate': [lat, long]}
-        marker.update(**kwargs)
-        self._add_markers.append(marker)
-        self.markers.append(marker)
+    def set_layer_opacity(self, name, opacity):
+        """
+        Set the opacity of a layer
+        """
+        self._commands.append({'command': 'setOpacity', 'name': name, 'opacity': opacity})
+        self.mark_to_update_client()
 
-    def add_polygon(self, coordinates, **kwargs):
-        polygon = {'coordinates': coordinates}
-        polygon.update(**kwargs)
-        self._add_polygons.append(polygon)
-        self.polygons.append(polygon)
+    def add_marker(self, name, lat, long, **kwargs):
+        """
+        Add a marker to the map
+        """
+        self._commands.append({'command': 'addMarker', 'coordinate': [lat, long], 'name': name, 'options': kwargs})
+        self.mark_to_update_client()
+
+    def remove_marker(self, name):
+        """
+        Remove a marker from the map
+        """
+        self._commands.append({'command': 'removeMarker', 'name': name})
+        self.mark_to_update_client()
+
+    def add_editable_marker(self, name, lat, long, **kwargs):
+        """
+        Add a marker to the map
+        """
+        self._commands.append({'command': 'addEditableMarker', 'coordinate': [lat, long], 'name': name, 'options': kwargs})
+        self.mark_to_update_client()
+
+    def add_polyline(self, name, coordinates, **kwargs):
+        """
+        Add a polyline to the map
+        """
+        self._commands.append({'command': 'addPolyline', 'coordinates': coordinates, 'name': name, 'options': kwargs})
+        self.mark_to_update_client()
+
+    def remove_polyline(self, name):
+        """
+        Remove a polyline from the map
+        """
+        self._commands.append({'command': 'removePolyline', 'name': name})
+        self.mark_to_update_client()
+
+    def clear_polylines(self):
+        """
+        Clear a polylines from the map
+        """
+        self._commands.append({'command': 'clearPolylines'})
+        self.mark_to_update_client()
+
+    def add_polygon(self, name, coordinates, **kwargs):
+        """
+        Add a polygon to the map
+        """
+        self._commands.append({'command': 'addPolygon', 'coordinates': coordinates, 'name': name, 'options': kwargs})
+        self.mark_to_update_client()
+
+    def remove_polygon(self, name):
+        """
+        Remove a polygon from the map
+        """
+        self._commands.append({'command': 'removePolygon', 'name': name})
+        self.mark_to_update_client()
+
+    def add_editable_polygon(self, name, coordinates, **kwargs):
+        """
+        Add a editable polygon to the map
+        """
+        self._commands.append({'command': 'addEditablePolygon', 'coordinates': coordinates, 'name': name, 'options': kwargs})
+        self.mark_to_update_client()
 
     def deserialize(self, properties):
+        """
+        Deserialize the properties
+        """
 
         self.polygons = []
         for p in properties.get('polygons', []):
@@ -97,23 +162,22 @@ class ControlMap(ControlBase):
 
         self.markers = []
         for m in properties.get('markers', []):
-            coord =m['geometry']['coordinates']
+            coord = m['geometry']['coordinates']
             self.markers.append([coord[1], coord[0]])
 
         return super().deserialize(properties)
 
     def serialize(self):
+        """
+        Serialize the properties
+        """
+
         res = super().serialize()
         res.update({
             'center': self.center,
             'zoom': self.zoom,
             'min_height': self._min_height,
-
-            'add_markers': self._add_markers,
-            'add_polygons': self._add_polygons,
-
             'commands': self._commands,
-
             'edit_polyline': self._edit_polyline,
             'edit_polygon': self._edit_polygon,
             'edit_marker': self._edit_marker,
@@ -121,9 +185,6 @@ class ControlMap(ControlBase):
             'edit_circle': self._edit_circle,
             'edit_rectangle': self._edit_rectangle,
         })
-        self._add_markers = []
-        self._add_polygons = []
         self._commands = []
 
         return res
-

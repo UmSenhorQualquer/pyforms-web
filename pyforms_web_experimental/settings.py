@@ -20,7 +20,8 @@ conf.PYFORMS_JSFILES_DEBUG += [
     "ControlTimeout.js",
     "ControlTree.js",
     "ControlVisVis.js",
-    "ControlWorkflow.js"
+    "ControlWorkflow.js",
+    "ControlChartJsLine.js",
 ]
 
 conf.CSSFILES += [
@@ -33,6 +34,7 @@ conf.CSSFILES += [
 ]
 
 conf.JSFILES += [
+    "/static/chart.js/Chart.min.js",
     "/static/jquery.flowchart/jquery.panzoom.min.js",
     "/static/jquery.flowchart/jquery.mousewheel.min.js",
     "/static/jquery.flowchart/jquery.flowchart.min.js",

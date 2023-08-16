@@ -3,7 +3,7 @@ class ControlMap extends ControlBase {
     ////////////////////////////////////////////////////////////////////////////////
     init_control() {
         super.init_control();
-        this.layers = {};
+        this.map_objects = {};
 
         this.jquery_place().replaceWith(
             `<div id='${this.place_id()}' class='field control ControlMap' >
@@ -29,14 +29,11 @@ class ControlMap extends ControlBase {
     ////////////////////////////////////////////////////////////////////////////////
 
     initMap() {
-
         this.map = L.map(this.control_id()).setView(
             this.properties.center,
             this.properties.zoom
         );
-
         this.initEditPolygon();
-
         this.process_commands();
     }
 
@@ -44,7 +41,7 @@ class ControlMap extends ControlBase {
         this.editableLayers = new L.FeatureGroup();
         this.map.addLayer(this.editableLayers);
 
-        var options = {
+        let options = {
             position: 'topleft',
             draw: {
                 polyline: this.properties.edit_polyline,
@@ -53,12 +50,19 @@ class ControlMap extends ControlBase {
                 circlemarker: this.properties.edit_circlemarker,
                 circle: this.properties.edit_circle,
                 rectangle: this.properties.edit_rectangle
-            },
-            edit: {
-                featureGroup: this.editableLayers, //REQUIRED!!
-                remove: true
             }
         };
+
+        if (
+            this.properties.edit_polyline ||
+            this.properties.edit_polygon ||
+            this.properties.edit_marker ||
+            this.properties.edit_circlemarker ||
+            this.properties.edit_circle ||
+            this.properties.edit_rectangle
+        ){
+            options.edit = { featureGroup: this.editableLayers, remove: true };
+        }
 
         this.drawControl = new L.Control.Draw(options);
         this.map.addControl(this.drawControl);
@@ -78,6 +82,7 @@ class ControlMap extends ControlBase {
     }
 
     process_commands() {
+
         if (this.properties.add_markers) {
             this.properties.add_markers.forEach((m, idx) => {
                 const marker = L.marker(m.coordinate, m);
@@ -85,38 +90,73 @@ class ControlMap extends ControlBase {
             });
         }
 
-        if (this.properties.add_polygons) {
-            this.properties.add_polygons.forEach(p => {
-                const poly = L.polygon(p.coordinates, p);
-                this.editableLayers.addLayer(poly);
-            });
-        }
-
         if (this.properties.commands) {
             this.properties.commands.forEach(c => {
                 switch (c.command) {
-                    case 'setOpacity':
-                        this.layers[c.layer_url].setOpacity(c.opacity);
-                        break;
-                    case 'addLayer':
-                        this.layers[c.layer_url] = L.tileLayer(c.layer_url, c.options).addTo(this.map);
-                        break;
-                    case 'setZIndex':
-                        this.layers[c.layer_url].setZIndex(c.zindex);
-                        break;
-                    case 'removeLayer':
-                        this.layers[c.layer_url].removeFrom(this.map);
+                    case 'clearLayers':
+                        for (const key in this.map_objects)
+                            if(key.startsWith('layer-')) {
+                                this.map_objects[key].removeFrom(this.map);
+                                delete this.map_objects[key];
+                            }
                         break;
                     case 'fitBounds':
                         this.map.fitBounds(c.bounds)
-                        console.debug(c)
+                        break;
+                    case 'addLayer':
+                        this.map_objects[`layer-${c.name}`] = L.tileLayer(c.url, c.options).addTo(this.map);
+                        break;
+                    case 'removeLayer':
+                        this.map_objects[`layer-${c.name}`].removeFrom(this.map);
+                        delete this.map_objects[`layer-${c.name}`];
+                        break;
+                    case 'setZIndex':
+                        this.map_objects[`layer-${c.name}`].setZIndex(c.z_index);
+                        break;
+                    case 'setOpacity':
+                        this.map_objects[`layer-${c.name}`].setOpacity(c.opacity);
+                        break;
+                    case 'addMarker':
+                        this.map_objects[`marker-${c.name}`] = L.marker(c.coordinate, c.options).addTo(this.map);
+                        break;
+                    case 'removeMarker':
+                        this.map_objects[`marker-${c.name}`].removeFrom(this.map);
+                        delete this.map_objects[`marker-${c.name}`];
+                        break;
+                    case 'addEditableMarker':
+                        const marker = L.marker(c.coordinate, c.options);
+                        this.editableLayers.addLayer(marker);
+                        this.map_objects[`editable-marker-${c.name}`] = marker;
+                        break;
+                    case 'addPolyline':
+                        this.map_objects[`polyline-${c.name}`] = L.polyline(c.coordinates, c.options).addTo(this.map);
+                        break;
+                    case 'removePolyline':
+                        this.map_objects[`polyline-${c.name}`].removeFrom(this.map);
+                        delete this.map_objects[`polyline-${c.name}`];
+                        break;
+                    case 'clearPolylines':
+                        for (const key in this.map_objects)
+                            if(key.startsWith('polyline-')) {
+                                this.map_objects[key].removeFrom(this.map);
+                                delete this.map_objects[key];
+                            }
+                        break;
+                    case 'addPolygon':
+                        this.map_objects[`polygon-${c.name}`] = L.polygon(c.coordinates, c.options).addTo(this.map);
+                        break;
+                    case 'removePolygon':
+                        this.map_objects[`polygon-${c.name}`].removeFrom(this.map);
+                        delete this.map_objects[`polygon-${c.name}`];
+                        break;
+                    case 'addEditablePolygon':
+                        const poly = L.polygon(c.coordinates, c.options);
+                        this.editableLayers.addLayer(poly);
+                        this.map_objects[`editable-polygon-${c.name}`] = poly;
                         break;
                 }
             });
         }
-
-        this.properties.add_markers = [];
-        this.properties.add_polygons = [];
         this.properties.commands = [];
 
     }
@@ -130,7 +170,6 @@ class ControlMap extends ControlBase {
             } else if (l instanceof L.Marker && l.options && l.options.pane === "markerPane") {
                 markers.push(l.toGeoJSON())
             }
-
         });
 
         this.properties.polygons = polygons;
@@ -146,13 +185,4 @@ class ControlMap extends ControlBase {
         }
     }
 
-    /*
-        enable() {
-            this.drawControl.enable();
-        }
-
-        disable() {
-            this.drawControl.disable();
-        }
-        */
 }

@@ -22,7 +22,7 @@ class ControlHButtons(ControlBase):
 
         self.default_text = kwargs.get('default_text', 'No items to display.')
 
-        self.current_page = 0
+        self.current_page = -1
         self.first_page = 0
 
         super().__init__(*args, **kwargs)
