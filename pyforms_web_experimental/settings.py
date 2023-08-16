@@ -34,7 +34,7 @@ conf.CSSFILES += [
 ]
 
 conf.JSFILES += [
-    "/static/chart.js/Chart.min.js",
+    #"/static/chart.js/Chart.min.js",
     "/static/jquery.flowchart/jquery.panzoom.min.js",
     "/static/jquery.flowchart/jquery.mousewheel.min.js",
     "/static/jquery.flowchart/jquery.flowchart.min.js",
