@@ -21,7 +21,7 @@ conf.PYFORMS_JSFILES_DEBUG += [
     "ControlTree.js",
     "ControlVisVis.js",
     "ControlWorkflow.js",
-    "ControlChartJsLine.js",
+    #"ControlChartJsLine.js",
 ]
 
 conf.CSSFILES += [
