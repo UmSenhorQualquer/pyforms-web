@@ -25,6 +25,8 @@ class ControlMap(ControlBase):
         self.center = kwargs.get('center', [51.505, -0.09])
         self.zoom = kwargs.get('zoom', 10)
 
+        self._layers = {}
+
         self._commands = []
 
         for layer in self.value:
@@ -38,6 +40,13 @@ class ControlMap(ControlBase):
             self._name,
             simplejson.dumps(self.serialize())
         )
+    
+    @property
+    def layers(self):
+        """
+        Return the layers
+        """
+        return self._layers
 
     def on_enter_event(self):
         """
@@ -50,6 +59,7 @@ class ControlMap(ControlBase):
         Clear all layers from the map
         """
         self._commands.append({'command': 'clearLayers'})
+        self._layers = {}
         self.mark_to_update_client()
 
     def fit_bounds(self, bounds):
@@ -64,6 +74,7 @@ class ControlMap(ControlBase):
         Add a layer to the map
         """
         self._commands.append({'command': 'addLayer', 'url': url, 'name': name, 'options': options})
+        self._layers[name] = url
         self.mark_to_update_client()
 
     def remove_layer(self, name):
@@ -71,6 +82,7 @@ class ControlMap(ControlBase):
         Remove a layer from the map
         """
         self._commands.append({'command': 'removeLayer', 'name': name})
+        self._layers.pop(name)
         self.mark_to_update_client()
 
     def set_z_index(self, name, z_index):

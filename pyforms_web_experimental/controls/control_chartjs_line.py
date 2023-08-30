@@ -7,7 +7,7 @@ from pyforms_web.controls.control_base import ControlBase
 class ValueNotSet: pass
 
 
-class ControlHButtons(ControlBase):
+class ControlChartJsLine(ControlBase):
 
     def __init__(self, *args, **kwargs):
         if 'css' not in kwargs: kwargs['css'] = 'blue'
@@ -22,7 +22,7 @@ class ControlHButtons(ControlBase):
 
         self.default_text = kwargs.get('default_text', 'No items to display.')
 
-        self.current_page = -1
+        self.current_page = 0
         self.first_page = 0
 
         super().__init__(*args, **kwargs)
@@ -30,7 +30,7 @@ class ControlHButtons(ControlBase):
         self._loaded = True
 
     def init_form(self):
-        return "new ControlHButtons('{0}', {1})".format(self._name, simplejson.dumps(self.serialize()))
+        return "new ControlChartJsLine('{0}', {1})".format(self._name, simplejson.dumps(self.serialize()))
 
     @property
     def queryset(self):
@@ -81,7 +81,12 @@ class ControlHButtons(ControlBase):
             queryset = queryset.distinct()
             total_items = queryset.count()
             pages_items = queryset[self.first_page:self.first_page + self.max_items]
-            items = [{'name': str(o), 'value': str(o.pk), 'page_idx': self.first_page + idx, 'text': self.item_format(o)} for idx, o in enumerate(pages_items)]
+            items = [{
+                'name': str(o),
+                'value': str(o.pk),
+                'page_idx': self.first_page + idx,
+                'text': self.item_format(o)
+            } for idx, o in enumerate(pages_items)]
 
             if self._value:
                 values = self._value if isinstance(self._value, list) else [self._value]

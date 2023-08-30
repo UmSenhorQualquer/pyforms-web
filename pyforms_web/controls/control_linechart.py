@@ -16,6 +16,7 @@ class ControlLineChart(ControlBase):
         self.legend_placement = kwargs.get('legend_placement', 'outside')
         self.x_axis_format = kwargs.get('x_axis_format', None)
         self.smooth = kwargs.get('smooth', True)
+        self.show_marker = kwargs.get('show_marker', True)
 
         super().__init__(*args, **kwargs)
 
@@ -47,7 +48,8 @@ class ControlLineChart(ControlBase):
             'height': self.height,
             'width': self.width,
             'x_axis_format': self.x_axis_format,
-            'smooth': self.smooth
+            'smooth': self.smooth,
+            'show_marker': self.show_marker,
         })
 
         return data

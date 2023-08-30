@@ -1,13 +1,13 @@
-class ControlLineChart extends ControlBase {
+class ControlChartJsLine extends ControlBase {
 
     ////////////////////////////////////////////////////////////////////////////////
 
     init_control() {
         this.update_it = false;
 
-        var html = "<div id='" + this.place_id() + "' class='field control ControlLineChart' >";
+        var html = "<div id='" + this.place_id() + "' class='field control ControlChartJsLine' >";
         if (this.properties.label_visible) html += "<label for='" + this.control_id() + "'>" + this.properties.label + "</label>";
-        html += "<div id='" + this.control_id() + "' title='" + this.properties.help + "' style='margin-left: 20px' ></div>";
+        html += `<canvas id="${this.control_id()}"></canvas>`;
         html += "</div>";
         this.jquery_place().replaceWith(html);
 
@@ -22,7 +22,7 @@ class ControlLineChart extends ControlBase {
     ////////////////////////////////////////////////////////////////////////////////
 
     set_value(data) {
-        if( !this.jquery( ).length ) return;
+        if (!this.jquery().length) return;
 
         if (this.chart) {
             this.chart.destroy();
@@ -33,54 +33,25 @@ class ControlLineChart extends ControlBase {
         if (!data || data.length == 0 || data[0].length == 0) {
             data = [[[0, 0]]];
         }
-        console.debug('Show marker', this.properties.show_marker);
-        this.chart = $.jqplot(this.control_id(), data, {
-            height: this.properties.height,
-            width: this.properties.width,
-            seriesColors: [
-                '#f2711c', '#fbbd08', '#b5cc18', '#21ba45', '#00b5ad',
-                '#2185d0', '#6435c9', '#a333c8', '#e03997', '#a5673f',
-                '#767676', '#1b1c1d', '#DB2828'
-            ],
-            grid: {
-                borderColor: 'transparent',
-                shadow: false,
-                drawBorder: false,
-                shadowColor: 'transparent',
-                background: 'transparent'
+
+        var ctx = document.getElementById(this.control_id()).getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+            // The data for our dataset
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                datasets: [{
+                    label: 'My First dataset',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    pointStyle: 'line',
+                    lineTension: 0,
+                    data: [0, 10, 5, 2, 20, 30, 45]
+                }]
             },
-            title: this.label,
-            seriesDefaults: {
-                showMarker: this.properties.show_marker, 
-                showLine: true, 
-                lineWidth: 1,
-                markerOptions: {size: 4},
-                rendererOptions: {
-                    smooth: this.properties.smooth
-                }
-            },
-            legend: {
-                show: legend.length > 0,
-                labels: legend,
-                placement: this.properties.legend_placement,
-                location: this.properties.legend_location
-            },
-            axes: {
-                xaxis: {
-                    renderer: $.jqplot.DateAxisRenderer,
-                    tickOptions: {formatString: this.properties.x_axis_format},
-                }
-            },
-            cursor: {
-                style: 'pointer',
-                show: true,
-                zoom: true,
-                tooltipOffset: 10,
-                showTooltip: true,
-                followMouse: true,
-                showTooltipDataPosition: true,
-                showVerticalLine: true
-            }
+            // Configuration options go here
+            options: {}
         });
 
         const self = this;
