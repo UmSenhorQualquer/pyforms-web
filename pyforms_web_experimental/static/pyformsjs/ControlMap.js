@@ -60,7 +60,7 @@ class ControlMap extends ControlBase {
             this.properties.edit_circlemarker ||
             this.properties.edit_circle ||
             this.properties.edit_rectangle
-        ){
+        ) {
             options.edit = { featureGroup: this.editableLayers, remove: true };
         }
 
@@ -91,11 +91,11 @@ class ControlMap extends ControlBase {
         }
 
         if (this.properties.commands) {
-            this.properties.commands.forEach(c => {
+            this.properties.commands.forEach(c => {                
                 switch (c.command) {
                     case 'clearLayers':
                         for (const key in this.map_objects)
-                            if(key.startsWith('layer-')) {
+                            if (key.startsWith('layer-')) {
                                 this.map_objects[key].removeFrom(this.map);
                                 delete this.map_objects[key];
                             }
@@ -116,13 +116,32 @@ class ControlMap extends ControlBase {
                     case 'setOpacity':
                         this.map_objects[`layer-${c.name}`].setOpacity(c.opacity);
                         break;
+
+                    case 'clearMarkers':
+                        for (const key in this.map_objects)
+                            if (key.startsWith('marker-')) {
+                                this.map_objects[key].removeFrom(this.map);
+                                delete this.map_objects[key];
+                            }
+                        break;
                     case 'addMarker':
+                        
+                        if(c.iconUrl !== undefined || c.iconUrl !== null){
+                            console.debug('addMarker', c);
+                            c.options.icon = L.icon({
+                                iconUrl: c.iconUrl,
+                                iconSize: [25, 25]
+                            });
+                        }
+                        console.debug('-addMarker', c);
                         this.map_objects[`marker-${c.name}`] = L.marker(c.coordinate, c.options).addTo(this.map);
                         break;
                     case 'removeMarker':
                         this.map_objects[`marker-${c.name}`].removeFrom(this.map);
                         delete this.map_objects[`marker-${c.name}`];
                         break;
+
+
                     case 'addEditableMarker':
                         const marker = L.marker(c.coordinate, c.options);
                         this.editableLayers.addLayer(marker);
@@ -137,7 +156,7 @@ class ControlMap extends ControlBase {
                         break;
                     case 'clearPolylines':
                         for (const key in this.map_objects)
-                            if(key.startsWith('polyline-')) {
+                            if (key.startsWith('polyline-')) {
                                 this.map_objects[key].removeFrom(this.map);
                                 delete this.map_objects[key];
                             }
@@ -149,11 +168,14 @@ class ControlMap extends ControlBase {
                         this.map_objects[`polygon-${c.name}`].removeFrom(this.map);
                         delete this.map_objects[`polygon-${c.name}`];
                         break;
+
                     case 'addEditablePolygon':
                         const poly = L.polygon(c.coordinates, c.options);
                         this.editableLayers.addLayer(poly);
                         this.map_objects[`editable-polygon-${c.name}`] = poly;
                         break;
+
+                        ß
                 }
             });
         }

@@ -99,11 +99,24 @@ class ControlMap(ControlBase):
         self._commands.append({'command': 'setOpacity', 'name': name, 'opacity': opacity})
         self.mark_to_update_client()
 
-    def add_marker(self, name, lat, long, **kwargs):
+
+
+    def clear_markers(self):
+        """
+        Clear a markers from the map
+        """
+        self._commands.append({'command': 'clearMarkers'})
+        self.mark_to_update_client()
+
+    def add_marker(self, name, lat, long, icon=None, **kwargs):
         """
         Add a marker to the map
         """
-        self._commands.append({'command': 'addMarker', 'coordinate': [lat, long], 'name': name, 'options': kwargs})
+        self._commands.append({
+            'command': 'addMarker', 'coordinate': [lat, long], 'name': name,
+            'iconUrl': icon,
+            'options': kwargs
+            })
         self.mark_to_update_client()
 
     def remove_marker(self, name):
@@ -112,6 +125,8 @@ class ControlMap(ControlBase):
         """
         self._commands.append({'command': 'removeMarker', 'name': name})
         self.mark_to_update_client()
+
+
 
     def add_editable_marker(self, name, lat, long, **kwargs):
         """
@@ -155,6 +170,7 @@ class ControlMap(ControlBase):
         self._commands.append({'command': 'removePolygon', 'name': name})
         self.mark_to_update_client()
 
+   
     def add_editable_polygon(self, name, coordinates, **kwargs):
         """
         Add a editable polygon to the map
