@@ -62,6 +62,13 @@ class ControlMap(ControlBase):
         self._layers = {}
         self.mark_to_update_client()
 
+    def set_view(self, lat, long, zoom=None):
+        """
+        Fit the map to the given bounds
+        """
+        self._commands.append({'command': 'setView', 'coordinate': [lat, long], 'zoom': zoom})
+        self.mark_to_update_client()
+
     def fit_bounds(self, bounds):
         """
         Fit the map to the given bounds
@@ -108,13 +115,14 @@ class ControlMap(ControlBase):
         self._commands.append({'command': 'clearMarkers'})
         self.mark_to_update_client()
 
-    def add_marker(self, name, lat, long, icon=None, **kwargs):
+    def add_marker(self, name, lat, long, icon=None, size=[25, 25], **kwargs):
         """
         Add a marker to the map
         """
         self._commands.append({
             'command': 'addMarker', 'coordinate': [lat, long], 'name': name,
             'iconUrl': icon,
+            'iconSize': size,
             'options': kwargs
             })
         self.mark_to_update_client()

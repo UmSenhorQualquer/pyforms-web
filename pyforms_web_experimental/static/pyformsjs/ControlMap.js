@@ -29,7 +29,7 @@ class ControlMap extends ControlBase {
     ////////////////////////////////////////////////////////////////////////////////
 
     initMap() {
-        this.map = L.map(this.control_id()).setView(
+        this.map = L.map(this.control_id(), { attributionControl:false }).setView(
             this.properties.center,
             this.properties.zoom
         );
@@ -91,7 +91,7 @@ class ControlMap extends ControlBase {
         }
 
         if (this.properties.commands) {
-            this.properties.commands.forEach(c => {                
+            this.properties.commands.forEach(c => {
                 switch (c.command) {
                     case 'clearLayers':
                         for (const key in this.map_objects)
@@ -99,6 +99,9 @@ class ControlMap extends ControlBase {
                                 this.map_objects[key].removeFrom(this.map);
                                 delete this.map_objects[key];
                             }
+                        break;
+                    case 'setView':
+                        this.map.setView(c.coordinate, c.zoom);
                         break;
                     case 'fitBounds':
                         this.map.fitBounds(c.bounds)
@@ -116,7 +119,6 @@ class ControlMap extends ControlBase {
                     case 'setOpacity':
                         this.map_objects[`layer-${c.name}`].setOpacity(c.opacity);
                         break;
-
                     case 'clearMarkers':
                         for (const key in this.map_objects)
                             if (key.startsWith('marker-')) {
@@ -125,23 +127,19 @@ class ControlMap extends ControlBase {
                             }
                         break;
                     case 'addMarker':
-                        
-                        if(c.iconUrl !== undefined || c.iconUrl !== null){
-                            console.debug('addMarker', c);
+                        if (c.iconUrl !== undefined && c.iconUrl !== null) {          
+                            console.log(c.iconUrl);               
                             c.options.icon = L.icon({
                                 iconUrl: c.iconUrl,
-                                iconSize: [25, 25]
+                                iconSize: c.iconSize,
                             });
                         }
-                        console.debug('-addMarker', c);
                         this.map_objects[`marker-${c.name}`] = L.marker(c.coordinate, c.options).addTo(this.map);
                         break;
                     case 'removeMarker':
                         this.map_objects[`marker-${c.name}`].removeFrom(this.map);
                         delete this.map_objects[`marker-${c.name}`];
                         break;
-
-
                     case 'addEditableMarker':
                         const marker = L.marker(c.coordinate, c.options);
                         this.editableLayers.addLayer(marker);
@@ -174,8 +172,6 @@ class ControlMap extends ControlBase {
                         this.editableLayers.addLayer(poly);
                         this.map_objects[`editable-polygon-${c.name}`] = poly;
                         break;
-
-                        ß
                 }
             });
         }

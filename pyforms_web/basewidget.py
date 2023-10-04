@@ -152,6 +152,7 @@ class BaseWidget(object):
 
         modulename = inspect.getmodule(self).__name__ + '.' + self.__class__.__name__
 
+
         self._js = '[{0}]'.format(",".join(self._controls))
         self._html += """
         <script type="text/javascript">pyforms.add_app( new BaseWidget('{2}', '{0}', {1}, {3}, {4}) );{extra_code}</script>
@@ -161,7 +162,7 @@ class BaseWidget(object):
 
         self._messages = []
         self.mark_to_update_client()
-
+        
         res = {
             'code': self._html,
             'title': self._title,
@@ -234,9 +235,11 @@ class BaseWidget(object):
 
     def generate_control(self, row):
         control = self.controls.get(row, None)
+
         if control == None:
-            if row == ' ':                   return "<div class='field' ></div>"
-            if row.startswith('empty:'):
+            if row == ' ':
+                return "<div class='field' ></div>"
+            elif row.startswith('empty:'):
                 return "<div class='field {0} wide' ></div>".format(row[6:])
             elif row.startswith('icon:'):
                 return "<i class='ui icon {0}' style='margin-top:10px' ></i>".format(row[5:])
@@ -356,14 +359,14 @@ class BaseWidget(object):
         elif 'notifications-area' == formset:
             return "<div class='notifications-area field'></div>"
 
-        elif '=' in formset:
+        elif isinstance(formset, (list, tuple)) and '=' in formset:
             index = list(formset).index('=')
             return "<div id='{splitter_id}' class='horizontalSplitter' ><div>{top}</div><div>{bottom}</div></div>".format(
                 splitter_id=uuid.uuid4(),
                 top=self.generate_panel(formset[0:index]),
                 bottom=self.generate_panel(formset[index + 1:])
             )
-        elif '||' in formset:
+        elif isinstance(formset, (list, tuple)) and '||' in formset:
             index = list(formset).index('||')
             return "<div id='{splitter_id}' class='verticalSplitter' ><div>{left}</div><div>{right}</div></div>".format(
                 splitter_id=uuid.uuid4(),
