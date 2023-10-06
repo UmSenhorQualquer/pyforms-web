@@ -69,6 +69,8 @@ class ControlLineChart extends ControlBase {
                 xaxis: {
                     renderer: $.jqplot.DateAxisRenderer,
                     tickOptions: {formatString: this.properties.x_axis_format},
+                    min: this.properties.xaxis_range? new Date(this.properties.xaxis_range[0]): null,
+                    max: this.properties.xaxis_range? new Date(this.properties.xaxis_range[1]): null,
                 }
             },
             cursor: {

@@ -18,6 +18,8 @@ class ControlLineChart(ControlBase):
         self.smooth = kwargs.get('smooth', True)
         self.show_marker = kwargs.get('show_marker', True)
 
+        self._xaxis_range = kwargs.get('xaxis_range', None)
+
         super().__init__(*args, **kwargs)
 
         self.data_selected_event = kwargs.get('data_selected_event', self.data_selected_event)
@@ -29,6 +31,12 @@ class ControlLineChart(ControlBase):
 
     def data_selected_event(self, series_index, data):
         pass
+
+    @property
+    def xaxis_range(self): return self._xaxis_range
+
+    @xaxis_range.setter
+    def xaxis_range(self, value): self._xaxis_range = value
 
     def serialize(self):
         data = ControlBase.serialize(self)
@@ -50,6 +58,7 @@ class ControlLineChart(ControlBase):
             'x_axis_format': self.x_axis_format,
             'smooth': self.smooth,
             'show_marker': self.show_marker,
+            'xaxis_range': self.xaxis_range,
         })
 
         return data
