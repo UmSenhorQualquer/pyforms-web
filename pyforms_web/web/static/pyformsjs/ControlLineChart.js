@@ -33,7 +33,10 @@ class ControlLineChart extends ControlBase {
         if (!data || data.length == 0 || data[0].length == 0) {
             data = [[[0, 0]]];
         }
-        console.debug('Show marker', this.properties.show_marker);
+
+        console.debug(data);
+        console.debug(this.properties);
+
         this.chart = $.jqplot(this.control_id(), data, {
             height: this.properties.height,
             width: this.properties.width,
@@ -67,7 +70,7 @@ class ControlLineChart extends ControlBase {
             },
             axes: {
                 xaxis: {
-                    renderer: $.jqplot.DateAxisRenderer,
+                    renderer: this.properties.x_axis_type==='datetime'?$.jqplot.DateAxisRenderer:$.jqplot.LinearAxisRenderer,
                     tickOptions: {formatString: this.properties.x_axis_format},
                     min: this.properties.xaxis_range? new Date(this.properties.xaxis_range[0]): null,
                     max: this.properties.xaxis_range? new Date(this.properties.xaxis_range[1]): null,
